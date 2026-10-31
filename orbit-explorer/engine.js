@@ -267,8 +267,15 @@
       if (key === 'gas' || key === 'liquid') out[key] = value === true;
       else if (CAPABILITY_KEYS.includes(key)) out[key] = Math.max(out[key] || 0, value);
     }
+    // A rune engraved on this module enhances this module's own protection (numbers add) or grants a sensor.
+    for (const [key, value] of Object.entries(runeBonus(module)?.capabilities || {})) {
+      if (key === 'gas' || key === 'liquid') out[key] = out[key] || value === true;
+      else if (CAPABILITY_KEYS.includes(key)) out[key] = (out[key] || 0) + value;
+    }
     return out;
   }
+  // Runes are defined by the xenobiology module (api.runeBonus); the engine only reads the bonus of an engraved rune.
+  function runeBonus(module) { return module && module.rune && typeof api.runeBonus === 'function' ? api.runeBonus(module.rune) : null; }
   function protection(state) {
     const out = { heat: 0, cold: 0, radiation: 0, pressure: 0, toxicity: 0, gas: false, liquid: false };
     for (const module of Object.values(state.equipped)) {
@@ -276,7 +283,11 @@
     }
     return out;
   }
-  function moduleEffects(module) { return { ...(module.effects || {}) }; }
+  function moduleEffects(module) {
+    const out = { ...(module.effects || {}) };
+    for (const [key, value] of Object.entries(runeBonus(module)?.effects || {})) out[key] = rounded((out[key] || 0) + value);
+    return out;
+  }
   function stats(state) {
     const power = type => state.equipped[type].power;
     const effects = {};
@@ -1599,7 +1610,7 @@
     } catch (_) { return null; }
   }
 
-  const api = { commit, shipMetrics, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
+  const api = { commit, shipMetrics, expeditionBoard, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root) root.OrbitEngine = api;
 })(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this);

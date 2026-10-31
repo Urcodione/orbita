@@ -104,7 +104,7 @@ function controls(container){
  }
 }
 function menu(sound,saveNote){
- const entries=[['campaign','scan','Missão'],['campaign-intro','play','Introdução'],['stock','cargo','Estoque'],['workshop','workshop','Oficina'],['catalog','book','Catálogo'],['help','help','Ajuda'],['settings','sound','Som e efeitos'],['saves','cargo','Partida segura'],['reset-menu','restart','Nova jornada']];
+ const entries=[['campaign','scan','Missão'],['campaign-intro','play','Introdução'],['stock','cargo','Estoque'],['workshop','workshop','Oficina'],['catalog','book','Catálogo'],['xeno','scan','Xenobiologia'],['help','help','Ajuda'],['settings','sound','Som e efeitos'],['saves','cargo','Partida segura'],['reset-menu','restart','Nova jornada']];
  const rows=[];for(let i=0;i<entries.length;i+=3)rows.push('<div class="og-menu-row">'+entries.slice(i,i+3).map(([action,icon,label])=>`<button class="og-menu-tile" data-action="${action}" aria-label="${label}">${controlArt(action,icon)}<small>${label}</small></button>`).join('')+'</div>');
  return {title:'Pausa entre as estrelas',html:rows.join('')+`<p class="og-save-note">${esc(saveNote)}</p>`,footer:'<button class="og-menu-resume" data-action="close-sheet">'+glyph('play')+'<small>Continuar</small></button>'};
 }

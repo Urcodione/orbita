@@ -11,12 +11,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--preview', type=Path)
 parser.add_argument('--thread-reference', action='store_true', help='Use the desktop reader\'s filename lookup for a preview in the current thread visualization directory.')
 args = parser.parse_args()
-css = '\n'.join((base / name).read_text(encoding='utf-8') for name in ('styles.css', 'workshop.css', 'navigation.css', 'catalog.css', 'illustrated-scenes.css', 'commerce.css', 'campaign-ui.css', 'tutorial.css', 'journey.css'))
+css = '\n'.join((base / name).read_text(encoding='utf-8') for name in ('styles.css', 'workshop.css', 'navigation.css', 'catalog.css', 'illustrated-scenes.css', 'commerce.css', 'campaign-ui.css', 'tutorial.css', 'journey.css', 'xenobiology.css'))
 shell = (base / 'shell.html').read_text(encoding='utf-8')
 bootstrap = base64.b64encode((base / 'assets/cruise-bootstrap.webp').read_bytes()).decode('ascii')
 css += '\n#orbit-game{background:#10223b url("data:image/webp;base64,' + bootstrap + '") center/cover no-repeat}'
 
-scripts = '\n'.join((base / name).read_text(encoding='utf-8') for name in ('engine.js', 'economy.js', 'campaign.js', 'campaign-events.js', 'campaign-guidance.js', 'commerce-ui.js', 'scene.js', 'illustrated-scenes.js', 'expedition-scene.js', 'workshop-ui.js', 'catalog-ui.js', 'panel-pager.js', 'campaign-ui.js', 'tutorial.js', 'control-icons.js', 'journey-ui.js', 'storage.js', 'voyage.js', 'audio.js', 'voyage-services.js', 'voyage-ui.js', 'extraction-ui.js', 'ui.js'))
+scripts = '\n'.join((base / name).read_text(encoding='utf-8') for name in ('engine.js', 'economy.js', 'campaign.js', 'campaign-events.js', 'campaign-guidance.js', 'commerce-ui.js', 'scene.js', 'illustrated-scenes.js', 'expedition-scene.js', 'workshop-ui.js', 'catalog-ui.js', 'panel-pager.js', 'campaign-ui.js', 'tutorial.js', 'control-icons.js', 'journey-ui.js', 'storage.js', 'voyage.js', 'xenobiology.js', 'audio.js', 'voyage-services.js', 'voyage-ui.js', 'extraction-ui.js', 'xenobiology-ui.js', 'ui.js'))
 art_files = {'ship':'andorinha-illustrated','interior':'andorinha-open','modules':'modules-atlas','worlds':'worlds-atlas','galaxies':'galaxies-atlas','phenomena':'phenomena-atlas','stars':'stars-atlas','commerce':'commerce-atlas','biology':'biology-atlas','cosmic':'cosmic-atlas','relics':'relics-atlas','purpose':'purpose-ui','lume':'lume-ui','warpCell':'warp-cell-v1','cruise':'cruise-painted-v1','fieldSprites':'expedition-sprites-v1','fieldTerrain':'expedition-terrain-v1','flightControls':'flight-controls-ui','utilityControls':'utility-controls-ui'}
 # Story and room scenes are cut ahead of time by qa/prepare-ui-art.py (no runtime canvas crop/encode); icon, coin and
 # purpose sheets come at display size instead of 1254-2172 px sources.
