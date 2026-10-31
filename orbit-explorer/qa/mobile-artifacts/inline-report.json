@@ -1,0 +1,13 @@
+{
+  "sandbox": true,
+  "dimensions": {
+    "x": 173,
+    "y": 119,
+    "width": 390,
+    "height": 812
+  },
+  "interaction": true,
+  "hostSave": true,
+  "hostRestore": true,
+  "errors": []
+}

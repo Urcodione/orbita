@@ -1,0 +1,258 @@
+[
+  {
+    "width": 390,
+    "route": "menu → stock"
+  },
+  {
+    "width": 390,
+    "route": "stock → resource"
+  },
+  {
+    "width": 390,
+    "route": "resource → stock"
+  },
+  {
+    "width": 390,
+    "route": "stock → menu"
+  },
+  {
+    "width": 390,
+    "route": "station → workshop → station"
+  },
+  {
+    "width": 390,
+    "route": "buy → same resource card"
+  },
+  {
+    "width": 390,
+    "route": "sell → same resource card"
+  },
+  {
+    "width": 390,
+    "route": "market → resource → market"
+  },
+  {
+    "width": 390,
+    "route": "market → station"
+  },
+  {
+    "width": 390,
+    "route": "station → map"
+  },
+  {
+    "width": 390,
+    "route": "workshop type → categories"
+  },
+  {
+    "width": 390,
+    "route": "categories → workshop"
+  },
+  {
+    "width": 390,
+    "route": "workshop → menu"
+  },
+  {
+    "width": 390,
+    "route": "maintenance → workshop"
+  },
+  {
+    "width": 390,
+    "route": "components → workshop"
+  },
+  {
+    "width": 390,
+    "route": "fabricate → new module"
+  },
+  {
+    "width": 390,
+    "route": "fabricated → original recipe"
+  },
+  {
+    "width": 390,
+    "route": "module X → open ship"
+  },
+  {
+    "width": 390,
+    "route": "cancel dismantle → same card"
+  },
+  {
+    "width": 390,
+    "route": "comparison → same card"
+  },
+  {
+    "width": 390,
+    "route": "site requirements → sites"
+  },
+  {
+    "width": 390,
+    "route": "launch expedition → terrain"
+  },
+  {
+    "width": 390,
+    "route": "cancel evacuation → terrain"
+  },
+  {
+    "width": 390,
+    "route": "evacuate → planet"
+  },
+  {
+    "width": 390,
+    "route": "catalog → menu"
+  },
+  {
+    "width": 390,
+    "route": "help → menu"
+  },
+  {
+    "width": 390,
+    "route": "cancel return → terrain"
+  },
+  {
+    "width": 390,
+    "route": "return vehicle → terrain at base"
+  },
+  {
+    "width": 390,
+    "route": "resources-only extraction → reward"
+  },
+  {
+    "width": 390,
+    "route": "resource reward X → planet"
+  },
+  {
+    "width": 390,
+    "route": "risky movement → confirmation"
+  },
+  {
+    "width": 390,
+    "route": "cancel risk → terrain"
+  },
+  {
+    "width": 320,
+    "route": "menu → stock"
+  },
+  {
+    "width": 320,
+    "route": "stock → resource"
+  },
+  {
+    "width": 320,
+    "route": "resource → stock"
+  },
+  {
+    "width": 320,
+    "route": "stock → menu"
+  },
+  {
+    "width": 320,
+    "route": "station → workshop → station"
+  },
+  {
+    "width": 320,
+    "route": "buy → same resource card"
+  },
+  {
+    "width": 320,
+    "route": "sell → same resource card"
+  },
+  {
+    "width": 320,
+    "route": "market → resource → market"
+  },
+  {
+    "width": 320,
+    "route": "market → station"
+  },
+  {
+    "width": 320,
+    "route": "station → map"
+  },
+  {
+    "width": 320,
+    "route": "workshop type → categories"
+  },
+  {
+    "width": 320,
+    "route": "categories → workshop"
+  },
+  {
+    "width": 320,
+    "route": "workshop → menu"
+  },
+  {
+    "width": 320,
+    "route": "maintenance → workshop"
+  },
+  {
+    "width": 320,
+    "route": "components → workshop"
+  },
+  {
+    "width": 320,
+    "route": "fabricate → new module"
+  },
+  {
+    "width": 320,
+    "route": "fabricated → original recipe"
+  },
+  {
+    "width": 320,
+    "route": "module X → open ship"
+  },
+  {
+    "width": 320,
+    "route": "cancel dismantle → same card"
+  },
+  {
+    "width": 320,
+    "route": "comparison → same card"
+  },
+  {
+    "width": 320,
+    "route": "site requirements → sites"
+  },
+  {
+    "width": 320,
+    "route": "launch expedition → terrain"
+  },
+  {
+    "width": 320,
+    "route": "cancel evacuation → terrain"
+  },
+  {
+    "width": 320,
+    "route": "evacuate → planet"
+  },
+  {
+    "width": 320,
+    "route": "catalog → menu"
+  },
+  {
+    "width": 320,
+    "route": "help → menu"
+  },
+  {
+    "width": 320,
+    "route": "cancel return → terrain"
+  },
+  {
+    "width": 320,
+    "route": "return vehicle → terrain at base"
+  },
+  {
+    "width": 320,
+    "route": "resources-only extraction → reward"
+  },
+  {
+    "width": 320,
+    "route": "resource reward X → planet"
+  },
+  {
+    "width": 320,
+    "route": "risky movement → confirmation"
+  },
+  {
+    "width": 320,
+    "route": "cancel risk → terrain"
+  }
+]

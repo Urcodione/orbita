@@ -1,0 +1,12 @@
+{
+  "version": "0.2.8",
+  "sameSigningCertificate": true,
+  "ruleSuitesPassed": 28,
+  "physicalAndroidTest": false,
+  "changes": [
+    "Prisma tutorial",
+    "persistent site operations",
+    "descent resource warnings",
+    "single-screen recovery"
+  ]
+}

@@ -1,0 +1,346 @@
+TAP version 13
+# Subtest: return uses the advertised known path, preserves pending loot, and allows extraction at zero energy
+ok 1 - return uses the advertised known path, preserves pending loot, and allows extraction at zero energy
+  ---
+  duration_ms: 37.083243
+  type: 'test'
+  ...
+# Subtest: scan and movement previews distinguish a tight return from an action that strands the crew
+ok 2 - scan and movement previews distinguish a tight return from an action that strands the crew
+  ---
+  duration_ms: 11.569426
+  type: 'test'
+  ...
+# Subtest: collection and both puzzle outcomes advertise the exact reserve available for returning
+ok 3 - collection and both puzzle outcomes advertise the exact reserve available for returning
+  ---
+  duration_ms: 35.031668
+  type: 'test'
+  ...
+# Subtest: a longer route without hazards is selected when the shortest route would destroy suit integrity
+ok 4 - a longer route without hazards is selected when the shortest route would destroy suit integrity
+  ---
+  duration_ms: 5.430941
+  type: 'test'
+  ...
+# Subtest: route cost includes every hazard and rejects an unsurvivable route or insufficient fuel atomically
+ok 5 - route cost includes every hazard and rejects an unsurvivable route or insufficient fuel atomically
+  ---
+  duration_ms: 5.674178
+  type: 'test'
+  ...
+# Subtest: unrevealed shortcuts and disconnected known terrain never produce an optimistic Manhattan estimate
+ok 6 - unrevealed shortcuts and disconnected known terrain never produce an optimistic Manhattan estimate
+  ---
+  duration_ms: 5.345209
+  type: 'test'
+  ...
+# Subtest: return planning and save restoration preserve fog and pending module identity
+ok 7 - return planning and save restoration preserve fog and pending module identity
+  ---
+  duration_ms: 27.593368
+  type: 'test'
+  ...
+# Subtest: procedural galaxies vary in size, retain safe routes, and contain physical world types
+ok 8 - procedural galaxies vary in size, retain safe routes, and contain physical world types
+  ---
+  duration_ms: 130.174377
+  type: 'test'
+  ...
+# Subtest: real resource progression unlocks a volcanic expedition only after fabrication and installation
+ok 9 - real resource progression unlocks a volcanic expedition only after fabrication and installation
+  ---
+  duration_ms: 148.57468
+  type: 'test'
+  ...
+# Subtest: gas and liquid worlds require distinct hardware and execute distinct operations
+ok 10 - gas and liquid worlds require distinct hardware and execute distinct operations
+  ---
+  duration_ms: 213.774473
+  type: 'test'
+  ...
+# Subtest: star hazards are enforced on travel; shield substitutions create a real tradeoff
+ok 11 - star hazards are enforced on travel; shield substitutions create a real tradeoff
+  ---
+  duration_ms: 7.874291
+  type: 'test'
+  ...
+# Subtest: site depths add transparent pressure gates and costs instead of hidden failure rolls
+ok 12 - site depths add transparent pressure gates and costs instead of hidden failure rolls
+  ---
+  duration_ms: 58.166895
+  type: 'test'
+  ...
+# Subtest: fabrication rejects invalid, unaffordable, and full-hold requests atomically
+ok 13 - fabrication rejects invalid, unaffordable, and full-hold requests atomically
+  ---
+  duration_ms: 3.629451
+  type: 'test'
+  ...
+# Subtest: three warp destinations produce distinct galaxies and pay the selected cost
+ok 14 - three warp destinations produce distinct galaxies and pay the selected cost
+  ---
+  duration_ms: 9.0537
+  type: 'test'
+  ...
+# Subtest: rescue allows another safe galaxy when all currently accessible sites are exhausted
+ok 15 - rescue allows another safe galaxy when all currently accessible sites are exhausted
+  ---
+  duration_ms: 18.010347
+  type: 'test'
+  ...
+# Subtest: legacy migration preserves the six original worlds, equipment, resources, and ongoing operation
+ok 16 - legacy migration preserves the six original worlds, equipment, resources, and ongoing operation
+  ---
+  duration_ms: 3.046324
+  type: 'test'
+  ...
+# Subtest: compact snapshots preserve RNG and progress, remain bounded, and reject corrupt surveys
+ok 17 - compact snapshots preserve RNG and progress, remain bounded, and reject corrupt surveys
+  ---
+  duration_ms: 81.9586
+  type: 'test'
+  ...
+# Subtest: every generated site has a feasible combination of specialized modules
+ok 18 - every generated site has a feasible combination of specialized modules
+  ---
+  duration_ms: 237.024865
+  type: 'test'
+  ...
+# Subtest: seeded worlds are reproducible, distinct, and start on safe Auralis IV
+ok 19 - seeded worlds are reproducible, distinct, and start on safe Auralis IV
+  ---
+  duration_ms: 65.039991
+  type: 'test'
+  ...
+# Subtest: onboarding completes through actual exploration, equipment, and a new galaxy
+ok 20 - onboarding completes through actual exploration, equipment, and a new galaxy
+  ---
+  duration_ms: 64.697192
+  type: 'test'
+  ...
+# Subtest: rejected actions and previews never mutate state or advance randomness
+ok 21 - rejected actions and previews never mutate state or advance randomness
+  ---
+  duration_ms: 47.609524
+  type: 'test'
+  ...
+# Subtest: each expedition is one-time, rewards are deterministic, and planet risk changes costs
+ok 22 - each expedition is one-time, rewards are deterministic, and planet risk changes costs
+  ---
+  duration_ms: 133.759895
+  type: 'test'
+  ...
+# Subtest: refueling, atmospheric air, fabrication, and refinement pay only advertised costs
+ok 23 - refueling, atmospheric air, fabrication, and refinement pay only advertised costs
+  ---
+  duration_ms: 28.197148
+  type: 'test'
+  ...
+# Subtest: full cargo permits deliberate field salvage, module swaps conserve inventory, and salvage frees space
+ok 24 - full cargo permits deliberate field salvage, module swaps conserve inventory, and salvage frees space
+  ---
+  duration_ms: 35.853008
+  type: 'test'
+  ...
+# Subtest: higher-tier warp, shield, life, arm, cargo, and survival have functional benefits
+ok 25 - higher-tier warp, shield, life, arm, cargo, and survival have functional benefits
+  ---
+  duration_ms: 4.511219
+  type: 'test'
+  ...
+# Subtest: rescue recovers from zero supplies and exhausted galaxies without losing modules
+ok 26 - rescue recovers from zero supplies and exhausted galaxies without losing modules
+  ---
+  duration_ms: 35.131272
+  type: 'test'
+  ...
+# Subtest: saving preserves randomness and progress; restore rejects corrupt or incompatible snapshots
+ok 27 - saving preserves randomness and progress; restore rejects corrupt or incompatible snapshots
+  ---
+  duration_ms: 64.212354
+  type: 'test'
+  ...
+# Subtest: extended exploration across galaxies remains bounded and saves stay compact
+ok 28 - extended exploration across galaxies remains bounded and saves stay compact
+  ---
+  duration_ms: 4316.574579
+  type: 'test'
+  ...
+# Subtest: exploration starts a tactical mission without instant rewards, progress, or discovery
+ok 29 - exploration starts a tactical mission without instant rewards, progress, or discovery
+  ---
+  duration_ms: 22.099784
+  type: 'test'
+  ...
+# Subtest: teleports, blocked terrain, stale controls, and ship operations reject atomically during expeditions
+ok 30 - teleports, blocked terrain, stale controls, and ship operations reject atomically during expeditions
+  ---
+  duration_ms: 36.566646
+  type: 'test'
+  ...
+# Subtest: scanning reveals fog for advertised reserve; adjacent hazard costs are transparent and local
+ok 31 - scanning reveals fog for advertised reserve; adjacent hazard costs are transparent and local
+  ---
+  duration_ms: 12.262728
+  type: 'test'
+  ...
+# Subtest: cache loot is temporary, cannot be collected twice, and partial extraction prevents farming
+ok 32 - cache loot is temporary, cannot be collected twice, and partial extraction prevents farming
+  ---
+  duration_ms: 32.715821
+  type: 'test'
+  ...
+# Subtest: coupled rotors are solvable; wrong recovery spends known reserve and correct recovery stays provisional
+ok 33 - coupled rotors are solvable; wrong recovery spends known reserve and correct recovery stays provisional
+  ---
+  duration_ms: 42.320835
+  type: 'test'
+  ...
+# Subtest: evacuation loses provisional cargo only; equipment, banked resources, and replay circuit stay intact
+ok 34 - evacuation loses provisional cargo only; equipment, banked resources, and replay circuit stay intact
+  ---
+  duration_ms: 33.637597
+  type: 'test'
+  ...
+# Subtest: active expedition snapshots preserve fog, puzzle, reserve, and pending loot without duplicates
+ok 35 - active expedition snapshots preserve fog, puzzle, reserve, and pending loot without duplicates
+  ---
+  duration_ms: 40.29739
+  type: 'test'
+  ...
+# Subtest: empty reserve still allows base extraction or evacuation; insufficient actions cannot spend resources
+ok 36 - empty reserve still allows base extraction or evacuation; insufficient actions cannot spend resources
+  ---
+  duration_ms: 19.116577
+  type: 'test'
+  ...
+# Subtest: full inventory requires a conscious salvage choice and keeps recovered signal fragments
+ok 37 - full inventory requires a conscious salvage choice and keeps recovered signal fragments
+  ---
+  duration_ms: 19.022932
+  type: 'test'
+  ...
+# Subtest: scanner, collector, cargo, and survival upgrades alter expedition decisions
+ok 38 - scanner, collector, cargo, and survival upgrades alter expedition decisions
+  ---
+  duration_ms: 15.284719
+  type: 'test'
+  ...
+# Subtest: seeded sites vary after the tutorial while every circuit and safe return remain feasible
+ok 39 - seeded sites vary after the tutorial while every circuit and safe return remain feasible
+  ---
+  duration_ms: 1135.297488
+  type: 'test'
+  ...
+# Subtest: the three extracted biome signals unlock one epic warp module and require installation
+ok 40 - the three extracted biome signals unlock one epic warp module and require installation
+  ---
+  duration_ms: 60.200969
+  type: 'test'
+  ...
+# Subtest: existing v2 saves migrate in place without losing ship, inventory, progression, or resources
+ok 41 - existing v2 saves migrate in place without losing ship, inventory, progression, or resources
+  ---
+  duration_ms: 4.699313
+  type: 'test'
+  ...
+# Subtest: all eight systems have distinct craftable specialists with real traits and explicit ingredients
+ok 42 - all eight systems have distinct craftable specialists with real traits and explicit ingredients
+  ---
+  duration_ms: 108.743348
+  type: 'test'
+  ...
+# Subtest: component batches and nested assemblies spend precisely the advertised materials
+ok 43 - component batches and nested assemblies spend precisely the advertised materials
+  ---
+  duration_ms: 11.544833
+  type: 'test'
+  ...
+# Subtest: failed components and module assembly are atomic, including batch limits and depleted raw stock
+ok 44 - failed components and module assembly are atomic, including batch limits and depleted raw stock
+  ---
+  duration_ms: 5.33843
+  type: 'test'
+  ...
+# Subtest: thermal and radiological comparisons show real gains, losses and newly blocked worlds without mutating state
+ok 45 - thermal and radiological comparisons show real gains, losses and newly blocked worlds without mutating state
+  ---
+  duration_ms: 11.34806
+  type: 'test'
+  ...
+# Subtest: comparison uses combined ship protection, so another installed specialist can preserve an unlocked route
+ok 46 - comparison uses combined ship protection, so another installed specialist can preserve an unlocked route
+  ---
+  duration_ms: 9.301051
+  type: 'test'
+  ...
+# Subtest: contextual suggestions prefer environmental access and advertise specialist tradeoffs
+ok 47 - contextual suggestions prefer environmental access and advertise specialist tradeoffs
+  ---
+  duration_ms: 11.879237
+  type: 'test'
+  ...
+# Subtest: tank reductions are disclosed before installation; incompatible smaller depots reject without losing cargo
+ok 48 - tank reductions are disclosed before installation; incompatible smaller depots reject without losing cargo
+  ---
+  duration_ms: 31.542915
+  type: 'test'
+  ...
+# Subtest: favorites protect inventory and installed modules across swaps and save restore, while salvage warns about unique abilities
+ok 49 - favorites protect inventory and installed modules across swaps and save restore, while salvage warns about unique abilities
+  ---
+  duration_ms: 8.6752
+  type: 'test'
+  ...
+# Subtest: engine, warp and life specializations change paid travel, warp and expedition costs
+ok 50 - engine, warp and life specializations change paid travel, warp and expedition costs
+  ---
+  duration_ms: 15.191718
+  type: 'test'
+  ...
+# Subtest: scanner specialists trade pulse coverage for real orbital and terrain research yields
+ok 51 - scanner specialists trade pulse coverage for real orbital and terrain research yields
+  ---
+  duration_ms: 28.922951
+  type: 'test'
+  ...
+# Subtest: collector, cargo, shield and survival specialists alter local yield, carrying room, endurance and hazard damage
+ok 52 - collector, cargo, shield and survival specialists alter local yield, carrying room, endurance and hazard damage
+  ---
+  duration_ms: 33.89088
+  type: 'test'
+  ...
+# Subtest: active expeditions block fabrication, component crafting, swapping and recycling without spending anything
+ok 53 - active expeditions block fabrication, component crafting, swapping and recycling without spending anything
+  ---
+  duration_ms: 4.778767
+  type: 'test'
+  ...
+# Subtest: recovered cores now provide persistent specialist modules as part of the actual expedition reward
+ok 54 - recovered cores now provide persistent specialist modules as part of the actual expedition reward
+  ---
+  duration_ms: 72.862375
+  type: 'test'
+  ...
+# Subtest: real v1/v2 saves migrate without adding new effects to old modules, and reject corrupt new fields
+ok 55 - real v1/v2 saves migrate without adding new effects to old modules, and reject corrupt new fields
+  ---
+  duration_ms: 49.805123
+  type: 'test'
+  ...
+# Subtest: a full specialist collection, legacy worlds, component stock and active expedition fit the inline save budget
+ok 56 - a full specialist collection, legacy worlds, component stock and active expedition fit the inline save budget
+  ---
+  duration_ms: 105.746156
+  type: 'test'
+  ...
+1..56
+# tests 56
+# suites 0
+# pass 56
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5095.384772

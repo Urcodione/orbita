@@ -1,0 +1,11 @@
+const {chromium}=require('./node_modules/playwright'),assert=require('node:assert/strict'),path=require('path');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});for(const [width,height]of [[320,568],[390,844]]){const p=await b.newPage({viewport:{width,height}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('file://'+path.resolve(__dirname,'../index.html'));await p.waitForFunction(()=>window.orbitApp);await p.locator('[data-story-action=skip]').click();await p.locator('[data-guide-skip]').click();
+await p.evaluate(()=>{const button=document.createElement('button');button.dataset.action='workshop';document.getElementById('orbit-game').append(button);button.click();button.remove()});
+await p.locator('.og-sheet [data-action=maintenance]').click();
+for(const action of ['refuel','refillOxygen','repair','refine']){await p.locator('[data-maintenance="'+action+'"]').click();assert.equal(await p.locator('.og-service-preview').count(),1);assert(await p.locator('.og-sheet-content').evaluate(e=>e.scrollHeight<=e.clientHeight+2),'maintenance overflow '+width+' '+action);}
+await p.screenshot({path:'/tmp/workshop-maintenance-'+width+'.png'});
+await p.locator('.og-sheet [data-action=nav-back]').click();await p.locator('.og-sheet [data-action=fabricator]').click();assert.equal(await p.locator('.og-lab-stock').count(),0);
+await p.evaluate(()=>{const E=OrbitEngine,s=orbitApp.getState(),r=E.recipes.find(x=>!x.mission);Object.assign(s.resources,{ore:100,crystals:100,data:100,credits:10000});for(const c of E.componentRecipes)s.components[c.id]=10;const result=orbitApp.act('fabricate',{recipeId:r.id});if(!result.ok)throw Error(result.message)});
+assert.equal(await p.evaluate(()=>orbitApp.getView().sheet),'system-module');assert(await p.locator('.og-card-metrics>div').count());assert(await p.locator('.og-sheet-content').evaluate(e=>e.scrollHeight<=e.clientHeight+2),'comparison overflow '+width);
+await p.screenshot({path:'/tmp/workshop-ready-'+width+'.png'});
+await p.locator('.og-sheet [data-action=equip]').click();assert.equal(await p.evaluate(()=>orbitApp.getView().sheet),'fabricator');assert.deepEqual(errors,[]);console.log('PASS',width,'maintenance, stock, single install, workshop return');await p.close()}await b.close()})().catch(e=>{console.error(e);process.exit(1)});

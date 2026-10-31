@@ -1,0 +1,43 @@
+<div class="og-emulator viz-dotted-background">
+  <div id="orbit-game" lang="pt-BR" aria-label="Órbita, jogo em modo celular">
+    <div class="og-device-camera" aria-hidden="true"></div>
+    <header class="og-header">
+      <div class="og-brand"><span class="og-emblem" aria-hidden="true"></span><span>ÓRBITA<small id="og-galaxy-label">Véu de Íris</small></span></div>
+
+      <button class="og-round" data-action="menu" aria-label="Menu do jogo">•••</button>
+    </header>
+    <div id="og-resources" class="og-resources" aria-label="Condição da nave"></div>
+    <main class="og-stage" id="og-stage">
+      <canvas id="og-canvas" role="img" aria-label="Nave espacial e planeta. Arraste para inclinar a nave."></canvas>
+      <div class="og-shade" aria-hidden="true"></div>
+      <div class="og-heading" id="og-heading"></div>
+      <button class="og-ship-back" id="og-ship-back" data-action="ship-back" hidden>‹ <span>Voltar</span></button>
+      <div id="og-module-hotspots" class="og-module-hotspots" aria-label="Compartimentos da nave" hidden></div>
+      <div class="og-map" id="og-map" hidden></div>
+      <nav id="og-map-levels" class="og-map-levels" aria-label="Escala da carta celeste" hidden>
+        <button data-map-level="system">Sistema</button><button data-map-level="galaxy">Galáxia</button><button data-map-level="universe">Dobra</button><button data-action="catalog">Catálogo</button>
+      </nav>
+      <section class="og-field" id="og-field" aria-label="Expedição em andamento" hidden>
+        <div class="og-field-board">
+          <canvas id="og-field-canvas" role="img" aria-label="Terreno da expedição, veículo e descobertas"></canvas>
+          <div id="og-field-cells" class="og-field-cells" role="group" aria-label="Setores da expedição. Toque em um setor vizinho ou use as setas do teclado."></div>
+        </div>
+        <div id="og-field-caption" class="og-field-caption"></div>
+      </section>
+      <div id="og-beacon" class="og-beacon" hidden></div>
+      <button class="og-camera-control" data-action="camera" aria-label="Restaurar câmera">↺</button>
+      <div id="og-context" class="og-context"></div>
+      <div id="og-effect" class="og-effect" aria-hidden="true"></div>
+    </main>
+    <nav class="og-tabs" aria-label="Navegação do jogo">
+      <button data-tab="ship" aria-pressed="false"><span aria-hidden="true">△</span>Nave</button>
+      <button data-tab="explore" aria-pressed="true" class="is-active"><span aria-hidden="true">◎</span>Explorar</button>
+      <button data-tab="galaxy" aria-pressed="false"><span aria-hidden="true">✧</span>Mapa</button>
+      <button data-tab="expedition" aria-pressed="false"><span aria-hidden="true">◆</span>Expedição</button>
+    </nav>
+    <div class="og-home-indicator" aria-hidden="true"></div>
+    <div id="og-toast" class="og-toast" role="status" aria-live="polite" hidden></div>
+    <div id="og-inspection-status" class="og-sr-only" role="status" aria-live="polite"></div>
+    <div id="og-sheet-backdrop" class="og-sheet-backdrop" hidden></div>
+  </div>
+</div>

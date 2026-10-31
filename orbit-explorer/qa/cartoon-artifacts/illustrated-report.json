@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "dpr": 1,
+      "backingWidth": 390,
+      "illustration": true,
+      "reducedMotion": true,
+      "moduleDrag": true,
+      "expeditionPointer": true
+    },
+    {
+      "dpr": 2,
+      "backingWidth": 780,
+      "illustration": true,
+      "reducedMotion": true,
+      "moduleDrag": true,
+      "expeditionPointer": true
+    }
+  ],
+  "errors": []
+}

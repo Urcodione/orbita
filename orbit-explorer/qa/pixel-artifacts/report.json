@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "dpr": 1,
+      "backingWidth": 195,
+      "paletteColors": 43,
+      "moduleSprites": 8,
+      "reducedMotion": true,
+      "moduleDrag": true,
+      "expeditionPointer": true
+    },
+    {
+      "dpr": 2,
+      "backingWidth": 195,
+      "paletteColors": 43,
+      "moduleSprites": 8,
+      "reducedMotion": true,
+      "moduleDrag": true,
+      "expeditionPointer": true
+    }
+  ],
+  "errors": []
+}

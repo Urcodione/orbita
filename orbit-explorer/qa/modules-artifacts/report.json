@@ -1,0 +1,66 @@
+{
+  "results": [
+    {
+      "name": "Tapping each physical ship module opens its purpose and actual operating metrics",
+      "pass": true
+    },
+    {
+      "name": "Choosing a shield shows heat lost and radiation gained; cancel leaves equipment and stock intact",
+      "pass": true
+    },
+    {
+      "name": "Confirming the selected shield changes real protections and safely stores the previous piece",
+      "pass": true
+    },
+    {
+      "name": "Favorite protection blocks recycling and persists with a host save smaller than 16KiB",
+      "pass": true
+    },
+    {
+      "name": "Recycling a unique specialist requires a warning and explicit confirmation; cancel is harmless",
+      "pass": true
+    },
+    {
+      "name": "The laboratory opens as eight module categories with accurate visible resource stock",
+      "pass": true
+    },
+    {
+      "name": "A recipe shows component counts, opens its ingredient and returns without losing the selected design",
+      "pass": true
+    },
+    {
+      "name": "Handcrafted ingredients are consumed exactly by assembly and the module stays unequipped",
+      "pass": true
+    },
+    {
+      "name": "A nested recipe can be assembled one ingredient at a time and returns to its parent module",
+      "pass": true
+    },
+    {
+      "name": "Closing contextual details preserves physical module dragging and direct cargo interactions",
+      "pass": true
+    },
+    {
+      "name": "Crafting only missing pieces returns to the parent ingredient and supports a shortcut to the module recipe",
+      "pass": true
+    },
+    {
+      "name": "An active expedition prevents equipment replacement and both crafting steps without spending anything",
+      "pass": true
+    },
+    {
+      "name": "A genuine previous save gains an empty component stock while preserving its ship and exploration",
+      "pass": true
+    },
+    {
+      "name": "Module comparison and laboratory screens fit small phones without horizontal clipping",
+      "pass": true
+    },
+    {
+      "name": "No browser runtime errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

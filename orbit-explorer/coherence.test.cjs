@@ -1,0 +1,28 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+global.OrbitEngine=require('./engine.js');require('./economy.js');require('./campaign.js');
+const E=global.OrbitEngine;
+const s=E.create(123),recipe=E.campaignRecipes[0];
+const candidate={...recipe,id:'preview',recipeId:recipe.id,origin:'workshop'};
+s.inventory.push(candidate);
+const before=JSON.stringify(s),comparison=E.compareModule(s,candidate.id);
+assert.equal(comparison.rows.find(r=>r.key==='dimensionalResistance').after,12.5);
+assert.equal(E.campaignView(s).resistance,0);
+assert.equal(JSON.stringify(s),before);
+const home=E.restore(JSON.parse(fs.readFileSync(__dirname+'/qa/campaign-complete-fixture.json')));
+assert(home);
+const catalog=E.discoveryCatalog(home);
+assert.equal(catalog.current.index,0);
+assert.equal(new Set([catalog.current,...catalog.archives].map(g=>g.id)).size,8);
+assert.equal(catalog.totals.recordedGalaxies,8);
+assert.equal(catalog.totals.completedSites,home.progress.explorations);
+// Archived home may have moved into aggregate counts on a long existing voyage.
+const old=JSON.parse(JSON.stringify(home)),row=old.surveyArchive.entries.shift();
+old.surveyArchive.earlier=[1,...row.slice(2)];
+const aggregated=E.discoveryCatalog(old);
+assert.deepEqual(aggregated.totals,catalog.totals);
+assert.equal(E.dispatch(home,'campaignCross').ok,true);
+const finished=JSON.stringify(home);
+assert.equal(E.dispatch(home,'campaignReturnHome').ok,false);
+assert.equal(JSON.stringify(home),finished);
+console.log('PASS dimensional recipe preview, immutable comparison, distinct home/frontier catalog, aggregate counts and no repeated finale return.');

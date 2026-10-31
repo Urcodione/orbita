@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "name": "System, galaxy and universe maps present distinct hierarchical destinations",
+      "pass": true
+    },
+    {
+      "name": "Heat, liquid worlds and gas giants show the missing protection before spending travel resources",
+      "pass": true
+    },
+    {
+      "name": "A normal starting expedition earns the resources needed for a protection module",
+      "pass": true
+    },
+    {
+      "name": "An analyzed hot planet prevents landing and explains the hardware requirement",
+      "pass": true
+    },
+    {
+      "name": "Fabrication charges the shown materials but access only changes after installation",
+      "pass": true
+    },
+    {
+      "name": "Swapping the protective shield back removes its environmental capability",
+      "pass": true
+    },
+    {
+      "name": "The existing physical rocket inspection and drag-to-socket loop remain available",
+      "pass": true
+    },
+    {
+      "name": "All three maps and environmental panels fit 320, 390 and 736px widths",
+      "pass": true
+    },
+    {
+      "name": "The hosted save stays below 16KiB and preserves crafted equipment on reload",
+      "pass": true
+    },
+    {
+      "name": "A real version-1 save migrates while retaining ship, modules, resources and explored progress",
+      "pass": true
+    },
+    {
+      "name": "No browser runtime errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

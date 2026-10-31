@@ -1,0 +1,21 @@
+{
+  "version": "0.2.7",
+  "ruleSuitesPassed": 26,
+  "panelsChecked": 18,
+  "panelOverflow": false,
+  "browserViewports": [
+    "320x568",
+    "390x844"
+  ],
+  "flows": [
+    "guided tutorial and reload",
+    "station travel and departure",
+    "planet analysis and descent",
+    "crystal collection",
+    "weather and hazards",
+    "evacuation cancel and confirm",
+    "extraction and rich delivery"
+  ],
+  "sameSigningCertificate": true,
+  "physicalAndroidTest": false
+}

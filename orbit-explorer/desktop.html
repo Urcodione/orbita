@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09141e">
+<meta name="description" content="Órbita: um jogo de exploração espacial, nave modular e descobertas procedurais.">
+<title>Órbita — Fronteiras desconhecidas</title>
+<style>html{background:#040c13}body{margin:0;padding:24px;min-width:320px;box-sizing:border-box}@media(max-width:670px){body{padding:0}}</style>
+</head>
+<body>
+<style>
+#orbit-game{--og-bg:#09141e;--og-panel:#101f2b;--og-raised:#152735;--og-line:#253743;--og-text:#e8eeef;--og-dim:#9cadb9;--og-orange:#f3a16b;--og-blue:#83d8e4;--og-green:#a5d3b8;--og-red:#f59890;color-scheme:dark;background:var(--og-bg);color:var(--og-text);font:14px/1.5 "Trebuchet MS",Arial,sans-serif;width:100%;max-width:1600px;margin:0 auto;position:relative;isolation:isolate;border-radius:12px;overflow:hidden;box-shadow:0 24px 80px #0004}
+#orbit-game *{box-sizing:border-box}#orbit-game [hidden]{display:none!important}#orbit-game button,#orbit-game input,#orbit-game select{font:inherit}#orbit-game button{color:inherit;cursor:pointer}#orbit-game button:disabled{cursor:not-allowed;opacity:.42}#orbit-game button:focus-visible,#orbit-game a:focus-visible,#orbit-game input:focus-visible{outline:2px solid var(--og-blue);outline-offset:3px}#orbit-game a{color:inherit;text-decoration:none}#orbit-game h1,#orbit-game h2,#orbit-game h3,#orbit-game p{margin:0}#orbit-game button{border:0}#orbit-game .og-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 27px 18px;border-bottom:1px solid var(--og-line)}#orbit-game .og-brand{display:flex;align-items:center;gap:15px;font-size:26px;font-weight:700;letter-spacing:6px;line-height:1.2}#orbit-game .og-brand small{display:block;font:9px/1.7 monospace;letter-spacing:2px;color:var(--og-dim);margin-top:3px}#orbit-game .og-emblem{display:block;width:29px;height:29px;border:2px solid var(--og-orange);border-radius:50%;position:relative;transform:rotate(-35deg)}#orbit-game .og-emblem:before{content:"";position:absolute;left:-11px;top:8px;width:47px;height:9px;border:1px solid var(--og-orange);border-radius:50%;background:var(--og-bg)}#orbit-game .og-emblem:after{content:"";position:absolute;width:5px;height:5px;background:var(--og-orange);border-radius:50%;top:2px;right:-2px}#orbit-game .og-header-right{display:flex;align-items:center;gap:12px}#orbit-game .og-prototype{color:var(--og-dim);font:10px monospace;letter-spacing:1.5px;margin-right:8px}#orbit-game .og-prototype b{color:var(--og-orange);font-weight:400;margin-left:6px}#orbit-game .og-icon-button{background:transparent;border:1px solid var(--og-line);border-radius:7px;min-width:30px;min-height:30px;font-size:11px;padding:5px 8px}#orbit-game .og-nav{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--og-line);padding:0 25px;gap:8px}#orbit-game .og-tabs{display:flex;gap:25px}#orbit-game .og-tabs button{position:relative;background:transparent;padding:17px 0 15px;font-size:12px;white-space:nowrap;color:var(--og-dim)}#orbit-game .og-tabs button span{font:10px monospace;margin-right:5px;opacity:.5}#orbit-game .og-tabs button.is-active{color:var(--og-orange)}#orbit-game .og-tabs button.is-active:after{content:"";position:absolute;bottom:-1px;height:2px;left:0;right:0;background:var(--og-orange)}#orbit-game .og-coordinates{font:10px monospace;letter-spacing:1px;color:var(--og-dim);white-space:nowrap}#orbit-game .og-coordinates b{color:var(--og-text);font-weight:400}#orbit-game .og-resources{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:19px 25px 17px;gap:25px;border-bottom:1px solid var(--og-line)}#orbit-game .og-resource-head{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:11px;color:var(--og-dim);margin-bottom:9px}#orbit-game .og-resource-head strong{color:var(--og-text);font:12px monospace;white-space:nowrap}#orbit-game .og-resource-head small{font-size:10px;color:var(--og-dim)}#orbit-game .og-meter{height:3px;background:#273640;border-radius:3px;overflow:hidden}#orbit-game .og-meter i{display:block;height:100%;width:var(--fill);background:var(--og-blue);border-radius:3px;transition:width .4s ease}#orbit-game .og-resource:nth-child(1) i{background:var(--og-green)}#orbit-game .og-resource:nth-child(3) i{background:var(--og-orange)}#orbit-game .og-resource:nth-child(4) i{background:#c5a5eb}#orbit-game .og-resource:nth-child(5) i{background:#9cabb8}#orbit-game .og-resource.is-low i{background:var(--og-red)}#orbit-game .og-mission{display:flex;gap:10px;align-items:center;padding:12px 25px;background:#19242b;border-bottom:1px solid #3d3934;font-size:11px;color:var(--og-dim)}#orbit-game .og-mission-mark{color:var(--og-orange);font-size:19px;line-height:1}#orbit-game .og-mission strong{color:var(--og-text);font-size:12px;font-weight:400}#orbit-game .og-mission-count{margin-left:auto;font:10px monospace;color:var(--og-orange);white-space:nowrap}#orbit-game .og-main{display:grid;grid-template-columns:minmax(0,1fr) 268px}#orbit-game .og-stage-wrap{min-width:0;display:flex;flex-direction:column}#orbit-game .og-stage{position:relative;height:423px;flex:1;min-height:365px;overflow:hidden;background:#07131e}#orbit-game canvas{width:100%;height:100%;display:block;touch-action:pan-y}#orbit-game .og-scene-heading{position:absolute;left:25px;top:22px;pointer-events:none}#orbit-game .og-eyebrow{font:10px/1.5 monospace;letter-spacing:1.6px;color:var(--og-dim);text-transform:uppercase}#orbit-game .og-scene-heading h1{font-size:31px;line-height:1.25;letter-spacing:-1px;font-weight:400;margin:7px 0}#orbit-game .og-scene-heading p{font-size:11px;color:var(--og-dim)}#orbit-game .og-scene-heading p span{color:var(--og-blue)}#orbit-game .og-scene-status{position:absolute;top:26px;right:24px;font:10px monospace;letter-spacing:1px;color:var(--og-green);display:flex;align-items:center;gap:7px}#orbit-game .og-dot{display:inline-block;vertical-align:middle;width:5px;height:5px;border-radius:50%;background:var(--og-green);box-shadow:0 0 7px #a5d3b833}#orbit-game .og-ship-caption{position:absolute;left:26px;bottom:48px;pointer-events:none;border-left:1px solid #91c3cf66;padding-left:10px}#orbit-game .og-ship-caption strong{display:block;font-size:12px;font-weight:400;letter-spacing:1px}#orbit-game .og-ship-caption small{font:9px monospace;letter-spacing:1px;color:var(--og-dim)}#orbit-game .og-scene-hint{position:absolute;bottom:16px;left:26px;color:#8596a3;font-size:10px;pointer-events:none}#orbit-game .og-camera{position:absolute;right:22px;bottom:16px;display:flex;align-items:center;gap:6px;font-size:15px;color:var(--og-dim);background:#0e1c25cc;border:1px solid #314653;border-radius:5px;padding:4px 8px}#orbit-game .og-camera span{font-size:10px}#orbit-game .og-event-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#c4f9ff;font:12px monospace;text-transform:uppercase;letter-spacing:3px;pointer-events:none;opacity:0;text-shadow:0 0 16px #83d8e4;white-space:nowrap}#orbit-game[data-effect] .og-event-label{animation:og-alert 1s ease forwards}@keyframes og-alert{0%{opacity:0;transform:translate(-50%,-30%)}25%,70%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%)}}#orbit-game .og-transmission{background:#0e1b25;min-height:47px;display:flex;align-items:center;gap:12px;padding:10px 22px;font-size:11px;color:var(--og-dim);border-top:1px solid #20313f}#orbit-game .og-signal{color:var(--og-orange);font-size:21px;flex:none}#orbit-game .og-transmission.is-error{color:var(--og-red)}#orbit-game .og-sidebar{padding:22px 20px;background:var(--og-panel);border-left:1px solid var(--og-line);display:flex;flex-direction:column;gap:17px;min-width:0}#orbit-game .og-panel-title{display:flex;justify-content:space-between;gap:8px;align-items:center}#orbit-game .og-panel-title h2{font-size:17px;font-weight:400;letter-spacing:-.3px}#orbit-game .og-pill{display:inline-block;border:1px solid #3b5760;border-radius:4px;padding:3px 6px;font:9px monospace;letter-spacing:.7px;color:var(--og-blue);white-space:nowrap}#orbit-game .og-pill.orange{color:var(--og-orange);border-color:#6a4c38}#orbit-game .og-description{font-size:11px;color:var(--og-dim);line-height:1.65}#orbit-game .og-facts{display:grid;gap:9px}#orbit-game .og-fact{display:flex;justify-content:space-between;gap:8px;font-size:11px}#orbit-game .og-fact span{color:var(--og-dim)}#orbit-game .og-fact strong{font-weight:400;text-align:right;font-variant-numeric:tabular-nums}#orbit-game .og-divider{height:1px;background:var(--og-line);margin:0;border:0}#orbit-game .og-anomaly{background:#1c303a;border-radius:6px;padding:10px 11px;font-size:11px;line-height:1.6;color:var(--og-dim)}#orbit-game .og-anomaly b{display:block;color:var(--og-blue);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:400;margin-bottom:3px}#orbit-game .og-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto}#orbit-game .og-button{background:#213541;color:var(--og-text);border:1px solid #3b4f5e;border-radius:6px;min-height:37px;padding:9px 12px;display:flex;gap:8px;justify-content:center;align-items:center;font-size:12px;line-height:1.35;transition:background .15s}#orbit-game .og-button:not(:disabled):hover{background:#2d4655}#orbit-game .og-button.primary{background:var(--og-orange);border-color:var(--og-orange);color:#211b18;font-weight:700}#orbit-game .og-button.primary:not(:disabled):hover{background:#ffb986}#orbit-game .og-button.secondary{background:transparent}#orbit-game .og-button.small{padding:6px 10px;min-height:30px;font-size:11px}#orbit-game .og-button .og-cost{margin-left:auto;opacity:.8;font:10px monospace}#orbit-game .og-action-note{font-size:10px;color:var(--og-dim);text-align:center}#orbit-game .og-site{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--og-line);padding:9px 0}#orbit-game .og-site-name{font-size:11px}#orbit-game .og-site-name small{display:block;font-size:10px;color:var(--og-dim);margin-top:2px}#orbit-game .og-site button{font-size:10px;padding:6px;min-width:62px}#orbit-game .og-lower{padding:20px 25px 22px;border-top:1px solid var(--og-line);background:#0c1923}#orbit-game .og-section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}#orbit-game .og-section-heading h2{font-size:12px;font-weight:400;letter-spacing:.4px}#orbit-game .og-section-heading span{color:var(--og-dim);font:10px monospace}#orbit-game .og-destinations{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}#orbit-game .og-planet-card{background:#101f2b;text-align:left;padding:13px 10px 10px;border:1px solid #253743;border-radius:7px;position:relative;min-width:0;overflow:hidden;transition:background .2s,border-color .2s}#orbit-game .og-planet-card:hover{background:#192b39}#orbit-game .og-planet-card.is-selected{border-color:var(--og-orange);background:#202a2e}#orbit-game .og-planet-orb{width:35px;height:35px;display:block;border-radius:50%;background:radial-gradient(circle at 28% 25%,#ffffff75,transparent 43%),radial-gradient(circle at 30% 30%,transparent 22%,#000b 86%),repeating-linear-gradient(23deg,transparent 0 7px,#ffffff15 8px 10px,transparent 13px 16px),var(--planet-color);box-shadow:0 0 15px color-mix(in srgb,var(--planet-color) 20%,transparent);margin-bottom:9px}#orbit-game .og-planet-card strong{display:block;font-size:11px;line-height:1.4;font-weight:400;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}#orbit-game .og-planet-card small{display:block;color:var(--og-dim);font-size:9px;margin-top:3px}#orbit-game .og-planet-card .og-orbit-marker{position:absolute;right:9px;top:10px;font:8px monospace;color:var(--og-orange)}#orbit-game .og-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 25px;border-top:1px solid var(--og-line);color:#92a3b1;font:9px monospace}#orbit-game .og-footer .og-dot{margin-right:4px}#orbit-game .og-footer button{background:transparent;color:var(--og-dim);font-size:10px;padding:2px}#orbit-game .og-inventory{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}#orbit-game .og-module{border:1px solid var(--og-line);background:#12222e;border-radius:7px;padding:12px;min-width:0;position:relative}#orbit-game .og-module:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:2px;background:var(--rarity)}#orbit-game .og-module-top{display:flex;justify-content:space-between;gap:8px;align-items:center}#orbit-game .og-module-code{font:13px monospace;color:var(--og-dim);border:1px solid #344958;border-radius:5px;padding:5px 7px}#orbit-game .og-module h3{font-size:12px;font-weight:400;margin:9px 0 4px}#orbit-game .og-rarity{font:9px monospace;letter-spacing:.5px;color:var(--rarity)}#orbit-game .og-module p{font-size:10px;line-height:1.5;color:var(--og-dim);min-height:30px;margin:6px 0 10px}#orbit-game .og-module-buttons{display:flex;gap:5px}#orbit-game .og-module-buttons .og-button{flex:1;min-height:29px;font-size:10px;padding:5px}#orbit-game .og-equipment{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:20px}#orbit-game .og-equipped{display:flex;align-items:center;gap:9px;background:#12232e;border:1px solid #263c4a;border-radius:6px;padding:10px;min-width:0}#orbit-game .og-equipped-code{font:12px monospace;color:var(--og-blue);flex:none}#orbit-game .og-equipped-text{min-width:0}#orbit-game .og-equipped-text strong{display:block;font-size:10px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#orbit-game .og-equipped-text small{font:9px monospace;color:var(--rarity)}#orbit-game .og-paints{display:flex;gap:9px;margin-top:7px}#orbit-game .og-paint{width:25px;height:25px;border-radius:50%;background:var(--paint);border:3px solid var(--og-panel);outline:1px solid transparent}#orbit-game .og-paint[aria-pressed=true]{outline-color:var(--og-text)}#orbit-game .og-field-label{font-size:10px;color:var(--og-dim);display:block}#orbit-game .og-name-field{display:flex;gap:6px;margin-top:5px}#orbit-game .og-name-field input{width:100%;min-width:0;background:#0b1922;border:1px solid #354e5d;border-radius:5px;color:var(--og-text);padding:7px;font-size:12px}#orbit-game .og-name-field button{padding:7px 9px;font-size:11px;min-height:31px}#orbit-game .og-service-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}#orbit-game .og-service-grid button{display:flex;flex-direction:column;gap:4px;padding:9px 4px;font-size:10px}#orbit-game .og-service-grid small{font:9px monospace;color:var(--og-dim)}#orbit-game .og-supplies{display:flex;gap:14px;font:11px monospace;color:var(--og-orange);padding:9px 0}#orbit-game .og-inventory-empty{font-size:12px;color:var(--og-dim);border:1px dashed #334651;border-radius:7px;padding:20px;grid-column:1/-1}#orbit-game .og-map{position:absolute;inset:100px 30px 68px}#orbit-game .og-map svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#orbit-game .og-map-node{position:absolute;transform:translate(-50%,-50%);background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px;max-width:110px;padding:5px;font-size:10px;white-space:nowrap}#orbit-game .og-map-node .og-planet-orb{margin:0;width:32px;height:32px;box-shadow:0 0 30px #7898a333}#orbit-game .og-map-node.is-selected .og-planet-orb{outline:1px solid var(--og-orange);outline-offset:7px}#orbit-game .og-map-node small{font-size:9px;color:var(--og-dim)}#orbit-game .og-logbook{display:flex;flex-direction:column;gap:0}#orbit-game .og-log-entry{display:flex;gap:16px;padding:12px 0;border-top:1px solid var(--og-line);font-size:12px;color:var(--og-dim)}#orbit-game .og-log-entry time{font:10px monospace;color:var(--og-orange);flex:none;margin-top:2px}#orbit-game .og-log-entry:first-child{color:var(--og-text)}#orbit-game .og-log-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}#orbit-game .og-log-stat strong{display:block;font:25px monospace;color:var(--og-orange)}#orbit-game .og-log-stat small{font-size:10px;color:var(--og-dim)}#orbit-game .og-dialog-backdrop{position:absolute;inset:0;background:#02080ddb;z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:70px 20px;backdrop-filter:blur(5px)}#orbit-game .og-dialog{background:#142531;border:1px solid #38515f;border-radius:12px;padding:27px;max-width:550px;width:100%;box-shadow:0 20px 80px #0008}#orbit-game .og-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px}#orbit-game .og-dialog-head h2{font-size:22px;font-weight:400}#orbit-game .og-dialog ol{padding-left:21px;margin:18px 0;color:var(--og-dim);font-size:12px;display:grid;gap:10px}#orbit-game .og-dialog b{color:var(--og-text);font-weight:400}#orbit-game .og-dialog p{color:var(--og-dim);font-size:12px;line-height:1.7;margin:10px 0}#orbit-game .og-dialog .og-button{margin-top:12px;width:100%}#orbit-game .og-dialog-head button{background:transparent;font-size:24px;color:var(--og-dim)}#orbit-game .og-rarity-legend{display:flex;flex-wrap:wrap;gap:9px;font:10px monospace;margin:16px 0}#orbit-game .og-toast-reward{border:1px solid #ba9261;background:#403324;color:#f7d7b0;padding:12px;border-radius:7px;margin-bottom:3px;font-size:11px}#orbit-game .og-toast-reward b{display:block;font-size:12px;margin:3px 0}#orbit-game .og-log-hero{font-size:20px!important;max-width:320px;line-height:1.4!important}
+@media(min-width:1250px){#orbit-game .og-main{grid-template-columns:minmax(0,1fr) 300px}#orbit-game .og-stage{min-height:470px}#orbit-game .og-sidebar{padding:25px}#orbit-game .og-scene-heading h1{font-size:38px}#orbit-game .og-planet-card{padding:15px}#orbit-game .og-planet-orb{width:43px;height:43px}}
+@media(max-width:850px){#orbit-game .og-prototype{display:none}#orbit-game .og-coordinates{font-size:9px}#orbit-game .og-tabs{gap:18px}#orbit-game .og-main{grid-template-columns:minmax(0,1fr) 240px}#orbit-game .og-scene-status{top:auto;bottom:48px;right:20px;font-size:9px}#orbit-game .og-resources{gap:14px}#orbit-game .og-scene-heading h1{font-size:27px}#orbit-game .og-inventory{grid-template-columns:repeat(3,minmax(0,1fr))}#orbit-game .og-equipment{grid-template-columns:repeat(4,minmax(0,1fr))}#orbit-game .og-scene-hint{font-size:9px}#orbit-game .og-camera span{display:none}#orbit-game .og-mission-description{display:none}}
+@media(max-width:670px){#orbit-game{border-radius:8px}#orbit-game .og-header{padding:17px 18px}#orbit-game .og-brand{font-size:22px;gap:13px}#orbit-game .og-brand small{font-size:8px;letter-spacing:1.4px}#orbit-game .og-header-right{gap:7px}#orbit-game .og-nav{padding:0 17px}#orbit-game .og-tabs{width:100%;justify-content:space-between;gap:7px}#orbit-game .og-tabs button{font-size:11px;padding:14px 0}#orbit-game .og-tabs button span{display:none}#orbit-game .og-coordinates{display:none}#orbit-game .og-resources{padding:15px 17px;gap:13px;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:15px}#orbit-game .og-resource-head{font-size:10px;margin-bottom:6px}#orbit-game .og-resource-head strong{font-size:11px}#orbit-game .og-resource:nth-child(4),#orbit-game .og-resource:nth-child(5){grid-column:auto}#orbit-game .og-mission{padding:10px 17px;gap:8px}#orbit-game .og-mission strong{font-size:11px}#orbit-game .og-mission-count{font-size:9px}#orbit-game .og-main{display:flex;flex-direction:column}#orbit-game .og-stage{height:365px;min-height:365px;flex:none}#orbit-game .og-scene-heading{left:18px;top:18px}#orbit-game .og-scene-heading h1{font-size:28px}#orbit-game .og-scene-status{bottom:48px;right:18px}#orbit-game .og-ship-caption{left:18px}#orbit-game .og-scene-hint{left:18px;font-size:9px}#orbit-game .og-transmission{padding:10px 17px;font-size:11px}#orbit-game .og-sidebar{border-left:0;border-top:1px solid var(--og-line);padding:18px;gap:14px;display:grid;grid-template-columns:1fr 1fr}#orbit-game .og-panel-title,#orbit-game .og-sidebar>.og-description,#orbit-game .og-sidebar>.og-divider,#orbit-game .og-sidebar>.og-actions,#orbit-game .og-sidebar>.og-toast-reward,#orbit-game .og-sidebar>.og-wide{grid-column:1/-1}#orbit-game .og-sidebar>.og-divider{display:none}#orbit-game .og-sidebar .og-anomaly{height:fit-content}#orbit-game .og-sidebar .og-actions{flex-direction:row;flex-wrap:wrap;gap:8px}#orbit-game .og-sidebar .og-actions .og-button{flex:1}#orbit-game .og-sidebar .og-actions .og-action-note{width:100%}#orbit-game .og-lower{padding:18px}#orbit-game .og-destinations{grid-template-columns:repeat(3,minmax(0,1fr))}#orbit-game .og-planet-card strong{font-size:11px}#orbit-game .og-planet-card small{font-size:10px}#orbit-game .og-planet-orb{width:34px;height:34px}#orbit-game .og-inventory,#orbit-game .og-equipment{grid-template-columns:repeat(2,minmax(0,1fr))}#orbit-game .og-footer{padding:11px 18px;flex-wrap:wrap;font-size:9px}#orbit-game #og-footer-stats{display:none}#orbit-game .og-dialog-backdrop{padding:25px 12px}#orbit-game .og-dialog{padding:21px}#orbit-game .og-map{inset:100px 20px 65px}#orbit-game .og-map-node{font-size:9px}#orbit-game .og-map-node small{font-size:8px}#orbit-game .og-map-node .og-planet-orb{width:27px;height:27px}#orbit-game .og-name-field input{font-size:16px}}
+@media(max-width:670px){#orbit-game .og-resource-head{flex-direction:column;align-items:flex-start;gap:3px}#orbit-game .og-sidebar>div:has(.og-name-field),#orbit-game .og-sidebar>div:has(.og-paints){grid-column:1/-1}#orbit-game .og-name-field input{flex:1}#orbit-game .og-paints{gap:12px}#orbit-game .og-section-heading{align-items:flex-start;flex-wrap:wrap}#orbit-game .og-section-heading span{font-size:9px}#orbit-game .og-module-code{padding:4px 5px}#orbit-game .og-module-buttons{flex-wrap:wrap}#orbit-game .og-module h3{overflow-wrap:anywhere}}
+@media(pointer:coarse){#orbit-game .og-paint{width:44px;height:44px;border-width:9px}#orbit-game .og-button{min-height:44px}#orbit-game .og-tabs button{min-height:44px}#orbit-game .og-map-node{min-height:44px;min-width:44px}}
+@media(prefers-reduced-motion:reduce){#orbit-game *,#orbit-game *:before,#orbit-game *:after{animation:none!important;transition:none!important}}
+
+</style>
+<div id="orbit-game" lang="pt-BR">
+  <header class="og-header">
+    <a class="og-brand" href="#" data-action="home" aria-label="Órbita, voltar à exploração"><span class="og-emblem" aria-hidden="true"></span><span>ÓRBITA<small>FRONTEIRAS DESCONHECIDAS</small></span></a>
+    <div class="og-header-right"><span class="og-prototype">EDIÇÃO EXPLORADOR <b>0.1</b></span><button class="og-icon-button" data-action="sound" aria-label="Ativar sons" aria-pressed="false">Som: off</button><button class="og-icon-button" data-action="help" aria-label="Como jogar">?</button></div>
+  </header>
+  <nav class="og-nav" aria-label="Áreas da nave">
+    <div class="og-tabs"><button data-tab="explore" class="is-active" aria-pressed="true"><span>01</span> Explorar</button><button data-tab="ship" aria-pressed="false"><span>02</span> Minha nave</button><button data-tab="galaxy" aria-pressed="false"><span>03</span> Galáxia</button><button data-tab="log" aria-pressed="false"><span>04</span> Diário</button></div>
+    <div class="og-coordinates" id="og-location"></div>
+  </nav>
+  <div class="og-resources" id="og-resources" aria-label="Recursos da nave"></div>
+  <div class="og-mission" id="og-mission"></div>
+  <main class="og-main">
+    <section class="og-stage-wrap" aria-label="Espaço e nave">
+      <div class="og-stage" id="og-stage">
+        <canvas id="og-canvas" role="img" aria-label="Nave exploradora tridimensional ao lado de um planeta; arraste para girar a nave"></canvas>
+        <div class="og-scene-heading" id="og-scene-heading"></div>
+        <div class="og-scene-status" id="og-scene-status"></div>
+        <div class="og-map" id="og-map" hidden></div>
+        <div class="og-ship-caption" id="og-ship-caption"></div>
+        <button class="og-camera" data-action="camera" aria-label="Restaurar ângulo da câmera">↺ <span>Câmera</span></button>
+        <div class="og-scene-hint" id="og-scene-hint">Arraste a nave para girar · Role para aproximar</div>
+        <div class="og-event-label" id="og-event-label" aria-hidden="true"></div>
+      </div>
+      <div class="og-transmission" role="status" aria-live="polite"><span class="og-signal" aria-hidden="true">⌁</span><span id="og-message">Comandante, nossos sensores detectaram algo em Auralis IV.</span></div>
+    </section>
+    <aside class="og-sidebar" id="og-sidebar" aria-label="Painel de exploração"></aside>
+  </main>
+  <section class="og-lower" id="og-lower" aria-label="Destinos e equipamentos"></section>
+  <footer class="og-footer"><span><span class="og-dot"></span> <span id="og-save-status">Expedição pronta</span></span><span id="og-footer-stats"></span><button data-action="help">Manual do explorador ↗</button></footer>
+  <div class="og-dialog-backdrop" id="og-dialog" hidden></div>
+</div>
+
+<script>
+(function (root) {
+  'use strict';
+
+  const VERSION = 1;
+  const catalog = [
+    { type: 'engine', name: 'Motor de impulso', description: 'Aumenta o tanque e reduz o combustível gasto entre planetas.', stat: 'Eficiência de voo' },
+    { type: 'warp', name: 'Núcleo de dobra', description: 'Reduz o combustível de dobra necessário para alcançar outra galáxia.', stat: 'Eficiência de dobra' },
+    { type: 'life', name: 'Suporte de vida', description: 'Amplia a reserva de oxigênio e reduz o consumo nas expedições.', stat: 'Reserva de oxigênio' },
+    { type: 'shield', name: 'Escudo de radiação', description: 'Reforça o casco e protege a nave em ambientes hostis.', stat: 'Proteção ambiental' },
+    { type: 'scanner', name: 'Scanner orbital', description: 'Identifica planetas, rende mais dados e melhora a chance de módulos raros.', stat: 'Qualidade da análise' },
+    { type: 'arm', name: 'Braço coletor', description: 'Recupera mais minério, cristais e créditos em cada expedição.', stat: 'Coleta de recursos' },
+    { type: 'cargo', name: 'Armazém modular', description: 'Abre espaço para guardar e comparar mais módulos recuperados.', stat: 'Espaços de inventário' },
+    { type: 'survival', name: 'Kit de sobrevivência', description: 'Reduz o consumo de oxigênio e o dano causado pelo ambiente.', stat: 'Autonomia da expedição' }
+  ];
+  const TYPES = catalog.map(item => item.type);
+  const rarities = {
+    common: { key: 'common', name: 'Comum', color: '#a8b8c8', multiplier: 1 },
+    uncommon: { key: 'uncommon', name: 'Incomum', color: '#7ddeaa', multiplier: 1.28 },
+    rare: { key: 'rare', name: 'Raro', color: '#63b9ff', multiplier: 1.72 },
+    epic: { key: 'epic', name: 'Épico', color: '#c49aff', multiplier: 2.3 },
+    legendary: { key: 'legendary', name: 'Lendário', color: '#ffc76a', multiplier: 3.15 }
+  };
+  const missions = [
+    { id: 'scan', title: 'Um primeiro olhar', description: 'Analise Auralis IV com o scanner orbital.', action: 'Escanear planeta' },
+    { id: 'dock', title: 'Pouso em Auralis', description: 'Ancore em um planeta analisado para iniciar uma expedição.', action: 'Ancorar' },
+    { id: 'explore', title: 'Além da escotilha', description: 'Explore um ponto de interesse e recupere recursos e módulos.', action: 'Explorar um local' },
+    { id: 'equip', title: 'Uma nave só sua', description: 'Equipe um módulo recuperado na aba Nave.', action: 'Equipar módulo' },
+    { id: 'warp', title: 'O próximo horizonte', description: 'Refine cristais, decole e use a dobra para alcançar outra galáxia.', action: 'Saltar de galáxia' }
+  ];
+  const BIOMES = {
+    forest: { name: 'Floresta bioluminescente', color: '#7edaa6', temp: [9, 31], rad: [3, 22], atmosphere: 'Respirável', sites: ['Bosque luminoso', 'Santuário esquecido', 'Gruta das sementes'], anomalies: ['Flora que responde à luz das estrelas', 'Árvores ligadas por uma rede mineral', 'Esporos com memória luminosa'] },
+    volcanic: { name: 'Mundo vulcânico', color: '#f59367', temp: [95, 190], rad: [48, 86], atmosphere: 'Tóxica · gases sulfúricos', sites: ['Caldeira de obsidiana', 'Forja abandonada', 'Túnel de lava'], anomalies: ['Relâmpagos dentro de rios de lava', 'Cristais que armazenam calor', 'Uma forja emite sinais antigos'] },
+    ice: { name: 'Geleiras eternas', color: '#92cce8', temp: [-115, -35], rad: [12, 42], atmosphere: 'Rarefeita · gelo de nitrogênio', sites: ['Fenda azul', 'Observatório congelado', 'Lago sob o gelo'], anomalies: ['Um oceano pulsa sob a crosta', 'Sinais de rádio presos no gelo', 'Auroras que acompanham a nave'] },
+    desert: { name: 'Dunas de cobre', color: '#e9be77', temp: [38, 78], rad: [26, 64], atmosphere: 'Rarefeita · poeira metálica', sites: ['Mar de dunas', 'Farol soterrado', 'Cânion de cobre'], anomalies: ['Dunas movem-se contra o vento', 'Estruturas sob a areia emitem calor', 'Areia magnética desenha constelações'] },
+    ocean: { name: 'Oceano de safira', color: '#619ddc', temp: [2, 26], rad: [8, 36], atmosphere: 'Respirável · umidade elevada', sites: ['Atol flutuante', 'Estação submersa', 'Recife abissal'], anomalies: ['Ilhas flutuam em campos magnéticos', 'O oceano canta em baixa frequência', 'Recifes formam circuitos naturais'] },
+    crystal: { name: 'Deserto de cristais', color: '#b7a2e3', temp: [-20, 48], rad: [42, 92], atmosphere: 'Ionizada · partículas exóticas', sites: ['Jardim de prismas', 'Portal partido', 'Catedral de quartzo'], anomalies: ['Cristais dobram a luz ao redor da nave', 'Um eco responde antes da transmissão', 'A gravidade oscila a cada aurora'] }
+  };
+  const MODULE_NAMES = {
+    engine: ['Propulsor Cometa', 'Motor Vento Solar', 'Turbina de Íons'],
+    warp: ['Núcleo Horizonte', 'Dobra Aurora', 'Matriz de Alcubierre'],
+    life: ['Jardim de Oxigênio', 'Filtro Biosfera', 'Pulmão Estelar'],
+    shield: ['Escudo Magnetar', 'Malha de Faraday', 'Campo Guardião'],
+    scanner: ['Scanner Prisma', 'Olho de Órion', 'Espectrômetro Íris'],
+    arm: ['Braço Libélula', 'Coletor Aracne', 'Pinça Orbital'],
+    cargo: ['Armazém Colmeia', 'Baú de Órion', 'Compartimento Atlas'],
+    survival: ['Kit Pioneiro', 'Abrigo Nômade', 'Mochila Fronteira']
+  };
+
+  function hashSeed(value) {
+    if (typeof value === 'number' && Number.isFinite(value)) return value >>> 0;
+    let result = 2166136261;
+    for (const char of String(value)) result = Math.imul(result ^ char.charCodeAt(0), 16777619);
+    return result >>> 0;
+  }
+  function generator(seed) {
+    let value = seed >>> 0;
+    return function () {
+      value = (value + 0x6D2B79F5) >>> 0;
+      let t = value;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function random(state) {
+    state.rng = (state.rng + 0x6D2B79F5) >>> 0;
+    let t = state.rng;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  const integer = (rng, low, high) => low + Math.floor(rng() * (high - low + 1));
+  const pick = (rng, values) => values[Math.floor(rng() * values.length)];
+  const rounded = value => Math.round(value * 100) / 100;
+  const clone = value => JSON.parse(JSON.stringify(value));
+
+  function generateGalaxy(seed, index) {
+    const galaxySeed = hashSeed(seed + ':galaxy:' + index);
+    const rng = generator(galaxySeed);
+    const biomes = Object.keys(BIOMES);
+    for (let i = biomes.length - 1; i > 1; i--) {
+      const j = integer(rng, 1, i);
+      [biomes[i], biomes[j]] = [biomes[j], biomes[i]];
+    }
+    const first = ['Auralis', 'Nivara', 'Kepler', 'Veloria', 'Talos', 'Nyx', 'Elyria', 'Oriana', 'Lumera', 'Vesper'];
+    const romans = ['II', 'III', 'IV', 'V', 'VI', 'VII', 'IX'];
+    const remainingNames = first.slice();
+    const planets = biomes.map((biome, i) => {
+      const definition = BIOMES[biome];
+      const planetSeed = hashSeed(galaxySeed + ':planet:' + i);
+      const prng = generator(planetSeed);
+      const id = 'g' + index + '-p' + i;
+      const special = index === 0 && i === 0;
+      const nameIndex = special ? remainingNames.indexOf('Auralis') : integer(prng, 0, remainingNames.length - 1);
+      const stem = remainingNames.splice(nameIndex, 1)[0];
+      return {
+        id, seed: planetSeed,
+        name: special ? 'Auralis IV' : stem + ' ' + pick(prng, romans),
+        biome, biomeName: definition.name, color: definition.color,
+        temperature: special ? 22 : integer(prng, ...definition.temp),
+        atmosphere: definition.atmosphere, breathable: biome === 'forest' || biome === 'ocean',
+        radiation: special ? 8 : integer(prng, ...definition.rad),
+        gravity: special ? 0.94 : rounded(0.42 + prng() * 1.32),
+        anomaly: pick(prng, definition.anomalies),
+        distance: 18 + i * 23 + integer(prng, 0, 12),
+        size: rounded(0.68 + prng() * 0.55),
+        angle: rounded(prng() * Math.PI * 2),
+        scanned: false,
+        sites: definition.sites.map((name, n) => ({ id: id + '-s' + n, name, explored: false }))
+      };
+    });
+    return {
+      id: 'galaxy-' + index, seed: galaxySeed,
+      name: index === 0 ? 'Véu de Íris' : pick(rng, ['Mar de Órion', 'Coroa de Lyra', 'Jardim de Nyx', 'Espelho de Vega', 'Arco de Cassiopeia', 'Nuvem de Safira']) + ' ' + (index + 1),
+      planets
+    };
+  }
+
+  function makeModule(state, type, rarity, level, origin) {
+    const descriptor = catalog.find(item => item.type === type);
+    const power = rounded(rarities[rarity].multiplier * (1 + (level - 1) * 0.16));
+    return {
+      id: 'm' + state.nextModuleId++, type,
+      name: MODULE_NAMES[type][Math.floor(random(state) * MODULE_NAMES[type].length)],
+      rarity, level, power, origin: origin || 'recovered',
+      description: descriptor.stat + ' · ' + power.toFixed(2).replace('.', ',') + '×'
+    };
+  }
+
+  function create(seed) {
+    const numericSeed = hashSeed(seed === undefined ? Date.now() ^ Math.floor(Math.random() * 0xFFFFFFFF) : seed);
+    const state = {
+      version: VERSION, seed: numericSeed, rng: numericSeed, nextModuleId: 1,
+      turn: 0, galaxyIndex: 0, visitedGalaxies: 1,
+      galaxy: generateGalaxy(numericSeed, 0),
+      location: { planetId: 'g0-p0', mode: 'orbit' },
+      ship: { name: 'Andorinha', color: '#f0a270' },
+      resources: { fuel: 90, oxygen: 100, hull: 100, warpFuel: 1, crystals: 3, ore: 12, credits: 120, data: 0 },
+      equipped: {}, inventory: [],
+      progress: { scans: 0, landings: 0, explorations: 0, modulesEquipped: 0, warps: 0 },
+      mission: { stage: 0, completed: [] },
+      log: [{ id: 0, text: 'Bem-vindo ao Véu de Íris. Auralis IV aguarda sua primeira análise.', kind: 'info' }]
+    };
+    TYPES.forEach(type => { state.equipped[type] = makeModule(state, type, 'common', 1, 'starter'); });
+    state.inventory.push(makeModule(state, 'scanner', 'rare', 1, 'cache'));
+    state.inventory.push(makeModule(state, 'cargo', 'uncommon', 1, 'cache'));
+    return state;
+  }
+
+  function stats(state) {
+    const power = type => state.equipped[type].power;
+    return {
+      maxFuel: Math.round(100 + 15 * (power('engine') - 1)),
+      maxOxygen: Math.round(100 + 25 * (power('life') - 1) + 8 * (power('survival') - 1)),
+      maxHull: Math.round(100 + 20 * (power('shield') - 1)),
+      maxWarpFuel: 12,
+      cargoCapacity: Math.min(24, 8 + Math.round(power('cargo') * 2)),
+      cargoUsed: state.inventory.length,
+      fuelEfficiency: rounded(1 + 0.22 * (power('engine') - 1)),
+      scanBonus: rounded(0.25 * (power('scanner') - 1)),
+      radiationProtection: rounded(Math.min(0.82, 0.20 + 0.13 * (power('shield') - 1) + 0.04 * (power('survival') - 1))),
+      oxygenEfficiency: rounded(1 + 0.18 * (power('life') - 1) + 0.12 * (power('survival') - 1)),
+      collectionBonus: rounded(1 + 0.20 * (power('arm') - 1)),
+      warpEfficiency: rounded(1 + 0.35 * (power('warp') - 1))
+    };
+  }
+  function currentPlanet(state) { return state.galaxy.planets.find(planet => planet.id === state.location.planetId); }
+  function travelCost(state, planetId) {
+    const target = state.galaxy.planets.find(planet => planet.id === planetId);
+    const current = currentPlanet(state);
+    if (!target || !current) return null;
+    if (current.id === target.id) return 0;
+    return Math.ceil((12 + Math.abs(target.distance - current.distance) * 0.14) / stats(state).fuelEfficiency);
+  }
+  function warpCost(state) { return Math.max(1, Math.round(3 / stats(state).warpEfficiency)); }
+  function explorationCost(state) {
+    const planet = currentPlanet(state);
+    const computed = stats(state);
+    const harshness = Math.max(0, Math.abs(planet.temperature - 20) - 20);
+    return {
+      oxygen: Math.max(3, Math.ceil((8 + planet.radiation * 0.07 + harshness * 0.025) / computed.oxygenEfficiency)),
+      hull: Math.max(0, Math.round((planet.radiation * 0.16 + harshness * 0.025 + (planet.breathable ? 0 : 2)) * (1 - computed.radiationProtection) - state.equipped.survival.power * 2))
+    };
+  }
+
+  function reject(message, cost) { return { ok: false, message, cost: cost || {} }; }
+  function plan(state, action, payload) {
+    const data = payload || {};
+    const planet = currentPlanet(state);
+    const computed = stats(state);
+    const res = state.resources;
+    let cost = {};
+    let info = {};
+    if (!planet) return reject('Posição desconhecida. Carregue uma exploração válida.');
+    switch (action) {
+      case 'travel': {
+        const targetId = typeof data === 'string' ? data : data.planetId;
+        const target = state.galaxy.planets.find(item => item.id === targetId);
+        if (!target) return reject('Selecione um planeta desta galáxia.');
+        if (state.location.mode !== 'orbit') return reject('Decole antes de viajar.');
+        if (target.id === planet.id) return reject('Sua nave já está neste planeta.');
+        cost = { fuel: travelCost(state, target.id), oxygen: 3 };
+        info.target = target;
+        break;
+      }
+      case 'scan':
+        if (planet.scanned) return reject('A análise deste planeta já está completa.');
+        cost = { oxygen: 2 };
+        break;
+      case 'dock':
+        if (state.location.mode === 'docked') return reject('Sua nave já está ancorada.');
+        if (!planet.scanned) return reject('Analise o planeta para localizar um ponto de pouso seguro.');
+        break;
+      case 'explore': {
+        if (state.location.mode !== 'docked') return reject('Ancore no planeta antes de iniciar uma expedição.');
+        if (!planet.scanned) return reject('Analise o planeta antes de explorar.');
+        const siteId = typeof data === 'string' ? data : data.siteId;
+        const site = siteId ? planet.sites.find(item => item.id === siteId) : planet.sites.find(item => !item.explored);
+        if (!site) return reject('Todos os locais deste planeta já foram explorados.');
+        if (site.explored) return reject('Este local já foi explorado.');
+        cost = explorationCost(state);
+        info.site = site;
+        break;
+      }
+      case 'launch':
+        if (state.location.mode !== 'docked') return reject('Sua nave já está em órbita.');
+        break;
+      case 'warp':
+        if (state.location.mode !== 'orbit') return reject('Decole antes de iniciar a dobra.');
+        cost = { warpFuel: warpCost(state), oxygen: 5 };
+        break;
+      case 'equip': {
+        const moduleId = typeof data === 'string' ? data : data.moduleId;
+        const module = state.inventory.find(item => item.id === moduleId);
+        if (!module) return reject('Este módulo não está no inventário.');
+        if (module.type === 'cargo') {
+          const capacity = Math.min(24, 8 + Math.round(module.power * 2));
+          if (state.inventory.length > capacity) return reject('Recicle módulos até ter no máximo ' + capacity + ' no inventário.');
+        }
+        info.module = module;
+        break;
+      }
+      case 'salvage': {
+        const moduleId = typeof data === 'string' ? data : data.moduleId;
+        const module = state.inventory.find(item => item.id === moduleId);
+        if (!module) return reject('Escolha um módulo do inventário para reciclar.');
+        info.module = module;
+        break;
+      }
+      case 'refuel':
+        if (res.fuel >= computed.maxFuel) return reject('O tanque de combustível já está cheio.');
+        cost = data.payment === 'credits' || (data.payment !== 'ore' && res.ore < 3) ? { credits: 18 } : { ore: 3 };
+        info.amount = Math.min(45, computed.maxFuel - res.fuel);
+        break;
+      case 'refillOxygen':
+        if (res.oxygen >= computed.maxOxygen) return reject('A reserva de oxigênio já está cheia.');
+        if (state.location.mode === 'docked' && planet.breathable) {
+          cost = {};
+          info.amount = computed.maxOxygen - res.oxygen;
+        } else {
+          cost = data.payment === 'ore' || (data.payment !== 'credits' && res.credits < 10) ? { ore: 1 } : { credits: 10 };
+          info.amount = Math.min(50, computed.maxOxygen - res.oxygen);
+        }
+        break;
+      case 'repair':
+        if (res.hull >= computed.maxHull) return reject('O casco está em perfeitas condições.');
+        cost = data.payment === 'credits' || (data.payment !== 'ore' && res.ore < 3) ? { credits: 20 } : { ore: 3 };
+        info.amount = Math.min(40, computed.maxHull - res.hull);
+        break;
+      case 'refine': {
+        const amount = data.amount === undefined ? 1 : data.amount;
+        if (!Number.isInteger(amount) || amount < 1 || amount > 12) return reject('Escolha de 1 a 12 unidades para refinar.');
+        if (res.warpFuel + amount > computed.maxWarpFuel) return reject('A reserva comporta no máximo ' + computed.maxWarpFuel + ' unidades de dobra.');
+        cost = { crystals: 3 * amount };
+        info.amount = amount;
+        break;
+      }
+      case 'rescue':
+        break;
+      case 'paint': {
+        const color = typeof data === 'string' ? data : data.color;
+        if (typeof color !== 'string' || !/^#[\da-f]{6}$/i.test(color)) return reject('Escolha uma cor válida para a nave.');
+        info.color = color.toLowerCase();
+        break;
+      }
+      case 'rename': {
+        const name = typeof data === 'string' ? data : data.name;
+        if (typeof name !== 'string' || !name.trim() || name.trim().length > 24 || /[<>\x00-\x1f]/.test(name)) return reject('Use um nome de 1 a 24 caracteres, sem símbolos de marcação.');
+        info.name = name.trim();
+        break;
+      }
+      default: return reject('Ação desconhecida.');
+    }
+    const labels = { fuel: 'combustível', oxygen: 'oxigênio', hull: 'integridade do casco', warpFuel: 'combustível de dobra', ore: 'minério', credits: 'créditos', crystals: 'cristais' };
+    for (const [key, amount] of Object.entries(cost)) {
+      if (res[key] < amount || (key === 'hull' && amount > 0 && res.hull <= amount)) {
+        return reject('Você precisa de ' + (key === 'hull' ? amount + 1 : amount) + ' de ' + labels[key] + '. Use os serviços da nave ou solicite resgate.', cost);
+      }
+    }
+    if (['travel', 'explore', 'warp'].includes(action) && res.hull <= 0) return reject('Repare o casco ou solicite resgate antes de prosseguir.', cost);
+    return { ok: true, cost, info };
+  }
+
+  function preview(state, action, payload) {
+    const result = plan(state, action, payload);
+    return { allowed: result.ok, reason: result.message || '', cost: result.cost || {}, amount: result.info && result.info.amount };
+  }
+
+  function addLog(state, message, kind) {
+    state.log.unshift({ id: state.turn, text: message, kind: kind || 'info' });
+    state.log.length = Math.min(state.log.length, 20);
+  }
+  function updateMission(state) {
+    const progress = state.progress;
+    const achieved = [progress.scans > 0, progress.landings > 0, progress.explorations > 0, progress.modulesEquipped > 0, progress.warps > 0];
+    state.mission.completed = missions.filter((_, index) => achieved[index]).map(item => item.id);
+    const stage = achieved.indexOf(false);
+    state.mission.stage = stage < 0 ? missions.length : stage;
+  }
+  function clampResources(state) {
+    const computed = stats(state);
+    state.resources.fuel = Math.min(state.resources.fuel, computed.maxFuel);
+    state.resources.oxygen = Math.min(state.resources.oxygen, computed.maxOxygen);
+    state.resources.hull = Math.min(state.resources.hull, computed.maxHull);
+    for (const key of Object.keys(state.resources)) state.resources[key] = Math.max(0, Math.round(state.resources[key]));
+  }
+  function rollModule(state, firstExpedition) {
+    if (firstExpedition) return makeModule(state, 'engine', 'rare', 1, 'recovered');
+    const roll = Math.min(0.9999, random(state) + stats(state).scanBonus * 0.15 + Math.min(0.12, state.galaxyIndex * 0.015));
+    const rarity = roll > 0.975 ? 'legendary' : roll > 0.89 ? 'epic' : roll > 0.62 ? 'rare' : roll > 0.25 ? 'uncommon' : 'common';
+    const type = TYPES[Math.floor(random(state) * TYPES.length)];
+    const level = Math.min(5, 1 + Math.floor((state.galaxyIndex + random(state) * 2) / 2));
+    return makeModule(state, type, rarity, level, 'recovered');
+  }
+
+  function dispatch(state, action, payload) {
+    const prepared = plan(state, action, payload);
+    if (!prepared.ok) return prepared;
+    // Work on a copy so a rejected action, even after an added rule, cannot burn resources or RNG.
+    const next = clone(state);
+    const checked = plan(next, action, payload);
+    const info = checked.info;
+    const planet = currentPlanet(next);
+    const res = next.resources;
+    const reward = {};
+    let message = '';
+    let event = action;
+    let kind = 'info';
+    Object.entries(checked.cost).forEach(([key, amount]) => { res[key] -= amount; });
+    next.turn++;
+    switch (action) {
+      case 'travel':
+        next.location.planetId = info.target.id;
+        message = 'Chegada à órbita de ' + info.target.name + '. O desconhecido está logo abaixo.';
+        break;
+      case 'scan':
+        planet.scanned = true;
+        reward.data = Math.round((12 + planet.radiation * 0.08) * (1 + stats(next).scanBonus));
+        res.data += reward.data;
+        next.progress.scans++;
+        message = planet.name + ' analisado. Três locais de interesse e uma anomalia identificados. +' + reward.data + ' dados.';
+        kind = 'success';
+        break;
+      case 'dock':
+        next.location.mode = 'docked';
+        next.progress.landings++;
+        message = 'Ancoragem concluída em ' + planet.name + '. Sistemas prontos para a expedição.';
+        break;
+      case 'explore': {
+        info.site.explored = true;
+        const firstExpedition = next.progress.explorations === 0;
+        const collection = stats(next).collectionBonus;
+        reward.ore = Math.round((6 + Math.floor(random(next) * 7)) * collection);
+        reward.crystals = Math.max(1, Math.round((firstExpedition ? 3 : 1 + Math.floor(random(next) * 3)) * collection));
+        reward.credits = Math.round((18 + Math.floor(random(next) * 21)) * collection);
+        reward.data = Math.round((10 + Math.floor(random(next) * 13)) * (1 + stats(next).scanBonus));
+        Object.entries(reward).forEach(([key, amount]) => { res[key] += amount; });
+        const module = rollModule(next, firstExpedition);
+        if (next.inventory.length < stats(next).cargoCapacity) {
+          next.inventory.push(module);
+          reward.module = module;
+          message = info.site.name + ': ' + module.name + ' (' + rarities[module.rarity].name.toLowerCase() + ') recuperado. +' + reward.ore + ' minério · +' + reward.crystals + ' cristais.';
+        } else {
+          reward.salvaged = true;
+          const recoveredOre = Math.ceil(module.power * 3);
+          res.ore += recoveredOre;
+          reward.ore += recoveredOre;
+          message = info.site.name + ' explorado. Armazém cheio: o módulo foi reciclado em minério. +' + reward.ore + ' minério · +' + reward.crystals + ' cristais.';
+        }
+        next.progress.explorations++;
+        kind = 'discovery';
+        break;
+      }
+      case 'launch':
+        next.location.mode = 'orbit';
+        message = 'Decolagem de ' + planet.name + ' concluída. O espaço espera por você.';
+        break;
+      case 'warp':
+        next.galaxyIndex++;
+        next.visitedGalaxies++;
+        next.galaxy = generateGalaxy(next.seed, next.galaxyIndex);
+        next.location = { planetId: next.galaxy.planets[0].id, mode: 'orbit' };
+        next.progress.warps++;
+        reward.data = 50;
+        res.data += reward.data;
+        message = 'Dobra concluída. Bem-vindo a ' + next.galaxy.name + ': seis novos mundos, seis novos horizontes.';
+        kind = 'discovery';
+        break;
+      case 'equip': {
+        const previous = next.equipped[info.module.type];
+        const index = next.inventory.findIndex(module => module.id === info.module.id);
+        next.inventory[index] = previous;
+        next.equipped[info.module.type] = info.module;
+        if (info.module.origin !== 'starter') next.progress.modulesEquipped++;
+        message = info.module.name + ' equipado. ' + previous.name + ' foi guardado no armazém.';
+        kind = 'success';
+        break;
+      }
+      case 'salvage':
+        next.inventory = next.inventory.filter(module => module.id !== info.module.id);
+        reward.ore = Math.ceil(info.module.power * 3);
+        reward.credits = Math.ceil(info.module.power * 7);
+        res.ore += reward.ore;
+        res.credits += reward.credits;
+        message = info.module.name + ' reciclado. +' + reward.ore + ' minério · +' + reward.credits + ' créditos.';
+        break;
+      case 'refuel':
+        res.fuel += info.amount;
+        reward.fuel = info.amount;
+        message = 'Tanque reabastecido: +' + info.amount + ' combustível.';
+        break;
+      case 'refillOxygen':
+        res.oxygen += info.amount;
+        reward.oxygen = info.amount;
+        message = 'Suporte de vida reabastecido: +' + info.amount + ' oxigênio' + (Object.keys(checked.cost).length === 0 ? ' da atmosfera local.' : '.');
+        break;
+      case 'repair':
+        res.hull += info.amount;
+        reward.hull = info.amount;
+        message = 'Reparo concluído: +' + info.amount + ' integridade do casco.';
+        break;
+      case 'refine':
+        res.warpFuel += info.amount;
+        reward.warpFuel = info.amount;
+        message = 'Cristais refinados. +' + info.amount + ' combustível de dobra.';
+        kind = 'success';
+        break;
+      case 'rescue': {
+        const safe = next.galaxy.planets.find(item => item.biome === 'forest');
+        next.location = { planetId: safe.id, mode: 'orbit' };
+        const computed = stats(next);
+        res.fuel = Math.max(res.fuel, Math.round(computed.maxFuel * 0.65));
+        res.oxygen = Math.max(res.oxygen, Math.round(computed.maxOxygen * 0.8));
+        res.hull = Math.max(res.hull, Math.round(computed.maxHull * 0.75));
+        res.ore = Math.floor(res.ore * 0.8);
+        res.credits = Math.floor(res.credits * 0.9);
+        res.crystals = Math.max(0, res.crystals - 1);
+        message = 'Resgate concluído na órbita de ' + safe.name + '. Sistemas recuperados; taxa de 20% do minério, 10% dos créditos e até 1 cristal.';
+        if (next.galaxy.planets.every(item => item.sites.every(site => site.explored)) && res.warpFuel < warpCost(next)) {
+          res.warpFuel = warpCost(next);
+          message += ' Uma carga de dobra de emergência permite deixar esta galáxia já explorada.';
+        }
+        kind = 'warning';
+        break;
+      }
+      case 'paint':
+        next.ship.color = info.color;
+        message = 'Pintura da nave atualizada.';
+        break;
+      case 'rename':
+        next.ship.name = info.name;
+        message = 'Nave registrada como ' + info.name + '.';
+        break;
+    }
+    clampResources(next);
+    updateMission(next);
+    addLog(next, message, kind);
+    Object.assign(state, next);
+    return { ok: true, message, event, reward, cost: checked.cost };
+  }
+
+  function validate(state) {
+    if (!state || state.version !== VERSION || !Number.isInteger(state.seed) || !Number.isInteger(state.rng)) return false;
+    if (!Number.isInteger(state.galaxyIndex) || state.galaxyIndex < 0 || !Number.isInteger(state.turn) || state.turn < 0) return false;
+    if (!state.galaxy || !Array.isArray(state.galaxy.planets) || state.galaxy.planets.length !== 6) return false;
+    if (!state.location || !['orbit', 'docked'].includes(state.location.mode) || !currentPlanet(state)) return false;
+    if (!state.ship || typeof state.ship.name !== 'string' || state.ship.name.length < 1 || state.ship.name.length > 24 || !/^#[\da-f]{6}$/i.test(state.ship.color)) return false;
+    if (!state.resources || !['fuel', 'oxygen', 'hull', 'warpFuel', 'crystals', 'ore', 'credits', 'data'].every(key => Number.isInteger(state.resources[key]) && state.resources[key] >= 0)) return false;
+    const validModule = module => module && typeof module.id === 'string' && TYPES.includes(module.type) && Object.hasOwn(rarities, module.rarity) && Number.isInteger(module.level) && module.level >= 1 && module.level <= 5 && Number.isFinite(module.power) && module.power >= 1 && module.power <= 6 && typeof module.name === 'string';
+    if (!state.equipped || !TYPES.every(type => validModule(state.equipped[type]) && state.equipped[type].type === type)) return false;
+    if (!Array.isArray(state.inventory) || state.inventory.length > 24 || !state.inventory.every(validModule)) return false;
+    const ids = [...Object.values(state.equipped), ...state.inventory].map(module => module.id);
+    if (new Set(ids).size !== ids.length) return false;
+    if (!state.galaxy.planets.every(planet => planet && typeof planet.id === 'string' && typeof planet.name === 'string' && BIOMES[planet.biome] && Number.isFinite(planet.temperature) && Number.isFinite(planet.radiation) && Number.isFinite(planet.distance) && Array.isArray(planet.sites) && planet.sites.length === 3 && planet.sites.every(site => site && typeof site.id === 'string' && typeof site.name === 'string' && typeof site.explored === 'boolean'))) return false;
+    if (!state.progress || !['scans', 'landings', 'explorations', 'modulesEquipped', 'warps'].every(key => Number.isInteger(state.progress[key]) && state.progress[key] >= 0)) return false;
+    if (!Array.isArray(state.log) || state.log.length > 20 || !state.log.every(entry => typeof entry.text === 'string')) return false;
+    if (!Number.isInteger(state.nextModuleId) || state.nextModuleId < 1) return false;
+    const computed = stats(state);
+    if (state.inventory.length > computed.cargoCapacity || state.resources.fuel > computed.maxFuel || state.resources.oxygen > computed.maxOxygen || state.resources.hull > computed.maxHull || state.resources.warpFuel > computed.maxWarpFuel) return false;
+    return true;
+  }
+  function restore(saved) {
+    try {
+      const state = typeof saved === 'string' ? JSON.parse(saved) : clone(saved);
+      if (!validate(state)) return null;
+      updateMission(state);
+      return state;
+    } catch (_) { return null; }
+  }
+
+  const api = { VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (root) root.OrbitEngine = api;
+})(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this);
+
+(function () {
+  'use strict';
+
+  const TAU = Math.PI * 2;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const color = hex => {
+    if (Array.isArray(hex)) return hex;
+    const h = String(hex || '#f08b54').replace('#', '');
+    return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16) || 0);
+  };
+  const rgb = (c, k = 1) => `rgb(${c.map(v => Math.round(clamp(v * k, 0, 255))).join(',')})`;
+  const mix = (a, b, t) => a.map((v, i) => lerp(v, b[i], t));
+  const seedOf = v => String(v || 'auralis').split('').reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261) >>> 0;
+  function random(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function hash(x, y, z) { let n = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(z, 1442695041); n = Math.imul(n ^ n >>> 13, 1274126177); return ((n ^ n >>> 16) >>> 0) / 4294967295; }
+  function noise(x, y, z) {
+    const ix = Math.floor(x), iy = Math.floor(y), iz = Math.floor(z);
+    let u = x - ix, v = y - iy, w = z - iz;
+    u = u * u * (3 - 2 * u); v = v * v * (3 - 2 * v); w = w * w * (3 - 2 * w);
+    return lerp(lerp(lerp(hash(ix, iy, iz), hash(ix + 1, iy, iz), u), lerp(hash(ix, iy + 1, iz), hash(ix + 1, iy + 1, iz), u), v), lerp(lerp(hash(ix, iy, iz + 1), hash(ix + 1, iy, iz + 1), u), lerp(hash(ix, iy + 1, iz + 1), hash(ix + 1, iy + 1, iz + 1), u), v), w);
+  }
+  function fbm(x, y, z) { return noise(x, y, z) * .57 + noise(x * 2.1, y * 2.1, z * 2.1) * .27 + noise(x * 4.3, y * 4.3, z * 4.3) * .11 + noise(x * 9.1, y * 9.1, z * 9.1) * .05; }
+
+  const PALETTES = {
+    forest: { low: [26, 79, 95], high: [91, 133, 86], peak: [158, 166, 114], glow: '#80e2e5' },
+    ocean: { low: [17, 68, 113], high: [39, 130, 145], peak: [173, 190, 160], glow: '#73cce9' },
+    volcanic: { low: [52, 34, 42], high: [107, 63, 54], peak: [214, 96, 47], glow: '#ec976a' },
+    ice: { low: [71, 111, 145], high: [155, 187, 200], peak: [220, 231, 224], glow: '#b0e7f1' },
+    desert: { low: [113, 64, 48], high: [180, 129, 79], peak: [210, 174, 118], glow: '#f0be8a' },
+    crystal: { low: [54, 45, 106], high: [114, 90, 146], peak: [166, 155, 205], glow: '#baa0f5' }
+  };
+
+  function createPlanet(planet) {
+    const canvas = document.createElement('canvas');
+    const size = 400;
+    canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return canvas;
+    const data = ctx.createImageData(size, size), pixels = data.data;
+    const seed = seedOf(planet.seed || planet.id || planet.name) % 8000;
+    const palette = PALETTES[planet.biome] || PALETTES.forest;
+    for (let py = 0; py < size; py++) {
+      for (let px = 0; px < size; px++) {
+        const x = (px + .5 - size / 2) / (size / 2 - 1), y = (py + .5 - size / 2) / (size / 2 - 1), r2 = x * x + y * y;
+        if (r2 >= 1) continue;
+        const z = Math.sqrt(1 - r2);
+        const terrain = fbm(x * 3.5 + seed, y * 3.5 + 47, z * 3.5 + 63);
+        const fine = noise(x * 57 + seed, y * 57 + 53, z * 57 + 78);
+        let c;
+        if (planet.biome === 'forest' || planet.biome === 'ocean') {
+          const coast = planet.biome === 'ocean' ? .60 : .49;
+          c = terrain < coast ? mix(palette.low, [53, 112, 123], clamp(terrain / coast, 0, 1) * .42) : mix(palette.high, palette.peak, clamp((terrain - coast) * 3.6, 0, 1));
+          if (terrain >= coast && terrain < coast + .012) c = mix(c, [150, 165, 120], .36);
+        } else {
+          c = mix(palette.low, palette.high, clamp((terrain - .22) * 2.4, 0, 1));
+          if (terrain > .60) c = mix(c, palette.peak, clamp((terrain - .60) * 4, 0, 1));
+        }
+        if (planet.biome === 'volcanic' && Math.abs(noise(x * 12 + seed, y * 12, z * 12) - .51) < .018 && terrain > .52) c = mix(c, [252, 123, 48], .8);
+        if (planet.biome === 'ice' && Math.abs(noise(x * 17 + seed, y * 17, z * 17) - .5) < .022) c = mix(c, [79, 147, 178], .4);
+        const clouds = fbm(x * 5.6 + seed + 30, y * 4.2 + 60, z * 5.6 + 100);
+        const cloudAmount = planet.biome === 'volcanic' ? .1 : planet.biome === 'desert' ? .13 : .68;
+        c = mix(c, [220, 229, 222], clamp((clouds - .51) * 5.4, 0, .85) * cloudAmount);
+        const light = Math.max(0, x * -.63 + y * -.49 + z * .60);
+        const night = .13 + .90 * Math.pow(light, .74);
+        const rim = Math.pow(1 - z, 3) * Math.max(0, light) * .40;
+        c = mix(c, [107, 190, 203], rim);
+        const idx = (py * size + px) * 4;
+        pixels[idx] = clamp(c[0] * night + (fine - .5) * 7, 0, 255);
+        pixels[idx + 1] = clamp(c[1] * night + (fine - .5) * 7, 0, 255);
+        pixels[idx + 2] = clamp(c[2] * night + (fine - .5) * 7, 0, 255);
+        pixels[idx + 3] = clamp((1 - Math.sqrt(r2)) * size * 1.2, 0, 1) * 255;
+      }
+    }
+    ctx.putImageData(data, 0, 0);
+    return canvas;
+  }
+
+  // Small hand-built spacecraft: the meshes are deliberately faceted, like
+  // a miniature ceramic spacecraft with real metal underneath the painted shell.
+  function makeShip(accent, modules) {
+    const faces = [], glows = [], jets = [];
+    const WHITE = [209, 218, 214], LIGHT = [233, 237, 220], GRAY = [115, 139, 146], METAL = [63, 85, 98], DARK = [27, 48, 62], PAINT = color(accent);
+    const moduleMap = Array.isArray(modules) ? Object.fromEntries(modules.map(m => [m.type || m.slot || m.id, m])) : modules || {};
+    function face(v, c, opts = {}) {
+      const u = v[1].map((n, i) => n - v[0][i]), w = v[2].map((n, i) => n - v[0][i]);
+      let normal = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
+      const length = Math.hypot(...normal) || 1; normal = normal.map(n => n / length);
+      faces.push({ v, c, normal, ...opts });
+    }
+    function box(x, y, z, sx, sy, sz, c, bevel = 3) {
+      // Chamfered boxes give cargo pods and machinery a substantial silhouette.
+      const a = sx / 2, b = sy / 2, q = Math.min(bevel, a / 2, b / 2);
+      const ring = [[-a + q, -b], [a - q, -b], [a, -b + q], [a, b - q], [a - q, b], [-a + q, b], [-a, b - q], [-a, -b + q]];
+      const bot = ring.map(p => [x + p[0], y + p[1], z]);
+      const top = ring.map(p => [x + p[0] * .94, y + p[1] * .94, z + sz]);
+      face(top, c); face([...bot].reverse(), mix(c, DARK, .35));
+      for (let i = 0; i < 8; i++) { const j = (i + 1) % 8; face([bot[j], bot[i], top[i], top[j]], c); }
+    }
+    function hull(stations, c, options = {}) {
+      const rings = stations.map(([x, width, base, top]) => [[x, -width * .70, top], [x, width * .70, top], [x, width, top - 8], [x, width, base + 6], [x, width * .7, base], [x, -width * .7, base], [x, -width, base + 6], [x, -width, top - 8]]);
+      face([...rings[0]].reverse(), c, options); face(rings[rings.length - 1], c, options);
+      for (let k = 0; k < rings.length - 1; k++) for (let i = 0; i < 8; i++) {
+        const j = (i + 1) % 8;
+        face([rings[k][i], rings[k + 1][i], rings[k + 1][j], rings[k][j]], i === 0 ? mix(c, LIGHT, .13) : c, options);
+      }
+    }
+    function cylinderX(x, y, z, length, radius, c, steps = 12, end = true) {
+      const a = [], b = [];
+      for (let i = 0; i < steps; i++) { const t = i / steps * TAU; a.push([x, y + Math.cos(t) * radius, z + Math.sin(t) * radius]); b.push([x + length, y + Math.cos(t) * radius, z + Math.sin(t) * radius]); }
+      for (let i = 0; i < steps; i++) { const j = (i + 1) % steps; face([a[i], a[j], b[j], b[i]], c); }
+      if (end) { face([...a].reverse(), DARK); face(b, c); }
+    }
+    function cylinderZ(x, y, z, height, radius, c, steps = 12) {
+      const a = [], b = [];
+      for (let i = 0; i < steps; i++) { const t = i / steps * TAU; a.push([x + Math.cos(t) * radius, y + Math.sin(t) * radius, z]); b.push([x + Math.cos(t) * radius, y + Math.sin(t) * radius, z + height]); }
+      face(b, c); for (let i = 0; i < steps; i++) { const j = (i + 1) % steps; face([a[j], a[i], b[i], b[j]], c); }
+    }
+    function wing(sign) {
+      const poly = [[-93, 34], [-124, 94], [-58, 126], [62, 65], [86, 30]].map(([x, y]) => [x, y * sign, -4]);
+      const bottom = poly.map(v => [v[0], v[1], -14]);
+      face(sign > 0 ? poly : [...poly].reverse(), WHITE); face(bottom, METAL);
+      for (let i = 0; i < poly.length; i++) { const j = (i + 1) % poly.length; face([poly[i], bottom[i], bottom[j], poly[j]], GRAY); }
+      face([[-109, 91 * sign, -3.4], [-60, 114 * sign, -3.4], [45, 64 * sign, -3.4], [30, 62 * sign, -3.4], [-62, 101 * sign, -3.4], [-102, 84 * sign, -3.4]], PAINT);
+      face([[-69, 107 * sign, -2.8], [-42, 96 * sign, -2.8], [-31, 96 * sign, -2.8], [-60, 110 * sign, -2.8]], DARK);
+      box(-40, 68 * sign, -2, 30, 8, 3, LIGHT, 1);
+      glows.push({ p: [-59, 122 * sign, -2], color: sign > 0 ? '#ff9678' : '#94ffdf', size: 2 });
+    }
+    wing(-1); wing(1);
+    // Twin ion engines, white ceramic shrouds around gunmetal cooling rings.
+    [-1, 1].forEach(sign => {
+      cylinderX(-133, sign * 78, 4, 78, 23, WHITE, 14);
+      cylinderX(-137, sign * 78, 4, 13, 24.5, METAL, 14);
+      cylinderX(-117, sign * 78, 4, 14, 24, PAINT, 14);
+      cylinderX(-64, sign * 78, 4, 13, 19, GRAY, 14);
+      cylinderX(-139, sign * 78, 4, 2, 17, DARK, 14);
+      const disk = Array.from({ length: 16 }, (_, i) => [-140, sign * 78 + Math.cos(i / 16 * TAU) * 12, 4 + Math.sin(i / 16 * TAU) * 12]);
+      face(disk, [100, 224, 255], { emissive: true, stroke: false });
+      jets.push({ p: [-146, sign * 78, 4], end: [-209, sign * 78, 4] });
+      box(-90, sign * 78, 24, 33, 10, 3, LIGHT, 1);
+      [-91, -84, -77].forEach(x => box(x, sign * 78, 28, 2, 12, 1, METAL, .5));
+    });
+    hull([[-110, 30, -17, 25], [-74, 46, -19, 35], [20, 47, -20, 39], [78, 36, -15, 30], [124, 16, -8, 16], [141, 5, -3, 7]], WHITE);
+    // Side stripe wraps around the hull; lower graphite bumper catches light.
+    [-1, 1].forEach(s => {
+      face([[-75, 46.2 * s, 11], [19, 47.2 * s, 13], [78, 36.2 * s, 10], [111, 22 * s, 5], [105, 25 * s, -1], [18, 47.2 * s, 2], [-75, 46.2 * s, 0]], PAINT);
+      face([[-72, 46.3 * s, -12], [18, 47.3 * s, -13], [78, 36.3 * s, -9], [85, 32 * s, -14], [19, 36 * s, -20], [-72, 35 * s, -19]], METAL);
+      box(-46, s * 44, 24, 32, 8, 5, PAINT, 2);
+      face([[81, 32.8 * s, 10], [99, 25.5 * s, 6], [99, 25.5 * s, 9], [81, 32.8 * s, 13]], [164, 231, 227], { emissive: true });
+      glows.push({ p: [100, 25 * s, 9], color: '#b4ffef', size: 1.6 });
+    });
+    // Faceted pressure cockpit, polished dark teal glass and an ivory surround.
+    hull([[15, 24, 34, 41], [42, 28, 30, 65], [79, 23, 25, 59], [111, 12, 14, 29]], [23, 77, 93], { glass: true });
+    face([[18, -16, 42.2], [43, -18, 66.2], [43, 18, 66.2], [18, 16, 42.2]], [34, 105, 120], { glass: true });
+    face([[43, -18, 66.2], [79, -15, 60.2], [79, 15, 60.2], [43, 18, 66.2]], [34, 105, 120], { glass: true });
+    face([[79, -15, 60.2], [105, -7.8, 33.2], [105, 7.8, 33.2], [79, 15, 60.2]], [24, 93, 112], { glass: true });
+    face([[43, 18.5, 64], [78, 15.5, 59], [105, 8, 30], [81, 23.4, 29], [44, 28.4, 34]], [27, 85, 102], { glass: true });
+    face([[43, -18.5, 64], [44, -28.4, 34], [81, -23.4, 29], [105, -8, 30], [78, -15.5, 59]], [33, 93, 109], { glass: true });
+    face([[48, -15, 66.3], [61, -16, 64], [91, -8, 45], [82, -7, 51]], [121, 194, 197], { emissive: true, alpha: .45, stroke: false });
+    face([[42, 18.6, 65], [45, 18.6, 65], [46, 28.7, 35], [42, 28.7, 35]], GRAY);
+    face([[76, -16, 61], [80, -15, 60], [81, 15, 60], [77, 16, 61]], LIGHT);
+    // Nose ridge and inset hardware break the silhouette into readable panels.
+    face([[108, -9, 27], [113, -7, 24], [140, -2, 8], [134, -3.5, 11]], LIGHT);
+    box(124, 0, 12, 10, 8, 2, PAINT, 1);
+    box(-61, 0, 36, 63, 38, 4, GRAY, 5);
+    box(-61, 0, 40, 58, 34, 4, WHITE, 4);
+    for (let x = -86; x < -37; x += 8) box(x, 0, 44.5, 3, 23, 1, METAL, .7);
+    // Equipment is mapped to distinct silhouettes; upgrades change its status light.
+    const rarityColor = { common: '#a5ccd2', uncommon: '#7ee5b3', rare: '#77bbff', epic: '#c9a1ff', legendary: '#ffc773' };
+    const led = (type, p) => glows.push({ p, color: rarityColor[moduleMap[type]?.rarity] || '#7ce3d0', size: moduleMap[type]?.rarity === 'legendary' ? 3 : 2 });
+    if (moduleMap.warp) {
+      cylinderX(-92, 0, 58, 41, 13, DARK);
+      [-84, -71, -58].forEach(x => cylinderX(x, 0, 58, 5, 14, [87, 171, 180], 12));
+      led('warp', [-69, 0, 74]);
+    }
+    if (moduleMap.life) { box(-20, -34, 39, 26, 22, 18, LIGHT, 4); box(-20, -34, 58, 15, 8, 1, [101, 151, 138]); led('life', [-20, -32, 60]); }
+    if (moduleMap.cargo) { box(-47, 51, 7, 48, 29, 24, mix(PAINT, GRAY, .27), 5); box(-47, 51, 31, 37, 23, 3, LIGHT, 3); [-63, -31].forEach(x => box(x, 51, 33, 4, 24, 2, METAL, 1)); led('cargo', [-46, 66, 23]); }
+    if (moduleMap.survival) { box(-81, -49, 16, 30, 20, 24, PAINT, 3); box(-81, -49, 40, 13, 12, 2, WHITE, 1); led('survival', [-81, -51, 43]); }
+    if (moduleMap.shield) { cylinderZ(-11, 26, 40, 7, 12, METAL); cylinderZ(-11, 26, 47, 3, 9, [112, 182, 181]); led('shield', [-11, 26, 51]); }
+    if (moduleMap.scanner) {
+      box(-25, 0, 40, 13, 13, 21, METAL, 2);
+      const rim = [], inner = [];
+      for (let i = 0; i < 12; i++) { const t = i / 12 * TAU; rim.push([-26 + Math.cos(t) * 18, Math.sin(t) * 15, 71 + Math.cos(t) * 7]); inner.push([-26 + Math.cos(t) * 11, Math.sin(t) * 9, 68 + Math.cos(t) * 4]); }
+      for (let i = 0; i < 12; i++) { const j = (i + 1) % 12; face([rim[i], rim[j], inner[j], inner[i]], WHITE); }
+      face(inner, [70, 113, 129]); cylinderZ(-26, 0, 68, 11, 2, LIGHT, 6); led('scanner', [-26, 0, 81]);
+    }
+    if (moduleMap.arm) {
+      box(15, 60, -7, 27, 12, 13, METAL, 2);
+      box(24, 65, 6, 38, 8, 9, PAINT, 2);
+      cylinderZ(40, 65, 4, 14, 7, WHITE, 10);
+      box(52, 70, 12, 31, 7, 7, GRAY, 2);
+      box(66, 67, 13, 5, 20, 7, LIGHT, 1);
+      box(73, 58, 13, 16, 4, 7, METAL, 1); box(73, 76, 13, 16, 4, 7, METAL, 1);
+      led('arm', [41, 65, 19]);
+    }
+    led('engine', [-88, 78, 30]);
+    return { faces, glows, jets };
+  }
+
+  class OrbitScene {
+    constructor(canvas) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext('2d', { alpha: false });
+      this.state = { view: 'explore', mode: 'orbit', shipColor: '#f08b54', modules: {}, planet: { id: 'auralis', biome: 'forest', seed: 123 } };
+      this.width = 800; this.height = 430; this.yaw = .38; this.pitch = .60; this.zoom = 1; this.dragging = false;
+      this.reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
+      this.startTime = performance.now(); this.effects = {}; this.planetCache = new Map(); this.dead = false;
+      const rand = random(79148);
+      this.stars = Array.from({ length: 225 }, () => ({ x: rand(), y: rand(), r: .3 + rand() * 1.12, a: .13 + rand() * .59, phase: rand() * TAU, blue: rand() > .65 }));
+      this.debris = Array.from({ length: 8 }, () => ({ x: rand(), y: rand(), size: 1 + rand() * 2, phase: rand() * TAU }));
+      this.ship = makeShip(this.state.shipColor, this.state.modules);
+      this.resize = this.resize.bind(this); this.tick = this.tick.bind(this);
+      this.onVisibility = () => { if (!document.hidden && !this.dead && !this.raf) this.raf = requestAnimationFrame(this.tick); };
+      this.onDown = e => { if (e.button && e.button !== 0) return; this.dragging = true; this.pointer = { x: e.clientX, y: e.clientY, yaw: this.yaw, pitch: this.pitch }; canvas.setPointerCapture?.(e.pointerId); canvas.style.cursor = 'grabbing'; };
+      this.onMove = e => { if (!this.dragging || !this.pointer) return; this.yaw = this.pointer.yaw + (e.clientX - this.pointer.x) * .007; this.pitch = clamp(this.pointer.pitch + (e.clientY - this.pointer.y) * .004, .22, 1.15); };
+      this.onUp = () => { this.dragging = false; canvas.style.cursor = 'grab'; };
+      this.onWheel = e => { if (e.ctrlKey || e.metaKey) return; e.preventDefault(); this.zoom = clamp(this.zoom - e.deltaY * .001, .7, 1.5); };
+      canvas.style.cursor = 'grab'; canvas.style.touchAction = 'pan-y';
+      canvas.addEventListener('pointerdown', this.onDown); canvas.addEventListener('pointermove', this.onMove); canvas.addEventListener('pointerup', this.onUp); canvas.addEventListener('pointercancel', this.onUp); canvas.addEventListener('wheel', this.onWheel, { passive: false });
+      document.addEventListener('visibilitychange', this.onVisibility);
+      this.observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(this.resize) : null;
+      this.observer?.observe(canvas); window.addEventListener('resize', this.resize);
+      this.resize(); this.update(this.state); this.raf = requestAnimationFrame(this.tick);
+    }
+    resize() {
+      const rect = this.canvas.getBoundingClientRect();
+      this.width = Math.max(1, rect.width || 800); this.height = Math.max(1, rect.height || 430);
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      this.canvas.width = Math.round(this.width * dpr); this.canvas.height = Math.round(this.height * dpr);
+      this.dpr = dpr;
+    }
+    update(next = {}) {
+      const oldKey = this.shipKey;
+      this.state = { ...this.state, ...next };
+      if (next.ship?.color && !next.shipColor) this.state.shipColor = next.ship.color;
+      if (next.equipped && !next.modules) this.state.modules = next.equipped;
+      this.shipKey = `${this.state.shipColor}:${JSON.stringify(this.state.modules)}`;
+      if (oldKey !== this.shipKey) this.ship = makeShip(this.state.shipColor, this.state.modules);
+      const p = this.state.planet;
+      if (p) {
+        const key = `${p.id || p.name}:${p.seed}:${p.biome}`;
+        if (!this.planetCache.has(key)) {
+          if (this.planetCache.size >= 14) this.planetCache.delete(this.planetCache.keys().next().value);
+          this.planetCache.set(key, createPlanet(p));
+        }
+        this.planetTexture = this.planetCache.get(key);
+      }
+    }
+    effect(kind) { this.effects[kind] = performance.now(); }
+    resetCamera() { this.yaw = .38; this.pitch = .60; this.zoom = 1; }
+    progress(kind, now, duration) { return this.effects[kind] === undefined ? 0 : clamp(1 - (now - this.effects[kind]) / duration, 0, 1); }
+    tick(now) {
+      this.raf = null;
+      if (this.dead || document.hidden) return;
+      if (this.ctx) this.draw(now);
+      this.raf = requestAnimationFrame(this.tick);
+    }
+    draw(now) {
+      const c = this.ctx, w = this.width, h = this.height;
+      c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      const t = this.reduced ? 0 : (now - this.startTime) / 1000;
+      const warp = this.reduced ? 0 : this.progress('warp', now, 2000);
+      const travel = this.reduced ? 0 : this.progress('travel', now, 2300);
+      const scan = this.progress('scan', now, 2100);
+      const dock = this.progress('dock', now, 1800);
+      const explore = this.progress('explore', now, 1700);
+      const shipView = this.state.view === 'ship' || this.state.view === 'hangar';
+      const galaxy = this.state.view === 'galaxy';
+      const bg = c.createLinearGradient(0, 0, w, h); bg.addColorStop(0, '#081721'); bg.addColorStop(.48, '#0b1b29'); bg.addColorStop(1, '#09131f'); c.fillStyle = bg; c.fillRect(0, 0, w, h);
+      const fog = c.createRadialGradient(w * .70, h * .22, 0, w * .70, h * .22, w * .65); fog.addColorStop(0, 'rgba(68, 82, 113, .16)'); fog.addColorStop(.55, 'rgba(36, 61, 84, .05)'); fog.addColorStop(1, 'rgba(6,18,28,0)'); c.fillStyle = fog; c.fillRect(0, 0, w, h);
+      c.save(); c.translate(w * .54, h * .43); c.rotate(-.38); c.scale(1, .3); const dust = c.createRadialGradient(0, 0, 10, 0, 0, w * .7); dust.addColorStop(0, 'rgba(98, 90, 128, .065)'); dust.addColorStop(.5, 'rgba(70, 96, 125, .055)'); dust.addColorStop(1, 'rgba(16,29,43,0)'); c.fillStyle = dust; c.fillRect(-w, -w, w * 2, w * 2); c.restore();
+      this.stars.forEach(s => {
+        const x = ((s.x * w - t * s.r * .34) % w + w) % w, y = s.y * h;
+        const alpha = s.a * (.85 + Math.sin(t * .75 + s.phase) * .15);
+        c.fillStyle = s.blue ? `rgba(148,194,215,${alpha})` : `rgba(216,225,222,${alpha})`;
+        if (warp || travel) { const strength = warp ? Math.sin(warp * Math.PI) * 75 : Math.sin(travel * Math.PI) * 16; c.strokeStyle = c.fillStyle; c.lineWidth = s.r * .8; c.beginPath(); c.moveTo(x, y); c.lineTo(x - strength * (1 + s.r), y + strength * .2); c.stroke(); }
+        c.beginPath(); c.arc(x, y, s.r, 0, TAU); c.fill();
+        if (s.r > 1.32) { c.globalAlpha = .32; c.fillRect(x - 3.3, y - .35, 6.6, .7); c.fillRect(x - .35, y - 3.3, .7, 6.6); c.globalAlpha = 1; }
+      });
+      if (galaxy) this.drawGalaxy(t);
+      const planet = this.state.planet || {};
+      const px = w * .805, py = h * .40, pr = Math.min(w * .162, h * .325, 168);
+      if (!shipView && !galaxy) {
+        // The orbit sits behind the sphere; the break in its arc makes its depth readable.
+        c.save(); c.translate(px, py + pr * .2); c.rotate(-.28); c.strokeStyle = 'rgba(150,181,185,.15)'; c.lineWidth = .8; c.setLineDash([3, 7]); c.beginPath(); c.ellipse(0, 0, pr * 1.52, pr * .39, 0, 0, TAU); c.stroke(); c.setLineDash([]); c.restore();
+        const atm = c.createRadialGradient(px, py, pr * .87, px, py, pr * 1.15); atm.addColorStop(0, 'rgba(97,164,174,0)'); atm.addColorStop(.65, 'rgba(113,192,202,.12)'); atm.addColorStop(1, 'rgba(67,130,160,0)'); c.fillStyle = atm; c.fillRect(px - pr * 1.2, py - pr * 1.2, pr * 2.4, pr * 2.4);
+        if (this.planetTexture) c.drawImage(this.planetTexture, px - pr, py - pr, pr * 2, pr * 2);
+        c.save(); c.strokeStyle = `${(PALETTES[planet.biome] || PALETTES.forest).glow}55`; c.lineWidth = 1; c.beginPath(); c.arc(px, py, pr - .8, Math.PI * .8, Math.PI * 1.8); c.stroke(); c.restore();
+        if (planet.biome === 'crystal') { c.save(); c.translate(px, py); c.rotate(-.28); c.strokeStyle = 'rgba(181,160,204,.28)'; c.lineWidth = 7; c.beginPath(); c.ellipse(0, 0, pr * 1.4, pr * .29, 0, 0, Math.PI); c.stroke(); c.restore(); }
+        if (scan > 0) { c.save(); c.strokeStyle = `rgba(123,235,204,${scan * .7})`; c.lineWidth = 1; for (let i = 0; i < 3; i++) { const rad = pr * (.7 + ((1 - scan + i / 3) % 1) * .8); c.beginPath(); c.arc(px, py, rad, 0, TAU); c.stroke(); } c.restore(); }
+        if (dock > 0 || explore > 0) {
+          const amount = Math.max(dock, explore), tx = px - pr * .63, ty = py + pr * .30;
+          c.save(); c.strokeStyle = `rgba(164,242,205,${amount * .85})`; c.lineWidth = 1.2;
+          [8, 17, 27].forEach(r => { c.beginPath(); c.arc(tx, ty, r * (1.45 - amount * .45), 0, TAU); c.stroke(); });
+          if (explore > 0) for (let i = 0; i < 8; i++) { const angle = i * TAU / 8, distance = (1 - explore) * 48 + 9; c.fillStyle = `rgba(205,241,181,${explore})`; c.fillRect(tx + Math.cos(angle) * distance - 1, ty + Math.sin(angle) * distance - 1, 2, 2); }
+          c.restore();
+        }
+        if (this.state.mode === 'docked' || this.state.mode === 'surface') { c.strokeStyle = 'rgba(122,219,185,.25)'; c.setLineDash([2, 5]); c.beginPath(); c.moveTo(w * .51, h * .58); c.quadraticCurveTo(w * .68, h * .73, px - pr * .78, py + pr * .38); c.stroke(); c.setLineDash([]); }
+      }
+      if (shipView) {
+        c.save(); c.translate(w * .51, h * .69); c.scale(1, .33);
+        [105, 170, 240].forEach((r, i) => { c.strokeStyle = `rgba(99,164,170,${.10 - i * .018})`; c.lineWidth = 1; c.beginPath(); c.arc(0, 0, r * Math.min(w / 600, 1.4), 0, TAU); c.stroke(); }); c.restore();
+      }
+      const baseScale = Math.min(w / 650, h / 302);
+      const scale = baseScale * this.zoom * (shipView ? 1.24 : galaxy ? .62 : 1);
+      const sx = w * (shipView ? .52 : galaxy ? .31 : .365) - Math.sin(travel * Math.PI) * w * .045;
+      const sy = h * (shipView ? .55 : galaxy ? .72 : .60) + (this.reduced || this.dragging ? 0 : Math.sin(t * .75) * 4);
+      this.drawShip(sx, sy, scale, t, warp, travel);
+      if (!shipView) this.debris.forEach(d => { const dx = d.x * w, dy = d.y * h; if (dx < w * .2 || dy > h * .82) { c.fillStyle = 'rgba(81,112,128,.28)'; c.save(); c.translate(dx + Math.sin(t * .12 + d.phase) * 5, dy); c.rotate(d.phase + t * .015); c.fillRect(-d.size, -d.size * .5, d.size * 2, d.size); c.restore(); } });
+      // A subtle vignette keeps labels legible without flattening the central art.
+      const vignette = c.createRadialGradient(w * .5, h * .48, Math.min(w, h) * .28, w * .5, h * .48, w * .75); vignette.addColorStop(0, 'rgba(2,9,15,0)'); vignette.addColorStop(1, 'rgba(2,9,15,.48)'); c.fillStyle = vignette; c.fillRect(0, 0, w, h);
+      if (warp > 0) { c.fillStyle = `rgba(139,209,225,${Math.sin(warp * Math.PI) * .07})`; c.fillRect(0, 0, w, h); }
+    }
+    drawGalaxy(t) {
+      const c = this.ctx, w = this.width, h = this.height;
+      const rand = random(6210);
+      c.save(); c.translate(w * .61, h * .43); c.rotate(-.20); c.scale(1, .48);
+      for (let i = 0; i < 470; i++) {
+        const radius = Math.sqrt(rand()) * Math.min(w * .34, h * .78), arm = i % 3;
+        const angle = arm * TAU / 3 + radius * .018 + rand() * .62 + t * .005;
+        const x = Math.cos(angle) * radius, y = Math.sin(angle) * radius;
+        c.fillStyle = i % 5 === 0 ? 'rgba(222,179,146,.44)' : 'rgba(134,166,192,.32)'; c.beginPath(); c.arc(x, y, rand() * 1.8 + .3, 0, TAU); c.fill();
+      }
+      const core = c.createRadialGradient(0, 0, 1, 0, 0, 90); core.addColorStop(0, 'rgba(208,202,192,.17)'); core.addColorStop(1, 'rgba(173,193,202,0)'); c.fillStyle = core; c.fillRect(-90, -90, 180, 180); c.restore();
+    }
+    drawShip(cx, cy, scale, t, warp, travel) {
+      const c = this.ctx, yaw = this.yaw + (this.dragging || this.reduced ? 0 : Math.sin(t * .23) * .022), pitch = this.pitch;
+      const co = Math.cos(yaw), si = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+      const project = p => [cx + (p[0] * co - p[1] * si) * scale, cy + ((p[0] * si + p[1] * co) * sp - p[2] * cp) * scale, (p[0] * si + p[1] * co) * cp + p[2] * sp];
+      // Soft plumes sit behind the mesh and inherit its camera rotation.
+      this.ship.jets.forEach(jet => {
+        const p = project(jet.p), end = project(jet.end), strength = 1 + warp * 2 + travel;
+        const len = Math.hypot(end[0] - p[0], end[1] - p[1]);
+        c.save(); c.translate(p[0], p[1]); c.rotate(Math.atan2(end[1] - p[1], end[0] - p[0]));
+        const plume = c.createLinearGradient(-4, 0, len * strength, 0); plume.addColorStop(0, 'rgba(186,247,255,.95)'); plume.addColorStop(.18, 'rgba(100,206,253,.48)'); plume.addColorStop(.7, 'rgba(73,143,245,.07)'); plume.addColorStop(1, 'rgba(62,152,232,0)');
+        c.fillStyle = plume; c.beginPath(); c.moveTo(-3, -10 * scale); c.bezierCurveTo(len * .5, -9 * scale, len * .6 * strength, -2 * scale, len * strength, 0); c.bezierCurveTo(len * .6 * strength, 2 * scale, len * .5, 9 * scale, -3, 10 * scale); c.closePath(); c.fill();
+        c.restore();
+        const glow = c.createRadialGradient(p[0], p[1], 0, p[0], p[1], 30 * scale); glow.addColorStop(0, 'rgba(123,219,252,.26)'); glow.addColorStop(1, 'rgba(50,135,249,0)'); c.fillStyle = glow; c.fillRect(p[0] - 30 * scale, p[1] - 30 * scale, 60 * scale, 60 * scale);
+      });
+      const drawn = this.ship.faces.map(f => { const points = f.v.map(project); return { f, points, depth: points.reduce((n, p) => n + p[2], 0) / points.length }; }).sort((a, b) => a.depth - b.depth);
+      drawn.forEach(({ f, points }) => {
+        c.beginPath(); points.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath();
+        let normal = f.normal;
+        const facing = normal[0] * si * cp + normal[1] * co * cp + normal[2] * sp;
+        if (facing < 0) normal = normal.map(v => -v);
+        const light = clamp(normal[0] * -.34 + normal[1] * -.42 + normal[2] * .84, -.5, 1);
+        const intensity = f.emissive ? 1 : .52 + Math.max(0, light) * .50 + Math.max(0, normal[2]) * .12;
+        c.globalAlpha = f.alpha === undefined ? 1 : f.alpha;
+        c.fillStyle = rgb(f.c, intensity); c.fill();
+        if (f.glass) {
+          const minY = Math.min(...points.map(p => p[1])), maxY = Math.max(...points.map(p => p[1]));
+          const shine = c.createLinearGradient(0, minY, 0, maxY + 1); shine.addColorStop(0, 'rgba(125,205,211,.25)'); shine.addColorStop(.4, 'rgba(61,154,168,.05)'); shine.addColorStop(1, 'rgba(0,13,30,.22)'); c.fillStyle = shine; c.fill();
+        }
+        if (f.stroke !== false) { c.strokeStyle = f.glass ? 'rgba(116,179,181,.36)' : 'rgba(16,35,48,.23)'; c.lineWidth = clamp(scale * .45, .35, .75); c.stroke(); }
+        c.globalAlpha = 1;
+      });
+      this.ship.glows.forEach(glow => {
+        const p = project(glow.p); const pulse = this.reduced ? 1 : .84 + Math.sin(t * 2 + p[2]) * .16;
+        c.save(); c.shadowBlur = 8 * scale; c.shadowColor = glow.color; c.globalAlpha = pulse; c.fillStyle = glow.color; c.beginPath(); c.arc(p[0], p[1], Math.max(1, glow.size * scale * .65), 0, TAU); c.fill(); c.restore();
+      });
+      // Two little navigation strobes make the craft feel inhabited.
+      if (this.state.view === 'ship' || this.state.view === 'hangar') {
+        const p = project([-20, 26, 48]); c.strokeStyle = 'rgba(157,212,204,.17)'; c.lineWidth = 1; c.beginPath(); c.arc(p[0], p[1], 11, 0, TAU); c.stroke();
+      }
+    }
+    destroy() {
+      this.dead = true; if (this.raf) cancelAnimationFrame(this.raf);
+      this.observer?.disconnect(); window.removeEventListener('resize', this.resize); document.removeEventListener('visibilitychange', this.onVisibility);
+      this.canvas.removeEventListener('pointerdown', this.onDown); this.canvas.removeEventListener('pointermove', this.onMove); this.canvas.removeEventListener('pointerup', this.onUp); this.canvas.removeEventListener('pointercancel', this.onUp); this.canvas.removeEventListener('wheel', this.onWheel); this.planetCache.clear();
+    }
+  }
+  window.OrbitScene = OrbitScene;
+})();
+
+(function () {
+  'use strict';
+  const root = document.getElementById('orbit-game');
+  if (!root || !window.OrbitEngine || !window.OrbitScene) return;
+  if (window.orbitApp && window.orbitApp.destroy) window.orbitApp.destroy();
+  const E = window.OrbitEngine;
+  const storageKey = 'orbita-explorador-v1';
+  const $ = id => root.querySelector('#' + id);
+  const esc = x => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const round = n => Math.round(Number(n) || 0);
+  const power = n => Number(n).toFixed(2).replace('.', ',');
+  const biomeNames = {forest:'Floresta viva',volcanic:'Mundo vulcânico',ice:'Mundo glacial',desert:'Deserto mineral',ocean:'Mundo oceânico',crystal:'Mundo cristalino'};
+  const biomeDescriptions = {forest:'Um mundo de florestas densas e mares tranquilos. Estruturas antigas se escondem sob a copa das árvores.',volcanic:'Rios de magma atravessam a crosta. Minerais valiosos aguardam quem enfrentar o calor e a radiação.',ice:'Oceanos congelados guardam vestígios de outras expedições. O silêncio aqui é quase absoluto.',desert:'Tempestades varrem ruínas soterradas. Um bom kit de sobrevivência faz toda a diferença.',ocean:'Ilhas isoladas em um oceano sem fim. Sinais desconhecidos vêm de baixo da superfície.',crystal:'Formações luminosas cobrem o horizonte. Um lugar promissor para encontrar cristais de dobra.'};
+  const codes = {engine:'EN',warp:'DB',life:'O₂',shield:'RD',scanner:'SC',arm:'BC',cargo:'AR',survival:'SV'};
+  const labels = {engine:'Motor',warp:'Dobra',life:'Suporte de vida',shield:'Proteção',scanner:'Scanner',arm:'Braço coletor',cargo:'Armazém',survival:'Sobrevivência'};
+  const paints = [{color:'#f0a270',name:'Laranja solar'},{color:'#71bdc4',name:'Azul aurora'},{color:'#c9b1df',name:'Lilás nebulosa'},{color:'#9bb68c',name:'Verde musgo'},{color:'#e7d8b5',name:'Areia lunar'}];
+  let state = E.create();
+  let tab = 'explore', selected = state.location.planetId, lastFound = null, soundEnabled = false;
+  let saveStatus = 'Expedição pronta', effectTimer, audioContext, focusBeforeDialog;
+  const scene = new window.OrbitScene($('og-canvas'));
+  function recover(raw) {
+    if (!raw) return null;
+    try {
+      if (E.restore) return E.restore(raw);
+      return raw.version === 1 && raw.galaxy && Array.isArray(raw.galaxy.planets) && raw.resources && raw.equipped && raw.location ? raw : null;
+    } catch (_) { return null; }
+  }
+  function applySnapshot(snapshot) {
+    const inner = snapshot && (snapshot.privateContent || snapshot);
+    const restored = inner && recover(inner.state);
+    if (!restored) return false;
+    state = restored;
+    tab = ['explore','ship','galaxy','log'].includes(inner.tab) ? inner.tab : 'explore';
+    selected = state.galaxy.planets.some(p => p.id === inner.selected) ? inner.selected : state.location.planetId;
+    return true;
+  }
+  let loaded = false;
+  if (window.openai && window.openai.widgetState) loaded = applySnapshot(window.openai.widgetState);
+  if (!loaded) { try { loaded = applySnapshot(JSON.parse(localStorage.getItem(storageKey))); } catch (_) {} }
+  if (loaded) saveStatus = 'Expedição restaurada';
+  function persist() {
+    const privateContent = {state,tab,selected};
+    let stored = false;
+    try { localStorage.setItem(storageKey, JSON.stringify(privateContent)); stored = true; saveStatus = 'Salvo neste navegador'; } catch (_) {}
+    if (window.openai && typeof window.openai.setWidgetState === 'function') {
+      const snapshot = {modelContent:{game:'Órbita',ship:state.ship.name,galaxy:state.galaxy.name,planet:currentPlanet().name,mission:state.mission.stage},privateContent};
+      try {
+        const pending = window.openai.setWidgetState(snapshot);
+        if (pending && pending.catch) pending.catch(() => { if (!stored) { saveStatus = 'Sessão em andamento'; $('og-save-status').textContent = saveStatus; } });
+        saveStatus = 'Salvo nesta conversa';
+      } catch (_) { if (!stored) saveStatus = 'Sessão em andamento'; }
+    } else if (!stored) saveStatus = 'Sessão em andamento';
+    $('og-save-status').textContent = saveStatus;
+  }
+  function currentPlanet() { return state.galaxy.planets.find(p => p.id === state.location.planetId) || state.galaxy.planets[0]; }
+  function chosenPlanet() { return state.galaxy.planets.find(p => p.id === selected) || currentPlanet(); }
+  function rarity(module) { return E.rarities[module.rarity] || {name:module.rarity,color:'#c2c8ce'}; }
+  function preview(action,payload) {
+    try { return E.preview ? E.preview(state,action,payload) : {allowed:true,cost:{}}; }
+    catch (_) { return {allowed:false,reason:'Ação indisponível',cost:{}}; }
+  }
+  const costNames = {fuel:'comb.',oxygen:'O₂',hull:'casco',warpFuel:'dobra',ore:'minério',crystals:'cristais',credits:'cr.'};
+  function costText(cost) { return Object.entries(cost || {}).filter(([k,v]) => Number(v)>0 && costNames[k]).map(([k,v]) => `${round(v)} ${costNames[k]}`).join(' · '); }
+  function actionButton(action,label,options) {
+    const opt = options || {}, p = preview(action,opt.payload);
+    const attr = opt.attrs || '';
+    const cost = opt.cost === false ? '' : costText(p.cost);
+    return `<button class="og-button ${opt.primary ? 'primary' : ''} ${opt.small ? 'small' : ''}" data-action="${action}" ${attr} ${p.allowed ? '' : 'disabled'} ${!p.allowed && p.reason ? `aria-label="${esc(label+'. '+p.reason)}" data-tooltip="${esc(p.reason)}"` : ''}>${esc(label)}${cost ? `<span class="og-cost">${esc(cost)}</span>` : ''}</button>`;
+  }
+  function fact(label,value) { return `<div class="og-fact"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`; }
+  function resource(label,value,max,unit,index) {
+    const pct = max ? Math.max(0,Math.min(100,value/max*100)) : 0;
+    return `<div class="og-resource ${index<3 && pct<25 ? 'is-low' : ''}"><div class="og-resource-head"><span>${label}</span><strong>${round(value)}${max ? `<small> / ${round(max)}</small>` : ''}${unit ? `<small> ${unit}</small>` : ''}</strong></div><div class="og-meter" role="meter" aria-label="${label}" aria-valuenow="${round(value)}" aria-valuemin="0" aria-valuemax="${round(max || Math.max(1,value))}"><i style="--fill:${pct}%"></i></div></div>`;
+  }
+  function renderResources() {
+    const r=state.resources,s=E.stats(state);
+    $('og-resources').innerHTML = resource('Integridade',r.hull,s.maxHull,'',0)+resource('Oxigênio',r.oxygen,s.maxOxygen,'',1)+resource('Combustível',r.fuel,s.maxFuel,'',2)+resource('Dobra',r.warpFuel,s.maxWarpFuel,'',3)+resource('Armazém',s.cargoUsed,s.cargoCapacity,'',4);
+    $('og-location').innerHTML=`<b>${esc(state.galaxy.name)}</b> / G${String(state.galaxyIndex+1).padStart(2,'0')}`;
+    $('og-footer-stats').textContent=`${round(r.ore)} minério · ${round(r.crystals)} cristais · ${round(r.data)} dados`;
+    $('og-save-status').textContent=saveStatus;
+    const mission = E.missions && E.missions[state.mission.stage];
+    $('og-mission').innerHTML=`<span class="og-mission-mark" aria-hidden="true">◇</span><strong>${esc(mission ? mission.title : 'Continue explorando a fronteira')}</strong><span class="og-mission-description">${esc(mission ? '— '+mission.description : 'Novos mundos. Novas possibilidades.')}</span><span class="og-mission-count">${state.mission.stage<5 ? `${state.mission.stage+1} / 5` : 'EXPEDIÇÃO LIVRE'}</span>`;
+  }
+  function renderScene() {
+    const p=chosenPlanet(), local=p.id===state.location.planetId;
+    const headings={explore:[`${state.galaxy.name} · ${biomeNames[p.biome] || p.biome}`,p.name,local ? (state.location.mode==='docked' ? 'Ancoragem estabelecida · <span>Expedição de superfície</span>' : 'Órbita estável · <span>Aguardando suas ordens</span>') : 'Destino selecionado · <span>Defina sua próxima rota</span>'],ship:['EXPLORADORA MODULAR · CLASSE PIONEIRA',state.ship.name,'Sua nave. <span>Sua próxima descoberta.</span>'],galaxy:['CARTA ESTELAR · GALÁXIA '+(state.galaxyIndex+1),state.galaxy.name,'Seis mundos ao alcance. <span>O que existe além?</span>'],log:['REGISTRO DE BORDO · EXPEDIÇÃO PESSOAL','Cada descoberta conta.','Uma história escrita <span>entre as estrelas.</span>']};
+    const h=headings[tab];
+    $('og-scene-heading').innerHTML=`<div class="og-eyebrow">${esc(h[0])}</div><h1>${esc(h[1])}</h1><p>${h[2]}</p>`;
+    $('og-scene-status').innerHTML=`<span class="og-dot"></span>${tab==='ship' ? 'SISTEMAS ONLINE' : tab==='galaxy' ? 'CARTA ATUALIZADA' : state.location.mode==='docked' ? 'ANCORADA' : 'EM ÓRBITA'}`;
+    $('og-ship-caption').innerHTML=`<strong>${esc(state.ship.name.toUpperCase())}</strong><small>${Object.keys(state.equipped).length} SISTEMAS EQUIPADOS</small>`;
+    $('og-ship-caption').hidden = tab==='galaxy';
+    $('og-scene-hint').textContent=tab==='galaxy' ? 'Selecione um mundo para traçar sua rota' : 'Arraste a nave para girar · Role para aproximar';
+    const showMap = tab==='galaxy';
+    $('og-map').hidden=!showMap;
+    if(showMap) renderMap();
+    scene.update({planet:p,shipColor:state.ship.color,modules:state.equipped,mode:state.location.mode,view:tab==='ship' ? 'ship' : tab==='galaxy' ? 'galaxy' : 'explore'});
+  }
+  function renderMap() {
+    const positions=[[15,32],[40,14],[70,24],[87,60],[59,77],[26,80]];
+    const line=positions.map(x=>x.join(',')).join(' ');
+    $('og-map').innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${line} ${positions[0].join(',')}" fill="none" stroke="#4e687c" stroke-opacity=".45" stroke-width=".25" stroke-dasharray="1 2"/></svg>`+state.galaxy.planets.map((p,i)=>`<button class="og-map-node ${p.id===selected ? 'is-selected' : ''}" data-select="${esc(p.id)}" style="left:${positions[i][0]}%;top:${positions[i][1]}%" aria-pressed="${p.id===selected}"><span class="og-planet-orb" style="--planet-color:${p.color}" aria-hidden="true"></span><span>${esc(p.name)}</span><small>${p.id===state.location.planetId ? 'Você está aqui' : E.travelCost(state,p.id)+' combustível'}</small></button>`).join('');
+  }
+  function rewardPanel() {
+    if(!lastFound || !state.inventory.some(m=>m.id===lastFound.id)) return '';
+    const m=lastFound,r=rarity(m);
+    return `<div class="og-toast-reward">MÓDULO RECUPERADO<b>${esc(m.name)}</b><span style="color:${r.color}">${esc(r.name)} · ${esc(labels[m.type])}</span>${actionButton('equip','Equipar descoberta',{small:true,payload:{moduleId:m.id},attrs:`data-module="${esc(m.id)}"`,cost:false})}</div>`;
+  }
+  function planetPanel() {
+    const p=chosenPlanet(), here=p.id===state.location.planetId, docked=here && state.location.mode==='docked';
+    let html=`${rewardPanel()}<div class="og-panel-title"><h2>${esc(p.name)}</h2><span class="og-pill ${!p.scanned ? 'orange' : ''}">${p.scanned ? 'ANALISADO' : 'NÃO ANALISADO'}</span></div><p class="og-description">${esc(biomeDescriptions[p.biome] || 'Um novo mundo à espera da sua expedição.')}</p><div class="og-facts">${fact('Bioma',biomeNames[p.biome] || p.biome)}${fact('Temperatura',p.scanned ? round(p.temperature)+' °C' : 'A analisar')}${fact('Atmosfera',p.scanned ? p.atmosphere : 'A analisar')}${fact('Radiação',p.scanned ? round(p.radiation)+' / 100' : 'A analisar')}${fact('Gravidade',p.scanned ? Number(p.gravity).toFixed(2)+' g' : 'A analisar')}</div><div class="og-anomaly"><b>${p.scanned ? 'ASSINATURA DETECTADA' : 'SINAL DESCONHECIDO'}</b>${esc(p.scanned ? p.anomaly : 'Analise o planeta para identificar riscos e pontos de interesse.')}</div>`;
+    if(docked) {
+      html+=`<div class="og-wide"><div class="og-eyebrow">Pontos de interesse</div>${p.sites.map(site=>`<div class="og-site"><div class="og-site-name">${esc(site.name)}<small>${site.explored ? 'Área explorada' : 'Recursos e tecnologia'}</small></div>${site.explored ? '<span class="og-pill">CONCLUÍDO</span>' : actionButton('explore','Explorar',{small:true,payload:{siteId:site.id},attrs:`data-site="${esc(site.id)}"`,cost:false})}</div>`).join('')}</div>`;
+    }
+    html+='<div class="og-actions">';
+    if(!here) html+=actionButton('travel','Viajar até aqui',{primary:true,payload:{planetId:p.id},attrs:`data-planet="${esc(p.id)}"`});
+    else if(docked) html+=actionButton('launch','Voltar à órbita',{primary:!p.sites.some(s=>!s.explored),cost:false});
+    else {
+      html+=actionButton('scan',p.scanned ? 'Análise concluída' : 'Analisar planeta',{primary:!p.scanned,cost:false});
+      html+=actionButton('dock','Ancorar no planeta',{primary:p.scanned,cost:false});
+    }
+    const blocked = !here ? preview('travel',{planetId:p.id}) : docked ? preview('explore',{siteId:(p.sites.find(s=>!s.explored)||{}).id}) : preview(p.scanned ? 'dock' : 'scan');
+    if(!blocked.allowed && blocked.reason && !(docked && p.sites.every(s=>s.explored))) html+=`<div class="og-action-note">${esc(blocked.reason)}</div>`;
+    if(docked) { const unexplored=p.sites.find(s=>!s.explored); if(unexplored) html+=`<div class="og-action-note">Por expedição: ${esc(costText(preview('explore',{siteId:unexplored.id}).cost) || 'recursos de suporte de vida')}</div>`; }
+    html+=`<button class="og-button secondary small" data-tab="ship">Abastecer e personalizar ↗</button></div>`;
+    return html;
+  }
+  function shipPanel() {
+    const s=E.stats(state);
+    return `<div class="og-panel-title"><h2>Pronta para ir além.</h2><span class="og-pill">NAVE</span></div><div><label class="og-field-label" for="og-name">Nome da nave</label><form class="og-name-field" id="og-name-form"><input id="og-name" name="shipName" maxlength="24" value="${esc(state.ship.name)}" autocomplete="off" aria-label="Nome da nave"><button class="og-button small" type="submit">Salvar</button></form></div><div><span class="og-field-label">Pintura do casco</span><div class="og-paints">${paints.map(p=>`<button class="og-paint" data-action="paint" data-color="${p.color}" style="--paint:${p.color}" aria-label="${p.name}" aria-pressed="${state.ship.color===p.color}" data-tooltip="${p.name}"></button>`).join('')}</div></div><div class="og-facts og-wide">${fact('Economia de combustível',Math.round((1-1/(s.fuelEfficiency||1))*100)+'%')}${fact('Proteção radiológica',Math.round((s.radiationProtection||0)*100)+'%')}${fact('Bônus de coleta','+'+Math.round(((s.collectionBonus||1)-1)*100)+'%')}</div><hr class="og-divider"><div class="og-wide"><div class="og-eyebrow">Oficina de bordo</div><div class="og-supplies"><span>${round(state.resources.ore)} minério</span><span>${round(state.resources.crystals)} cristais</span></div><div class="og-service-grid">${serviceButton('refuel','Reabastecer')}${serviceButton('refillOxygen','Repor oxigênio')}${serviceButton('repair','Reparar casco')}${serviceButton('refine','Refinar dobra')}</div></div><div class="og-actions"><button class="og-button secondary small" data-action="rescue-dialog">Solicitar resgate</button><div class="og-action-note">Desmonte peças extras para recuperar minério.</div></div>`;
+  }
+  function serviceButton(action,name) { const p=preview(action);return `<button class="og-button" data-action="${action}" ${p.allowed ? '' : 'disabled'} aria-label="${esc(name+(!p.allowed && p.reason ? '. '+p.reason : ''))}"><span>${name}</span><small>${esc(p.allowed ? costText(p.cost) || 'Disponível' : p.reason || 'Indisponível')}</small></button>`; }
+  function galaxyPanel() {
+    const p=chosenPlanet();
+    return `<div class="og-panel-title"><h2>Além da fronteira</h2><span class="og-pill">DOBRA</span></div><p class="og-description">Dobre o espaço para alcançar uma nova galáxia. Outros mundos, condições e peças esperam pela sua expedição.</p><div class="og-facts">${fact('Galáxia atual',state.galaxy.name)}${fact('Mundos analisados',state.galaxy.planets.filter(x=>x.scanned).length+' / 6')}${fact('Células disponíveis',state.resources.warpFuel)}${fact('Custo da dobra',E.warpCost(state)+' células')}</div><div class="og-anomaly"><b>COMBUSTÍVEL DE DOBRA</b>Colete cristais e refine células na oficina da nave. Um módulo de dobra melhor reduz o custo da viagem.</div><div class="og-actions">${actionButton('warp','Iniciar salto de dobra',{primary:true})}${!preview('warp').allowed ? `<div class="og-action-note">${esc(preview('warp').reason)}</div>` : ''}<button class="og-button secondary small" data-tab="ship">Abrir oficina da nave</button></div><hr class="og-divider"><div class="og-wide"><div class="og-eyebrow">Destino local selecionado</div><div style="margin:7px 0 12px;font-size:15px">${esc(p.name)}</div>${p.id===state.location.planetId ? '<button class="og-button small" data-tab="explore">Explorar este planeta</button>' : actionButton('travel','Viajar até aqui',{payload:{planetId:p.id},attrs:`data-planet="${esc(p.id)}"`})}</div>`;
+  }
+  function logPanel() {
+    return `<div class="og-panel-title"><h2>Seu caminho no cosmos</h2></div><p class="og-description">Módulos encontrados, planetas analisados e rotas percorridas. Cada decisão transforma sua nave e sua expedição.</p><div class="og-log-stats og-wide"><div class="og-log-stat"><strong>${state.galaxyIndex+1}</strong><small>galáxias</small></div><div class="og-log-stat"><strong>${round(state.resources.data)}</strong><small>dados</small></div><div class="og-log-stat"><strong>${round(state.turn)}</strong><small>ações</small></div></div><div class="og-anomaly og-wide"><b>SUA NAVE</b>${esc(state.ship.name)}<br>${Object.keys(state.equipped).length} sistemas · ${state.inventory.length} módulos no armazém</div><div class="og-actions"><button class="og-button primary" data-tab="explore">Continuar explorando</button><button class="og-button secondary" data-action="help">Manual do explorador</button></div>`;
+  }
+  function moduleCard(m) {
+    const r=rarity(m), current=state.equipped[m.type];
+    const diff=current ? m.power-current.power : 0;
+    return `<article class="og-module" style="--rarity:${r.color}"><div class="og-module-top"><span class="og-module-code">${codes[m.type]||'MD'}</span><span class="og-rarity">${esc(r.name.toUpperCase())}</span></div><h3>${esc(m.name)}</h3><span class="og-rarity">NÍVEL ${esc(m.level)} · POTÊNCIA ${power(m.power)}×${current ? ` (${diff>=0 ? '+' : ''}${power(diff)})` : ''}</span><p>${esc(m.description)}</p><div class="og-module-buttons">${actionButton('equip','Equipar',{small:true,payload:{moduleId:m.id},attrs:`data-module="${esc(m.id)}"`,cost:false})}${actionButton('salvage','Desmontar',{small:true,payload:{moduleId:m.id},attrs:`data-module="${esc(m.id)}"`,cost:false})}</div></article>`;
+  }
+  function renderLower() {
+    const lower=$('og-lower');
+    if(tab==='ship') {
+      lower.innerHTML=`<div class="og-section-heading"><h2>Sistemas equipados</h2><span>8 ENCAIXES MODULARES</span></div><div class="og-equipment">${Object.values(state.equipped).map(m=>`<div class="og-equipped" style="--rarity:${rarity(m).color}" data-tooltip="${esc(m.description)}"><span class="og-equipped-code">${codes[m.type]}</span><div class="og-equipped-text"><strong>${esc(m.name)}</strong><small>${esc(rarity(m).name)} · ${power(m.power)}× potência</small></div></div>`).join('')}</div><div class="og-section-heading"><h2>Módulos no armazém</h2><span>${state.inventory.length} PEÇAS · TROQUE E EXPERIMENTE</span></div><div class="og-inventory">${state.inventory.length ? state.inventory.map(moduleCard).join('') : '<div class="og-inventory-empty">Explore pontos de interesse nos planetas para recuperar novas peças.</div>'}</div>`;
+    } else if(tab==='log') {
+      lower.innerHTML=`<div class="og-section-heading"><h2>Últimas transmissões</h2><span>REGISTRO DA EXPEDIÇÃO</span></div><div class="og-logbook">${state.log.map((l,i)=>`<div class="og-log-entry"><time>${String(l.id).padStart(3,'0')}</time><span>${esc(l.text)}</span></div>`).join('')}</div>`;
+    } else {
+      lower.innerHTML=`<div class="og-section-heading"><h2>${tab==='galaxy' ? 'Mundos desta galáxia' : 'Seu próximo horizonte'}</h2><span>ESCOLHA UM DESTINO</span></div><div class="og-destinations">${state.galaxy.planets.map(p=>`<button class="og-planet-card ${p.id===selected ? 'is-selected' : ''}" data-select="${esc(p.id)}" aria-pressed="${p.id===selected}" aria-label="Selecionar ${esc(p.name)}, ${biomeNames[p.biome]}, ${p.id===state.location.planetId ? 'local atual' : E.travelCost(state,p.id)+' combustível'}"><span class="og-planet-orb" style="--planet-color:${p.color}" aria-hidden="true"></span>${p.id===state.location.planetId ? '<span class="og-orbit-marker">VOCÊ</span>' : ''}<strong>${esc(p.name)}</strong><small>${esc(biomeNames[p.biome] || p.biome)}</small><small>${p.id===state.location.planetId ? (state.location.mode==='docked' ? 'Ancorada' : 'Em órbita') : `${E.travelCost(state,p.id)} combustível`} ${p.scanned ? '· ✓' : ''}</small></button>`).join('')}</div>`;
+    }
+  }
+  function render() {
+    if(!state.galaxy.planets.some(p=>p.id===selected)) selected=state.location.planetId;
+    root.querySelectorAll('.og-tabs button').forEach(b=>{ const active=b.dataset.tab===tab;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',String(active)); });
+    root.dataset.view=tab;
+    renderResources();renderScene();
+    $('og-sidebar').innerHTML=tab==='ship' ? shipPanel() : tab==='galaxy' ? galaxyPanel() : tab==='log' ? logPanel() : planetPanel();
+    renderLower();
+  }
+  function message(text,ok) { $('og-message').textContent=text;$('og-message').parentElement.classList.toggle('is-error',ok===false); }
+  function playSound(kind) {
+    if(!soundEnabled) return;
+    try {
+      audioContext=audioContext || new (window.AudioContext||window.webkitAudioContext)();
+      audioContext.resume();
+      const osc=audioContext.createOscillator(),gain=audioContext.createGain(),time=audioContext.currentTime;
+      osc.type='sine';osc.frequency.setValueAtTime(kind==='warp' ? 90 : kind==='error' ? 160 : 500,time);osc.frequency.exponentialRampToValueAtTime(kind==='warp' ? 700 : kind==='error' ? 85 : 900,time+.3);
+      gain.gain.setValueAtTime(0.0001,time);gain.gain.exponentialRampToValueAtTime(.055,time+.03);gain.gain.exponentialRampToValueAtTime(.0001,time+.35);osc.connect(gain);gain.connect(audioContext.destination);osc.start(time);osc.stop(time+.36);
+    } catch (_) {}
+  }
+  function act(action,payload) {
+    const oldInventory=new Set(state.inventory.map(m=>m.id));
+    let result;
+    try { result=E.dispatch(state,action,payload||{}); } catch(err) { message('Não foi possível concluir a ação. A expedição continua disponível.',false); console.error(err);return {ok:false,message:String(err)}; }
+    message(result.message,result.ok);
+    if(!result.ok) {playSound('error');return result;}
+    if(['travel','warp','rescue'].includes(action)) {selected=state.location.planetId;tab='explore';lastFound=null;}
+    if(action==='explore') lastFound=state.inventory.find(m=>!oldInventory.has(m.id)) || lastFound;
+    if(['travel','warp','scan','dock','explore'].includes(action)) {
+      scene.effect(action);root.dataset.effect=action;
+      $('og-event-label').textContent=({travel:'Traçando nova rota',warp:'Dobra espacial',scan:'Analisando assinaturas',dock:'Ancoragem estabelecida',explore:'Expedição de superfície'})[action];
+      clearTimeout(effectTimer);effectTimer=setTimeout(()=>{delete root.dataset.effect;},1100);
+    }
+    playSound(action);persist();render();
+    return result;
+  }
+  function closeDialog() {
+    $('og-dialog').hidden=true;$('og-dialog').innerHTML='';
+    Array.from(root.children).forEach(el=>{el.inert=false;});
+    if(focusBeforeDialog && focusBeforeDialog.isConnected) focusBeforeDialog.focus();
+  }
+  function dialog(title,body) {
+    focusBeforeDialog=document.activeElement;
+    const el=$('og-dialog');el.hidden=false;
+    el.innerHTML=`<section class="og-dialog" role="dialog" aria-modal="true" aria-labelledby="og-dialog-title"><div class="og-dialog-head"><h2 id="og-dialog-title">${esc(title)}</h2><button data-action="close-dialog" aria-label="Fechar">×</button></div>${body}</section>`;
+    Array.from(root.children).forEach(child=>{if(child!==el)child.inert=true;});
+    el.querySelector('button').focus();
+  }
+  function help() {
+    dialog('Seu primeiro salto começa aqui.',`<p>Você comanda uma exploradora modular. As decisões são por turno: nada consome recursos enquanto você pensa.</p><ol><li><b>Analise o planeta</b> para descobrir atmosfera, radiação e anomalias.</li><li><b>Ancore e explore</b> os três pontos de interesse. Cada expedição consome oxigênio; ambientes hostis também danificam o casco.</li><li><b>Equipe suas descobertas</b> em Minha nave. A peça anterior volta ao armazém, e a potência muda as capacidades reais da nave.</li><li><b>Abasteça na oficina.</b> Minério serve para combustível e reparos; cristais viram células de dobra. Oxigênio é gratuito quando ancorado em um planeta respirável; fora dele, custa créditos ou minério.</li><li><b>Viaje mais longe.</b> Saia do planeta para viajar. Na aba Galáxia, use células de dobra para gerar uma nova região.</li></ol><div class="og-rarity-legend">${Object.values(E.rarities).map(r=>`<span style="color:${r.color}">● ${esc(r.name)}</span>`).join('')}</div><p>Arraste para girar a nave; use a roda do mouse para aproximar. O progresso é salvo automaticamente quando o navegador permite. Se faltar recurso, a oficina oferece resgate.</p><button class="og-button primary" data-action="close-dialog">Vamos explorar</button><button class="og-button secondary small" data-action="reset-dialog">Começar uma nova expedição</button>`);
+  }
+  function onClick(event) {
+    const button=event.target.closest('button,a');if(!button||!root.contains(button)||button.disabled)return;
+    if(button.dataset.tab) {tab=button.dataset.tab;render();persist();return;}
+    if(button.dataset.select) {selected=button.dataset.select;render();persist();return;}
+    const action=button.dataset.action;if(!action)return;
+    event.preventDefault();
+    if(action==='home') {tab='explore';render();return;}
+    if(action==='help') return help();
+    if(action==='close-dialog') return closeDialog();
+    if(action==='camera') {scene.resetCamera();return;}
+    if(action==='sound') {soundEnabled=!soundEnabled;button.textContent=soundEnabled?'Som: on':'Som: off';button.setAttribute('aria-pressed',String(soundEnabled));button.setAttribute('aria-label',soundEnabled?'Desativar sons':'Ativar sons');playSound('toggle');return;}
+    if(action==='rescue-dialog') {dialog('Voltar em segurança',`<p>O resgate restaura os recursos essenciais e devolve a nave à órbita. Parte do minério, dos cristais e dos créditos paga o serviço. Seus módulos são preservados.</p><button class="og-button primary" data-action="confirm-rescue">Confirmar resgate</button><button class="og-button secondary" data-action="close-dialog">Continuar por conta própria</button>`);return;}
+    if(action==='confirm-rescue') {closeDialog();act('rescue');return;}
+    if(action==='reset-dialog') {dialog('Uma nova fronteira',`<p>Isso substitui sua expedição salva por uma nova nave e novos mundos.</p><button class="og-button primary" data-action="confirm-reset">Confirmar nova expedição</button><button class="og-button secondary" data-action="close-dialog">Manter minha expedição</button>`);return;}
+    if(action==='confirm-reset') {closeDialog();state=E.create();tab='explore';selected=state.location.planetId;lastFound=null;persist();render();message('Nova expedição iniciada. Seu primeiro planeta espera pela análise.');return;}
+    const payload={};if(button.dataset.planet)payload.planetId=button.dataset.planet;if(button.dataset.site)payload.siteId=button.dataset.site;if(button.dataset.module)payload.moduleId=button.dataset.module;if(button.dataset.color)payload.color=button.dataset.color;
+    act(action,payload);
+  }
+  function onSubmit(event) {if(event.target.id==='og-name-form'){event.preventDefault();act('rename',{name:$('og-name').value.trim()});}}
+  function onKey(event) {
+    if(event.key==='Escape'&&!$('og-dialog').hidden){closeDialog();return;}
+    if(!$('og-dialog').hidden && event.key==='Tab') {
+      const controls=Array.from($('og-dialog').querySelectorAll('button,input,a')).filter(e=>!e.disabled);
+      if(event.shiftKey&&document.activeElement===controls[0]){event.preventDefault();controls[controls.length-1].focus();}
+      else if(!event.shiftKey&&document.activeElement===controls[controls.length-1]){event.preventDefault();controls[0].focus();}return;
+    }
+    if(/INPUT|TEXTAREA|SELECT/.test(event.target.tagName)||!$('og-dialog').hidden)return;
+    if(['1','2','3','4'].includes(event.key)){tab=['explore','ship','galaxy','log'][Number(event.key)-1];render();persist();}
+  }
+  function onGlobals(event) {const snapshot=event.detail&&event.detail.globals&&event.detail.globals.widgetState;if(snapshot&&applySnapshot(snapshot)){lastFound=null;render();}}
+  root.addEventListener('click',onClick);root.addEventListener('submit',onSubmit);root.addEventListener('keydown',onKey);window.addEventListener('openai:set_globals',onGlobals);
+  window.orbitApp={getState:()=>state,act,getView:()=>({tab,selected}),destroy(){scene.destroy();clearTimeout(effectTimer);root.removeEventListener('click',onClick);root.removeEventListener('submit',onSubmit);root.removeEventListener('keydown',onKey);window.removeEventListener('openai:set_globals',onGlobals);if(audioContext)audioContext.close();}};
+  render();
+  if(loaded)message('Bem-vindo de volta, comandante. Sua expedição está pronta para continuar.');
+})();
+
+</script>
+
+</body>
+</html>

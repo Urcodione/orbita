@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');global.OrbitEngine=require('./engine.js');require('./economy.js');require('./campaign.js');require('./campaign-events.js');require('./campaign-guidance.js');
+const E=OrbitEngine,H=require('./expedition-test-helper.cjs');
+let s=E.create(1234);for(const m of Object.values(s.equipped)){m.power=4;m.capabilities={heat:10000,cold:10000,radiation:10000,pressure:10000,toxicity:100,gas:true,liquid:true};}
+const a=E.campaignView(s).active;s.location.planetId=a.targetPlanetId;Object.assign(s.resources,{hull:E.stats(s).maxHull,oxygen:E.stats(s).maxOxygen,fuel:E.stats(s).maxFuel});H.start(s,a.targetSiteId);H.walk(s,E.expeditionView(s).core);H.checkedAct(s,'expeditionInteract');
+assert(E.encounterView(s));assert.deepEqual(E.encounterView(E.restore(E.snapshot(s))).options,E.encounterView(s).options,'choice order is stable after reload');const reserve=s.expedition.reserve,integrity=s.expedition.integrity;H.checkedAct(s,'expeditionEncounter',{index:1});assert.equal(s.expedition.reserve,reserve-2);assert.equal(s.expedition.integrity,integrity-1);assert.equal(s.expedition.storyStep,undefined);H.rejectUnchanged(s,'expeditionRecover');
+H.checkedAct(s,'expeditionEncounter',{index:0});s=E.restore(E.snapshot(s));assert(s);assert.equal(E.encounterView(s).step,1);H.checkedAct(s,'expeditionEncounter',{index:1});H.checkedAct(s,'expeditionEncounter',{index:2});H.checkedAct(s,'expeditionRecover');assert.equal(E.campaignView(s).active.itemOwned,false,'discovery still provisional before extraction');
+const hull=s.resources.hull,energy=s.expedition.reserve;H.checkedAct(s,'expeditionOverdrive');assert.equal(s.resources.hull,hull-12);assert.equal(s.expedition.reserve,Math.min(s.expedition.maxReserve,energy+6));s=E.restore(E.snapshot(s));assert(s);H.rejectUnchanged(s,'expeditionOverdrive');H.walk(s,E.expeditionView(s).base);H.checkedAct(s,'expeditionExtract');assert(E.campaignView(s).active.itemOwned);assert.equal(s.resources.hull,hull-12,'damage survives extraction');
+const hostile=E.create(1234);H.start(hostile);hostile.expedition.reserve-=5;hostile.resources.hull=12;H.rejectUnchanged(hostile,'expeditionOverdrive');hostile.expedition.storyStep=99;assert.equal(E.restore(E.snapshot(hostile)),null);
+console.log('PASS encounter mistakes, protected relic extraction, persisted encounter stages, paid once-only emergency discharge, restore validation and hull consequence.');
+// Exercise all chapters using real movements, recovery, extraction and module assembly.
+require('./campaign.test.cjs');

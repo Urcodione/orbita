@@ -1,0 +1,77 @@
+#orbit-game .og-catalog-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#orbit-game .og-catalog-tabs button{min-height:40px;padding:7px;background:#19313f;border:1px solid #486575;border-radius:10px;font-size:11px;color:var(--og-dim)}
+#orbit-game .og-catalog-tabs button[aria-pressed=true]{background:#36505d;border-color:#9bb9bc;color:var(--og-text)}
+#orbit-game .og-catalog-identity{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0}
+#orbit-game .og-catalog-identity strong{font-size:14px;font-weight:400;overflow-wrap:anywhere}
+#orbit-game .og-catalog-identity>span{font-size:11px;white-space:nowrap;color:var(--og-dim)}
+#orbit-game .og-catalog-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:3px 0}
+#orbit-game .og-catalog-counts>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+#orbit-game .og-catalog-counts strong{font:19px/1.1 monospace;color:var(--og-text)}
+#orbit-game .og-catalog-counts span{font-size:10px;color:var(--og-dim)}
+#orbit-game .og-catalog-progress{display:flex;flex-direction:column;gap:5px;min-width:0}
+#orbit-game .og-catalog-progress>div:first-child{display:flex;justify-content:space-between;gap:6px;font-size:11px;color:var(--og-dim)}
+#orbit-game .og-catalog-progress strong{font:12px monospace;color:var(--og-green)}
+#orbit-game .og-catalog-track{height:5px;overflow:hidden;border-radius:5px;background:#2c4350}
+#orbit-game .og-catalog-track i{display:block;height:100%;background:var(--og-green);border-radius:5px}
+#orbit-game .og-catalog-progress small{font-size:10px;color:var(--og-dim)}
+#orbit-game .og-catalog-list{display:flex;flex-direction:column;gap:8px}
+#orbit-game .og-catalog-system{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:63px;padding:10px;background:#1c3442;border:1px solid #486575;border-radius:11px;text-align:left}
+#orbit-game .og-catalog-system>span{min-width:0;display:flex;flex-direction:column;gap:5px}
+#orbit-game .og-catalog-system strong{font-size:13px;font-weight:400;overflow-wrap:anywhere}
+#orbit-game .og-catalog-system small{font-size:10px;color:var(--og-dim);line-height:1.4}
+#orbit-game .og-catalog-system b{font:13px monospace;color:var(--og-green);flex:none}
+#orbit-game .og-catalog-system i{font:20px sans-serif;color:var(--og-dim);margin-left:5px}
+#orbit-game .og-catalog-record{padding:11px;background:#142c39;border-radius:11px;display:flex;flex-direction:column;gap:9px}
+#orbit-game .og-catalog-card-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+#orbit-game .og-catalog-card-title h3{font-size:14px;font-weight:400;overflow-wrap:anywhere}
+#orbit-game .og-catalog-card-title>span{font:9px monospace;color:var(--og-dim);flex:none}
+#orbit-game .og-catalog-record.is-complete .og-catalog-card-title>span{color:var(--og-green)}
+#orbit-game .og-catalog-record p,#orbit-game .og-catalog-mystery p{font-size:11px;color:var(--og-dim)}
+#orbit-game .og-catalog-mystery{padding:11px;background:#0b2230;border-radius:11px;display:flex;flex-direction:column;gap:9px}
+#orbit-game .og-catalog-mystery strong{font-size:13px;font-weight:400}
+#orbit-game .og-catalog-back{align-self:flex-start}
+#orbit-game .og-catalog-note{font-size:11px;color:var(--og-dim)}
+#orbit-game .og-map-levels{grid-template-columns:repeat(4,minmax(0,1fr))}
+#orbit-game .og-map-levels [data-action=catalog]{color:var(--og-green)}
+#orbit-game .og-catalog-system:active{background:#2b4b5b}
+#orbit-game .og-catalog-tabs button small{display:block;font-size:10px;opacity:.8;margin-top:3px}
+#orbit-game .og-collection-progress{display:grid;grid-template-columns:1fr auto;gap:7px;font-size:11px;margin-top:9px;padding:8px;background:#142f3deb;border-radius:10px}
+#orbit-game .og-collection-progress span{color:#b0c8d2}#orbit-game .og-collection-progress progress{grid-column:1/-1;width:100%;height:5px;accent-color:#a2d9c2}
+#orbit-game .og-collection-slot{min-height:132px}#orbit-game .og-silhouette{position:relative;background:radial-gradient(ellipse,#46617066,transparent 70%);border-radius:50%}
+#orbit-game .og-silhouette .og-trade-art{filter:brightness(0)!important;opacity:.65}
+#orbit-game .og-silhouette b{position:absolute;inset:0;display:grid;place-items:center;font-size:23px;color:#a6bcc6;text-shadow:0 2px 4px #000}
+#orbit-game .og-collection-slot.is-unknown{border-style:dashed;border-color:#4b616e;background:#132a38de}
+#orbit-game .og-collection-complete{text-align:center;color:#f5d49b;font-size:12px}
+@media(max-height:680px){#orbit-game .og-collection-slot{min-height:105px}}
+
+/* Atlas: one subject per screen, no automatic page slicing. */
+#orbit-game .og-atlas-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+#orbit-game .og-atlas-tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#102a3a;border:1px solid #405e72;border-radius:12px;min-height:64px;font-size:11px}
+#orbit-game .og-atlas-tabs button[aria-pressed=true]{border-color:#9cddd9;background:#234450}
+#orbit-game .og-atlas-tabs canvas,#orbit-game .og-atlas-tabs .og-trade-art{width:44px;height:36px}
+#orbit-game .og-atlas-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#orbit-game .og-atlas-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;height:108px;padding:6px;border:1px solid #46677c;background:#142e40;border-radius:13px;text-align:center}
+#orbit-game .og-atlas-tile canvas{width:70px;height:51px}
+#orbit-game .og-atlas-tile .og-trade-art{width:48px;height:48px}
+#orbit-game .og-atlas-tile strong{font-size:11px;line-height:13px}
+#orbit-game .og-atlas-tile small{font-size:9px;color:#bfd4dd}
+#orbit-game .og-atlas-tile progress{width:80%;height:4px}
+#orbit-game .og-atlas-summary{display:flex;flex-direction:column;gap:5px;margin:4px 0 10px;font-size:13px}
+#orbit-game .og-atlas-summary small{font-size:11px;color:#bed4e1}
+#orbit-game .og-atlas-detail{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:10px;border:1px solid #46677c;border-radius:14px;background:#102a3a}
+#orbit-game .og-atlas-detail>canvas{width:140px;height:100px}
+#orbit-game .og-atlas-detail>.og-trade-art{width:68px;height:68px}
+#orbit-game .og-atlas-detail>strong{font-size:16px}
+#orbit-game .og-atlas-detail p{font-size:11px;line-height:1.4}
+#orbit-game .og-atlas-detail>small{font-size:11px;color:#b8d2dc}
+#orbit-game .og-atlas-picker{display:flex;flex-direction:column;gap:4px;width:100%;font-size:10px;color:#bbd6df;margin:0 0 8px}
+#orbit-game .og-atlas-picker select{width:100%;min-height:40px;background:#193a4b;color:#f2f9ff;border:1px solid #7195a9;border-radius:9px;padding:6px;font-size:12px}
+#orbit-game .og-atlas-progress{display:flex;align-items:center;gap:7px;width:100%;font-size:12px}
+#orbit-game .og-atlas-progress progress{flex:1;min-width:0;height:6px}
+#orbit-game .og-atlas-progress small{font-size:10px}
+#orbit-game .og-atlas-route{display:flex;align-items:center;gap:8px;background:transparent;color:#e9f7ff;min-height:44px}
+#orbit-game .og-atlas-route .og-painted-module{width:36px;height:36px}
+#orbit-game .og-atlas-unknown{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#273b49,#081521);display:grid;place-items:center;font-size:34px;color:#668796}
+#orbit-game .og-atlas-tile .og-silhouette{height:48px}
+#orbit-game .og-sheet[data-sheet=catalog] .og-sheet-content{overflow:hidden}
+@media(max-height:650px){#orbit-game .og-atlas-detail{gap:6px;padding:7px}#orbit-game .og-atlas-detail>canvas{height:75px;width:108px}#orbit-game .og-atlas-detail>.og-trade-art{width:50px;height:50px}#orbit-game .og-atlas-tile{height:97px}}

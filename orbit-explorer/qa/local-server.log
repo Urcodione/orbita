@@ -1,0 +1,211 @@
+127.0.0.1 - - [11/Oct/2026 08:06:07] "GET /?mobile=1&v=fronteiras HTTP/1.1" 200 -
+127.0.0.1 - - [11/Oct/2026 08:07:52] "GET /?mobile=1&v=fronteiras HTTP/1.1" 200 -
+127.0.0.1 - - [11/Oct/2026 08:07:52] code 404, message File not found
+127.0.0.1 - - [11/Oct/2026 08:07:52] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [11/Oct/2026 08:08:15] "GET /?mobile=1&v=fronteiras HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 12:24:45] "GET /?mobile=1&v=expedicoes HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 19:47:19] "GET /?mobile=1&v=expedicoes HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 19:47:30] "GET /?mobile=1&v=expedicoes HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 19:47:31] "GET /?mobile=1&v=expedicoes HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 19:47:31] code 404, message File not found
+127.0.0.1 - - [13/Oct/2026 19:47:31] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [13/Oct/2026 20:15:49] "GET /?mobile=1&qa=lab HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 20:15:49] code 404, message File not found
+127.0.0.1 - - [13/Oct/2026 20:15:49] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [13/Oct/2026 20:15:53] "GET /?mobile=1&qa=lab HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 55660)
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 1422, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             directory=args.directory)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 732, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/usr/lib/python3.14/http/server.py", line 739, in do_GET
+    self.copyfile(f, self.wfile)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/http/server.py", line 942, in copyfile
+    shutil.copyfileobj(source, outputfile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/shutil.py", line 257, in copyfileobj
+    fdst_write(buf)
+    ~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+127.0.0.1 - - [13/Oct/2026 20:16:26] "GET /?mobile=1&qa=lab HTTP/1.1" 200 -
+127.0.0.1 - - [13/Oct/2026 20:16:27] code 404, message File not found
+127.0.0.1 - - [13/Oct/2026 20:16:27] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 00:44:49] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 00:44:49] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 00:52:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 08:46:38] "GET /?mobile=1&v=oficina HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 08:46:38] "GET /?mobile=1&v=oficina HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 08:46:39] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 08:46:39] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 08:48:29] "GET /?mobile=1&v=oficina HTTP/1.1" 304 -
+127.0.0.1 - - [14/Oct/2026 08:48:48] "GET /?mobile=1&v=oficina HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 08:48:49] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 08:48:49] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 20:43:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 20:44:23] "GET /?mobile=1&v=controle HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 20:45:18] "GET /?mobile=1&v=controle HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 13:56:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 14:00:47] "GET /?mobile=1&v=inspecao HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 14:01:00] "GET /?mobile=1&v=inspecao HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:27:53] "GET /?mobile=1&v=toque HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:28:46] "GET /?mobile=1&v=toque HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:28:46] code 404, message File not found
+127.0.0.1 - - [15/Oct/2026 15:28:46] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [15/Oct/2026 15:28:49] "GET /?mobile=1&v=toque HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:28:59] "GET /?mobile=1&v=toque HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:30:47] "GET /?mobile=1&v=toque HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:30:47] "GET /?mobile=1&v=toque HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 16:43:03] "GET /?mobile=1&v=toque HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 23:03:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 23:03:04] code 404, message File not found
+127.0.0.1 - - [15/Oct/2026 23:03:04] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [15/Oct/2026 23:03:42] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 23:03:43] code 404, message File not found
+127.0.0.1 - - [15/Oct/2026 23:03:43] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 13:25:28] "GET /?mobile=1&v=catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 13:25:54] "GET /?mobile=1&v=catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 17:45:05] "GET /?mobile=1&v=pixel HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 17:45:05] "GET /?mobile=1&v=pixel HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 17:53:33] "GET /?mobile=1&v=cartoon HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 17:53:44] "GET /?mobile=1&v=cartoon HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 17:56:35] "GET /?mobile=1&v=cartoon HTTP/1.1" 304 -
+127.0.0.1 - - [16/Oct/2026 18:02:18] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 18:02:19] code 404, message File not found
+127.0.0.1 - - [16/Oct/2026 18:02:19] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [16/Oct/2026 18:02:19] "GET /assets/andorinha-illustrated.png HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 18:05:31] "GET /?mobile=1&v=andorinha HTTP/1.1" 200 -
+127.0.0.1 - - [16/Oct/2026 18:05:32] "GET /?mobile=1&v=andorinha HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:32:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:32:07] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 00:32:07] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 00:32:07] "GET /assets/andorinha-open.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:32:07] "GET /assets/modules-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:32:07] "GET /assets/worlds-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:32:07] "GET /assets/galaxies-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:34:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:34:21] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 00:34:21] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 00:34:21] "GET /assets/andorinha-open.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:34:22] "GET /assets/modules-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:34:22] "GET /assets/worlds-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:34:22] "GET /assets/galaxies-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:37:58] "GET /?mobile=1&v=universo-ilustrado HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:38:06] "GET /?mobile=1&v=universo-ilustrado HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:38:24] "GET /?mobile=1&v=universo-ilustrado HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 00:45:16] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:45:16] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 00:45:16] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 00:45:16] "GET /assets/phenomena-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:46:10] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:46:11] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 00:46:11] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 00:46:11] "GET /assets/phenomena-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:46:30] "GET /?mobile=1&v=rotas-cosmicas HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:51:18] "GET /?mobile=1&v=rotas-cosmicas HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 00:56:45] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:56:46] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 00:56:46] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 00:56:46] "GET /assets/stars-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 00:57:04] "GET /?mobile=1&v=sistemas-ilustrados HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 01:01:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 01:01:01] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 01:01:01] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 01:01:12] "GET /?mobile=1&v=orbitas-e-luas HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 01:01:30] "GET /?mobile=1&v=orbitas-e-luas HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 10:47:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:14] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 10:47:14] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 10:47:14] "GET /assets/commerce-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:15] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:15] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 10:47:15] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 10:47:15] "GET /assets/andorinha-illustrated.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:16] "GET /assets/andorinha-open.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:16] "GET /assets/modules-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:16] "GET /assets/worlds-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:47:16] "GET /assets/galaxies-atlas.png HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:48:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:48:04] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 10:48:04] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 10:48:06] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 10:48:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:48:10] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 10:48:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:48:44] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 10:48:44] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 10:48:46] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 10:48:49] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 10:48:50] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 10:49:51] "GET /?mobile=1&v=entrepostos HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:31:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:31:04] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:31:04] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:31:13] "GET /?mobile=1&v=estacao-no-mapa HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:48:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:48:03] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:48:03] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:48:06] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:48:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:48:34] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:48:34] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:48:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:48:48] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:48:48] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:48:50] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:48:51] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:48:53] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:48:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:48:55] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:48:55] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:48:57] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:48:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:49:01] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:49:53] "GET /?mobile=1&v=cartoes-e-projetos HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:51:58] "GET /?mobile=1&v=cartoes-e-projetos HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:59:38] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:59:39] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:59:39] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:59:40] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:59:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:59:43] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:59:45] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:59:46] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:59:46] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:59:48] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:59:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:59:51] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 11:59:51] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 11:59:51] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 11:59:52] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 11:59:53] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 12:00:05] "GET /?mobile=1&v=carrossel-de-pecas HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 12:02:11] "GET /?mobile=1&v=carrossel-de-pecas HTTP/1.1" 304 -
+127.0.0.1 - - [17/Oct/2026 12:04:41] "GET /?mobile=1&v=cartoes-limpos HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 12:14:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 12:14:59] code 404, message File not found
+127.0.0.1 - - [17/Oct/2026 12:14:59] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [17/Oct/2026 12:15:01] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Oct/2026 12:15:23] "GET /?mobile=1&v=contexto-e-estoque HTTP/1.1" 200 -

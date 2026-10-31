@@ -1,0 +1,139 @@
+#orbit-game{--og-cosmic:#ba8cf5;--og-cosmic-ink:#1c1534;--og-cosmic-glow:#e1c9ff}
+#orbit-game .og-campaign-access{margin-left:auto;margin-right:8px;color:var(--og-cosmic-glow);border-color:#c1a0ec55;font-size:20px}
+#orbit-game .og-campaign-scene{width:100%;height:100%;background-image:var(--scene-art);background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#191529}
+#orbit-game .og-campaign-cover{position:relative;min-height:216px;overflow:hidden;border:1px solid #b99ad74a;border-radius:18px;background:#17132a;margin-bottom:12px}
+#orbit-game .og-campaign-cover>.og-campaign-scene{position:absolute;inset:0;opacity:.78}
+#orbit-game .og-campaign-cover>div:last-child{position:relative;z-index:1;padding:82px 16px 16px;background:linear-gradient(transparent,#151324eb 47%,#151324)}
+#orbit-game .og-campaign-cover h3{font-size:23px;line-height:1.15;margin:6px 0 9px;color:#f2e6ff}
+#orbit-game .og-campaign-cover small,.og-mission-objective>small,#orbit-game .og-quest-card small,#orbit-game .og-quest-vendor small{color:#c5acd8;font-size:10px;font-weight:750;letter-spacing:.07em}
+#orbit-game .og-campaign-cover p{font-size:13px;line-height:1.5;margin:0;color:#d9cfe4}
+#orbit-game .og-campaign-stages{display:flex;gap:6px;justify-content:center;margin:5px 0 12px}
+#orbit-game .og-campaign-stages i{width:25px;height:25px;display:grid;place-items:center;font-style:normal;font-size:10px;background:#241e37;border:1px solid #5b4a6b;border-radius:50%;color:#9c8aad}
+#orbit-game .og-campaign-stages .is-current{border-color:#d7b5fb;color:#efdfff;box-shadow:0 0 12px #b78be040}
+#orbit-game .og-campaign-stages .is-done{color:#1e1337;background:#b995dd;border-color:#b995dd}
+#orbit-game .og-campaign-tabs button[aria-pressed=true]{background:#6a47805c;color:#ecd9ff;border-color:#b792dd}
+#orbit-game .og-mission-objective{padding:16px;border:1px solid #b99ad74a;border-radius:16px;background:#251b35a6;margin-bottom:12px}
+#orbit-game .og-mission-objective h3{font-size:17px;line-height:1.35;color:#e7d8f5;margin:7px 0}
+#orbit-game .og-mission-objective p{font-size:12px;line-height:1.5;color:#bdb0ca}
+#orbit-game .og-mission-location{display:block;font-size:12px;color:#d4b7f0;margin-top:8px}
+#orbit-game .og-mission-research{display:grid;gap:8px;margin-bottom:14px}
+#orbit-game .og-mission-progress{display:grid;grid-template-columns:1fr auto;gap:6px;padding:9px 12px;background:#29233377;border-radius:10px;font-size:11px}
+#orbit-game .og-mission-progress progress,#orbit-game .og-gate-resistance progress{width:100%;height:5px;grid-column:1/-1;accent-color:#bd97e9}
+#orbit-game .og-quest-card{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid #ad85c74d;border-radius:15px;background:#1d1830b0;margin-bottom:8px}
+#orbit-game .og-quest-card h3{margin:6px 0;font-size:16px}
+#orbit-game .og-quest-card p{font-size:12px;line-height:1.45;color:#c7b8d2;margin:6px 0}
+#orbit-game .og-quest-card b{font-size:11px;color:#d4b1f4}
+#orbit-game .og-quest-specimen{display:block;flex:none;filter:hue-rotate(38deg) drop-shadow(0 0 13px #9371b84a)}
+#orbit-game .og-quest-specimen .og-trade-art{height:82px;width:72px}
+#orbit-game .og-quest-card.og-trade-tile{display:flex;flex-direction:column;gap:3px;margin:0}
+#orbit-game .og-quest-card.is-unknown .og-quest-specimen{filter:brightness(.1);opacity:.7}
+#orbit-game .og-quest-lock{font-size:9px;color:#a592b5;margin-top:7px}
+#orbit-game .og-mission-ready{color:#d1b1ec;font-size:12px;line-height:1.5;text-align:center}
+#orbit-game .og-gate-resistance{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;padding:15px;margin-bottom:12px;background:#211936a8;border-radius:14px}
+#orbit-game .og-gate-resistance strong{color:#e2caff;font-size:32px;font-weight:700}
+#orbit-game .og-gate-resistance span{font-size:12px;color:#c2afd7}
+#orbit-game .og-campaign-rack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+#orbit-game .og-campaign-rack>div{display:flex;flex-direction:column;align-items:center;padding:8px 2px;background:#21192dcc;border:1px solid #63546e;border-radius:12px;opacity:.48}
+#orbit-game .og-campaign-rack>.is-ready{opacity:1;border-color:#b491dc;box-shadow:inset 0 0 15px #8155a72b}
+#orbit-game .og-campaign-rack .og-painted-module{width:47px;height:47px}
+#orbit-game .og-campaign-rack small{font-size:9px;text-align:center;line-height:1.3;min-height:23px}
+#orbit-game .og-campaign-rack b{font-size:12px;color:#d9b1ff;margin-top:3px}
+#orbit-game .og-campaign-poster{position:relative;display:block;width:100%;height:100%;min-height:120px;border:1px solid #b99ad748;border-radius:24px;overflow:hidden;box-shadow:0 13px 28px #0005;background:#171127;text-align:left;color:#f0e5ff;padding:0}
+#orbit-game .og-campaign-poster>.og-campaign-scene{position:absolute;inset:0;opacity:.82}
+#orbit-game .og-campaign-poster>span{position:absolute;bottom:52px;left:20px;font-size:27px;line-height:.98;font-weight:800;letter-spacing:.04em;text-shadow:0 2px 14px #170d35}
+#orbit-game .og-campaign-poster>.og-campaign-stages{position:absolute;bottom:0;left:0;width:100%;margin-bottom:16px}
+#orbit-game .og-beacon:has(.og-campaign-poster){top:110px;bottom:220px;left:22px;right:22px;display:block;max-height:310px;transform:none;width:auto}
+#orbit-game .og-quest-vendor{display:grid;grid-template-columns:74px 1fr;gap:8px;padding:14px;border:1px solid #b69cd381;border-radius:16px;background:#261b3aeb;margin:12px 0}
+#orbit-game .og-quest-vendor h3{font-size:17px;margin:5px 0;color:#eddcfc}
+#orbit-game .og-quest-vendor p{font-size:12px;margin:4px 0}
+#orbit-game .og-quest-vendor>button,#orbit-game .og-quest-vendor>small{grid-column:1/-1}
+#orbit-game .og-painted-module.is-cosmic{background-image:var(--og-cosmic-art);background-size:400% 200%;filter:drop-shadow(0 0 9px #a56ce448)}
+#orbit-game .og-item-card.is-cosmic{background:radial-gradient(ellipse at 50% 30%,#4b2c716b,transparent 60%),#191626dc;border-color:#c69beb}
+#orbit-game .og-cosmic-tag{display:block;text-align:center;border:1px solid #b88fe075;padding:7px;margin:9px 0;border-radius:9px;color:#d3aff5;background:#47305b66;font-size:11px}
+#orbit-game .og-item-card.is-cosmic .og-card-crest>span:first-child{color:#d6b2ff}
+#orbit-game .og-quest-protected{font-size:11px;color:#c5a6db;display:flex;align-items:center;gap:5px;padding:8px 4px}
+#orbit-game .og-wormhole-node{position:absolute;left:82%;top:67%;transform:translate(-50%,-50%);width:63px;height:63px;background:transparent;border:0;border-radius:50%;color:#dfc5ff;font-size:9px}
+#orbit-game .og-wormhole-node>span{position:absolute;top:54px;left:-20px;right:-20px;text-align:center;text-shadow:0 2px 5px #000}
+#orbit-game .og-story-clip{position:absolute;inset:0;z-index:80;isolation:isolate;overflow:hidden;background:#100c1b;color:#f6edff;display:flex;flex-direction:column;justify-content:space-between;border-radius:inherit}
+#orbit-game .og-story-pan{position:absolute;inset:0;z-index:-2;overflow:hidden}
+#orbit-game .og-story-pan .og-campaign-scene{animation:og-story-drift 15s ease-out both}
+#orbit-game .og-story-clip:after{content:'';position:absolute;inset:0;background:linear-gradient(#090711b0,transparent 28%,#09071140 40%,#0b0819ed 68%);z-index:-1}
+#orbit-game .og-story-top{padding:33px 20px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#orbit-game .og-story-top>span{font-size:9px;letter-spacing:.14em;color:#d8c2eb;font-weight:700}
+#orbit-game .og-story-top button{background:#171023ad;border:1px solid #e2cbfb4a;border-radius:16px;padding:9px 12px;color:#f0e5ff;font-size:11px;min-height:38px}
+#orbit-game .og-story-caption{padding:22px 24px 35px}
+#orbit-game .og-story-caption>small{color:#c5a7df;font-size:11px;letter-spacing:.18em}
+#orbit-game .og-story-caption h2{font-size:35px;line-height:1.05;letter-spacing:-.025em;font-weight:750;margin:12px 0 18px;max-width:300px}
+#orbit-game .og-story-caption p{font-size:15px;line-height:1.65;color:#d7cbdf;margin:0;max-width:340px}
+#orbit-game .og-story-progress{display:flex;gap:6px;margin:23px 0 18px}
+#orbit-game .og-story-progress i{flex:1;height:3px;background:#75607b55}
+#orbit-game .og-story-progress .is-current{background:#dfb9ff;box-shadow:0 0 10px #c184ed77}
+#orbit-game .og-story-progress .is-done{background:#886999}
+#orbit-game .og-story-controls{display:flex;gap:8px}
+#orbit-game .og-story-controls button{min-height:44px;background:#3d2a50a6;border:1px solid #b08cc244;color:#eadbf5;border-radius:12px;font-size:12px;padding:9px 12px}
+#orbit-game .og-story-controls button:first-child{font-size:22px;min-width:44px}
+#orbit-game .og-story-controls button:last-child{margin-left:auto;background:#c9a1ea;color:#251335;font-weight:750}
+#orbit-game .og-story-controls button:disabled{opacity:.3}
+@keyframes og-story-drift{from{transform:scale(1.02)}to{transform:scale(1.12) translateY(-1%)}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-story-pan .og-campaign-scene{animation:none}}
+#orbit-game[data-compact=true] .og-story-top{padding:24px 16px 0}
+#orbit-game[data-compact=true] .og-story-caption{padding:18px 20px 22px}
+#orbit-game[data-compact=true] .og-story-caption h2{font-size:27px;margin:8px 0 13px}
+#orbit-game[data-compact=true] .og-story-caption p{font-size:13px;line-height:1.5}
+#orbit-game[data-compact=true] .og-story-progress{margin:17px 0 13px}
+#orbit-game[data-compact=true] .og-campaign-cover>div:last-child{padding-top:44px}
+#orbit-game[data-compact=true] .og-campaign-cover{min-height:170px}
+#orbit-game[data-compact=true] .og-campaign-cover h3{font-size:20px}
+#orbit-game[data-compact=true] .og-campaign-cover p{font-size:12px}
+#orbit-game[data-compact=true] .og-beacon:has(.og-campaign-poster){top:100px;bottom:204px;left:28px;right:28px}
+#orbit-game[data-compact=true] .og-campaign-poster>span{font-size:22px;bottom:44px}
+#orbit-game[data-compact=true] .og-campaign-poster>.og-campaign-stages{margin-bottom:10px;gap:5px}
+#orbit-game[data-compact=true] .og-campaign-stages i{width:22px;height:22px}
+
+#orbit-game .og-relic-art{width:78px;height:78px;background:var(--og-relics-art) var(--relic-x) var(--relic-y)/400% 200% no-repeat;border-radius:14px;filter:drop-shadow(0 0 12px #9371b84a)}
+#orbit-game .og-mission-transmission{border-left:2px solid #bd99e4;background:#21192e9e;padding:12px 14px;border-radius:0 12px 12px 0;margin:12px 0}
+#orbit-game .og-mission-transmission small{color:#ccabe5;font-size:10px;letter-spacing:.1em}
+#orbit-game .og-mission-transmission p{font-size:13px;line-height:1.6;margin-top:8px;color:#dbc9eb}
+#orbit-game .og-quest-recipe{width:100%;border-color:#b88de1;display:grid;grid-template-columns:52px 1fr;gap:9px;text-align:left}
+#orbit-game .og-quest-recipe .og-lab-recipe-meta,#orbit-game .og-quest-recipe>small{grid-column:1/-1}
+
+#orbit-game .og-story-clip[data-paused=true] .og-story-pan .og-campaign-scene{animation-play-state:paused}
+/* Keep each original square illustration in a bounded frame, never stretched to phone height. */
+#orbit-game .og-story-pan{inset:58px 0 auto;height:48%;z-index:-2}
+#orbit-game .og-story-pan .og-campaign-scene{background-size:contain;animation:none;background-color:#100c1b}
+#orbit-game .og-story-clip:after{background:linear-gradient(transparent 40%,#100c1b 61%)}
+#orbit-game .og-story-caption{background:linear-gradient(transparent,#100c1b 12%);padding-top:30px}
+
+#orbit-game .og-mission-compact{padding:8px;border-radius:14px;background:#171e32e8}
+#orbit-game .og-mission-compact h3{margin:5px 0;font-size:17px}
+#orbit-game .og-mission-compact p{font-size:12px;line-height:1.4;margin:8px 0}
+#orbit-game .og-mission-compact>small{font-size:10px;color:#d4c0eb}
+#orbit-game .og-mission-compact .og-mission-research{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+#orbit-game .og-mission-compact .og-mission-progress{padding:4px;margin:0;font-size:10px}
+#orbit-game .og-mission-specimen{display:flex;align-items:center;gap:9px;font-size:12px}
+#orbit-game .og-mission-specimen>span:last-child{display:flex;flex-direction:column;gap:4px}
+#orbit-game .og-mission-specimen .og-quest-specimen{width:46px;height:46px;min-width:46px}
+#orbit-game .og-mission-compact>.og-campaign-scene{position:relative;height:78px;min-height:0;inset:auto;border-radius:10px}
+#orbit-game .og-relic-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+#orbit-game .og-relic-grid .og-quest-card{padding:5px 2px;display:flex;flex-direction:column;text-align:center;gap:4px;min-width:0;margin:0}
+#orbit-game .og-relic-grid .og-quest-specimen{width:42px;height:42px;min-width:0}
+#orbit-game .og-relic-grid strong{font-size:9px;line-height:1.2;min-height:33px}
+#orbit-game .og-relic-grid small{font-size:8px;letter-spacing:0}
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-cover{min-height:85px;padding:8px}
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-cover p{font-size:10px;margin:4px 0}
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-cover h3{font-size:17px;margin:4px 0}
+#orbit-game .og-sheet[data-sheet=campaign] .og-campaign-rack{gap:4px;margin:0}
+#orbit-game .og-sheet[data-sheet=campaign] .og-campaign-rack>div{padding:3px}
+#orbit-game .og-sheet[data-sheet=campaign] .og-campaign-rack .og-painted-module{width:30px;height:30px}
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-resistance{padding:6px;margin:5px 0}
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-resistance strong{font-size:23px}
+
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-cover>div:last-child{padding:7px;background:#11182cdd}
+#orbit-game .og-sheet[data-sheet=campaign] .og-gate-cover{margin-bottom:4px}
+#orbit-game .og-sheet[data-sheet=campaign] .og-campaign-rack small{min-height:18px;font-size:8px}
+#orbit-game .og-sheet[data-sheet=campaign] .og-campaign-rack b{font-size:10px;margin:0}
+#orbit-game .og-sheet[data-sheet=campaign] .og-sheet-footer .og-note{font-size:10px;line-height:1.3;margin:3px 0}
+
+#orbit-game .og-gate-title{display:flex;flex-direction:column;gap:4px;padding:7px;background:#191b31;border-radius:10px}
+#orbit-game .og-gate-title small{font-size:10px;color:#c9bfdb}
+#orbit-game .og-sheet[data-sheet=campaign] .og-campaign-rack small{min-height:20px;line-height:1.1}

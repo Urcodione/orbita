@@ -1,0 +1,124 @@
+#orbit-game .og-trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#orbit-game .og-trade-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:125px;padding:10px;background:linear-gradient(145deg,#284450,#132d3b);border:1px solid #456371;border-radius:16px;text-align:center}
+#orbit-game .og-trade-tile strong{font-size:12px;line-height:1.3}#orbit-game .og-trade-tile small{font-size:11px;color:#afc7cf;line-height:1.4}
+#orbit-game .og-trade-art{display:block;width:60px;height:60px;flex:none;background-image:var(--og-commerce-art);background-size:200% 300%;background-position:var(--art-x) var(--art-y);background-repeat:no-repeat}
+#orbit-game .og-station-portrait{display:flex;align-items:center;flex-direction:column;gap:5px;background:radial-gradient(ellipse,#2a4d5a,transparent 70%);padding:6px}
+#orbit-game .og-station-portrait .og-trade-art{width:170px;height:145px}#orbit-game .og-station-portrait small{font-size:11px;color:#afc7cf}
+#orbit-game .og-trade-balance{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#afc7cf}#orbit-game .og-trade-balance strong{color:#ffd09e;white-space:nowrap}
+#orbit-game .og-product-identity{display:flex;align-items:center;gap:16px}#orbit-game .og-product-identity .og-trade-art{width:80px;height:80px}#orbit-game .og-product-identity small{display:block;font-size:11px;color:#afc7cf;margin-top:8px}
+#orbit-game .og-trade-quantity{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;text-align:center}#orbit-game .og-trade-quantity button{min-height:44px;background:#2c4a59;border-radius:12px}
+#orbit-game .og-sheet-tabs button[aria-pressed=true]{background:#36586a;color:#fff}
+#orbit-game .og-module-tile .og-painted-module{width:65px;height:65px;border:0;background-color:transparent}
+#orbit-game .og-module-tile{border-color:var(--rarity)}
+#orbit-game .og-lab-recipe .og-painted-module{width:66px;height:66px;margin:auto}
+#orbit-game .og-lab-recipe{min-height:130px;text-align:center;align-items:center}
+#orbit-game .og-lab-recipe .og-lab-description{display:none}
+@media(max-height:680px){#orbit-game .og-trade-tile{min-height:98px;padding:7px}#orbit-game .og-trade-art{width:42px;height:42px}#orbit-game .og-station-portrait .og-trade-art{width:120px;height:100px}}
+#orbit-game .og-station-node{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:transparent;border:0;border-radius:50%;padding:0;pointer-events:auto;width:72px;height:64px}
+#orbit-game .og-station-node .og-nav-caption{color:#e2d8bc;max-width:110px}
+#orbit-game .og-lab-ingredient .og-trade-art{width:34px;height:34px}
+#orbit-game .og-station-portrait .og-trade-art{clip-path:inset(0 0 10% 0)}
+/* Cards are objects; scene exits point to named places, never browsing history. */
+#orbit-game .og-header>.og-round{margin-left:auto}
+#orbit-game .og-place-exit{background:transparent!important;color:#a9d3dc!important}
+#orbit-game .og-item-card{position:relative;border:1px solid var(--rarity);border-radius:20px;padding:12px;background:radial-gradient(ellipse at 50% 22%,#365664,#142e3c 68%);display:flex;flex-direction:column;gap:7px;overflow:hidden}
+#orbit-game .og-card-crest{display:flex;align-items:center;justify-content:space-between;color:var(--rarity);font-size:11px}
+#orbit-game .og-favorite{background:transparent!important;border:0!important;border-radius:50%;min-width:44px;min-height:44px;padding:0!important;font-size:27px!important;line-height:1;color:#ffd18b}
+#orbit-game .og-card-art{display:flex;justify-content:center}#orbit-game .og-card-art .og-module-code{width:100px;height:100px;background-color:transparent;border:0;box-shadow:none}
+#orbit-game .og-item-card h3{text-align:center;font-size:16px;font-weight:500}#orbit-game .og-card-specialty{text-align:center;color:var(--rarity);font-size:11px}
+#orbit-game .og-card-metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}#orbit-game .og-card-metrics>div{padding:8px;background:#0c202e99;border-radius:10px;text-align:center;min-width:0}
+#orbit-game .og-card-metrics small{display:block;font-size:10px;color:#a3bbc5}#orbit-game .og-card-metrics strong{display:block;font-size:15px;margin-top:3px;color:#e8f3ef}
+#orbit-game .og-card-description{font-size:12px;min-height:65px;text-align:center}
+#orbit-game .og-card-tools{display:flex;justify-content:space-around;border-top:1px solid #69838b55;padding-top:5px}#orbit-game .og-card-tools button{background:transparent;display:flex;align-items:center;gap:9px;padding:5px 12px;min-height:44px;color:#c2d7df}#orbit-game .og-card-tools span{font-size:27px}#orbit-game .og-card-tools small{font-size:11px}
+#orbit-game .og-card-faces{display:flex;justify-content:center;gap:2px}#orbit-game .og-card-faces button{background:transparent;min-width:44px;min-height:36px;color:#738e9b}#orbit-game .og-card-faces button[aria-pressed=true]{color:#f6c18b}
+#orbit-game .og-project-dock{display:flex;align-items:center;gap:10px;width:100%;padding:8px;background:#294452;border:1px solid #987b57;border-radius:12px;text-align:left;min-height:52px}
+#orbit-game .og-project-dock .og-painted-module{width:38px;height:38px;flex:none}#orbit-game .og-project-dock span{flex:1;min-width:0}#orbit-game .og-project-dock small{display:block;font-size:9px;color:#f3c997}#orbit-game .og-project-dock strong{font-size:11px}#orbit-game .og-project-dock b{font-size:22px}
+#orbit-game .og-capacity-tools{display:grid;grid-template-columns:1fr 1fr;gap:6px}#orbit-game .og-capacity-tools button{min-height:44px;background:#304c5b;color:#ffd2a5;border-radius:10px;font-size:11px;padding:7px}
+#orbit-game .og-product-identity{background:radial-gradient(ellipse at 30% 50%,#34596a,#17313f);border:1px solid #4a6978;border-radius:18px;padding:14px;min-height:115px}
+#orbit-game .og-lab-ingredient{border-radius:14px;background:linear-gradient(135deg,#294653,#152e3b);padding:12px;border:1px solid #4c6a75}
+@media(max-height:680px){#orbit-game .og-item-card{padding:8px;gap:4px}#orbit-game .og-card-art .og-module-code{width:54px;height:54px}#orbit-game .og-card-crest .og-favorite{min-height:36px}#orbit-game .og-card-metrics>div{padding:5px}#orbit-game .og-card-metrics strong{font-size:13px}#orbit-game .og-item-card h3{font-size:13px}#orbit-game .og-card-faces button{min-height:30px}#orbit-game .og-project-dock{padding:5px;min-height:44px}}
+#orbit-game .og-card-carousel{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px}
+#orbit-game .og-card-carousel>button{background:transparent;min-width:44px;min-height:64px;font-size:38px;color:#d5e8ed;border-radius:12px}
+#orbit-game .og-card-carousel>button:disabled{opacity:.18}
+#orbit-game .og-install-tag{font-size:10px;background:#315447;color:#c9f1d7;padding:4px 7px;border-radius:20px;margin-left:auto;margin-right:6px}
+@media(max-height:680px){#orbit-game .og-card-metrics{gap:4px;grid-template-columns:repeat(3,minmax(0,1fr))}#orbit-game .og-card-metrics small{font-size:9px}#orbit-game .og-card-metrics strong{font-size:11px}}
+#orbit-game .og-object-arrow{background:transparent;min-width:32px;min-height:44px;font-size:30px;padding:0;color:#d5e8ed}#orbit-game .og-product-identity{gap:6px;padding:8px}#orbit-game .og-product-identity .og-trade-art{width:54px;height:60px}
+#orbit-game .og-object-switch{display:flex;justify-content:space-between;align-items:center;color:#abc5ce;font-size:11px}#orbit-game .og-object-switch button{background:transparent;min-width:44px;min-height:36px;font-size:28px;color:#d5e8ed}
+#orbit-game .og-service-preview{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px;background:#183442;border:1px solid #385767;border-radius:14px}
+#orbit-game .og-service-preview h3 span{font-size:11px;color:#bad0d8}
+#orbit-game .og-service-budget{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:4px;padding:8px;background:#0f2633;border-radius:9px;font-size:12px}
+#orbit-game .og-service-budget>small{grid-column:1/-1;color:#9bb7c3;font-size:10px}
+#orbit-game .og-service-budget strong{color:#e5d0a6}#orbit-game .og-service-budget strong small{color:#a4bbc5;font-weight:400}
+#orbit-game .og-service-preview>.og-button{grid-column:2;grid-row:1;align-self:center}
+#orbit-game .og-sheet[data-room]{position:relative;isolation:isolate;background:#10202b;overflow:hidden}
+/* A room is a panorama: preserve its full field of view instead of enlarging it to a portrait screen. */
+#orbit-game .og-room-heading{flex:none;box-sizing:border-box;aspect-ratio:var(--og-room-aspect,2.25);margin:-8px -18px 12px;padding:8px 18px 10px;display:flex;flex-direction:column;justify-content:space-between;background-image:linear-gradient(180deg,#02080e33,transparent 38%,transparent 65%,#061321b8),var(--og-room-image);background-size:100% 100%,contain;background-position:center;background-repeat:no-repeat;background-color:#0c1720}
+#orbit-game .og-room-heading .og-panel-navigation{margin-bottom:0}
+#orbit-game .og-room-heading .og-sheet-header{margin:0;min-height:26px}
+#orbit-game .og-room-heading .og-sheet-header h2{color:#fff4e7;text-shadow:0 2px 4px #000,0 0 10px #0009}
+#orbit-game .og-room-heading .og-place-exit{background:#07121bcc!important;color:#e9f4f4!important}
+#orbit-game .og-room-heading .og-sheet-close{background:#07121bcc}
+@media(max-height:680px){#orbit-game .og-sheet[data-sheet=system-module]{padding:6px 15px 9px}#orbit-game .og-room-heading{margin:-6px -15px 9px;padding:6px 15px 9px}}
+
+#orbit-game .og-sheet[data-room="0"]{--og-room-image:var(--og-room-0)}#orbit-game .og-sheet[data-room="1"]{--og-room-image:var(--og-room-1)}#orbit-game .og-sheet[data-room="2"]{--og-room-image:var(--og-room-2)}#orbit-game .og-sheet[data-room="3"]{--og-room-image:var(--og-room-3)}#orbit-game .og-sheet[data-room="4"]{--og-room-image:var(--og-room-4)}#orbit-game .og-sheet[data-room="5"]{--og-room-image:var(--og-room-5)}
+#orbit-game .og-sheet[data-room] .og-sheet-header,#orbit-game .og-sheet[data-room] .og-panel-navigation{ text-shadow:0 2px 5px #001018}
+#orbit-game .og-sheet[data-room] .og-trade-tile{background:linear-gradient(145deg,#284450eb,#132d3beb)}
+#orbit-game .og-sheet[data-room] .og-lab-fixed{background:#112b38e8;border-radius:12px;padding:7px}
+#orbit-game .og-bio-art{background-image:var(--og-biology-art)}
+#orbit-game .og-material-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+#orbit-game .og-material-categories button{min-width:0;padding:5px 3px;min-height:44px}
+
+/* Maintenance: four instruments, one readable service at a time. */
+#orbit-game .og-maintenance-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+#orbit-game .og-maintenance-tabs button{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;padding:7px 2px;border:1px solid #486579;border-radius:12px;background:#102638;color:#e8f5ff}
+#orbit-game .og-maintenance-tabs button[aria-pressed=true]{border-color:#8ddde9;background:#23475a}
+#orbit-game .og-maintenance-tabs button>span{display:grid;place-items:center;width:38px;height:38px}
+#orbit-game .og-maintenance-tabs button>span>*{width:38px;height:38px}
+#orbit-game .og-maintenance-tabs strong{font-size:10px}
+#orbit-game .og-maintenance-tabs small{font-size:10px;color:#c4dbe7}
+#orbit-game .og-service-preview{grid-template-columns:minmax(0,1fr) 72px}
+#orbit-game .og-service-preview>.og-note,#orbit-game .og-service-preview>p{grid-column:1/-1;text-align:left}
+#orbit-game .og-service-preview>.og-button{grid-row:1;grid-column:2;width:72px;max-width:72px}
+#orbit-game .og-service-budget{grid-template-columns:minmax(0,1fr) auto;font-size:11px}
+#orbit-game .og-sheet[data-sheet=maintenance] .og-sheet-content{gap:12px}
+#orbit-game .og-sheet[data-sheet=maintenance] .og-service-preview{padding:10px;gap:7px}
+
+/* Compact destinations and regional shelves: no sequential pages. */
+#orbit-game .og-market-categories{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}
+#orbit-game .og-market-categories button{min-width:0;display:flex;flex-direction:column;align-items:center;background:#122b3b;border:1px solid #3e586a;border-radius:10px;padding:4px 0;color:#dcebf1}
+#orbit-game .og-market-categories button[aria-pressed=true]{border-color:#7cd9da;background:#244855}
+#orbit-game .og-market-categories .og-trade-art{width:32px;height:32px;min-height:0;min-width:0}
+#orbit-game .og-market-categories small{font-size:8px}
+#orbit-game .og-market-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#orbit-game .og-market-products .og-market-card{min-height:0;padding:6px;gap:3px}
+#orbit-game .og-market-products .og-market-display{height:45px;min-height:0}
+#orbit-game .og-market-products .og-trade-art{width:45px;height:45px}
+#orbit-game .og-market-products .og-market-card strong{font-size:11px}
+#orbit-game .og-market-products .og-market-prices b{font-size:13px}
+#orbit-game .og-market-products .og-market-stock{font-size:9px}
+#orbit-game .og-sheet[data-sheet=station] .og-station-portrait{min-height:0;height:82px;padding:4px}
+#orbit-game .og-sheet[data-sheet=station] .og-station-portrait .og-trade-art{height:48px;width:48px}
+#orbit-game .og-sheet[data-sheet=station] .og-trade-tile{min-height:90px;padding:5px}
+#orbit-game .og-sheet[data-sheet=station] .og-trade-tile>span{height:40px;width:40px}
+#orbit-game .og-sheet[data-sheet=journey] .og-journey-next{padding:8px}
+#orbit-game .og-sheet[data-sheet=journey] .og-journey-next h3{font-size:16px}
+#orbit-game .og-sheet[data-sheet=journey] .og-journey-next p{font-size:12px}
+
+#orbit-game .og-sheet[data-sheet=station] .og-station-portrait{height:54px;display:grid;grid-template-columns:48px 1fr;gap:2px 8px;text-align:left}
+#orbit-game .og-sheet[data-sheet=station] .og-station-portrait>.og-trade-art{grid-row:1/3}
+#orbit-game .og-sheet[data-sheet=station] .og-station-portrait strong{font-size:13px}
+#orbit-game .og-sheet[data-sheet=station] .og-station-portrait small{font-size:10px}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor{display:grid;grid-template-columns:34px 1fr 65px;padding:5px;gap:5px;margin:0 0 5px}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor>.og-quest-specimen{height:34px;width:34px;min-width:0}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor h3{font-size:11px;margin:3px 0}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor p{font-size:10px;margin:3px 0}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor small{font-size:8px;letter-spacing:0}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor>button{grid-column:3;grid-row:1;min-height:45px;background:transparent!important;padding:0;border:0!important}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor>button .og-control-symbol{width:30px;height:30px}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor>button .og-control-symbol>*{width:30px;height:30px}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor>button .og-control-caption{font-size:8px}
+#orbit-game .og-sheet[data-sheet=station] .og-quest-vendor>small{grid-column:1/-1}
+
+#orbit-game .og-station-destinations{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+#orbit-game .og-station-destinations strong{font-size:10px}
+#orbit-game .og-station-destinations small{font-size:9px}

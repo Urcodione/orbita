@@ -1,0 +1,31 @@
+<div id="orbit-game" lang="pt-BR">
+  <header class="og-header">
+    <a class="og-brand" href="#" data-action="home" aria-label="Órbita, voltar à exploração"><span class="og-emblem" aria-hidden="true"></span><span>ÓRBITA<small>FRONTEIRAS DESCONHECIDAS</small></span></a>
+    <div class="og-header-right"><span class="og-prototype">EDIÇÃO EXPLORADOR <b>0.1</b></span><button class="og-icon-button" data-action="sound" aria-label="Ativar sons" aria-pressed="false">Som: off</button><button class="og-icon-button" data-action="help" aria-label="Como jogar">?</button></div>
+  </header>
+  <nav class="og-nav" aria-label="Áreas da nave">
+    <div class="og-tabs"><button data-tab="explore" class="is-active" aria-pressed="true"><span>01</span> Explorar</button><button data-tab="ship" aria-pressed="false"><span>02</span> Minha nave</button><button data-tab="galaxy" aria-pressed="false"><span>03</span> Galáxia</button><button data-tab="log" aria-pressed="false"><span>04</span> Diário</button></div>
+    <div class="og-coordinates" id="og-location"></div>
+  </nav>
+  <div class="og-resources" id="og-resources" aria-label="Recursos da nave"></div>
+  <div class="og-mission" id="og-mission"></div>
+  <main class="og-main">
+    <section class="og-stage-wrap" aria-label="Espaço e nave">
+      <div class="og-stage" id="og-stage">
+        <canvas id="og-canvas" role="img" aria-label="Nave exploradora tridimensional ao lado de um planeta; arraste para girar a nave"></canvas>
+        <div class="og-scene-heading" id="og-scene-heading"></div>
+        <div class="og-scene-status" id="og-scene-status"></div>
+        <div class="og-map" id="og-map" hidden></div>
+        <div class="og-ship-caption" id="og-ship-caption"></div>
+        <button class="og-camera" data-action="camera" aria-label="Restaurar ângulo da câmera">↺ <span>Câmera</span></button>
+        <div class="og-scene-hint" id="og-scene-hint">Arraste a nave para girar · Role para aproximar</div>
+        <div class="og-event-label" id="og-event-label" aria-hidden="true"></div>
+      </div>
+      <div class="og-transmission" role="status" aria-live="polite"><span class="og-signal" aria-hidden="true">⌁</span><span id="og-message">Comandante, nossos sensores detectaram algo em Auralis IV.</span></div>
+    </section>
+    <aside class="og-sidebar" id="og-sidebar" aria-label="Painel de exploração"></aside>
+  </main>
+  <section class="og-lower" id="og-lower" aria-label="Destinos e equipamentos"></section>
+  <footer class="og-footer"><span><span class="og-dot"></span> <span id="og-save-status">Expedição pronta</span></span><span id="og-footer-stats"></span><button data-action="help">Manual do explorador ↗</button></footer>
+  <div class="og-dialog-backdrop" id="og-dialog" hidden></div>
+</div>

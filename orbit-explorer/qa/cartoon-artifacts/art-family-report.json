@@ -1,0 +1,9 @@
+{
+  "interior": true,
+  "modules": 8,
+  "worlds": 10,
+  "galaxies": true,
+  "cargoPicking": true,
+  "resourcesPreserved": true,
+  "errors": []
+}

@@ -1,0 +1,26 @@
+#orbit-game #og-guide{position:absolute;z-index:75;top:0;left:0;right:0;padding:12px 16px;background:#112d3f;color:#edf4fa;border-bottom:1px solid #729aaf;box-shadow:0 6px 16px #0006;pointer-events:auto;font-size:12px;line-height:1.4}
+#orbit-game #og-guide[hidden]{display:none}
+#orbit-game #og-guide>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#orbit-game #og-guide strong{font-size:14px;color:#ade5e8}
+#orbit-game #og-guide p{margin:6px 0;color:#e0edf3;font-size:12px;line-height:1.4}
+#orbit-game #og-guide button{border:1px solid #719aaf;border-radius:10px;background:#234b60;color:#fff;min-height:36px;padding:6px 10px;font-size:11px;flex-shrink:0}
+#orbit-game #og-guide small{font-size:11px;color:#afcfde}
+#orbit-game .og-guide-target{outline:3px solid #a5edf0!important;outline-offset:3px;box-shadow:0 0 18px #70dce96b!important}
+#orbit-game .og-field-cell.og-guide-target{background:#9eecef30!important;outline-offset:-3px}
+/* Prisma: four horizons, one compact flight-school instrument. */
+#orbit-game #og-guide{background:linear-gradient(115deg,#172c40f5,#302448f5);border-bottom:1px solid #baacf4;padding:8px 12px;backdrop-filter:blur(12px)}
+#orbit-game .og-prisma-progress{display:flex;gap:5px;margin:0 0 6px}
+#orbit-game .og-prisma-progress span{flex:1;text-align:center;border-bottom:2px solid #587381;color:#b9c3d0;font-size:9px;line-height:18px;letter-spacing:.4px}
+#orbit-game .og-prisma-progress span[data-biome=forest]{--climate:#8fdbb5}#orbit-game .og-prisma-progress span[data-biome=ice]{--climate:#9edaff}#orbit-game .og-prisma-progress span[data-biome=volcanic]{--climate:#ffb17c}#orbit-game .og-prisma-progress span[data-biome=gas]{--climate:#d6b4ff}
+#orbit-game .og-prisma-progress .current{color:var(--climate);border-color:var(--climate);background:#ffffff0b}#orbit-game .og-prisma-progress .done{border-color:var(--climate);color:var(--climate)}
+#orbit-game .og-descent-launch{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:9px 12px;background:#142b35;border:1px solid #517d79;border-radius:16px}
+#orbit-game .og-descent-launch.is-blocked{background:#342431;border-color:#eab08d}
+#orbit-game .og-descent-launch [role=status]>strong{display:block;font-size:11px;line-height:1.3;color:#dbeee5}
+#orbit-game .og-descent-launch.is-blocked [role=status]>strong{color:#ffceb1}
+#orbit-game .og-descent-shortages{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+#orbit-game .og-descent-shortages>span{display:grid;grid-template-columns:16px 1fr;gap:0 4px;font-size:10px;line-height:1.3}
+#orbit-game .og-descent-shortages svg{width:14px;height:14px}#orbit-game .og-descent-shortages b,#orbit-game .og-descent-shortages small{grid-column:2;color:#ffcfb6}
+#orbit-game .og-descent-launch>.og-button{flex:none!important;width:72px!important;min-width:0!important;margin:0!important}
+#orbit-game .og-descent-launch .og-button:disabled{opacity:.6}
+@media(max-height:650px){#orbit-game #og-guide p{font-size:11px;margin:4px 0}#orbit-game #og-guide strong{font-size:12px}#orbit-game #og-guide button{min-height:30px;padding:4px 8px}}
+#orbit-game #og-guide[data-position=bottom]{top:auto;bottom:70px;border-top:1px solid #baacf4;border-bottom:0}

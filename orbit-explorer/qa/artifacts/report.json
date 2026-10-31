@@ -1,0 +1,115 @@
+{
+  "url": "file:///mnt/c/Users/vanze/.codex/.chatgpt-projects/g-p-6ac92244bd0c81919ab60a20aff51f4c/orbit-explorer/index.html",
+  "results": [
+    {
+      "name": "Standalone local file loads and canvas renders",
+      "passed": true,
+      "details": {
+        "url": "file:///mnt/c/Users/vanze/.codex/.chatgpt-projects/g-p-6ac92244bd0c81919ab60a20aff51f4c/orbit-explorer/index.html",
+        "canvas": {
+          "w": 1092,
+          "h": 546
+        }
+      }
+    },
+    {
+      "name": "Help is accessible and closes with Escape",
+      "passed": true
+    },
+    {
+      "name": "Scan reveals planet analysis",
+      "passed": true
+    },
+    {
+      "name": "Dock exposes explorable sites",
+      "passed": true
+    },
+    {
+      "name": "Explore awards resources and recovered module",
+      "passed": true,
+      "details": {
+        "recovered": "Turbina de Íons",
+        "rarity": "rare"
+      }
+    },
+    {
+      "name": "Ship inventory equips recovered module",
+      "passed": true
+    },
+    {
+      "name": "Paint changes ship appearance state",
+      "passed": true,
+      "details": {
+        "color": "#71bdc4"
+      }
+    },
+    {
+      "name": "Refine converts crystals into warp fuel",
+      "passed": true
+    },
+    {
+      "name": "Launch returns ship to orbit",
+      "passed": true
+    },
+    {
+      "name": "Travel changes planet and consumes normal fuel",
+      "passed": true
+    },
+    {
+      "name": "Warp generates a distinct galaxy",
+      "passed": true,
+      "details": {
+        "galaxy": "Jardim de Nyx 2"
+      }
+    },
+    {
+      "name": "Rescue recovers resources and returns safe orbit",
+      "passed": true
+    },
+    {
+      "name": "All desktop tabs expose content without errors",
+      "passed": true
+    },
+    {
+      "name": "Reload preserves expedition, equipment and paint",
+      "passed": true
+    },
+    {
+      "name": "Mobile 360px layout has no horizontal overflow in all tabs",
+      "passed": true,
+      "details": [
+        {
+          "tab": "explore",
+          "viewport": 360,
+          "document": 360,
+          "game": 360
+        },
+        {
+          "tab": "ship",
+          "viewport": 360,
+          "document": 360,
+          "game": 360
+        },
+        {
+          "tab": "galaxy",
+          "viewport": 360,
+          "document": 360,
+          "game": 360
+        },
+        {
+          "tab": "log",
+          "viewport": 360,
+          "document": 360,
+          "game": 360
+        }
+      ]
+    },
+    {
+      "name": "No browser runtime or console errors",
+      "passed": true
+    }
+  ],
+  "runtimeErrors": [],
+  "consoleErrors": [],
+  "passed": true
+}

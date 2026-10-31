@@ -1,0 +1,66 @@
+{
+  "results": [
+    {
+      "name": "Diary is replaced by the playable expedition tab",
+      "pass": true
+    },
+    {
+      "name": "The idle beacon objective fits 320px and the desktop phone frame without overlapping its action",
+      "pass": true
+    },
+    {
+      "name": "Starting an expedition opens a terrain board without instant loot or completed sites",
+      "pass": true
+    },
+    {
+      "name": "Active expeditions lock ship equipment and travel with no mutation",
+      "pass": true
+    },
+    {
+      "name": "Scan uses a finite expedition reserve and reveals terrain without banking rewards",
+      "pass": true
+    },
+    {
+      "name": "A detour collects a resource cache into temporary cargo without instant ship rewards",
+      "pass": true
+    },
+    {
+      "name": "Cardinal movement reaches the core while extract remains unavailable away from base",
+      "pass": true
+    },
+    {
+      "name": "A solved coupled-rotor puzzle recovers cargo but does not equip or bank it",
+      "pass": true
+    },
+    {
+      "name": "Expedition position, puzzle, temporary cargo and fog persist across reload below the host limit",
+      "pass": true
+    },
+    {
+      "name": "Returning to base and extracting banks recovered rewards exactly once",
+      "pass": true
+    },
+    {
+      "name": "Terrain and contextual controls fit 320, 390 and 736px screens",
+      "pass": true
+    },
+    {
+      "name": "Arrow-key movement works and emergency evacuation preserves installed modules",
+      "pass": true
+    },
+    {
+      "name": "A touch-screen player can launch and steer the surface vehicle by tapping terrain",
+      "pass": true
+    },
+    {
+      "name": "A real version-2 save preserves equipment and progress and retires the diary tab",
+      "pass": true
+    },
+    {
+      "name": "No browser runtime errors during the complete expedition loop",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

@@ -1,0 +1,39 @@
+/* Pixel art lives on the canvas; touch targets and text retain full resolution. */
+#orbit-game{--og-bg:#10182d;--og-panel:#202a45;--og-line:#3c4266;--og-text:#eff4df;--og-dim:#a9bdd0;--og-orange:#f6c180;--og-blue:#9ad6cb;--og-green:#a6cf92;--og-red:#ef8951}
+#orbit-game canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+#orbit-game .og-stage{background:#080e21}
+#orbit-game .og-header,#orbit-game .og-resources,#orbit-game .og-tabs{background:#10182d}
+#orbit-game .og-header{box-shadow:inset 0 2px #2d3553}
+#orbit-game .og-resources{border-bottom:2px solid #2d3553}
+#orbit-game .og-brand{font-family:monospace;letter-spacing:2px;color:#ffe0a3}
+#orbit-game .og-brand small{font-family:"Trebuchet MS",Arial,sans-serif;color:var(--og-dim)}
+#orbit-game .og-heading h1{font-family:monospace;font-weight:700;letter-spacing:-1px;text-shadow:2px 2px #080e21}
+#orbit-game .og-eyebrow{color:#9ad6cb;text-shadow:1px 1px #080e21}
+#orbit-game .og-shade,#orbit-game[data-view=galaxy] .og-shade{background:linear-gradient(180deg,#080e2100 48%,#10182dbb 76%,#10182d 100%)}
+#orbit-game .og-sheet-backdrop{backdrop-filter:none;background:#080e21b3}
+#orbit-game .og-sheet{background:#171f38;border-top:2px solid #6386ab;border-radius:4px 4px 0 0;box-shadow:0 -4px #080e21,0 -6px #2d3553}
+#orbit-game .og-sheet-header h2{color:#ffe0a3}
+#orbit-game .og-sheet-handle{border-radius:0;background:#6386ab}
+#orbit-game .og-sheet-header,#orbit-game .og-sheet-footer{border-color:#3c4266}
+#orbit-game .og-button,#orbit-game .og-link,#orbit-game .og-history-controls button,#orbit-game .og-round,#orbit-game .og-camera-control,#orbit-game .og-sheet-close,#orbit-game .og-ship-back,#orbit-game .og-sheet-tabs,#orbit-game .og-sheet-tabs button,#orbit-game .og-map-levels,#orbit-game .og-map-levels button,#orbit-game .og-catalog-tabs button,#orbit-game .og-catalog-system,#orbit-game .og-cargo-contents button{border-radius:3px}
+#orbit-game .og-button,#orbit-game .og-link,#orbit-game .og-catalog-system{background:#202a45;border-color:#49648a;box-shadow:inset 0 1px #6386ab66,inset 0 -2px #080e21}
+#orbit-game .og-button.primary{background:#f6c180;border-color:#ffe0a3;color:#382932;box-shadow:inset 0 2px #fff1cf,inset 0 -3px #c57957,0 2px #080e21}
+#orbit-game .og-button.primary:not(:disabled):hover{background:#ffe0a3}
+#orbit-game .og-button:active:not(:disabled),#orbit-game .og-link:active:not(:disabled){box-shadow:inset 0 2px #080e21}
+#orbit-game .og-round,#orbit-game .og-camera-control,#orbit-game .og-history-controls button,#orbit-game .og-sheet-close{background:#202a45;box-shadow:inset 0 1px #49648a,inset 0 -2px #080e21}
+#orbit-game .og-meter,#orbit-game .og-meter i,#orbit-game .og-catalog-track,#orbit-game .og-catalog-track i{border-radius:0}
+#orbit-game .og-module,#orbit-game .og-site,#orbit-game .og-recipe,#orbit-game .og-anomaly,#orbit-game .og-empty-part,#orbit-game .og-catalog-record,#orbit-game .og-catalog-mystery{background:#202a45;border-color:#3c4266;border-radius:3px}
+#orbit-game .og-module-code{border-radius:2px;background-color:#10182d;border-color:#49648a;box-shadow:inset 2px 2px #080e21}
+#orbit-game .og-module-code[data-pixel-module]{font-size:0;background-image:var(--pixel-sprite);background-size:32px 32px;background-repeat:no-repeat;background-position:center;image-rendering:pixelated}
+#orbit-game .og-reward .og-module-code[data-pixel-module]{background-size:60px 60px;border-radius:3px;box-shadow:0 0 0 2px #3c4266}
+#orbit-game .og-map-levels,#orbit-game .og-sheet-tabs{background:#10182deb}
+#orbit-game .og-map-levels button.is-active,#orbit-game .og-sheet-tabs button.is-active,#orbit-game .og-catalog-tabs button[aria-pressed=true]{background:#3c4266;color:#eff4df;box-shadow:inset 0 -2px #9ad6cb}
+#orbit-game .og-tabs{border-top:2px solid #3c4266}
+#orbit-game .og-tabs button{border-radius:0}
+#orbit-game .og-tabs button.is-active{color:#ffe0a3;background:#202a45;box-shadow:inset 0 2px #f6c180}
+#orbit-game .og-tabs button>span{font-family:monospace;text-shadow:2px 2px #080e21}
+#orbit-game .og-module-hotspot span{border-radius:2px;background:#171f38;border-color:#49648a;box-shadow:0 2px #080e21}
+#orbit-game .og-module-hotspot i,#orbit-game .og-live:before,#orbit-game .og-mission-dots i{border-radius:0}
+#orbit-game .og-risk,#orbit-game .og-planet-tag,#orbit-game .og-loot span{border-radius:2px}
+#orbit-game .og-field-board{border-radius:2px;box-shadow:0 0 0 2px #49648a,0 0 0 4px #080e21}
+#orbit-game .og-home-indicator{background:#10182d}

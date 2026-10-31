@@ -1,0 +1,38 @@
+{
+  "results": [
+    {
+      "name": "Catalog is reachable from the menu and map, with unknown worlds grouped without names",
+      "pass": true
+    },
+    {
+      "name": "A real orbital scan registers a named discovery without claiming site completion",
+      "pass": true
+    },
+    {
+      "name": "Catalog routes preserve resources and restore the exact system page with back and forward",
+      "pass": true
+    },
+    {
+      "name": "Every catalog card remains reachable without scrolling at 320×568 and 390×844",
+      "pass": true
+    },
+    {
+      "name": "Unvisited galaxy routes reveal neither planetary names nor system names or environmental promises",
+      "pass": true
+    },
+    {
+      "name": "A real warp reveals a new catalog and preserves the previous discovery record",
+      "pass": true
+    },
+    {
+      "name": "Host save and reload retain names, catalog counts and archived discoveries within 16 KiB",
+      "pass": true
+    },
+    {
+      "name": "No browser runtime errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

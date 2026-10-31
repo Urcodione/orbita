@@ -1,0 +1,29 @@
+[
+  {
+    "key": "flight-background",
+    "prompt": "Edit this key art into an animation background plate. Remove ONLY the foreground rocket spaceship and its entire blue engine exhaust trail. Reconstruct the cosmic dust and stars behind them naturally. Keep the existing two immense spiral galaxies, diagonal cyan star river, framing, saturation and all other scenery unchanged. No new objects or text. Same portrait proportions. This will be the background behind a separately animated ship.",
+    "referenced_image_paths": [
+      "/mnt/c/Users/vanze/.codex/generated_images/01a121b3-8c1b-7f13-886b-6cacceaf6dc0/exec-c652dcad-be5e-4028-9024-bcc1af0f135d.png"
+    ],
+    "transparent_background": false,
+    "path": "/mnt/c/Users/vanze/.codex/generated_images/01a121b3-8c1b-7f13-886b-6cacceaf6dc0/exec-a5e42c51-0758-4b28-bd67-af117407914e.png"
+  },
+  {
+    "key": "portal-background",
+    "prompt": "Edit this key art into a clean animation background plate. Remove ONLY the foreground spaceship and its entire violet exhaust trail in the lower foreground. Fill the removed area with natural cosmic nebula and scattered asteroids consistent with the original scene. Preserve the immense ultraviolet portal with its eight energy points, distant Earthlike world, galaxies, viewpoint, colors and composition. No text or extra spacecraft. Same portrait proportions.",
+    "referenced_image_paths": [
+      "/mnt/c/Users/vanze/.codex/generated_images/01a121b3-8c1b-7f13-886b-6cacceaf6dc0/exec-de2aaf3e-d513-47ab-a342-95ebc09b0866.png"
+    ],
+    "transparent_background": false,
+    "path": "/mnt/c/Users/vanze/.codex/generated_images/01a121b3-8c1b-7f13-886b-6cacceaf6dc0/exec-8170610c-7977-42a8-a644-a8bbf6a7fd44.png"
+  },
+  {
+    "key": "flight-ship",
+    "prompt": "Create a single isolated animation asset on a genuinely transparent background: the Andorinha spacecraft matching this reference EXACTLY in design language, rounded ivory hull, orange twin side boosters and swept fins, brass seams, one large turquoise glass cockpit. Show an elegant three-quarter side/front angle with the nose pointing diagonally up and right, engine pointing down and left, as if banking in intergalactic flight. Entire spacecraft in frame with clean sharp alpha edges, no cropping. Beautiful high-detail hand-painted cartoon realism matching the reference. NO engine plume: only a cyan illuminated engine nozzle. No background, no stars, no shadows cast onto a ground, no text, no labels. This is a standalone movable sprite for a cinematic clip.",
+    "referenced_image_paths": [
+      "/mnt/c/users/vanze/.codex/.chatgpt-projects/g-p-6ac92244bd0c81919ab60a20aff51f4c/orbit-explorer/assets/andorinha-illustrated.webp"
+    ],
+    "transparent_background": true,
+    "path": "/mnt/c/Users/vanze/.codex/generated_images/01a121b3-8c1b-7f13-886b-6cacceaf6dc0/exec-86ee1e4f-19fd-40a3-818f-e346da90c55f.png"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "name": "Every main tab and deeply nested laboratory screen fits four fixed viewports",
+      "pass": true
+    },
+    {
+      "name": "No browser runtime errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

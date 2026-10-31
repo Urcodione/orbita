@@ -1,0 +1,415 @@
+{
+  "state": {
+    "version": 1,
+    "seed": 2375159759,
+    "rng": 2247277365,
+    "nextModuleId": 12,
+    "turn": 5,
+    "galaxyIndex": 0,
+    "visitedGalaxies": 1,
+    "galaxy": {
+      "id": "galaxy-0",
+      "seed": 3929532646,
+      "name": "Véu de Íris",
+      "planets": [
+        {
+          "id": "g0-p0",
+          "seed": 2779973496,
+          "name": "Auralis IV",
+          "biome": "forest",
+          "biomeName": "Floresta bioluminescente",
+          "color": "#7edaa6",
+          "temperature": 22,
+          "atmosphere": "Respirável",
+          "breathable": true,
+          "radiation": 8,
+          "gravity": 0.94,
+          "anomaly": "Esporos com memória luminosa",
+          "distance": 30,
+          "size": 0.71,
+          "angle": 3.14,
+          "scanned": true,
+          "sites": [
+            {
+              "id": "g0-p0-s0",
+              "name": "Bosque luminoso",
+              "explored": true
+            },
+            {
+              "id": "g0-p0-s1",
+              "name": "Santuário esquecido",
+              "explored": false
+            },
+            {
+              "id": "g0-p0-s2",
+              "name": "Gruta das sementes",
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p1",
+          "seed": 2796751115,
+          "name": "Veloria II",
+          "biome": "ocean",
+          "biomeName": "Oceano de safira",
+          "color": "#619ddc",
+          "temperature": 19,
+          "atmosphere": "Respirável · umidade elevada",
+          "breathable": true,
+          "radiation": 18,
+          "gravity": 1.2,
+          "anomaly": "O oceano canta em baixa frequência",
+          "distance": 44,
+          "size": 1,
+          "angle": 0.08,
+          "scanned": false,
+          "sites": [
+            {
+              "id": "g0-p1-s0",
+              "name": "Atol flutuante",
+              "explored": false
+            },
+            {
+              "id": "g0-p1-s1",
+              "name": "Estação submersa",
+              "explored": false
+            },
+            {
+              "id": "g0-p1-s2",
+              "name": "Recife abissal",
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p2",
+          "seed": 2813528734,
+          "name": "Talos VI",
+          "biome": "crystal",
+          "biomeName": "Deserto de cristais",
+          "color": "#b7a2e3",
+          "temperature": 23,
+          "atmosphere": "Ionizada · partículas exóticas",
+          "breathable": false,
+          "radiation": 87,
+          "gravity": 1.19,
+          "anomaly": "Um eco responde antes da transmissão",
+          "distance": 73,
+          "size": 1.13,
+          "angle": 0.83,
+          "scanned": false,
+          "sites": [
+            {
+              "id": "g0-p2-s0",
+              "name": "Jardim de prismas",
+              "explored": false
+            },
+            {
+              "id": "g0-p2-s1",
+              "name": "Portal partido",
+              "explored": false
+            },
+            {
+              "id": "g0-p2-s2",
+              "name": "Catedral de quartzo",
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p3",
+          "seed": 2830306353,
+          "name": "Elyria II",
+          "biome": "desert",
+          "biomeName": "Dunas de cobre",
+          "color": "#e9be77",
+          "temperature": 55,
+          "atmosphere": "Rarefeita · poeira metálica",
+          "breathable": false,
+          "radiation": 60,
+          "gravity": 1.13,
+          "anomaly": "Dunas movem-se contra o vento",
+          "distance": 98,
+          "size": 1.09,
+          "angle": 1.91,
+          "scanned": false,
+          "sites": [
+            {
+              "id": "g0-p3-s0",
+              "name": "Mar de dunas",
+              "explored": false
+            },
+            {
+              "id": "g0-p3-s1",
+              "name": "Farol soterrado",
+              "explored": false
+            },
+            {
+              "id": "g0-p3-s2",
+              "name": "Cânion de cobre",
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p4",
+          "seed": 2847083972,
+          "name": "Kepler III",
+          "biome": "ice",
+          "biomeName": "Geleiras eternas",
+          "color": "#92cce8",
+          "temperature": -71,
+          "atmosphere": "Rarefeita · gelo de nitrogênio",
+          "breathable": false,
+          "radiation": 25,
+          "gravity": 0.44,
+          "anomaly": "Auroras que acompanham a nave",
+          "distance": 112,
+          "size": 0.81,
+          "angle": 3.58,
+          "scanned": false,
+          "sites": [
+            {
+              "id": "g0-p4-s0",
+              "name": "Fenda azul",
+              "explored": false
+            },
+            {
+              "id": "g0-p4-s1",
+              "name": "Observatório congelado",
+              "explored": false
+            },
+            {
+              "id": "g0-p4-s2",
+              "name": "Lago sob o gelo",
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p5",
+          "seed": 2863861591,
+          "name": "Nivara IV",
+          "biome": "volcanic",
+          "biomeName": "Mundo vulcânico",
+          "color": "#f59367",
+          "temperature": 101,
+          "atmosphere": "Tóxica · gases sulfúricos",
+          "breathable": false,
+          "radiation": 77,
+          "gravity": 1.41,
+          "anomaly": "Relâmpagos dentro de rios de lava",
+          "distance": 145,
+          "size": 0.92,
+          "angle": 2.33,
+          "scanned": false,
+          "sites": [
+            {
+              "id": "g0-p5-s0",
+              "name": "Caldeira de obsidiana",
+              "explored": false
+            },
+            {
+              "id": "g0-p5-s1",
+              "name": "Forja abandonada",
+              "explored": false
+            },
+            {
+              "id": "g0-p5-s2",
+              "name": "Túnel de lava",
+              "explored": false
+            }
+          ]
+        }
+      ]
+    },
+    "location": {
+      "planetId": "g0-p0",
+      "mode": "docked"
+    },
+    "ship": {
+      "name": "Legado de Íris",
+      "color": "#f0a270"
+    },
+    "resources": {
+      "fuel": 90,
+      "oxygen": 89,
+      "hull": 100,
+      "warpFuel": 1,
+      "crystals": 6,
+      "ore": 24,
+      "credits": 141,
+      "data": 23
+    },
+    "equipped": {
+      "engine": {
+        "id": "m11",
+        "type": "engine",
+        "name": "Motor Vento Solar",
+        "rarity": "rare",
+        "level": 1,
+        "power": 1.72,
+        "origin": "recovered",
+        "description": "Eficiência de voo · 1,72×"
+      },
+      "warp": {
+        "id": "m2",
+        "type": "warp",
+        "name": "Núcleo Horizonte",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Eficiência de dobra · 1,00×"
+      },
+      "life": {
+        "id": "m3",
+        "type": "life",
+        "name": "Filtro Biosfera",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Reserva de oxigênio · 1,00×"
+      },
+      "shield": {
+        "id": "m4",
+        "type": "shield",
+        "name": "Escudo Magnetar",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Proteção ambiental · 1,00×"
+      },
+      "scanner": {
+        "id": "m5",
+        "type": "scanner",
+        "name": "Olho de Órion",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Qualidade da análise · 1,00×"
+      },
+      "arm": {
+        "id": "m6",
+        "type": "arm",
+        "name": "Coletor Aracne",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Coleta de recursos · 1,00×"
+      },
+      "cargo": {
+        "id": "m7",
+        "type": "cargo",
+        "name": "Baú de Órion",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Espaços de inventário · 1,00×"
+      },
+      "survival": {
+        "id": "m8",
+        "type": "survival",
+        "name": "Kit Pioneiro",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Autonomia da expedição · 1,00×"
+      }
+    },
+    "inventory": [
+      {
+        "id": "m9",
+        "type": "scanner",
+        "name": "Scanner Prisma",
+        "rarity": "rare",
+        "level": 1,
+        "power": 1.72,
+        "origin": "cache",
+        "description": "Qualidade da análise · 1,72×"
+      },
+      {
+        "id": "m10",
+        "type": "cargo",
+        "name": "Baú de Órion",
+        "rarity": "uncommon",
+        "level": 1,
+        "power": 1.28,
+        "origin": "cache",
+        "description": "Espaços de inventário · 1,28×"
+      },
+      {
+        "id": "m1",
+        "type": "engine",
+        "name": "Motor Vento Solar",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Eficiência de voo · 1,00×"
+      }
+    ],
+    "progress": {
+      "scans": 1,
+      "landings": 1,
+      "explorations": 1,
+      "modulesEquipped": 1,
+      "warps": 0
+    },
+    "mission": {
+      "stage": 4,
+      "completed": [
+        "scan",
+        "dock",
+        "explore",
+        "equip"
+      ]
+    },
+    "log": [
+      {
+        "id": 5,
+        "text": "Nave registrada como Legado de Íris.",
+        "kind": "info"
+      },
+      {
+        "id": 4,
+        "text": "Motor Vento Solar equipado. Motor Vento Solar foi guardado no armazém.",
+        "kind": "success"
+      },
+      {
+        "id": 3,
+        "text": "Bosque luminoso: Motor Vento Solar (raro) recuperado. +12 minério · +3 cristais.",
+        "kind": "discovery"
+      },
+      {
+        "id": 2,
+        "text": "Ancoragem concluída em Auralis IV. Sistemas prontos para a expedição.",
+        "kind": "info"
+      },
+      {
+        "id": 1,
+        "text": "Auralis IV analisado. Três locais de interesse e uma anomalia identificados. +13 dados.",
+        "kind": "success"
+      },
+      {
+        "id": 0,
+        "text": "Bem-vindo ao Véu de Íris. Auralis IV aguarda sua primeira análise.",
+        "kind": "info"
+      }
+    ]
+  },
+  "tab": "ship",
+  "selected": "g0-p0",
+  "shipDetail": {
+    "mode": "interior",
+    "selectedModule": null,
+    "expanded": false
+  }
+}

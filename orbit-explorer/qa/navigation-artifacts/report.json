@@ -1,0 +1,58 @@
+{
+  "results": [
+    {
+      "name": "Module → laboratory → recipe → component supports exact back and forward navigation",
+      "pass": true
+    },
+    {
+      "name": "Forward navigation after crafting never repeats the transaction",
+      "pass": true
+    },
+    {
+      "name": "Selected comparison returns intact and cancel never replaces installed hardware",
+      "pass": true
+    },
+    {
+      "name": "Every main tab and deeply nested laboratory screen fits four fixed viewports",
+      "pass": true
+    },
+    {
+      "name": "Long help, full inventory, environment and workshop remain fully reachable without scrolling",
+      "pass": true
+    },
+    {
+      "name": "Back returns to the exact inventory page and forward restores the candidate without equipping it",
+      "pass": true
+    },
+    {
+      "name": "Energy, return requirement and usable margin stay visible on the expedition board",
+      "pass": true
+    },
+    {
+      "name": "Spending the return reserve warns before mutation; cancel preserves energy and cargo",
+      "pass": true
+    },
+    {
+      "name": "Explicitly accepting risk spends once and forward navigation cannot repeat it",
+      "pass": true
+    },
+    {
+      "name": "Board movement and keyboard movement both warn before crossing the safe return margin",
+      "pass": true
+    },
+    {
+      "name": "Return to the ship follows a known route, charges its cost and preserves recovered cargo",
+      "pass": true
+    },
+    {
+      "name": "Insufficient-energy return is explained and evacuation never occurs without confirmation",
+      "pass": true
+    },
+    {
+      "name": "No browser runtime errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

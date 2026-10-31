@@ -1,0 +1,602 @@
+/* Instruments keep their identity color; scarcity adds a separate warning. */
+#orbit-game .og-gauge-icon{width:20px;height:20px;flex:none;color:var(--instrument,var(--og-blue))}
+#orbit-game .og-resource{display:grid;grid-template-columns:20px minmax(0,1fr);column-gap:6px;row-gap:0;align-items:center;text-align:left;min-height:40px;padding:0}
+#orbit-game .og-resource>.og-gauge-icon{grid-row:1/3;width:20px;height:24px}
+#orbit-game .og-resource>.og-resource-name{font-size:10px;letter-spacing:0;white-space:nowrap;line-height:12px}
+#orbit-game .og-resource>strong{font:15px/17px monospace;grid-column:2}
+#orbit-game .og-resource>.og-meter{grid-column:1/-1;width:100%;margin-top:3px}
+#orbit-game .og-resource.is-low>strong{color:var(--og-red)}
+#orbit-game .og-field-energy span{display:flex;align-items:center;gap:3px}
+#orbit-game .og-field-energy .og-gauge-icon{width:13px;height:13px}
+#orbit-game .og-journey-track{margin:8px 0 0;padding:7px 10px;min-height:48px;max-width:100%;width:100%;text-align:left;border-radius:11px;background:linear-gradient(110deg,#182f40f5,#342644e8);box-shadow:inset 0 1px #a1cddd25;display:flex;flex-direction:column;gap:4px}
+#orbit-game .og-journey-track>span{display:flex;align-items:center;gap:9px;color:#d1b7ef}
+#orbit-game .og-journey-track b{font:9px/12px monospace;letter-spacing:.8px}
+#orbit-game .og-journey-track small{font:10px/12px monospace}
+#orbit-game .og-journey-track strong{font-size:12px;line-height:15px;font-weight:500;display:flex;justify-content:space-between;gap:5px}
+#orbit-game .og-journey-track strong i{font:18px/15px sans-serif;font-style:normal}
+#orbit-game .og-journey-rack{display:flex;gap:4px}
+#orbit-game .og-journey-rack i{width:9px;height:5px;background:#566272;border-radius:2px}
+#orbit-game .og-journey-rack i.is-done{background:#c6a0fa;box-shadow:0 0 5px #c6a0fa66}
+#orbit-game .og-journey-rack i.is-current{background:#b2cbd9}
+#orbit-game .og-journey-purpose{padding:14px;background:#1d303f;border-radius:13px;display:grid;gap:8px}
+#orbit-game .og-journey-purpose small,#orbit-game .og-journey-next small{font:10px/1.4 monospace;color:#cbb2e7}
+#orbit-game .og-journey-purpose h3,#orbit-game .og-journey-next h3{font-size:17px;line-height:1.3}
+#orbit-game .og-journey-next{display:flex;align-items:center;gap:12px;padding:12px 0}
+#orbit-game .og-journey-next>.og-painted-module{width:66px;height:85px;flex:none}
+#orbit-game .og-journey-next>div{display:grid;gap:6px;min-width:0}
+#orbit-game .og-journey-next b{font-size:11px;color:#d4b9fb}
+#orbit-game .og-journey-checklist{display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:11px;color:var(--og-dim)}
+#orbit-game .og-departure-costs{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+#orbit-game .og-departure-costs>span{display:grid;grid-template-columns:20px auto;gap:3px 5px;align-items:center}
+#orbit-game .og-departure-costs small{grid-column:1/-1;color:var(--og-dim);font-size:10px;line-height:1.3}
+#orbit-game .og-departure-costs b{font:14px monospace}
+#orbit-game [data-cost-resource=fuel]{--instrument:var(--og-orange)}
+#orbit-game [data-cost-resource=hull]{--instrument:var(--og-green)}
+#orbit-game .og-departure-costs .is-short b{color:var(--og-red)}
+#orbit-game .og-story-receipt{padding:10px 12px;border-radius:11px;background:#172e3b;display:grid;gap:5px}
+#orbit-game .og-story-receipt.is-progress{background:linear-gradient(110deg,#233145,#342543)}
+#orbit-game .og-story-receipt small{font:9px monospace;color:#c5b1e7;letter-spacing:.4px}
+#orbit-game .og-story-receipt h3{font-size:14px;line-height:1.25}
+#orbit-game .og-story-receipt p{font-size:11px;line-height:1.4;margin:0}
+#orbit-game .og-story-receipt>div{display:flex;justify-content:space-between;gap:5px;font-size:10px;color:var(--og-dim)}
+#orbit-game .og-story-receipt b{color:#d9c4f8}
+@media(max-width:350px){#orbit-game .og-resources{gap:8px;padding-left:12px;padding-right:12px}#orbit-game .og-resource{column-gap:4px}#orbit-game .og-resource>.og-resource-name{font-size:9px}#orbit-game .og-journey-track{padding:6px 8px}#orbit-game .og-journey-track strong{font-size:11px}}
+#orbit-game .og-journey-track{pointer-events:auto}
+#orbit-game .og-journey-track{width:calc(100% - 40px)}
+#orbit-game .og-journey-local{font:10px/12px monospace;color:var(--og-dim)}
+#orbit-game .og-journey-banner{display:grid;gap:5px;text-align:left;background:#243147;border-radius:10px;padding:10px;width:100%;min-height:44px}
+#orbit-game .og-journey-banner>span{display:flex;align-items:center;justify-content:space-between;gap:5px}
+#orbit-game .og-journey-banner b{font:10px monospace;color:#d0b6f2}
+#orbit-game .og-journey-banner small{font-size:11px;color:var(--og-dim);line-height:1.35}
+
+#orbit-game .og-control-symbol{display:inline-flex;vertical-align:middle;margin-right:7px;color:var(--og-blue);pointer-events:none}
+#orbit-game .og-control-symbol svg{width:20px;height:20px;flex:none}
+#orbit-game .og-button.primary .og-control-symbol{color:inherit}
+#orbit-game #og-context .og-link:has(.og-control-symbol){border:1px solid #344b5c;background:#162a38;border-radius:12px;padding:8px 10px;min-height:44px;text-decoration:none}
+
+#orbit-game .og-module-hotspot{background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;min-width:44px;min-height:44px;border-radius:12px}
+#orbit-game .og-module-hotspot:hover,#orbit-game .og-module-hotspot:focus-visible{outline:2px solid #94e4e0;outline-offset:1px}
+#orbit-game .og-back-control{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:48px;height:48px;min-width:44px;min-height:44px;padding:4px;border:1px solid #42616f;background:#17323f;border-radius:14px;color:#d6f4f5;flex:none}
+#orbit-game .og-back-control svg{width:24px;height:24px;margin:0}
+#orbit-game .og-control-caption{display:block;font-size:10px;line-height:12px;font-weight:600;color:inherit;letter-spacing:0;text-transform:none;text-align:center}
+#orbit-game .og-back-control .og-control-caption{font-size:9px;line-height:10px}
+#orbit-game #og-context .og-action-dock{display:grid;grid-template-columns:repeat(var(--actions),minmax(0,1fr));gap:8px;max-width:360px;margin:8px auto 0;align-items:stretch}
+#orbit-game #og-context .og-action-dock .og-figure-control,#orbit-game .og-menu-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:78px;min-height:78px;margin:0;padding:2px;gap:2px;background:transparent;border:0;box-shadow:none;border-radius:14px;color:#e2f1ee;box-sizing:border-box;isolation:isolate}
+#orbit-game .og-action-dock .og-control-symbol{display:flex;align-items:center;justify-content:center;width:100%;height:50px;margin:0;filter:drop-shadow(0 5px 3px #0009)}
+#orbit-game .og-action-dock .og-painted-module,#orbit-game .og-action-dock .og-trade-art,#orbit-game .og-menu-tile .og-painted-module,#orbit-game .og-menu-tile .og-trade-art{width:54px;height:54px;background-color:transparent;filter:drop-shadow(0 4px 4px #0009)}
+#orbit-game .og-action-ship{display:block;width:58px;height:54px;background-image:var(--og-ship-art);background-size:contain;background-position:center;background-repeat:no-repeat;filter:drop-shadow(0 3px 4px #0008)}
+#orbit-game .og-action-world{display:block;width:48px;height:48px;border-radius:50%;background-image:var(--og-world-art);background-size:342% 512%;background-position:20% 0%;box-shadow:0 0 14px #69c9dc38}
+#orbit-game .og-menu-tile small,#orbit-game .og-action-dock .og-control-caption{background:#10232bcc;border:1px solid #48708055;border-radius:8px;padding:3px 6px;font-size:10px;text-shadow:0 1px 2px #000}
+#orbit-game #og-context .og-action-dock .og-cost{font-size:9px;line-height:12px;white-space:nowrap;margin:0}
+#orbit-game .og-menu-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+#orbit-game .og-menu-resume{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid #42616f;border-radius:14px;background:#17323f;color:#d6f4f5;width:120px;min-height:52px;margin:auto;padding:6px}
+#orbit-game .og-menu-resume svg{width:25px;height:25px}
+#orbit-game .og-menu-resume small{font-size:10px}
+#orbit-game .og-menu-tile .og-painted-module.is-cosmic{mix-blend-mode:screen}
+#orbit-game #og-context .og-action-dock .og-paint-tool{width:56px;height:56px;filter:drop-shadow(0 4px 4px #0008)}
+#orbit-game .og-story-top,#orbit-game[data-compact=true] .og-story-top{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px 16px 0;flex-shrink:0}
+#orbit-game .og-story-top>span{line-height:1.5;min-width:0}
+#orbit-game .og-story-top button{position:static;align-self:center;justify-self:end;width:auto;min-width:90px;min-height:44px;margin:0;white-space:nowrap;padding:8px 12px}
+#orbit-game .og-menu-tile:focus-visible,#orbit-game #og-context .og-figure-control:focus-visible{outline:2px solid #94e4e0;outline-offset:2px}
+#orbit-game .og-menu-tile:active,#orbit-game #og-context .og-figure-control:active{transform:scale(.94)}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-menu-tile,#orbit-game #og-context .og-figure-control{transform:none!important}}
+#orbit-game #og-context .og-action-dock{grid-column:1/-1;width:100%}
+
+#orbit-game .og-local-milestones{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+#orbit-game .og-local-milestones span{font-size:10px;color:#8a9ca9;background:#132634;border-radius:8px;padding:5px 7px}
+#orbit-game .og-local-milestones .is-done{color:#bdebd1;background:#244b41}
+#orbit-game .og-story-receipt .og-consequence{font-size:10px;color:#d6e9d4;border-top:1px solid #73869344;padding-top:5px}
+#orbit-game .og-encounter-header{display:flex;align-items:center;gap:12px}
+#orbit-game .og-encounter-header .og-quest-specimen{width:66px;height:66px;flex:none}
+#orbit-game .og-encounter-header small{display:block;font-size:11px;color:#afc7cf;margin-top:4px}
+#orbit-game .og-encounter-clue{padding:12px;background:#233947;border-left:3px solid #9ed8d0;border-radius:8px}
+#orbit-game .og-encounter-art{text-align:center}
+#orbit-game .og-encounter-art .og-painted-module{width:80px;height:80px}
+
+/* Illustrated service objects share the flight controls' caption treatment. */
+#orbit-game .og-service .og-service-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:72px;min-height:76px;padding:2px;margin:0;background:transparent;border:0;box-shadow:none;border-radius:12px}
+#orbit-game .og-service-action .og-service-art{display:flex;align-items:center;justify-content:center;width:56px;height:52px;pointer-events:none;filter:drop-shadow(0 4px 4px #0009)}
+#orbit-game .og-service-action .og-trade-art,#orbit-game .og-service-action .og-painted-module{width:54px;height:54px;background-color:transparent}
+#orbit-game .og-service-action .og-control-caption{background:#10232bcc;border:1px solid #48708055;border-radius:8px;padding:3px 6px;font-size:10px;color:#e2f1ee;text-shadow:0 1px 2px #000}
+#orbit-game .og-service-action:focus-visible{outline:2px solid #94e4e0;outline-offset:2px}
+#orbit-game .og-service-action:active:not(:disabled){transform:scale(.94)}
+#orbit-game .og-service-action:disabled{opacity:.4;filter:grayscale(.7)}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-service-action{transform:none!important}}
+
+/* Sculpted navigation arrows: the object itself is the touch control. */
+#orbit-game .og-back-control,#orbit-game .og-cosmic-control{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:transparent;border:0;box-shadow:none;border-radius:10px;padding:0 2px;min-width:44px;min-height:48px;color:#def6ff}
+#orbit-game .og-back-control svg.og-cosmic-arrow,#orbit-game .og-cosmic-control svg.og-cosmic-arrow{display:block;width:48px;height:34px;margin:0;flex:none;overflow:visible;filter:drop-shadow(0 2px 3px #000b) drop-shadow(0 0 3px #866ce65c)}
+#orbit-game .og-back-control .og-control-caption,#orbit-game .og-cosmic-control .og-control-caption{display:block;font-size:9px;line-height:12px;font-weight:500;letter-spacing:.2px;text-shadow:0 1px 3px #000}
+#orbit-game .og-cosmic-control:disabled{opacity:.3;filter:grayscale(.7)}
+#orbit-game .og-back-control:focus-visible,#orbit-game .og-cosmic-control:focus-visible{outline:2px solid #bb9af5;outline-offset:2px}
+#orbit-game .og-back-control:active:not(:disabled) svg,#orbit-game .og-cosmic-control:active:not(:disabled) svg{transform:scale(.92)}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-cosmic-arrow{transform:none!important}}
+
+#orbit-game .og-rescue-access{display:flex;align-items:center;justify-content:center;gap:12px}
+#orbit-game .og-rescue-access>small{font-size:10px;color:#adc4d0;max-width:150px}
+#orbit-game .og-button.og-rescue-control{display:flex;flex-direction:column;align-items:center;gap:3px;width:auto;min-width:80px;min-height:76px;margin:auto;padding:3px 8px;border:0;background:transparent;box-shadow:none}
+#orbit-game .og-rescue-art{position:relative;display:block;width:58px;height:54px;filter:drop-shadow(0 3px 5px #0009)}
+#orbit-game .og-rescue-art .og-painted-module{width:54px;height:54px}
+#orbit-game .og-rescue-beacon{position:absolute;right:2px;top:3px;width:9px;height:9px;border-radius:50%;background:#ffd6a4;border:2px solid #bd795a;box-shadow:0 0 8px #ff965b}
+#orbit-game .og-rescue-control .og-control-caption{font-size:10px;color:#e2f1ee;background:#10232bcc;border:1px solid #48708055;border-radius:8px;padding:3px 6px}
+#orbit-game .og-rescue-control:disabled{opacity:.4;filter:grayscale(.8)}
+#orbit-game .og-rescue-control:focus-visible{outline:2px solid #94e4e0;outline-offset:2px}
+
+/* Shared illustrated actions inside panels, retaining their action and cost. */
+#orbit-game button.og-panel-figure{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:44px;min-height:72px;padding:4px 8px;background:transparent;border:0;border-radius:12px;box-shadow:none;color:#e2f1ee}
+#orbit-game .og-panel-figure .og-control-symbol{display:flex;align-items:center;justify-content:center;height:46px;width:54px;pointer-events:none;filter:drop-shadow(0 3px 4px #000a)}
+#orbit-game .og-panel-figure .og-painted-module,#orbit-game .og-panel-figure .og-trade-art{width:48px;height:48px;background-color:transparent}
+#orbit-game .og-panel-figure .og-control-caption{font-size:10px;line-height:13px;text-align:center;white-space:normal;background:#10232bcc;border:1px solid #48708055;border-radius:8px;padding:3px 7px;max-width:190px}
+#orbit-game .og-panel-figure .og-cost{font-size:10px;margin:0}
+#orbit-game .og-panel-figure:disabled{opacity:.4;filter:grayscale(.7)}
+#orbit-game .og-panel-figure:focus-visible{outline:2px solid #94e4e0;outline-offset:2px}
+#orbit-game .og-card-tools button.og-panel-figure{flex:1}
+
+/* Regional trading display: illustrated stock and separate price plaques. */
+#orbit-game .og-market-card{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;padding:8px;border-radius:16px;border:1px solid #658e9a55;background:radial-gradient(ellipse at 50% 25%,#3c657c88,transparent 65%),linear-gradient(155deg,#193442e8,#101c2ae8);box-shadow:inset 0 1px #b6e5e222;color:#deebf1}
+#orbit-game .og-market-display{display:flex;justify-content:center;width:100%;height:58px;background:radial-gradient(ellipse at bottom,#77c2dc44,transparent 65%)}
+#orbit-game .og-market-display .og-trade-art{width:62px;height:62px;filter:drop-shadow(0 4px 4px #0008)}
+#orbit-game .og-market-card>strong{font-size:12px;text-align:center;line-height:15px}
+#orbit-game .og-market-prices{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+#orbit-game .og-market-prices>span{display:flex;flex-direction:column;align-items:center;border-radius:8px;background:#08172599;padding:4px}
+#orbit-game .og-market-prices small{font-size:8px;letter-spacing:.6px;color:#a5bbc5}
+#orbit-game .og-market-prices b{font-size:15px;color:#f2ce92}
+#orbit-game .og-market-prices>span+span b{color:#9dd7c9}
+#orbit-game .og-market-prices em{font-size:9px;font-style:normal}
+#orbit-game .og-market-stock{font-size:9px;color:#a5bbc5}
+#orbit-game .og-trade-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#orbit-game .og-trade-mode{display:flex;flex-direction:column;align-items:center;padding:5px;background:transparent;border:1px solid transparent;border-radius:16px;color:#dceaf1;gap:2px;min-height:88px}
+#orbit-game .og-trade-mode[aria-pressed=true]{border-color:#8bcfc680;background:radial-gradient(ellipse at center,#427d8944,transparent 75%);box-shadow:inset 0 -2px #9de5d8}
+#orbit-game .og-trade-mode-art{position:relative;width:66px;height:48px}
+#orbit-game .og-trade-mode-art>.og-trade-art{width:48px;height:48px}
+#orbit-game .og-trade-flow{position:absolute;right:-4px;bottom:-2px;width:32px;height:24px}
+#orbit-game .og-trade-flow svg{width:32px;height:24px;filter:drop-shadow(0 2px 2px #000)}
+#orbit-game .og-trade-mode strong{font-size:11px}
+#orbit-game .og-trade-mode small{font-size:10px;color:#ebce9e}
+#orbit-game .og-trade-mode:disabled{opacity:.35;filter:grayscale(1)}
+#orbit-game .og-product-identity .og-object-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0;background:transparent;border:0}
+#orbit-game .og-object-arrow svg{width:44px;height:33px}
+#orbit-game .og-object-arrow small{font-size:8px;color:#c8dfed}
+#orbit-game .og-trade-quantity button{background:linear-gradient(145deg,#345568,#142c3c);border:1px solid #6e94a2;border-radius:10px;box-shadow:inset 0 1px #b7e6ec33,0 2px 3px #0005;min-height:44px}
+#orbit-game .og-trade-quantity button[data-trade-quantity]{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+#orbit-game .og-trade-quantity button small{font-size:8px}
+#orbit-game .og-trade-quantity button[aria-pressed=true]{border-color:#a8e1d5;color:#b7ffe6;background:#295156}
+#orbit-game .og-market-card:focus-visible,#orbit-game .og-trade-mode:focus-visible{outline:2px solid #94e4e0;outline-offset:2px}
+
+#orbit-game .og-sheet[data-sheet="market-item"] .og-sheet-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#orbit-game .og-sheet[data-sheet="market-item"] .og-sheet-footer>button.og-panel-figure,#orbit-game .og-sheet[data-sheet="market"] .og-sheet-footer>button.og-panel-figure{background:transparent!important;border:0!important;box-shadow:none!important;color:#e2f1ee;padding:3px;min-height:72px}
+#orbit-game .og-sheet[data-sheet="market-item"] .og-page-controls>button.og-cosmic-control{background:transparent;border:0;box-shadow:none}
+
+/* Full-screen rooms must not expose the flight scene on each render. */
+#orbit-game .og-sheet-backdrop{background:#10202b;backdrop-filter:none;-webkit-backdrop-filter:none;isolation:isolate}
+#orbit-game .og-sheet-backdrop>.og-sheet{animation:none;opacity:1}
+#orbit-game:has(>.og-sheet-backdrop:not([hidden]))>.og-stage{visibility:hidden}
+
+/* Storage selectors: cargo container and ship, with persistent quantities. */
+#orbit-game .og-storage-select{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#orbit-game .og-storage-select>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:76px;padding:4px;background:transparent;border:1px solid transparent;border-radius:14px;color:#c6dce6}
+#orbit-game .og-storage-select>button[aria-pressed=true]{background:radial-gradient(ellipse at center,#447f8c44,transparent 75%);border-color:#76b6bf66;box-shadow:inset 0 -2px #91e3d7}
+#orbit-game .og-storage-object{position:relative;display:flex;align-items:center;justify-content:center;width:66px;height:49px;filter:drop-shadow(0 3px 4px #0009)}
+#orbit-game .og-storage-object .og-painted-module{width:52px;height:52px;background-color:transparent}
+#orbit-game .og-storage-object .og-action-ship{height:50px}
+#orbit-game .og-storage-object>b{position:absolute;right:-5px;bottom:0;min-width:21px;padding:3px;border:1px solid #718e9b;border-radius:8px;background:#102532;color:#edce9f;font-size:11px;line-height:13px;text-align:center}
+#orbit-game .og-storage-select small{font-size:10px;padding:3px 8px;border-radius:7px;background:#10232bcc;border:1px solid #48708055}
+#orbit-game .og-storage-select button:focus-visible{outline:2px solid #94e4e0;outline-offset:2px}
+#orbit-game .og-sheet[data-sheet=stock] .og-trade-tile,#orbit-game .og-sheet[data-sheet=modules] .og-module-tile{background:radial-gradient(ellipse at 50% 22%,#41647966,transparent 70%),linear-gradient(150deg,#20394a,#101d2a);box-shadow:inset 0 1px #c0e6ff22,0 3px 6px #0003;border-radius:16px}
+#orbit-game .og-sheet[data-sheet=stock] .og-trade-tile>.og-trade-art,#orbit-game .og-sheet[data-sheet=modules] .og-module-tile>.og-painted-module{filter:drop-shadow(0 4px 4px #0008)}
+#orbit-game .og-sheet[data-sheet=stock] .og-trade-tile>small{padding:3px 6px;border-radius:7px;background:#0c1d2ccc;color:#a9d8cf}
+
+/* Installation is one face, with the decision always visible. */
+#orbit-game .og-sheet.og-single-card .og-room-heading{aspect-ratio:auto;min-height:78px;margin-bottom:7px;background-size:100% 100%,cover}
+#orbit-game .og-single-card .og-sheet-header h2{font-size:16px}
+#orbit-game .og-single-card .og-sheet-fixed{margin-bottom:5px}
+#orbit-game .og-single-card .og-system-installed{padding:6px;gap:8px;border-radius:12px;background:#172e3e}
+#orbit-game .og-single-card .og-system-installed .og-painted-module{width:34px;height:34px}
+#orbit-game .og-single-card .og-system-installed h3{font-size:11px}
+#orbit-game .og-single-card .og-system-installed small{font-size:8px}
+#orbit-game .og-single-card .og-comparison{display:flex;flex-direction:column;gap:5px;padding:8px;border:1px solid #7a91b366;border-radius:16px;background:radial-gradient(ellipse at 50% 20%,#3b496566,transparent 65%),#122736}
+#orbit-game .og-single-card .og-candidate-heading h3{font-size:13px}
+#orbit-game .og-single-card .og-card-art{height:55px;min-height:0;margin:0}
+#orbit-game .og-single-card .og-card-art .og-painted-module{width:60px;height:60px}
+#orbit-game .og-single-card .og-card-metrics{gap:4px;margin:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+#orbit-game .og-single-card .og-card-metrics>div{padding:4px}
+#orbit-game .og-single-card .og-card-metrics small{font-size:9px}
+#orbit-game .og-single-card .og-card-metrics strong{font-size:11px}
+#orbit-game .og-single-card .og-comparison p{font-size:10px;line-height:1.3;margin:0;padding:2px}
+#orbit-game .og-single-card .og-system-confirm{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px}
+#orbit-game .og-single-card .og-system-confirm>button{width:100%;min-height:58px;height:auto;margin:0;padding:2px;background:transparent!important;border:0;box-shadow:none}
+#orbit-game .og-single-card .og-system-confirm .og-control-symbol{height:36px}
+#orbit-game .og-single-card .og-system-confirm .og-painted-module{width:38px;height:38px}
+#orbit-game .og-single-card .og-sheet-footer{padding-top:4px}
+@media(max-height:600px){
+ #orbit-game .og-single-card .og-room-heading{min-height:66px}
+ #orbit-game .og-single-card .og-card-art{height:40px}
+ #orbit-game .og-single-card .og-card-art .og-painted-module{width:44px;height:44px}
+ #orbit-game .og-single-card .og-comparison{gap:3px;padding:6px}
+}
+
+/* Resource details are a single face; trading has one confirmation. */
+#orbit-game .og-stock-detail{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 12px;border:1px solid #55768a;border-radius:18px;background:radial-gradient(ellipse at top,#355a7088,transparent 75%),#142936;color:#dfedf4;text-align:center}
+#orbit-game .og-stock-detail>.og-trade-art{width:96px;height:96px;filter:drop-shadow(0 5px 8px #0009)}
+#orbit-game .og-stock-detail>strong{font-size:28px;color:#b4ead9}
+#orbit-game .og-stock-detail strong small{font-size:14px;color:#a8c0cc}
+#orbit-game .og-stock-detail p{font-size:11px;line-height:1.5}
+#orbit-game .og-stock-meter{display:block;width:85%;height:6px;border-radius:6px;background:#071722;overflow:hidden}
+#orbit-game .og-stock-meter i{display:block;height:100%;background:#87cfc0}
+#orbit-game .og-sheet[data-card-kind=trade] .og-product-identity{padding:6px;gap:5px;min-height:70px}
+#orbit-game .og-sheet[data-card-kind=trade] .og-product-identity>.og-trade-art{width:50px;height:50px;flex:none}
+#orbit-game .og-sheet[data-card-kind=trade] .og-product-identity strong{font-size:12px}
+#orbit-game .og-sheet[data-card-kind=trade] .og-product-identity small{font-size:10px}
+#orbit-game .og-sheet[data-card-kind=trade] .og-sheet-content{display:flex;flex-direction:column;gap:8px}
+#orbit-game .og-sheet[data-card-kind=trade] .og-trade-modes{gap:8px}
+#orbit-game .og-sheet[data-card-kind=trade] button.og-trade-mode{background:transparent;color:#e2edf5;padding:3px;min-height:80px}
+#orbit-game .og-sheet[data-card-kind=trade] button.og-trade-mode[aria-pressed=true]{background:#214250;border-color:#9fdacf}
+#orbit-game .og-sheet[data-card-kind=trade] .og-trade-quantity{display:grid;grid-template-columns:44px 1fr 44px repeat(3,36px);gap:4px;margin:0}
+#orbit-game .og-sheet[data-card-kind=trade] .og-trade-quantity button{width:100%;min-width:0;color:#eaf6fa!important;font-size:16px}
+#orbit-game .og-sheet[data-card-kind=trade] .og-trade-quantity>strong{font-size:12px;align-self:center;text-align:center}
+#orbit-game .og-sheet[data-card-kind=trade] .og-sheet-footer{display:flex;justify-content:center}
+#orbit-game .og-sheet[data-card-kind=trade] .og-sheet-footer>.og-panel-figure{width:auto;min-height:68px}
+#orbit-game .og-sheet[data-card-kind=trade] .og-note{font-size:10px;line-height:1.4}
+#orbit-game .og-single-card[data-card-kind=trade] .og-room-heading,#orbit-game .og-single-card[data-card-kind=resource] .og-room-heading{min-height:96px;gap:8px}
+#orbit-game .og-single-card[data-card-kind=trade] .og-panel-navigation,#orbit-game .og-single-card[data-card-kind=resource] .og-panel-navigation{height:48px}
+/* Explicit label colors prevent primary-button ink leaking into object controls. */
+#orbit-game button.og-panel-figure .og-control-caption{color:#f0f7fc;background:#102536;border-color:#66879b;text-shadow:0 1px 2px #000}
+#orbit-game .og-single-card .og-system-confirm>button{color:#f0f7fc}
+#orbit-game .og-single-card .og-system-confirm .og-control-caption{color:#f0f7fc;background:#102536;border:1px solid #66879b;border-radius:8px;padding:5px 10px;font-size:12px;line-height:16px;font-weight:600;min-height:28px}
+
+/* Component workbench: one recipe, one manufacture action, stable parent. */
+#orbit-game .og-sheet[data-card-kind=component] .og-room-heading,/* Component workbench: one recipe, one manufacture action, stable parent. */
+#orbit-game .og-sheet[data-card-kind=recipe] .og-room-heading{min-height:90px;gap:6px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-fixed,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-fixed{position:relative;padding:6px 52px;background:#162d3e;border:1px solid #55768a;border-radius:14px;min-height:74px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-identity,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-identity{justify-content:center;padding:0;gap:8px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-identity h3,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-identity h3{font-size:13px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-identity .og-lab-icon,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-identity .og-lab-icon{width:40px;height:40px;flex:none}#orbit-game .og-sheet[data-card-kind=component] .og-object-switch,#orbit-game .og-sheet[data-card-kind=recipe] .og-object-switch{margin:0;justify-content:center;font-size:9px}#orbit-game .og-sheet[data-card-kind=component] .og-object-switch button,#orbit-game .og-sheet[data-card-kind=recipe] .og-object-switch button{position:absolute;top:12px;width:44px;min-height:48px;padding:0;background:transparent;border:0;display:flex;flex-direction:column;align-items:center;color:#dcecf4}#orbit-game .og-sheet[data-card-kind=component] .og-object-switch button:first-child,#orbit-game .og-sheet[data-card-kind=recipe] .og-object-switch button:first-child{left:3px}#orbit-game .og-sheet[data-card-kind=component] .og-object-switch button:last-child,#orbit-game .og-sheet[data-card-kind=recipe] .og-object-switch button:last-child{right:3px}#orbit-game .og-sheet[data-card-kind=component] .og-object-switch svg,#orbit-game .og-sheet[data-card-kind=recipe] .og-object-switch svg{width:44px;height:32px}#orbit-game .og-sheet[data-card-kind=component] .og-object-switch small,#orbit-game .og-sheet[data-card-kind=recipe] .og-object-switch small{font-size:8px}#orbit-game .og-sheet[data-card-kind=component] .og-lab,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab{display:flex;flex-direction:column;gap:6px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-ingredient,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient{padding:5px 7px;min-height:48px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-ingredient .og-trade-art,#orbit-game .og-sheet[data-card-kind=component] .og-lab-ingredient .og-lab-icon,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient .og-trade-art,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient .og-lab-icon{width:30px;height:30px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-ingredient strong,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient strong{font-size:11px}#orbit-game .og-sheet[data-card-kind=component] .og-lab-ingredient small,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient small{font-size:9px}#orbit-game .og-sheet[data-card-kind=component] .og-component-purpose,#orbit-game .og-sheet[data-card-kind=recipe] .og-component-purpose{font-size:10px;line-height:1.4;color:#b7cbd5}#orbit-game .og-sheet[data-card-kind=component] .og-lab-craft-actions,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-craft-actions{display:flex;justify-content:center}#orbit-game .og-sheet[data-card-kind=component] .og-lab-craft-actions button,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-craft-actions button{background:transparent!important;box-shadow:none;border:0;min-height:64px;width:auto}#orbit-game .og-sheet[data-card-kind=component] .og-lab-footer p,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-footer p{font-size:10px;line-height:1.3}#orbit-game .og-sheet[data-card-kind=component] .og-lab-batch-note,#orbit-game .og-sheet[data-card-kind=component] .og-lab-note,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-batch-note,#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-note{font-size:10px;line-height:1.3;margin:0}
+
+#orbit-game .og-craft-feedback{position:absolute;z-index:70;pointer-events:none;transform:translate(-50%,-50%);font-size:24px;font-weight:800;line-height:1;color:#c4ffeb;text-shadow:0 2px 3px #071c26,0 0 12px #63e7c9;animation:og-crafted 1.25s ease-out forwards}
+@keyframes og-crafted{0%{opacity:0;transform:translate(-50%,0) scale(.65)}20%{opacity:1;transform:translate(-50%,-14px) scale(1.2)}65%{opacity:1;transform:translate(-50%,-30px) scale(1)}100%{opacity:0;transform:translate(-50%,-48px) scale(1.05)}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-craft-feedback{animation:og-crafted-still 1.25s linear forwards}@keyframes og-crafted-still{0%,80%{opacity:1}100%{opacity:0}}}
+/* Keep the craft illustration and caption on the same vertical axis. */
+#orbit-game .og-lab-craft-actions .og-lab-craft.og-panel-figure{align-items:center;justify-content:center;margin:0 auto;padding:4px 8px;gap:4px}
+#orbit-game .og-lab-craft-actions .og-lab-craft.og-panel-figure>.og-control-symbol{margin:0;align-self:center;flex:none}
+#orbit-game .og-lab-craft-actions .og-lab-craft.og-panel-figure>.og-control-caption{margin:0;align-self:center;text-align:center}
+
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-tabs button{min-height:32px;padding:5px 8px;font-size:10px;background:#132b3b;color:#d8eaf2;border:1px solid #4c6d80;border-radius:9px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-tabs button[aria-pressed=true]{background:#284957;border-color:#8ed0c4;color:#e4fff6}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-recipe-label{font-size:9px;margin:0}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-progress{padding:4px;margin:0}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient small{font-size:8px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient{min-height:42px;padding:4px 6px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-capacity-tools{display:none}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-ingredient{display:flex;flex-direction:column;align-items:stretch;gap:2px;min-height:62px;background:#102532;border:1px solid #3d5a6b;border-radius:9px;padding:5px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-quantity{display:flex;justify-content:space-between;gap:2px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-ingredient-name{gap:4px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-ingredient-name small{display:none}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-ingredient strong{font-size:10px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab{gap:4px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-footer .og-control-symbol{height:32px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-footer .og-trade-art{height:36px;width:36px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-lab-progress{display:none}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-ingredient{min-height:52px;padding:3px 5px}
+#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-icon,#orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-trade-art{width:22px;height:22px}
+
+#orbit-game .og-lab-stock{gap:6px;padding:4px 0;border:0}
+#orbit-game .og-lab-stock>div{display:grid;grid-template-columns:1fr;justify-items:center;align-content:center;gap:2px;padding:5px 2px;border:1px solid #55758a55;border-radius:11px;background:radial-gradient(ellipse at top,#35526877,transparent 75%),#102536}
+#orbit-game .og-lab-stock .og-stock-figure{display:flex;align-items:center;justify-content:center;width:32px;height:30px;filter:drop-shadow(0 2px 3px #0009)}
+#orbit-game .og-lab-stock .og-stock-figure svg,#orbit-game .og-lab-stock .og-stock-figure .og-trade-art,#orbit-game .og-lab-stock .og-stock-figure .og-painted-module{width:30px;height:30px;background-color:transparent}
+#orbit-game .og-lab-stock strong{font:600 14px/17px system-ui,sans-serif;color:#e4f8ef;font-variant-numeric:tabular-nums}
+#orbit-game .og-lab-stock small{font-size:9px;line-height:12px;color:#bdd1dd}
+
+#orbit-game .og-salvage-actions{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:12px;padding:2px 0}
+#orbit-game .og-sheet[data-sheet=salvage-review] .og-salvage-actions>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:72px;min-height:72px;margin:0;padding:3px;background:transparent!important;border:0;box-shadow:none;color:#eff7fc}
+#orbit-game .og-salvage-actions>button .og-control-symbol{width:44px;height:38px;margin:0;flex:none}
+#orbit-game .og-salvage-actions>button .og-trade-art{width:40px;height:40px}
+#orbit-game .og-salvage-actions>button svg.og-cosmic-arrow{width:44px;height:38px;margin:0}
+#orbit-game .og-salvage-actions>button .og-control-caption{margin:0;padding:4px 9px;background:#102536;color:#eff7fc;border:1px solid #66879b;border-radius:8px;font-size:11px;line-height:14px;text-align:center}
+#orbit-game svg.og-purpose-art{width:56px;height:56px;display:block;flex:none;filter:drop-shadow(0 3px 4px #0008)}
+#orbit-game .og-control-symbol>svg.og-purpose-art{width:46px;height:46px}
+#orbit-game .og-lab-icon.og-component-art{color:#c1dce6;fill:#35566c;filter:drop-shadow(0 3px 3px #0006);stroke-width:1.2}
+#orbit-game .og-component-art[data-part=alloy]{fill:#748a9b;color:#e1e9ef}
+#orbit-game .og-component-art[data-part=prism]{fill:#665a9c;color:#e5d4ff}
+#orbit-game .og-component-art[data-part=circuit]{fill:#326b60;color:#aee4c2}
+#orbit-game .og-component-art[data-part=seal]{fill:#b07943;color:#ffe1a1}
+#orbit-game .og-component-art[data-part=field-core]{fill:#475b93;color:#a6dcff}
+#orbit-game .og-component-art[data-part=battery]{fill:#45677b;color:#9fe9ec}
+#orbit-game .og-sheet[data-sheet=stock-components] .og-component-art{width:62px;height:62px}
+#orbit-game .og-storage-capacity{font-size:10px;line-height:1.4;text-align:center;color:#b6ced9}
+/* Painted inventory objects use one atlas, matching the existing item artwork. */
+#orbit-game .og-purpose-art{display:block;width:60px;height:60px;flex:none;background-image:var(--og-purpose-art);background-size:300% 500%;background-position:var(--purpose-x) var(--purpose-y);background-repeat:no-repeat;filter:drop-shadow(0 3px 4px #0008)}
+#orbit-game .og-control-symbol>.og-purpose-art{width:48px;height:48px}
+#orbit-game .og-stock-figure>.og-purpose-art{width:30px;height:30px}
+#orbit-game .og-menu-tile>.og-purpose-art{width:54px;height:54px}
+#orbit-game .og-lab-identity>.og-purpose-art{width:48px;height:48px}
+#orbit-game .og-lab-ingredient .og-purpose-art{width:30px;height:30px}
+#orbit-game .og-lab-component>.og-purpose-art{width:44px;height:44px}
+/* Quiet, consistent navigation; large hit areas, restrained arrow artwork. */
+#orbit-game svg.og-cosmic-arrow{width:22px!important;height:22px!important;filter:none!important;overflow:visible;flex:none}
+#orbit-game .og-back-control,#orbit-game .og-cosmic-control,#orbit-game .og-object-arrow,#orbit-game .og-object-switch button,#orbit-game .og-story-controls button[data-story-action=previous]{min-width:44px;min-height:44px;gap:2px;border-radius:9px;box-shadow:none}
+#orbit-game .og-back-control .og-control-caption,#orbit-game .og-cosmic-control .og-control-caption,#orbit-game .og-object-arrow small,#orbit-game .og-object-switch button small{font-size:9px;line-height:12px;font-weight:400;letter-spacing:0;text-shadow:none;color:#b6cbd7}
+#orbit-game .og-panel-navigation .og-back-control{background:#0c1d29cc!important;border:1px solid #6a87932b;padding:3px}
+#orbit-game .og-page-controls .og-cosmic-control{background:transparent!important;border:0;box-shadow:none;padding:3px 8px;width:auto}
+#orbit-game .og-back-control:active:not(:disabled) svg,#orbit-game .og-cosmic-control:active:not(:disabled) svg{transform:none}
+#orbit-game .og-story-controls button[data-story-action=previous],#orbit-game .og-story-controls button[data-story-action=next]{display:flex;align-items:center;justify-content:center;gap:4px;min-height:44px}
+#orbit-game .og-story-controls small{font-size:10px}
+#orbit-game .og-trade-flow{display:flex;align-items:center;justify-content:center}
+#orbit-game .og-lume-art{display:block;width:48px;height:48px;flex:none;background-image:var(--og-lume-art);background-size:300% 100%;background-position:var(--lume-x) center;background-repeat:no-repeat;filter:drop-shadow(0 2px 3px #0009)}
+#orbit-game .og-trade-mode-art{display:flex;align-items:center;justify-content:center}
+#orbit-game .og-trade-balance>strong{display:flex;align-items:center;gap:4px}
+#orbit-game .og-trade-balance .og-lume-art{width:22px;height:22px}
+#orbit-game .og-stock-figure>.og-lume-art{width:30px;height:30px}
+#orbit-game .og-control-symbol>.og-lume-art{width:44px;height:44px}
+#orbit-game .og-sheet[data-card-kind=trade] button.og-trade-mode[data-trade-side=buy][aria-pressed=true]{background:#42292f;border-color:#b9777e;box-shadow:inset 0 -2px #d99495}
+#orbit-game .og-sheet[data-card-kind=trade] button.og-trade-mode[data-trade-side=sell][aria-pressed=true]{background:#203e37;border-color:#71b497;box-shadow:inset 0 -2px #91dab5}
+#orbit-game .og-trade-mode[data-trade-side=buy] small{color:#e5a6aa}
+#orbit-game .og-trade-mode[data-trade-side=sell] small{color:#a2dfbd}
+#orbit-game #og-context .og-travel-budget{font-size:10px;line-height:1.35;color:#bce2dc}
+#orbit-game #og-context .og-route-blocked{font-size:10px;line-height:1.35;color:#e9b38c;max-width:100%}
+#orbit-game[data-view=galaxy] #og-context{gap:5px}
+@media(max-height:680px){
+ #orbit-game[data-view=galaxy] #og-heading p{display:none}
+ #orbit-game[data-view=galaxy] #og-map-levels{top:60px;height:36px}
+ #orbit-game[data-view=galaxy] #og-context{gap:3px;bottom:8px}
+ #orbit-game[data-view=galaxy] #og-context .og-action-dock{margin-top:3px}
+ #orbit-game[data-view=galaxy] #og-context p{font-size:9px;line-height:1.25}
+ #orbit-game[data-view=galaxy] #og-context .og-figure-control{height:64px;min-height:64px}
+ #orbit-game[data-view=galaxy] #og-context .og-control-symbol{height:40px}
+}
+
+#orbit-game .og-paints{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-bottom:8px}
+#orbit-game .og-paint{width:100%;height:50px;border-radius:14px;background:radial-gradient(ellipse at 30% 15%,#ffffffb0,transparent 55%),var(--paint);position:relative}
+#orbit-game .og-paint span{display:block;background:#091827d9;color:#eef6ff;font-size:9px;line-height:15px;border-radius:0 0 10px 10px;position:absolute;bottom:0;left:0;right:0}
+#orbit-game .og-paint[aria-pressed=true],#orbit-game .og-trail-picker button[aria-pressed=true]{outline:2px solid #c2f6ed;outline-offset:2px}
+#orbit-game .og-trail-picker{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+#orbit-game .og-trail-picker button{background:#102338;border:1px solid #456078;border-radius:14px;color:#eaf5ff;min-height:90px;display:grid;justify-items:center;gap:4px;padding:8px;font-size:11px}
+#orbit-game .og-trail-picker i{height:38px;width:16px;border-radius:50% 50% 70% 70%;background:linear-gradient(#fff,var(--trail) 30%,transparent);filter:drop-shadow(0 0 5px var(--trail));transform:rotate(35deg)}
+#orbit-game .og-trail-picker small{font-size:8px;color:#b8cbdc}
+
+#orbit-game [data-sheet=customize] .og-sheet-content{overflow:hidden;padding:0 2px}
+#orbit-game .og-custom-studio{display:flex;flex-direction:column;gap:8px;height:100%;min-height:0}
+#orbit-game .og-studio-top{display:grid;grid-template-columns:42% 58%;min-height:0;flex:1;align-items:center}
+#orbit-game .og-studio-preview{position:relative;height:100%;min-height:180px;background:radial-gradient(ellipse,#36536b66,transparent 70%);overflow:hidden}
+#orbit-game #og-custom-preview{width:100%;height:100%;display:block}
+#orbit-game .og-studio-preview>small{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:9px;color:#9fb7ce}
+#orbit-game .og-custom-studio .og-paints{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:3px;margin:0}
+#orbit-game .og-custom-studio .og-paint{height:44px;min-width:0;border-radius:10px}
+#orbit-game .og-custom-studio .og-paint span{font-size:7px;line-height:11px;white-space:nowrap;overflow:hidden}
+#orbit-game .og-custom-studio .og-field-label{font-size:10px;margin:3px 0;display:block}
+#orbit-game .og-custom-studio .og-name-form{height:32px;min-height:32px;margin:0}
+#orbit-game .og-custom-studio .og-name-form input{min-width:0;padding:4px 8px;font-size:12px}
+#orbit-game .og-custom-studio .og-name-form button{font-size:10px;padding:4px 8px;min-height:32px}
+#orbit-game .og-custom-studio .og-trail-picker{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#orbit-game .og-custom-studio .og-trail-picker button{min-height:72px;padding:5px 1px;gap:2px;font-size:9px;border-radius:10px}
+#orbit-game .og-custom-studio .og-trail-picker i{height:32px;width:12px}
+#orbit-game .og-custom-studio .og-trail-picker small{font-size:7px}
+#orbit-game .og-studio-note{font-size:9px;line-height:1.3;color:#b5c5da;margin:0}
+#orbit-game .og-custom-studio [data-color="#a34dff"],#orbit-game .og-custom-studio [data-color="#31ffbb"],#orbit-game .og-custom-studio [data-color="#ff4795"]{background:linear-gradient(130deg,#06121e 5%,var(--paint) 35%,#edffff 45%,var(--paint) 53%,#13162e 80%);box-shadow:inset 0 0 8px var(--paint)}
+@media(max-height:650px){#orbit-game .og-custom-studio{gap:4px}#orbit-game [data-sheet=customize] .og-room-heading{min-height:64px}#orbit-game .og-studio-colors .og-field-label{font-size:9px}#orbit-game .og-custom-studio .og-paints{gap:4px}#orbit-game .og-custom-studio .og-trail-picker button{min-height:64px}#orbit-game .og-studio-note{font-size:8px}}
+#orbit-game .og-trail-picker [data-trail=cosmic] i{position:relative;width:24px;background:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 80% 70%,#fff 0 1px,transparent 2px),linear-gradient(100deg,transparent,#8b3aff88,#ecd0ff,transparent);border-left:1px solid #bd82ff;border-right:1px solid #e1bbff}
+#orbit-game .og-trail-picker [data-trail=aurora] i{width:25px;background:repeating-linear-gradient(105deg,transparent 0 4px,#46ffcbaa 6px,#5b9fff 8px,transparent 10px);border-radius:60% 30% 70% 20%}
+#orbit-game .og-trail-picker [data-trail=solar] i{width:24px;background:repeating-radial-gradient(ellipse at 50% 0,#ffe3c5 0 1px,transparent 2px 7px,#ff74b9 8px 9px,transparent 10px 14px)}
+#orbit-game .og-settings{display:flex;flex-direction:column;gap:12px}
+#orbit-game .og-audio-hero{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;margin:6px 0}
+#orbit-game .og-audio-hero .og-painted-module{width:65px;height:60px}
+#orbit-game .og-audio-hero small{font-size:10px;color:#a9c3d5}
+#orbit-game .og-volume{display:flex;flex-direction:column;gap:5px;font-size:12px}
+#orbit-game .og-volume input{width:100%;height:32px;accent-color:#8cded9}
+#orbit-game .og-preference{font-size:12px;display:flex;gap:8px;align-items:center;min-height:40px}
+#orbit-game .og-backup-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#orbit-game .og-backup-actions button{font-size:12px;min-height:60px}
+#orbit-game .og-contract-card{display:grid;grid-template-columns:70px 1fr;gap:10px;padding:12px;border:1px solid #51778c;border-radius:18px;background:#102c3c;margin-bottom:10px}
+#orbit-game .og-contract-card>button{grid-column:1/-1}
+#orbit-game .og-contract-card h3{font-size:15px;margin:5px 0}
+#orbit-game .og-contract-card small{font-size:10px;color:#aec9da}
+#orbit-game .og-contract-card .og-commerce-art{width:64px;height:72px}
+#orbit-game .og-voyage-summary{display:grid;grid-template-columns:1fr;gap:6px}
+#orbit-game .og-voyage-summary span{display:flex;justify-content:space-between;gap:10px;padding:8px;background:#163341;border-radius:10px;font-size:11px}
+#orbit-game .og-honors{display:grid;gap:8px}
+#orbit-game .og-honors span{display:grid;gap:3px;padding:10px;border:1px solid #65718d;border-radius:12px;font-size:11px}
+#orbit-game .og-honors .is-earned{border-color:#b89bf4;background:#44265a44}
+#orbit-game .og-honors small{font-size:10px;color:#b4c8d9}
+#orbit-game .og-task-gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#orbit-game .og-task-gauges>div{display:grid;justify-items:center;gap:10px;padding:10px 3px;background:#153546;border-radius:16px}
+#orbit-game .og-task-gauges meter{width:100%;height:32px;accent-color:#8fe8c8}
+#orbit-game .og-task-gauges button{font-size:10px;padding:6px;min-height:44px}
+#orbit-game .og-task-sequence{display:flex;justify-content:space-around;gap:6px;margin:15px 0}
+#orbit-game .og-task-sequence span{display:grid;gap:8px;text-align:center;font-size:26px;color:#9aafc3;padding:12px 5px;border-radius:12px;background:#132c3c;flex:1}
+#orbit-game .og-task-sequence small{font-size:10px}
+#orbit-game .og-task-sequence .is-current{outline:2px solid #9edfe5;color:#e3faff}
+#orbit-game .og-task-sequence .is-done{color:#8ff0bc}
+#orbit-game .og-task-options{display:flex;gap:6px}
+#orbit-game .og-task-options button{flex:1;min-height:48px;font-size:11px;padding:8px}
+#orbit-game [data-sheet=settings] .og-settings{gap:8px}
+#orbit-game [data-sheet=settings] .og-audio-hero .og-painted-module{width:48px;height:44px}
+#orbit-game [data-sheet=settings] .og-note{font-size:10px;line-height:1.3;margin:0}
+#orbit-game [data-sheet=contracts] .og-contract-card{padding:8px;gap:7px;margin-bottom:8px;grid-template-columns:52px 1fr}
+#orbit-game [data-sheet=contracts] .og-contract-card .og-commerce-art{width:48px;height:52px}
+#orbit-game [data-sheet=contracts] .og-contract-card h3{font-size:13px;margin:3px 0}
+#orbit-game [data-sheet=contracts] .og-contract-card p{margin:3px 0;font-size:11px}
+#orbit-game [data-sheet=contracts] .og-contract-card button{min-height:38px;padding:6px;font-size:11px}
+#orbit-game [data-sheet=contracts] .og-note{font-size:10px;line-height:1.3;margin:2px 0}
+#orbit-game .og-route-preflight{display:flex;flex-direction:column;gap:8px;font-size:12px}
+#orbit-game .og-route-preflight>p{font-size:11px;margin:0;line-height:1.3}
+#orbit-game .og-route-preflight>small{font-size:10px;color:#bfd4df;line-height:1.3}
+#orbit-game .og-route-reserves{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#orbit-game .og-route-reserves>div{display:grid;grid-template-columns:24px 1fr;gap:4px;padding:10px;background:#19384a;border-radius:14px}
+#orbit-game .og-route-reserves svg{grid-row:span 3;width:21px;height:26px;color:#a4e9df}
+#orbit-game .og-route-reserves strong{font-size:11px}
+#orbit-game .og-route-reserves b{font-size:18px}
+#orbit-game .og-route-reserves small{font-size:10px}
+#orbit-game .og-preflight-missing{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#orbit-game .og-preflight-missing span{display:grid;gap:2px;border:1px solid #8f7768;border-radius:8px;padding:5px;font-size:9px}
+#orbit-game .og-preflight-missing b{font-size:11px;color:#f0c9a4}
+#orbit-game .og-unlock-benefit{padding:10px;border:1px solid #8d79a6;border-radius:12px;background:#48375344;font-size:12px}
+@media(max-height:650px){
+#orbit-game [data-sheet=route-info] .og-room-heading{min-height:64px;margin-bottom:4px}
+#orbit-game .og-route-preflight{gap:5px;font-size:11px}
+#orbit-game .og-route-preflight>p,#orbit-game .og-route-preflight>small{font-size:9px;line-height:1.2}
+#orbit-game .og-route-reserves>div{padding:6px;gap:2px}
+#orbit-game .og-route-reserves b{font-size:16px}
+#orbit-game .og-route-preflight .og-voyage-summary{gap:3px}
+#orbit-game .og-route-preflight .og-voyage-summary span{padding:5px;font-size:10px}
+#orbit-game .og-preflight-missing{gap:3px}
+#orbit-game .og-preflight-missing span{padding:3px;font-size:8px}
+#orbit-game .og-preflight-missing b{font-size:10px}
+}
+
+/* Planet analysis and selectable landing sites: one readable mobile screen. */
+#orbit-game .og-descent-summary{display:flex;flex-direction:column;gap:9px}
+#orbit-game .og-descent-summary p{font-size:11px;line-height:1.35}
+#orbit-game .og-descent-facts{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#orbit-game .og-descent-facts .og-fact{padding:7px;background:#102c3b;border-radius:9px;min-width:0}
+#orbit-game .og-descent-facts strong{font-size:12px}
+#orbit-game .og-protection-checks{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#orbit-game .og-protection-checks>div{display:flex;gap:6px;align-items:center;padding:6px;background:#102c35;border-radius:8px;font-size:11px}
+#orbit-game .og-protection-checks b{color:#96e5bc;font-size:15px}
+#orbit-game .og-protection-checks small{display:block;font:10px/1.4 monospace;color:#bfd2dc}
+#orbit-game .og-protection-checks .is-missing{background:#482e2a}
+#orbit-game .og-protection-checks .is-missing b{color:#ffc194}
+#orbit-game .og-site-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+#orbit-game .og-site-choices button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px;background:#142c39;border:1px solid #526974;border-radius:10px;min-width:0}
+#orbit-game .og-site-choices button[aria-pressed=true]{background:#294447;border-color:#b7ead1}
+#orbit-game .og-site-choices .og-action-world{width:33px;height:33px}
+#orbit-game .og-site-choices strong{font-size:10px;line-height:1.15}
+#orbit-game .og-site-choices small{font-size:9px;color:#b9d5d8}
+#orbit-game .og-descent-entry{display:flex;flex-direction:column;width:90px;margin:auto;padding:0;background:transparent;box-shadow:none}
+#orbit-game .og-descent-entry .og-action-world{width:45px;height:45px}
+#orbit-game .og-descent-entry small{font-size:12px}
+@media(max-height:650px){#orbit-game .og-descent-summary{gap:5px}#orbit-game .og-protection-checks>div{padding:4px;font-size:10px}#orbit-game .og-descent-facts .og-fact{padding:4px}#orbit-game .og-site-choices .og-action-world{width:24px;height:24px}}
+
+#orbit-game .og-field-caption{flex-wrap:wrap}
+#orbit-game .og-weather-status{flex-basis:100%;text-align:center;color:#c3e3db;font:10px/1.3 monospace}
+#orbit-game[data-field-weather=storm] .og-weather-status{color:#ffca91}
+#orbit-game[data-field-weather=warning] .og-weather-status{color:#f2df99}
+#orbit-game[data-field-active=true] .og-context-links .og-panel-figure{min-width:44px;flex:1}
+#orbit-game[data-field-active=true] .og-context-links .og-panel-figure .og-control-symbol{width:26px;height:26px}
+
+#orbit-game[data-field-active=true] #og-context .og-action-dock{gap:3px;margin-top:3px}
+#orbit-game[data-field-active=true] #og-context .og-action-dock .og-figure-control{height:66px;min-height:66px;min-width:44px}
+#orbit-game[data-field-active=true] #og-context .og-action-dock .og-control-symbol{width:36px;height:36px}
+#orbit-game[data-field-active=true] #og-context .og-action-dock .og-control-symbol>*{max-width:36px;max-height:36px}
+#orbit-game[data-field-active=true] #og-context .og-control-caption{font-size:9px}
+#orbit-game[data-field-active=true] .og-field-caption{white-space:normal;font-size:9px;gap:3px}
+#orbit-game[data-field-active=true] .og-weather-status{font-size:9px}
+
+/* Fixed inventory boards: categories replace sequential pages. */
+#orbit-game .og-stock-board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#orbit-game .og-stock-board .og-trade-tile{min-height:94px;height:94px;min-width:0;padding:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
+#orbit-game .og-stock-board .og-trade-tile>span{width:42px;height:42px;flex:none}
+#orbit-game .og-stock-board .og-trade-tile strong{font-size:11px;line-height:13px;overflow-wrap:anywhere}
+#orbit-game .og-stock-board .og-trade-tile small{font-size:10px;line-height:12px}
+#orbit-game .og-component-stock{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#orbit-game .og-component-slot{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;height:110px;padding:7px;border:1px solid #456479;border-radius:14px;background:#132c3e;color:#edf6ff}
+#orbit-game .og-component-slot>span{width:42px;height:42px;flex:none}
+#orbit-game .og-component-slot>strong{font-size:11px;line-height:14px}
+#orbit-game .og-component-slot>b{position:absolute;top:7px;right:9px;font-size:15px;color:#a9e9ef}
+#orbit-game .og-component-slot>small{font-size:10px;color:#b5ccda}
+#orbit-game .og-component-slot:disabled{opacity:.65}
+#orbit-game .og-warp-cell-art{display:inline-block;width:54px;height:54px;flex:none;background:var(--og-warpCell-art) center/contain no-repeat;filter:drop-shadow(0 3px 4px #0007)}
+#orbit-game .og-sheet[data-sheet=maintenance] .og-page-controls,
+#orbit-game .og-sheet[data-sheet=stock] .og-page-controls,
+#orbit-game .og-sheet[data-sheet=stock-components] .og-page-controls{display:none!important}
+#orbit-game .og-sheet[data-sheet=stock-components] .og-component-slot>.og-component-art{width:46px;height:46px}
+
+#orbit-game .og-extraction-receipt{display:flex;flex-direction:column;gap:12px}
+#orbit-game .og-recovered-part{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #507789;background:#143041;border-radius:14px}
+#orbit-game .og-recovered-part>span{width:58px;height:58px;flex:none}
+#orbit-game .og-recovered-part>div{display:flex;flex-direction:column;gap:5px;font-size:12px}
+#orbit-game .og-recovered-part small,#orbit-game .og-recovered-part div>span{font-size:10px;color:#b9d6df}
+#orbit-game .og-extraction-receipt .og-loot{display:flex;flex-wrap:wrap;gap:5px}
+#orbit-game .og-extraction-receipt .og-loot span{font-size:10px;padding:5px}
+#orbit-game .og-sheet[data-sheet=reward] .og-sheet-footer .og-button{background:#163f50;color:#dff8ff;border:1px solid #709aa8;min-height:44px}
+
+/* Sheet actions retain their illustrated silhouette, not the legacy orange slab. */
+#orbit-game .og-sheet-footer>button.og-panel-figure{background:transparent!important;border:0!important;box-shadow:none!important;color:#edf7ff;min-height:58px;padding:3px;gap:3px}
+#orbit-game .og-sheet-footer>button.og-panel-figure .og-control-symbol{height:34px;width:40px}
+#orbit-game .og-sheet-footer>button.og-panel-figure .og-control-symbol>*{max-height:34px;max-width:40px}
+#orbit-game .og-sheet-footer>button.og-panel-figure>.og-painted-module{height:34px;width:40px}
+#orbit-game .og-backup-actions button.og-panel-figure{background:#142f40!important;border:1px solid #405b6e!important;min-height:70px;padding:5px}
+#orbit-game .og-backup-actions button.og-panel-figure .og-control-symbol{height:30px}
+#orbit-game .og-backup-actions button.og-panel-figure .og-control-symbol>*{height:30px;width:30px}
+#orbit-game [data-sheet=contracts] .og-contract-card{grid-template-columns:40px 1fr 58px;padding:7px;gap:6px}
+#orbit-game [data-sheet=contracts] .og-contract-card>.og-trade-art{width:40px;height:40px}
+#orbit-game [data-sheet=contracts] .og-contract-card>button{grid-column:3;grid-row:1;min-width:0;min-height:44px;align-self:center;background:transparent!important;border:0!important;box-shadow:none!important;padding:0}
+#orbit-game [data-sheet=contracts] .og-contract-card>button .og-control-symbol{width:32px;height:32px}
+#orbit-game [data-sheet=contracts] .og-contract-card>button .og-control-symbol>*{width:32px;height:32px}
+#orbit-game [data-sheet=contracts] .og-contract-card>button .og-control-caption{font-size:9px;padding:2px}
+
+#orbit-game [data-sheet=settings] .og-settings>.og-panel-figure{min-height:54px;padding:2px}
+#orbit-game [data-sheet=settings] .og-settings>.og-panel-figure .og-control-symbol{height:30px}
+#orbit-game [data-sheet=settings] .og-settings>.og-panel-figure .og-control-symbol>*{width:30px;height:30px}
+
+/* Illustrated operations: centralized semantic sprites, compact touch targets. */
+#orbit-game .og-semantic-art{display:block;width:48px;height:48px;min-width:0;flex:none;background-image:var(--icon-sheet);background-size:400% 400%;background-position:var(--icon-x) var(--icon-y);background-repeat:no-repeat;filter:drop-shadow(0 2px 3px #0007)}
+#orbit-game .og-semantic-object{position:relative;display:grid;place-items:center;width:48px;height:48px;flex:none}
+#orbit-game .og-semantic-object>*:first-child{width:100%;height:100%}
+#orbit-game .og-control-symbol>.og-semantic-art,#orbit-game .og-control-symbol>.og-semantic-object{width:auto;height:100%;aspect-ratio:1;max-width:100%;max-height:100%;flex:none}
+#orbit-game .og-menu-tile>.og-semantic-art,#orbit-game .og-menu-tile>.og-semantic-object{width:50px;height:50px;margin:auto}
+#orbit-game .og-trade-tile>.og-semantic-art,#orbit-game .og-trade-tile>.og-semantic-object{width:48px;height:48px}
+#orbit-game .og-direction-mark{position:absolute;right:-2px;bottom:0;display:grid;place-items:center;width:19px;height:19px;background:#173440;border:1px solid #b8ddd5;border-radius:50%;color:#e2fff1;font:bold 16px sans-serif}
+#orbit-game .og-install-socket{position:absolute;bottom:0;right:0;width:25px;height:11px;border:3px solid #93c6cc;border-top:0;background:#102d3c}
+#orbit-game .og-evacuation-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:15px;border:1px solid #916b53;border-radius:18px;background:radial-gradient(ellipse at 50% 10%,#584031,#142938 70%)}
+#orbit-game .og-evacuation-card>.og-semantic-art{width:84px;height:84px}
+#orbit-game .og-evacuation-card h3{font-size:17px;margin:10px 0}
+#orbit-game .og-evacuation-card p{font-size:12px;line-height:1.5;margin:0 0 12px;color:#d3e1e6}
+#orbit-game .og-evacuation-loss{display:flex;flex-direction:column;gap:6px;background:#10222cdc;padding:10px;border-radius:10px;width:100%;box-sizing:border-box}
+#orbit-game .og-evacuation-loss strong{font-size:13px;color:#ffc495}
+#orbit-game .og-evacuation-loss small{font-size:11px;line-height:1.4;color:#d5e3e8}
+#orbit-game .og-decision-actions{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:300px;margin:0 auto}
+#orbit-game .og-decision-actions>button.og-panel-figure{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:44px;min-height:70px;padding:5px;background:transparent!important;border:0!important;box-shadow:none!important}
+#orbit-game .og-decision-actions .og-control-symbol{width:46px;height:46px}
+#orbit-game .og-decision-actions .og-control-caption{font-size:11px;white-space:normal;text-align:center}
+#orbit-game .og-decision-actions .is-danger .og-control-caption{border-color:#b88166;color:#ffd1b3;background:#362a29}
+
+#orbit-game .og-risk-actions>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent!important;border:0!important;box-shadow:none!important;min-height:60px;padding:4px;font-size:11px}
+#orbit-game .og-risk-actions .og-control-symbol{width:40px;height:40px}
+#orbit-game .og-encounter-art>.og-semantic-art{margin:auto;width:72px;height:72px}
+#orbit-game .og-sheet-footer>button.og-panel-figure>.og-semantic-art,#orbit-game .og-sheet-footer>button.og-panel-figure>.og-semantic-object{width:34px;height:34px}
+#orbit-game .og-atlas-route>.og-semantic-art,#orbit-game .og-atlas-route>.og-semantic-object{width:36px;height:36px}
+/* Extraction is a delivery tray, with quantities attached to each actual item. */
+#orbit-game .og-delivery{display:flex;flex-direction:column;gap:9px}
+#orbit-game .og-delivery-stamp{display:flex;align-items:center;gap:10px;padding:5px 8px;background:linear-gradient(110deg,#255446,#142d3b);border-radius:12px;border:1px solid #668e78}
+#orbit-game .og-delivery-stamp>.og-semantic-art{width:40px;height:40px}
+#orbit-game .og-delivery-stamp>div{display:flex;flex-direction:column;gap:3px}
+#orbit-game .og-delivery-stamp strong{color:#d3f5d6;font-size:14px}
+#orbit-game .og-delivery-stamp small{font-size:10px;color:#b8d8d4}
+#orbit-game .og-delivery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#orbit-game .og-delivery-item{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;height:88px;padding:5px;background:radial-gradient(ellipse at 50% 22%,#345665,#152a38 80%);border:1px solid #456373;border-radius:12px;box-sizing:border-box;animation:og-delivery-arrive .3s both;animation-delay:calc(var(--arrival,0)*45ms)}
+#orbit-game .og-delivery-item>.og-trade-art,#orbit-game .og-delivery-item>.og-purpose-art,#orbit-game .og-delivery-item>.og-lume-art,#orbit-game .og-delivery-item>.og-semantic-art{width:43px;height:43px;min-width:0;flex:none}
+#orbit-game .og-delivery-item>b{position:absolute;top:5px;right:5px;font-size:14px;color:#edffe9;background:#102b2def;padding:2px 5px;border:1px solid #699687;border-radius:8px}
+#orbit-game .og-delivery-item>span:last-child{font-size:10px;line-height:1.15;text-align:center;color:#e0eef2;min-height:22px;display:grid;place-items:center}
+#orbit-game .og-delivery-special{display:flex;align-items:center;gap:10px;padding:8px 10px;background:linear-gradient(120deg,#233e50,#111f30);border:1px solid var(--delivery-color,#a287cc);border-left-width:4px;border-radius:12px}
+#orbit-game .og-delivery-special>span{width:48px;height:48px;min-width:48px;flex:none}
+#orbit-game .og-delivery-special>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+#orbit-game .og-delivery-special small{font-size:9px;color:var(--delivery-color,#d4b7f0)}
+#orbit-game .og-delivery-special strong{font-size:13px;line-height:1.2}
+#orbit-game .og-delivery-special div>span{font-size:10px;color:#b7d0d9}
+#orbit-game .og-delivery-progress,#orbit-game .og-delivery-empty{padding:7px 9px;margin:0;font-size:11px;line-height:1.35;background:#163342;border-left:2px solid #a7cbb7;border-radius:6px;color:#c6e1dd}
+#orbit-game .og-sheet[data-sheet=reward] .og-sheet-footer{display:flex;justify-content:center}
+#orbit-game .og-delivery-done{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;max-width:140px;padding:5px 12px;background:#16333e;border:1px solid #5b8991;border-radius:14px;color:#def4ef}
+#orbit-game .og-delivery-done .og-control-symbol{width:34px;height:34px;margin:0}
+#orbit-game .og-delivery-done small{font-size:12px}
+@keyframes og-delivery-arrive{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+@media(max-height:650px){#orbit-game .og-delivery{gap:6px}#orbit-game .og-delivery-item{height:67px;padding:3px}#orbit-game .og-delivery-item>.og-trade-art,#orbit-game .og-delivery-item>.og-purpose-art,#orbit-game .og-delivery-item>.og-lume-art,#orbit-game .og-delivery-item>.og-semantic-art{width:32px;height:32px}#orbit-game .og-delivery-item>b{font-size:11px;top:3px;right:3px}#orbit-game .og-delivery-item>span:last-child{font-size:9px;min-height:20px}#orbit-game .og-delivery-special{padding:6px;gap:7px}#orbit-game .og-delivery-special>span{width:39px;height:39px;min-width:39px}#orbit-game .og-delivery-special strong{font-size:12px}#orbit-game .og-delivery-stamp{padding:3px 7px}#orbit-game .og-delivery-stamp>.og-semantic-art{width:32px;height:32px}#orbit-game .og-delivery-progress{font-size:10px;padding:5px 7px}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-delivery-item{animation:none}}
+
+@media(max-height:650px){#orbit-game .og-delivery.is-full{gap:5px}#orbit-game .og-delivery.is-full .og-delivery-grid{gap:5px}#orbit-game .og-delivery.is-full .og-delivery-item{height:56px}#orbit-game .og-delivery.is-full .og-delivery-item>.og-trade-art,#orbit-game .og-delivery.is-full .og-delivery-item>.og-purpose-art,#orbit-game .og-delivery.is-full .og-delivery-item>.og-lume-art,#orbit-game .og-delivery.is-full .og-delivery-item>.og-semantic-art{width:26px;height:26px}#orbit-game .og-delivery.is-full .og-delivery-special{padding:4px 6px;gap:7px}#orbit-game .og-delivery.is-full .og-delivery-special>span{width:32px;height:32px;min-width:32px}#orbit-game .og-delivery.is-full .og-delivery-special>div{gap:2px}#orbit-game .og-delivery.is-full .og-delivery-stamp>.og-semantic-art{width:26px;height:26px}}
+#orbit-game .og-operation-note{padding:9px 11px;margin:8px 0;border:1px solid #d4af7b77;border-radius:12px;background:linear-gradient(125deg,#293545,#372c3e);color:#f5d8ad;line-height:1.3}
+#orbit-game .og-operation-note>strong{font-size:12px}#orbit-game .og-operation-note p{font-size:11px;margin:4px 0;color:#f1dfc8}#orbit-game .og-operation-note small{display:block;font-size:10px;color:#c5cbd3}#orbit-game .og-operation-note.is-danger{border-color:#ef987f;background:#422c36}
+#orbit-game .og-operation-stabilize{display:flex;align-items:center;gap:8px;padding:4px 0!important;margin-top:5px;background:transparent!important;text-align:left;color:#b6e5e1;font-size:11px}
+#orbit-game .og-operation-stabilize .og-painted-module{width:34px;height:38px;display:block}#orbit-game .og-operation-stabilize span:last-child{display:block}
+#orbit-game .og-recovery-footer{display:grid;grid-template-columns:minmax(0,1fr) 64px;align-items:center;gap:8px;width:100%}
+#orbit-game .og-recovery-footer>.og-operation-note{margin:0;padding:7px 8px}
+#orbit-game .og-recovery-footer>[data-action=expeditionRecover]{width:64px!important;min-width:0;min-height:62px;padding:3px!important;background:transparent!important;border:0!important;box-shadow:none!important;white-space:normal}
+#orbit-game .og-recovery-footer>[data-action=expeditionRecover] .og-control-caption{font-size:10px;white-space:normal}
+#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-room-heading{min-height:86px;padding-top:5px;padding-bottom:5px}
+#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-sheet-header h2{font-size:17px}
+#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-sheet-content>p{font-size:11px;line-height:1.35;margin:5px 0}
+#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-circuit{margin:8px 0;gap:8px}
+#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-rotor{width:64px;height:64px}
+@media(max-height:650px){#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-room-heading{min-height:72px}#orbit-game .og-recovery-footer .og-operation-note p{font-size:10px}#orbit-game .og-recovery-footer .og-operation-note>small{display:none}#orbit-game .og-sheet[data-sheet=expedition-puzzle].og-single-card .og-rotor{width:50px;height:50px}}
+#orbit-game .og-recovery-footer .og-cost{color:#c4e5eb;font-size:10px}
+#orbit-game .og-operation-note.is-compact{margin:5px 0;padding:6px 8px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 7px}
+#orbit-game .og-operation-note.is-compact>small{display:none}#orbit-game .og-operation-note.is-compact>p{grid-column:1;margin:2px 0;font-size:10px}
+#orbit-game .og-operation-note.is-compact>.og-operation-stabilize{grid-column:2;grid-row:1/3;margin:0;font-size:10px}
+#orbit-game .og-operation-note.is-compact .og-painted-module{width:26px;height:32px}
+@media(max-height:650px){#orbit-game .og-sheet[data-sheet=sites] .og-site-choices button{padding:4px}#orbit-game .og-sheet[data-sheet=sites] .og-site-choices .og-action-world{width:24px;height:24px}#orbit-game .og-sheet[data-sheet=sites] .og-descent-note{font-size:10px;margin:3px 0}}

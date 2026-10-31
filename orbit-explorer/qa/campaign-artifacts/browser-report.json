@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "viewport": "390x844",
+      "introSkipped": true,
+      "missionPagesFit": true,
+      "realCoreExtraction": true,
+      "introSnapshotBytes": 2627,
+      "snapshotBytes": 4741
+    },
+    {
+      "viewport": "320x568",
+      "introSkipped": true,
+      "missionPagesFit": true,
+      "realCoreExtraction": true,
+      "introSnapshotBytes": 2622,
+      "snapshotBytes": 4720
+    },
+    {
+      "oldSaveWithExpeditionPreserved": true
+    }
+  ],
+  "errors": []
+}

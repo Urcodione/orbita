@@ -1,0 +1,752 @@
+{
+  "state": {
+    "version": 2,
+    "seed": 3592380863,
+    "rng": 3464498469,
+    "nextModuleId": 12,
+    "turn": 3,
+    "galaxyIndex": 0,
+    "visitedGalaxies": 1,
+    "galaxy": {
+      "id": "galaxy-0",
+      "seed": 326539005,
+      "kind": "frontier",
+      "name": "Véu de Íris",
+      "systems": [
+        {
+          "id": "g0-sys0",
+          "name": "Auralis",
+          "kind": "yellow",
+          "starColor": "#ffe0a0",
+          "description": "Rotas estáveis; um refúgio para preparar a nave.",
+          "heat": 0,
+          "radiation": 0,
+          "planetIds": [
+            "g0-p0",
+            "g0-p1",
+            "g0-p2",
+            "g0-p3",
+            "g0-p4"
+          ]
+        },
+        {
+          "id": "g0-sys1",
+          "name": "Meridiano",
+          "kind": "red-dwarf",
+          "starColor": "#ff927e",
+          "description": "Mundos gelados, mares densos e atmosferas corrosivas.",
+          "heat": 0,
+          "radiation": 0,
+          "planetIds": [
+            "g0-p5",
+            "g0-p6",
+            "g0-p7",
+            "g0-p8"
+          ]
+        },
+        {
+          "id": "g0-sys2",
+          "name": "Coroa Azul",
+          "kind": "blue-giant",
+          "starColor": "#9dd7ff",
+          "description": "Coroa estelar a 700 °C. Exige proteção térmica para entrar.",
+          "heat": 700,
+          "radiation": 65,
+          "planetIds": [
+            "g0-p9",
+            "g0-p10",
+            "g0-p11"
+          ]
+        }
+      ],
+      "planets": [
+        {
+          "id": "g0-p0",
+          "seed": 3641200322,
+          "systemId": "g0-sys0",
+          "name": "Auralis IV",
+          "biome": "forest",
+          "biomeName": "Floresta bioluminescente",
+          "color": "#7edaa6",
+          "temperature": 22,
+          "atmosphere": "Respirável",
+          "breathable": true,
+          "radiation": 8,
+          "gravity": 0.94,
+          "anomaly": "Esporos com memória luminosa",
+          "distance": 18,
+          "size": 0.91,
+          "angle": 0.21,
+          "scanned": true,
+          "medium": "solid",
+          "pressure": 1,
+          "toxicity": 0,
+          "weather": 8,
+          "sites": [
+            {
+              "id": "g0-p0-s0",
+              "name": "Bosque luminoso",
+              "difficulty": 1,
+              "explored": true
+            },
+            {
+              "id": "g0-p0-s1",
+              "name": "Santuário esquecido",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p0-s2",
+              "name": "Gruta das sementes",
+              "difficulty": 1,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p1",
+          "seed": 3657977941,
+          "systemId": "g0-sys0",
+          "name": "Talos II",
+          "biome": "desert",
+          "biomeName": "Dunas de cobre",
+          "color": "#e9be77",
+          "temperature": 42,
+          "atmosphere": "Rarefeita · poeira metálica",
+          "breathable": false,
+          "radiation": 18,
+          "gravity": 1.68,
+          "anomaly": "Dunas movem-se contra o vento",
+          "distance": 40,
+          "size": 1.2,
+          "angle": 1.45,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 1,
+          "toxicity": 5,
+          "weather": 14,
+          "sites": [
+            {
+              "id": "g0-p1-s0",
+              "name": "Mar de dunas",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p1-s1",
+              "name": "Farol soterrado",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p1-s2",
+              "name": "Cânion de cobre",
+              "difficulty": 1,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p2",
+          "seed": 3607645084,
+          "systemId": "g0-sys0",
+          "name": "Elyria III",
+          "biome": "gas",
+          "biomeName": "Gigante gasoso",
+          "color": "#dcac7e",
+          "temperature": 45,
+          "atmosphere": "Hidrogênio · sem superfície",
+          "breathable": false,
+          "radiation": 24,
+          "gravity": 1.82,
+          "anomaly": "Chuva de diamantes nas camadas inferiores",
+          "distance": 62,
+          "size": 1.67,
+          "angle": 2.81,
+          "scanned": false,
+          "medium": "gas",
+          "pressure": 6,
+          "toxicity": 12,
+          "weather": 30,
+          "sites": [
+            {
+              "id": "g0-p2-s0",
+              "name": "Corrente de hélio",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p2-s1",
+              "name": "Olho da tempestade",
+              "difficulty": 2,
+              "explored": false
+            },
+            {
+              "id": "g0-p2-s2",
+              "name": "Nuvens de diamante",
+              "difficulty": 3,
+              "explored": false
+            },
+            {
+              "id": "g0-p2-s3",
+              "name": "Vórtice profundo",
+              "difficulty": 3,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p3",
+          "seed": 3624422703,
+          "systemId": "g0-sys0",
+          "name": "Oriana IV",
+          "biome": "ocean",
+          "biomeName": "Oceano de safira",
+          "color": "#619ddc",
+          "temperature": 8,
+          "atmosphere": "Respirável · umidade elevada",
+          "breathable": true,
+          "radiation": 32,
+          "gravity": 1.27,
+          "anomaly": "O oceano canta em baixa frequência",
+          "distance": 78,
+          "size": 0.83,
+          "angle": 3.99,
+          "scanned": false,
+          "medium": "liquid",
+          "pressure": 8,
+          "toxicity": 0,
+          "weather": 22,
+          "sites": [
+            {
+              "id": "g0-p3-s0",
+              "name": "Atol flutuante",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p3-s1",
+              "name": "Estação submersa",
+              "difficulty": 2,
+              "explored": false
+            },
+            {
+              "id": "g0-p3-s2",
+              "name": "Recife abissal",
+              "difficulty": 3,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p4",
+          "seed": 3574089846,
+          "systemId": "g0-sys0",
+          "name": "Lumera V",
+          "biome": "volcanic",
+          "biomeName": "Mundo vulcânico",
+          "color": "#f59367",
+          "temperature": 320,
+          "atmosphere": "Tóxica · gases sulfúricos",
+          "breathable": false,
+          "radiation": 70,
+          "gravity": 1.13,
+          "anomaly": "Cristais que armazenam calor",
+          "distance": 94,
+          "size": 0.85,
+          "angle": 5.47,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 2,
+          "toxicity": 12,
+          "weather": 40,
+          "sites": [
+            {
+              "id": "g0-p4-s0",
+              "name": "Caldeira de obsidiana",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p4-s1",
+              "name": "Forja abandonada",
+              "difficulty": 2,
+              "explored": false
+            },
+            {
+              "id": "g0-p4-s2",
+              "name": "Túnel de lava",
+              "difficulty": 3,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p5",
+          "seed": 3590867465,
+          "systemId": "g0-sys1",
+          "name": "Vesper I",
+          "biome": "ice",
+          "biomeName": "Geleiras eternas",
+          "color": "#92cce8",
+          "temperature": -45,
+          "atmosphere": "Rarefeita · gelo de nitrogênio",
+          "breathable": false,
+          "radiation": 17,
+          "gravity": 1.61,
+          "anomaly": "Um oceano pulsa sob a crosta",
+          "distance": 120,
+          "size": 1.12,
+          "angle": 0.06,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 1,
+          "toxicity": 0,
+          "weather": 31,
+          "sites": [
+            {
+              "id": "g0-p5-s0",
+              "name": "Fenda azul",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p5-s1",
+              "name": "Observatório congelado",
+              "difficulty": 2,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p6",
+          "seed": 3540534608,
+          "systemId": "g0-sys1",
+          "name": "Íon II",
+          "biome": "toxic",
+          "biomeName": "Pântano corrosivo",
+          "color": "#bad96b",
+          "temperature": 33,
+          "atmosphere": "Corrosiva · aerossóis ácidos",
+          "breathable": false,
+          "radiation": 49,
+          "gravity": 0.54,
+          "anomaly": "Uma colônia sobrevive sob a chuva ácida",
+          "distance": 144,
+          "size": 1.18,
+          "angle": 1.99,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 7,
+          "toxicity": 98,
+          "weather": 19,
+          "sites": [
+            {
+              "id": "g0-p6-s0",
+              "name": "Mar de enxofre",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p6-s1",
+              "name": "Estufa abandonada",
+              "difficulty": 2,
+              "explored": false
+            },
+            {
+              "id": "g0-p6-s2",
+              "name": "Fenda corrosiva",
+              "difficulty": 3,
+              "explored": false
+            },
+            {
+              "id": "g0-p6-s3",
+              "name": "Torre de esporos",
+              "difficulty": 3,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p7",
+          "seed": 3557312227,
+          "systemId": "g0-sys1",
+          "name": "Aster III",
+          "biome": "rogue",
+          "biomeName": "Mundo errante",
+          "color": "#93a5c4",
+          "temperature": -151,
+          "atmosphere": "Vácuo · escuridão permanente",
+          "breathable": false,
+          "radiation": 34,
+          "gravity": 1.53,
+          "anomaly": "Uma cidade mantém suas luzes acesas",
+          "distance": 154,
+          "size": 1.04,
+          "angle": 3.56,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 0,
+          "toxicity": 5,
+          "weather": 60,
+          "sites": [
+            {
+              "id": "g0-p7-s0",
+              "name": "Sonda sem dono",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p7-s1",
+              "name": "Cidade sob o gelo",
+              "difficulty": 2,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p8",
+          "seed": 3775421274,
+          "systemId": "g0-sys1",
+          "name": "Nereida IV",
+          "biome": "ocean",
+          "biomeName": "Oceano de safira",
+          "color": "#619ddc",
+          "temperature": 26,
+          "atmosphere": "Respirável · umidade elevada",
+          "breathable": true,
+          "radiation": 23,
+          "gravity": 0.49,
+          "anomaly": "O oceano canta em baixa frequência",
+          "distance": 172,
+          "size": 1.19,
+          "angle": 5.15,
+          "scanned": false,
+          "medium": "liquid",
+          "pressure": 20,
+          "toxicity": 0,
+          "weather": 36,
+          "sites": [
+            {
+              "id": "g0-p8-s0",
+              "name": "Atol flutuante",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p8-s1",
+              "name": "Estação submersa",
+              "difficulty": 2,
+              "explored": false
+            },
+            {
+              "id": "g0-p8-s2",
+              "name": "Recife abissal",
+              "difficulty": 3,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p9",
+          "seed": 3792198893,
+          "systemId": "g0-sys2",
+          "name": "Kora I",
+          "biome": "magma",
+          "biomeName": "Oceano de magma",
+          "color": "#ff7052",
+          "temperature": 817,
+          "atmosphere": "Vapor metálico · calor extremo",
+          "breathable": false,
+          "radiation": 100,
+          "gravity": 1.13,
+          "anomaly": "Uma máquina pulsa dentro do vulcão",
+          "distance": 218,
+          "size": 1.09,
+          "angle": 0.01,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 4,
+          "toxicity": 87,
+          "weather": 54,
+          "sites": [
+            {
+              "id": "g0-p9-s0",
+              "name": "Arquipélago de basalto",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p9-s1",
+              "name": "Fonte de plasma",
+              "difficulty": 2,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p10",
+          "seed": 2685832959,
+          "systemId": "g0-sys2",
+          "name": "Cinis II",
+          "biome": "crystal",
+          "biomeName": "Deserto de cristais",
+          "color": "#b7a2e3",
+          "temperature": -3,
+          "atmosphere": "Ionizada · partículas exóticas",
+          "breathable": false,
+          "radiation": 62,
+          "gravity": 1.07,
+          "anomaly": "Cristais dobram a luz ao redor da nave",
+          "distance": 241,
+          "size": 0.74,
+          "angle": 2.28,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 1,
+          "toxicity": 0,
+          "weather": 42,
+          "sites": [
+            {
+              "id": "g0-p10-s0",
+              "name": "Jardim de prismas",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p10-s1",
+              "name": "Portal partido",
+              "difficulty": 2,
+              "explored": false
+            }
+          ]
+        },
+        {
+          "id": "g0-p11",
+          "seed": 2669055340,
+          "systemId": "g0-sys2",
+          "name": "Solen III",
+          "biome": "toxic",
+          "biomeName": "Pântano corrosivo",
+          "color": "#bad96b",
+          "temperature": 46,
+          "atmosphere": "Corrosiva · aerossóis ácidos",
+          "breathable": false,
+          "radiation": 60,
+          "gravity": 1.61,
+          "anomaly": "Relâmpagos verdes iluminam ruínas",
+          "distance": 262,
+          "size": 0.98,
+          "angle": 4.59,
+          "scanned": false,
+          "medium": "solid",
+          "pressure": 6,
+          "toxicity": 92,
+          "weather": 48,
+          "sites": [
+            {
+              "id": "g0-p11-s0",
+              "name": "Mar de enxofre",
+              "difficulty": 1,
+              "explored": false
+            },
+            {
+              "id": "g0-p11-s1",
+              "name": "Estufa abandonada",
+              "difficulty": 2,
+              "explored": false
+            },
+            {
+              "id": "g0-p11-s2",
+              "name": "Fenda corrosiva",
+              "difficulty": 3,
+              "explored": false
+            },
+            {
+              "id": "g0-p11-s3",
+              "name": "Torre de esporos",
+              "difficulty": 3,
+              "explored": false
+            }
+          ]
+        }
+      ]
+    },
+    "location": {
+      "planetId": "g0-p0",
+      "mode": "docked"
+    },
+    "ship": {
+      "name": "Andorinha",
+      "color": "#f0a270"
+    },
+    "resources": {
+      "fuel": 90,
+      "oxygen": 89,
+      "hull": 100,
+      "warpFuel": 1,
+      "crystals": 6,
+      "ore": 18,
+      "credits": 148,
+      "data": 31
+    },
+    "equipped": {
+      "engine": {
+        "id": "m1",
+        "type": "engine",
+        "name": "Motor Vento Solar",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Eficiência de voo · 1,00×"
+      },
+      "warp": {
+        "id": "m2",
+        "type": "warp",
+        "name": "Núcleo Horizonte",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Eficiência de dobra · 1,00×"
+      },
+      "life": {
+        "id": "m3",
+        "type": "life",
+        "name": "Filtro Biosfera",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Reserva de oxigênio · 1,00×"
+      },
+      "shield": {
+        "id": "m4",
+        "type": "shield",
+        "name": "Campo Guardião",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Proteção ambiental · 1,00×"
+      },
+      "scanner": {
+        "id": "m5",
+        "type": "scanner",
+        "name": "Espectrômetro Íris",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Qualidade da análise · 1,00×"
+      },
+      "arm": {
+        "id": "m6",
+        "type": "arm",
+        "name": "Braço Libélula",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Coleta de recursos · 1,00×"
+      },
+      "cargo": {
+        "id": "m7",
+        "type": "cargo",
+        "name": "Baú de Órion",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Espaços de inventário · 1,00×"
+      },
+      "survival": {
+        "id": "m8",
+        "type": "survival",
+        "name": "Kit Pioneiro",
+        "rarity": "common",
+        "level": 1,
+        "power": 1,
+        "origin": "starter",
+        "description": "Autonomia da expedição · 1,00×"
+      }
+    },
+    "inventory": [
+      {
+        "id": "m9",
+        "type": "scanner",
+        "name": "Olho de Órion",
+        "rarity": "rare",
+        "level": 1,
+        "power": 1.72,
+        "origin": "cache",
+        "description": "Qualidade da análise · 1,72×"
+      },
+      {
+        "id": "m10",
+        "type": "cargo",
+        "name": "Armazém Colmeia",
+        "rarity": "uncommon",
+        "level": 1,
+        "power": 1.28,
+        "origin": "cache",
+        "description": "Espaços de inventário · 1,28×"
+      },
+      {
+        "id": "m11",
+        "type": "engine",
+        "name": "Motor Vento Solar",
+        "rarity": "rare",
+        "level": 1,
+        "power": 1.72,
+        "origin": "recovered",
+        "description": "Eficiência de voo · 1,72×"
+      }
+    ],
+    "progress": {
+      "scans": 1,
+      "landings": 1,
+      "explorations": 1,
+      "modulesEquipped": 0,
+      "warps": 0
+    },
+    "mission": {
+      "stage": 3,
+      "completed": [
+        "scan",
+        "dock",
+        "explore"
+      ]
+    },
+    "log": [
+      {
+        "id": 3,
+        "text": "Bosque luminoso: Motor Vento Solar (raro) recuperado. +6 minério · +3 cristais.",
+        "kind": "discovery"
+      },
+      {
+        "id": 2,
+        "text": "Ancoragem concluída em Auralis IV. Confira o risco de cada local.",
+        "kind": "info"
+      },
+      {
+        "id": 1,
+        "text": "Auralis IV analisado. 3 locais e requisitos de operação identificados. +13 dados.",
+        "kind": "success"
+      },
+      {
+        "id": 0,
+        "text": "Bem-vindo ao Véu de Íris. Auralis IV aguarda sua primeira análise.",
+        "kind": "info"
+      }
+    ]
+  },
+  "tab": "log",
+  "selected": "g0-p0",
+  "shipDetail": {
+    "mode": "exterior",
+    "selectedModule": null,
+    "expanded": false
+  }
+}

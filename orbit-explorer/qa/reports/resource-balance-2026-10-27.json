@@ -1,0 +1,196 @@
+{
+  "sample": {
+    "seeds": 100,
+    "sites": 3805,
+    "initialEquipmentAccessible": 544
+  },
+  "initial": {
+    "fuel": 90,
+    "oxygen": 100,
+    "hull": 100,
+    "warpFuel": 1,
+    "crystals": 3,
+    "ore": 12,
+    "credits": 120,
+    "data": 0
+  },
+  "capacities": {
+    "fuel": 100,
+    "oxygen": 100
+  },
+  "travel": {
+    "sameSystem": {
+      "min": 11,
+      "max": 16,
+      "mean": 13.65
+    },
+    "crossSystem": {
+      "min": 31,
+      "max": 50,
+      "mean": 38.41
+    }
+  },
+  "biomes": {
+    "forest": {
+      "sites": 300,
+      "accessible": 300,
+      "fuel": {
+        "min": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "oxygen": {
+        "min": 9,
+        "max": 9,
+        "mean": 9
+      }
+    },
+    "desert": {
+      "sites": 243,
+      "accessible": 243,
+      "fuel": {
+        "min": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "oxygen": {
+        "min": 10,
+        "max": 10,
+        "mean": 10
+      }
+    },
+    "gas": {
+      "sites": 426,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.93
+      },
+      "oxygen": {
+        "min": 18,
+        "max": 30,
+        "mean": 23
+      }
+    },
+    "ocean": {
+      "sites": 497,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.59
+      },
+      "oxygen": {
+        "min": 16,
+        "max": 28,
+        "mean": 20.17
+      }
+    },
+    "volcanic": {
+      "sites": 355,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.5
+      },
+      "oxygen": {
+        "min": 13,
+        "max": 25,
+        "mean": 17.57
+      }
+    },
+    "ice": {
+      "sites": 317,
+      "accessible": 1,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.69
+      },
+      "oxygen": {
+        "min": 12,
+        "max": 25,
+        "mean": 18
+      }
+    },
+    "toxic": {
+      "sites": 612,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 7.04
+      },
+      "oxygen": {
+        "min": 13,
+        "max": 25,
+        "mean": 18.74
+      }
+    },
+    "rogue": {
+      "sites": 435,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.97
+      },
+      "oxygen": {
+        "min": 13,
+        "max": 25,
+        "mean": 18.87
+      }
+    },
+    "magma": {
+      "sites": 254,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.64
+      },
+      "oxygen": {
+        "min": 13,
+        "max": 25,
+        "mean": 18.15
+      }
+    },
+    "crystal": {
+      "sites": 366,
+      "accessible": 0,
+      "fuel": {
+        "min": 5,
+        "max": 9,
+        "mean": 6.59
+      },
+      "oxygen": {
+        "min": 13,
+        "max": 25,
+        "mean": 17.94
+      }
+    }
+  },
+  "firstPartialTrip": {
+    "spent": {
+      "fuel": 5,
+      "oxygen": 11
+    },
+    "reward": {
+      "ore": 8,
+      "crystals": 0,
+      "credits": 5,
+      "data": 0,
+      "lumenfern": 1,
+      "mossfox": 1
+    },
+    "refuelCost": {
+      "ore": 3
+    },
+    "fuelActuallyAdded": 15,
+    "airCost": {},
+    "airActuallyAdded": 11
+  },
+  "note": "Biome ranges include inaccessible sites to show requirements after equipment upgrades; no timed consumption; first partial trip includes scanner cost."
+}

@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "name": "Rocket exterior keeps a single primary action and opens its interior",
+      "pass": true
+    },
+    {
+      "name": "Engine can be selected, expanded to show its socket, and returned",
+      "pass": true
+    },
+    {
+      "name": "Scanner replacement only offers compatible modules and swaps the actual equipment",
+      "pass": true
+    },
+    {
+      "name": "Cargo and all eight physical compartments can be inspected without using resources",
+      "pass": true
+    },
+    {
+      "name": "Back and Escape step through module, interior, exterior, and main exploration",
+      "pass": true
+    },
+    {
+      "name": "Exploration analyzes, docks, pilots terrain, extracts a module, and equips the reward",
+      "pass": true
+    },
+    {
+      "name": "Replacement sheet traps keyboard focus and Escape returns to the inspected module",
+      "pass": true
+    },
+    {
+      "name": "Interior and module controls fit widths 320, 390, 736, and 1024",
+      "pass": true
+    },
+    {
+      "name": "Equipment and game progress survive reload",
+      "pass": true
+    },
+    {
+      "name": "Reduced-motion preference keeps interior interactions usable",
+      "pass": true
+    },
+    {
+      "name": "No browser errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

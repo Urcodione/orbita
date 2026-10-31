@@ -1,0 +1,182 @@
+{
+  "layout": [
+    {
+      "width": 320,
+      "tab": "explore",
+      "viewport": 320,
+      "doc": 320,
+      "game": 326,
+      "outside": []
+    },
+    {
+      "width": 320,
+      "tab": "ship",
+      "viewport": 320,
+      "doc": 320,
+      "game": 326,
+      "outside": []
+    },
+    {
+      "width": 320,
+      "tab": "galaxy",
+      "viewport": 320,
+      "doc": 320,
+      "game": 326,
+      "outside": []
+    },
+    {
+      "width": 320,
+      "tab": "log",
+      "viewport": 320,
+      "doc": 320,
+      "game": 326,
+      "outside": []
+    },
+    {
+      "width": 360,
+      "tab": "explore",
+      "viewport": 360,
+      "doc": 360,
+      "game": 360,
+      "outside": []
+    },
+    {
+      "width": 360,
+      "tab": "ship",
+      "viewport": 360,
+      "doc": 360,
+      "game": 360,
+      "outside": []
+    },
+    {
+      "width": 360,
+      "tab": "galaxy",
+      "viewport": 360,
+      "doc": 360,
+      "game": 360,
+      "outside": []
+    },
+    {
+      "width": 360,
+      "tab": "log",
+      "viewport": 360,
+      "doc": 360,
+      "game": 360,
+      "outside": []
+    },
+    {
+      "width": 736,
+      "tab": "explore",
+      "viewport": 736,
+      "doc": 736,
+      "game": 688,
+      "outside": []
+    },
+    {
+      "width": 736,
+      "tab": "ship",
+      "viewport": 736,
+      "doc": 736,
+      "game": 688,
+      "outside": []
+    },
+    {
+      "width": 736,
+      "tab": "galaxy",
+      "viewport": 736,
+      "doc": 736,
+      "game": 688,
+      "outside": []
+    },
+    {
+      "width": 736,
+      "tab": "log",
+      "viewport": 736,
+      "doc": 736,
+      "game": 688,
+      "outside": []
+    },
+    {
+      "width": 1024,
+      "tab": "explore",
+      "viewport": 1024,
+      "doc": 1024,
+      "game": 976,
+      "outside": []
+    },
+    {
+      "width": 1024,
+      "tab": "ship",
+      "viewport": 1024,
+      "doc": 1024,
+      "game": 976,
+      "outside": []
+    },
+    {
+      "width": 1024,
+      "tab": "galaxy",
+      "viewport": 1024,
+      "doc": 1024,
+      "game": 976,
+      "outside": []
+    },
+    {
+      "width": 1024,
+      "tab": "log",
+      "viewport": 1024,
+      "doc": 1024,
+      "game": 976,
+      "outside": []
+    },
+    {
+      "width": 1440,
+      "tab": "explore",
+      "viewport": 1440,
+      "doc": 1440,
+      "game": 1392,
+      "outside": []
+    },
+    {
+      "width": 1440,
+      "tab": "ship",
+      "viewport": 1440,
+      "doc": 1440,
+      "game": 1392,
+      "outside": []
+    },
+    {
+      "width": 1440,
+      "tab": "galaxy",
+      "viewport": 1440,
+      "doc": 1440,
+      "game": 1392,
+      "outside": []
+    },
+    {
+      "width": 1440,
+      "tab": "log",
+      "viewport": 1440,
+      "doc": 1440,
+      "game": 1392,
+      "outside": []
+    }
+  ],
+  "dialog": {
+    "rect": {
+      "x": 12,
+      "y": 25,
+      "width": 336,
+      "height": 751.734375,
+      "top": 25,
+      "right": 348,
+      "bottom": 776.734375,
+      "left": 12
+    },
+    "focus": "Fechar",
+    "inert": true,
+    "shiftTab": "Começar uma nova expedição",
+    "normalTab": "Fechar",
+    "returnFocus": true
+  },
+  "errors": []
+}

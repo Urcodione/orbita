@@ -1,0 +1,13 @@
+#orbit-game .og-painted-module{display:inline-block;flex:none;width:44px;height:44px;background-image:var(--og-module-art);background-size:200% 400%;background-repeat:no-repeat;vertical-align:middle}
+#orbit-game .og-module-code.og-painted-module{font-size:0;background-color:#102630}
+#orbit-game .og-reward .og-painted-module{width:96px;height:84px}
+#orbit-game .og-lab-icon.og-painted-module{width:36px;height:38px}
+
+/* Surface expedition: painted terrain stays dominant; controls retain their established artwork. */
+#orbit-game[data-field-active=true] .og-field{max-width:calc(100% - 24px)}
+#orbit-game[data-field-active=true] .og-field-board{max-width:none;border-radius:18px;box-shadow:0 12px 28px #0005,0 0 0 1px #8caaa44a;background:#122b34}
+#orbit-game[data-field-active=true] .og-field-caption{max-width:none;padding:5px 8px;margin-top:5px;color:#d1e2da;background:#142d36;border:1px solid #779c9b30;border-radius:8px}
+#orbit-game[data-field-active=true] .og-field-caption.is-warning{color:#ffd09d}
+#orbit-game[data-field-active=true] .og-field-cell{border-radius:12px}
+#orbit-game[data-field-active=true] .og-field-cell:not(:disabled):hover{background:#b9ffe219;box-shadow:inset 0 0 0 1px #b7ffe677}
+#orbit-game[data-field-active=true] .og-field-cell:focus-visible{outline:2px solid #e5fbbd;outline-offset:-3px}

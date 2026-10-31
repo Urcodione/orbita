@@ -1,0 +1,43 @@
+{
+  "sandbox": "allow-scripts",
+  "fallback": "Salvo nesta conversa",
+  "hostSave": {
+    "status": "Salvo nesta conversa",
+    "color": "#c9b1df"
+  },
+  "hostRestore": true,
+  "errors": [],
+  "consoleErrors": [],
+  "layouts": [
+    {
+      "tab": "explore",
+      "doc": 320,
+      "game": 320,
+      "viewport": 320
+    },
+    {
+      "tab": "ship",
+      "doc": 320,
+      "game": 320,
+      "viewport": 320
+    },
+    {
+      "tab": "galaxy",
+      "doc": 320,
+      "game": 320,
+      "viewport": 320
+    },
+    {
+      "tab": "log",
+      "doc": 320,
+      "game": 320,
+      "viewport": 320
+    }
+  ],
+  "map320Overlaps": [
+    [
+      "Oriana II19 combustível",
+      "Nyx VII22 combustível"
+    ]
+  ]
+}

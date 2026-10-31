@@ -1,0 +1,99 @@
+/* Bancada em páginas curtas: estoque e fabricação permanecem à vista. */
+#orbit-game .og-lab,#orbit-game .og-lab-fixed,#orbit-game .og-lab-footer{display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--og-text)}
+#orbit-game .og-lab{min-height:0;overflow:visible}
+#orbit-game .og-lab .og-page-block{min-width:0}
+#orbit-game .og-lab-stock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:3px 0 6px;border-bottom:1px solid var(--og-line)}
+#orbit-game .og-lab-stock>div{display:flex;align-items:baseline;gap:4px;min-width:0;flex-wrap:wrap}
+#orbit-game .og-lab-stock strong{font:14px/1.2 monospace;color:#c8e4de;overflow-wrap:anywhere}
+#orbit-game .og-lab-stock span{font-size:9px;line-height:1.2;color:var(--og-dim)}
+#orbit-game .og-lab-icon{width:28px;height:30px;flex:none;color:var(--og-blue)}
+#orbit-game .og-lab-types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#orbit-game .og-lab-type{min-height:55px;padding:7px;display:flex;gap:7px;align-items:center;text-align:left;background:#1c3442;border:1px solid #324e5d;border-radius:10px;transition:background .15s,border-color .15s}
+#orbit-game .og-lab-type:hover,#orbit-game .og-lab-parts-link:hover,#orbit-game .og-lab-component:hover,#orbit-game .og-lab-recipe:hover{background:#264655;border-color:#668791}
+#orbit-game .og-lab-type>span{min-width:0;display:flex;flex-direction:column;gap:3px}
+#orbit-game .og-lab-type strong{font-size:11px;line-height:1.3;font-weight:400}
+#orbit-game .og-lab-type small{font-size:9px;line-height:1.3;color:#a4bac5}
+#orbit-game .og-lab-type .og-lab-icon{width:24px;height:27px}
+#orbit-game .og-lab-parts-link{width:100%;padding:7px 10px;background:#182f3c;border:1px solid #496273;border-radius:10px;display:flex;align-items:center;text-align:left;gap:9px;min-height:48px}
+#orbit-game .og-lab-parts-link>span{display:flex;flex-direction:column;gap:3px;min-width:0}
+#orbit-game .og-lab-parts-link strong{font-size:12px;font-weight:400;color:#efc39c}
+#orbit-game .og-lab-parts-link small{font-size:9px;color:var(--og-dim);line-height:1.3}
+#orbit-game .og-lab-parts-link b{margin-left:auto;font:18px monospace;color:var(--og-dim)}
+#orbit-game .og-lab-parts-link .og-lab-icon{color:#ddb594}
+#orbit-game .og-lab-back{background:transparent;display:flex;align-items:center;gap:7px;align-self:flex-start;color:var(--og-blue);font-size:11px;min-height:28px;padding:2px 3px;text-align:left;border-radius:7px}
+#orbit-game .og-lab-back>span{font:18px/1 monospace}
+#orbit-game .og-lab-back.is-icon{flex:none;align-self:center;justify-content:center;width:30px;height:36px;padding:0;font:20px/1 monospace;border:1px solid #3b5967;background:#19313e}
+#orbit-game .og-lab-identity{display:flex;align-items:center;gap:8px;min-height:38px}
+#orbit-game .og-lab-identity>div{min-width:0;flex:1}
+#orbit-game .og-lab-identity small{font:9px/1.3 monospace;color:var(--og-dim)}
+#orbit-game .og-lab-identity h3{margin:2px 0 0;font-size:14px;line-height:1.25;font-weight:400;color:var(--og-text)}
+#orbit-game .og-lab-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:3px;background:#102631;border:1px solid #304c5a;border-radius:8px}
+#orbit-game .og-lab-tabs button{min-height:28px;border-radius:5px;background:transparent;color:#a9c1cc;font-size:11px}
+#orbit-game .og-lab-tabs button[aria-pressed=true]{background:#36525e;color:#eff6f3}
+#orbit-game .og-lab-recipe{width:100%;border:1px solid #365461;border-radius:10px;background:#1b3340;padding:10px;display:flex;flex-direction:column;gap:5px;text-align:left;min-width:0;transition:background .15s,border-color .15s}
+#orbit-game .og-lab-recipe-meta{display:flex;justify-content:space-between;gap:8px;font:9px/1.4 monospace;color:#c4bdb5}
+#orbit-game .og-lab-recipe-meta>span{color:#aec5cf;text-align:right}
+#orbit-game .og-lab-recipe-meta>span.is-ready{color:var(--og-green)}
+#orbit-game .og-lab-recipe>strong{font-size:14px;font-weight:400;line-height:1.3}
+#orbit-game .og-lab .og-lab-description{font-size:11px;line-height:1.45;color:#b0c3ce;margin:0}
+#orbit-game .og-lab-owned{font-size:9px;color:var(--og-green)}
+#orbit-game .og-lab-capabilities{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px;color:var(--og-blue);font:10px/1.4 monospace}
+#orbit-game .og-lab-recipe-label{display:flex;justify-content:space-between;gap:8px;font:9px/1.4 monospace;letter-spacing:.15px;color:#a7bcc7;margin:0}
+#orbit-game .og-lab-recipe-label>span:last-child{text-align:right}
+#orbit-game .og-lab-ingredient{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 1px;border:0;border-bottom:1px solid #354d5b;border-radius:0;min-height:44px;background:transparent;text-align:left;width:100%;color:var(--og-text)}
+#orbit-game button.og-lab-ingredient:hover{background:#27465366}
+#orbit-game .og-lab-ingredient-name{display:flex;align-items:center;gap:7px;min-width:0}
+#orbit-game .og-lab-ingredient-name>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+#orbit-game .og-lab-ingredient-name strong{font-size:11px;line-height:1.3;font-weight:400}
+#orbit-game .og-lab-ingredient-name small{font-size:9px;line-height:1.3;color:var(--og-dim)}
+#orbit-game .og-lab-ingredient .og-lab-icon{width:24px;height:26px;color:#b9d0d2}
+#orbit-game .og-lab-quantity{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+#orbit-game .og-lab-quantity strong{font:12px/1.2 monospace;color:var(--og-green)}
+#orbit-game .og-lab-quantity i{font-style:normal;color:#b3c9d2}
+#orbit-game .og-lab-quantity small{font-size:9px;color:#adc9bf}
+#orbit-game .og-lab-ingredient.is-missing .og-lab-quantity strong,#orbit-game .og-lab-ingredient.is-missing .og-lab-quantity small{color:#f3b992}
+#orbit-game .og-lab-material{width:19px;height:20px;display:block;flex:none;background:#a9adb1;clip-path:polygon(22% 7%,75% 0,100% 44%,73% 97%,20% 88%,0 43%);margin:0 3px;box-shadow:inset -8px -4px 0 #7894a599}
+#orbit-game .og-lab-material[data-material=crystals]{background:#b8a7dd;clip-path:polygon(48% 0,89% 28%,82% 79%,39% 100%,8% 62%,12% 26%);box-shadow:inset -10px -2px 0 #7f83b899}
+#orbit-game .og-lab-material[data-material=data]{background:#83c3cc;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,0 60%,60% 60%,60% 40%,0 40%);box-shadow:inset -5px 0 0 #b8dcdf77}
+#orbit-game .og-lab-material[data-material=credits]{border-radius:50%;background:#d1b782;clip-path:none;box-shadow:inset 0 0 0 4px #968763,inset 0 0 0 5px #cfb586}
+#orbit-game .og-lab-missing,#orbit-game .og-lab-ready{font-size:10px;line-height:1.3;margin:0;color:#f0bd9a}
+#orbit-game .og-lab-ready{color:var(--og-green)}
+#orbit-game .og-lab-footer{gap:5px;padding-top:4px}
+#orbit-game .og-lab-footer>p{text-align:center}
+#orbit-game .og-lab-craft-actions{display:grid;grid-template-columns:1fr;gap:6px}
+#orbit-game .og-lab-craft-actions.has-batch{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+#orbit-game .og-lab-craft-actions .og-lab-craft{min-height:39px;width:100%;padding:7px 8px;margin:0;font-size:11px;white-space:normal;line-height:1.25}
+#orbit-game .og-lab-component-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#orbit-game .og-lab-component{display:flex;align-items:center;gap:7px;min-height:65px;padding:8px;background:#1c3442;border:1px solid #324e5d;border-radius:10px;text-align:left;min-width:0}
+#orbit-game .og-lab-component>.og-lab-icon{width:23px;height:27px;color:#dcbea0}
+#orbit-game .og-lab-component>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+#orbit-game .og-lab-component strong{font-size:11px;font-weight:400;line-height:1.3}
+#orbit-game .og-lab-component small{font-size:9px;color:var(--og-dim)}
+#orbit-game .og-lab-component>b{display:none}
+#orbit-game .og-lab .og-lab-target{font-size:10px;line-height:1.4;color:var(--og-blue);padding:7px 9px;background:#102732;border:1px solid #355264;border-radius:8px;text-align:left;min-height:34px;width:100%}
+#orbit-game .og-lab .og-lab-batch-note{font-size:11px;line-height:1.4;color:#c0d2da;margin:4px 0}
+#orbit-game .og-lab-batch-note strong{color:#ecc4a4}
+#orbit-game .og-lab .og-lab-note{font-size:10px;line-height:1.4;color:#9fb7c4;margin:3px 0}
+#orbit-game .og-lab-progress{display:flex;flex-direction:column;gap:5px;padding:2px 0 8px}
+#orbit-game .og-lab-progress>span{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#a9c1cc}
+#orbit-game .og-lab-progress strong{font:10px monospace;color:#b4d9cc}
+#orbit-game .og-lab-progress progress{appearance:none;-webkit-appearance:none;width:100%;height:4px;border:0;border-radius:5px;overflow:hidden;background:#29424f}
+#orbit-game .og-lab-progress progress::-webkit-progress-bar{background:#29424f;border-radius:5px}
+#orbit-game .og-lab-progress progress::-webkit-progress-value{background:#a9d8b4;border-radius:5px}
+#orbit-game .og-lab-progress progress::-moz-progress-bar{background:#a9d8b4;border-radius:5px}
+#orbit-game .og-lab-effect-label{display:flex;justify-content:space-between;gap:8px;font-size:11px;line-height:1.4;color:#b8dfe1;margin:0}
+#orbit-game .og-lab-effect-label span{font:9px/1.5 monospace;color:#9fb7c4;flex:none}
+#orbit-game .og-lab-fit-row{display:flex;justify-content:space-between;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid #334e5c;font-size:10px;line-height:1.4}
+#orbit-game .og-lab-fit-row>span{color:#bdd0d8}
+#orbit-game .og-lab-fit-row strong{font:10px/1.4 monospace;color:#b5d8bd;flex:none;text-align:right}
+#orbit-game .og-lab-fit-row.is-down strong{color:#f0b292}
+#orbit-game .og-lab-fit-row i{font-style:normal;color:#95acb8}
+#orbit-game .og-lab-fit-row b{font-weight:400;color:#b9cad0}
+#orbit-game .og-lab .og-lab-world{font-size:10px;line-height:1.4;margin:2px 0;color:#b5d8bd}
+#orbit-game .og-lab .og-lab-world.is-down{color:#f0b292}
+#orbit-game .og-lab-world strong{font-weight:400}
+#orbit-game .og-lab .og-lab-use{font-size:11px;line-height:1.4;color:#b7ccd6;margin:0;padding:7px 0;border-bottom:1px solid #334e5c;display:flex;justify-content:space-between;gap:8px}
+#orbit-game .og-lab-use span{font-family:monospace;color:#dbc29d;flex:none}
+#orbit-game .og-lab button:focus-visible,#orbit-game .og-lab-fixed button:focus-visible,#orbit-game .og-lab-footer button:focus-visible{outline:2px solid var(--og-blue);outline-offset:2px}
+@media(max-width:350px){#orbit-game .og-lab-type{gap:5px;padding:6px;min-height:55px}#orbit-game .og-lab-type .og-lab-icon{width:21px;height:25px}#orbit-game .og-lab-stock>div{flex-direction:column;gap:2px}#orbit-game .og-lab-stock strong{font-size:13px}#orbit-game .og-lab-stock span{font-size:9px}#orbit-game .og-lab-recipe-label{font-size:8px}#orbit-game .og-lab-identity{gap:6px}#orbit-game .og-lab-identity h3{font-size:13px}#orbit-game .og-lab-identity>.og-lab-icon{width:23px;height:26px}#orbit-game .og-lab-component{padding:7px 5px;gap:5px}#orbit-game .og-lab-component>.og-lab-icon{width:21px}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-lab *{transition:none!important;animation:none!important}}

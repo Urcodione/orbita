@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');global.OrbitEngine=require('./engine.js');require('./economy.js');const E=OrbitEngine;
+const s=E.create(1234),before=JSON.stringify(s),m=E.market(s);assert.equal(JSON.stringify(s),before);assert.equal(m.rows.length,4);
+assert(E.dispatch(s,'stationDock').ok);
+const r=s.resources,initial=r.credits;const q=E.tradeQuote(s,{resource:'ore',quantity:1,side:'buy'});assert(q.allowed);assert(E.dispatch(s,'trade',{resource:'ore',quantity:1,side:'buy',expectedTotal:q.total}).ok);assert.equal(s.resources.ore,13);assert.equal(s.resources.credits,initial-q.total);assert.equal(E.market(s).rows[0].stock,m.rows[0].stock-1);
+assert(E.dispatch(s,'trade',{resource:'ore',quantity:1,side:'sell'}).ok);assert(s.resources.credits<initial,'round trips cannot profit');assert(E.restore(E.snapshot(s)));assert.deepEqual(E.restore(E.snapshot(s)).commerce,s.commerce);
+for(const payload of [{resource:'ore',quantity:-1,side:'buy'},{resource:'ore',quantity:Infinity,side:'sell'},{resource:'no',quantity:1,side:'buy'},{resource:'ore',quantity:50,side:'buy'},{resource:'ore',quantity:1,side:'buy',expectedTotal:0}]){const b=JSON.stringify(s);assert(!E.dispatch(s,'trade',payload).ok);assert.equal(JSON.stringify(s),b);}
+s.location.mode='docked';assert(!E.tradeQuote(s,{resource:'ore',quantity:1,side:'buy'}).allowed);s.location.mode='orbit';s.expedition={};assert(!E.tradeQuote(s,{resource:'ore',quantity:1,side:'buy'}).allowed);s.expedition=null;
+const future=E.market(s,(m.cycle+1)*600000);assert(future.rows.every(g=>g.stock===g.target));
+const a=E.create(22),b=E.create(22);a.resources.credits=b.resources.credits=10000;assert(E.dispatch(a,'stationDock').ok);assert(E.dispatch(b,'stationDock').ok);assert(E.dispatch(a,'trade',{resource:'ore',quantity:5,side:'buy'}).ok);for(let i=0;i<5;i++)assert(E.dispatch(b,'trade',{resource:'ore',quantity:1,side:'buy'}).ok);assert.equal(a.resources.credits,b.resources.credits);
+const p=E.create(30);for(const planet of p.galaxy.planets)planet.biome='volcanic';const rich=E.market(p).rows[0];for(const planet of p.galaxy.planets)planet.biome='gas';const scarce=E.market(p).rows[0];assert(rich.buy<scarce.buy);assert(rich.stock>scarce.stock);
+console.log('PASS trade atomicity, scarcity pricing, round trips, split orders, stock refresh, orbital gate, save/restore');
