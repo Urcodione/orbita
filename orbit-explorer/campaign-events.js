@@ -27,8 +27,8 @@ function plan(s,action,p={}){
   if(s.resources.hull<=12)return fail('Casco insuficiente: a descarga exige 12 e precisa deixar a nave íntegra.');
   return {allowed:true,reason:'',cost:{hull:12},energy:Math.min(6,e.maxReserve-e.reserve)};
  }
- const v=view(s),cell=E.expeditionView(s).cells.find(c=>c.current);
- if(!v||cell?.kind!=='core'||!e.puzzle||e.coreRecovered||v.done)return fail('Alcance e abra o encontro único ainda não resolvido.');
+ const v=view(s),kind=E.expeditionCellKind(s);
+ if(!v||kind!=='core'||!e.puzzle||e.coreRecovered||v.done)return fail('Alcance e abra o encontro único ainda não resolvido.');
  if(!Number.isInteger(p.index)||p.index<0||p.index>2)return fail('Escolha uma das três operações.');
  if(e.reserve<2||e.integrity<=1)return fail('Reserve 2 de energia e pelo menos 2 de integridade antes de tentar uma operação.');
  return {allowed:true,reason:'',cost:{},wrong:encounters[s.campaign.chapter].steps[v.step][2]!==p.index};
@@ -46,7 +46,7 @@ E.dispatch=(s,a,p)=>{
  if(a==='expeditionOverdrive'){n.resources.hull-=12;e.reserve+=q.energy;e.overdriveUsed=true;message='Descarga de emergência: +'+q.energy+' energia; −12 de casco. O desgaste permanece após extrair ou evacuar.';}
  else if(q.wrong){e.reserve-=2;e.integrity-=1;message='A reação ficou instável: −2 energia e −1 integridade. Observe a pista antes de tentar outra operação.';}
  else {e.storyStep=(e.storyStep||0)+1;if(view(n).done)e.puzzle.dials=[...e.puzzle.target];message=view(n).done?'Encontro estabilizado. Preserve a descoberta e extraia a carga.':'A operação funcionou. O próximo sinal foi revelado.';}
- e.turns++;n.turn++;E.checkpointSite(n);if(!E.validate(n))return {ok:false,message:'Não foi possível preservar o estado da expedição.'};Object.assign(s,n);return {ok:true,message,reward:{},cost:a==='expeditionOverdrive'?q.cost:q.wrong?{reserve:2,integrity:1}:{}};
+ e.turns++;n.turn++;E.checkpointSite(n);if(!E.validate(n))return {ok:false,message:'Não foi possível preservar o estado da expedição.'};E.commit(s,n);return {ok:true,message,reward:{},cost:a==='expeditionOverdrive'?q.cost:q.wrong?{reserve:2,integrity:1}:{}};
 };
 E.validate=s=>base.validate(s)&&(!s.expedition||((s.expedition.overdriveUsed===undefined||typeof s.expedition.overdriveUsed==='boolean')&&(s.expedition.storyStep===undefined||Number.isInteger(s.expedition.storyStep)&&s.expedition.storyStep>=0&&s.expedition.storyStep<=3&&!!view(s))));
 E.restore=saved=>{const s=base.restore(saved);return s&&E.validate(s)?s:null;};

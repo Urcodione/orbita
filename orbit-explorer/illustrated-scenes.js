@@ -2,8 +2,19 @@
  'use strict';
  const types=['scanner','survival','arm','cargo','life','shield','engine','warp'];
  const biomes=['forest','volcanic','ice','desert','ocean','crystal','gas','magma','toxic','rogue'];
- const images={};for(const [key,src]of Object.entries(window.OrbitIllustrations||{})){const im=new Image();im.src=src;images[key]=im;}
- const ready=key=>images[key]?.complete&&images[key].naturalWidth>0;
+ const sources=window.OrbitIllustrations||{};
+ // The build embeds art as data: URLs. Copying those multi-MB strings into CSS variables and Image elements duplicated
+ // them in memory and made the style system parse them on every recalculation. Each one is turned into a short blob:
+ // URL the first time it is read (the in-conversation preview keeps data: URLs, since its host may not allow blob:).
+ if(!window.OrbitArtDataUrls&&typeof URL!=='undefined'&&URL.createObjectURL&&typeof Blob!=='undefined')for(const key of Object.keys(sources)){
+  const data=sources[key];if(typeof data!=='string'||!data.startsWith('data:'))continue;let url='';
+  Object.defineProperty(sources,key,{enumerable:true,configurable:true,get(){if(!url)try{const comma=data.indexOf(','),bin=atob(data.slice(comma+1)),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);url=URL.createObjectURL(new Blob([bytes],{type:data.slice(5,data.indexOf(';'))}));}catch{url=data;}return url;}});
+ }
+ // Images are created on first use instead of all 30 at startup; listeners can wait for 'load' or the window event.
+ const created={};
+ function image(key){if(created[key])return created[key];if(!(key in sources))return undefined;const im=new Image();im.decoding='async';im.addEventListener('load',()=>window.dispatchEvent(new CustomEvent('orbit-art-ready',{detail:key})),{once:true});im.src=sources[key];return created[key]=im;}
+ const images=new Proxy(created,{get:(target,key)=>typeof key==='string'?image(key):undefined,has:(target,key)=>key in sources,ownKeys:()=>Object.keys(sources),getOwnPropertyDescriptor:(target,key)=>key in sources?{value:image(key),writable:true,enumerable:true,configurable:true}:undefined});
+ const ready=key=>{const im=images[key];return !!im&&im.complete&&im.naturalWidth>0;};
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n)),lerp=(a,b,t)=>a+(b-a)*t;
  const moduleRect=type=>{const i=types.indexOf(type),im=images.modules;return [(i%2)*im.width/2,Math.floor(i/2)*im.height/4,im.width/2,im.height/4];};
  const cosmicTypes=['engine','warp','life','shield','scanner','arm','cargo','survival'];
@@ -14,11 +25,14 @@
    climates.forEach((biome,i)=>{c.save();c.beginPath();c.moveTo(x,y);c.arc(x,y,r,i*Math.PI/2-Math.PI*.75,(i+1)*Math.PI/2-Math.PI*.75);c.closePath();c.clip();world(c,{...planet,trainingPrisma:false,biome},x,y,r);c.restore();});
    c.save();c.strokeStyle='#d1c1ff';c.lineWidth=Math.max(1,r*.012);c.shadowColor='#ac83ff';c.shadowBlur=r*.1;c.beginPath();c.ellipse(x,y,r*1.16,r*.26,-.45,0,Math.PI*2);c.stroke();c.shadowBlur=0;c.restore();return true;
   }let i=biomes.indexOf(planet.biome);if(i<0)i=0;const im=images.worlds,s=im.width/1024;const cx=[295,732][i%2]*s,cy=[150,451,751,1048,1348][Math.floor(i/2)]*s;
-  c.save();c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.clip();
   const hash=String(planet.id||planet.seed||'').split('').reduce((n,v)=>(Math.imul(n,31)+v.charCodeAt(0))>>>0,17);
-  c.filter=`hue-rotate(${(hash%15)-7}deg) saturate(${.94+(hash%9)/60})`;
-  c.drawImage(im,cx-150*s,cy-150*s,300*s,300*s,x-r,y-r,r*2,r*2);c.restore();return true;
+  // The per-world tint used to be a canvas filter applied on every frame (and per node on the system map);
+  // it is baked once into a small cached tile instead.
+  const key=i+':'+(hash%15)+':'+(hash%9);let tile=worldTiles.get(key);
+  if(!tile){const size=Math.round(300*s);tile=document.createElement('canvas');tile.width=tile.height=size;const g=tile.getContext('2d');g.filter=`hue-rotate(${(hash%15)-7}deg) saturate(${.94+(hash%9)/60})`;g.drawImage(im,cx-150*s,cy-150*s,300*s,300*s,0,0,size,size);if(worldTiles.size>=40)worldTiles.delete(worldTiles.keys().next().value);worldTiles.set(key,tile);}
+  c.save();c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.clip();c.drawImage(tile,x-r,y-r,r*2,r*2);c.restore();return true;
  }
+ const worldTiles=new Map();
  const galaxyTiles=new Map();
  function galaxy(c,node,x,y,r){
   if(!ready('galaxies'))return false;
@@ -41,19 +55,20 @@
   const index=({'yellow':0,'red-dwarf':1,'blue-giant':2,pulsar:3})[kind]??0,im=images.stars;
   c.drawImage(im,(index%2)*im.width/2,Math.floor(index/2)*im.height/2,im.width/2,im.height/2,x-r*1.65,y-r*1.65,r*3.3,r*3.3);return true;
  }
- document.getElementById('orbit-game').style.setProperty('--og-commerce-art','url("'+window.OrbitIllustrations.commerce+'")');
- document.getElementById('orbit-game').style.setProperty('--og-biology-art','url("'+window.OrbitIllustrations.biology+'")');
- const game=document.getElementById('orbit-game');for(const key of ['campaign','cosmic','relics','purpose','lume','warpCell'])if(window.OrbitIllustrations[key])game.style.setProperty('--og-'+key+'-art','url("'+window.OrbitIllustrations[key]+'")');
- const storyImage=images.campaign;
- function prepareStory(){if(!storyImage?.naturalWidth)return;for(let i=0;i<4;i++){const tile=document.createElement('canvas');tile.width=Math.round(storyImage.naturalWidth/2);tile.height=Math.round(storyImage.naturalHeight/2);tile.getContext('2d').drawImage(storyImage,i%2*storyImage.naturalWidth/2,Math.floor(i/2)*storyImage.naturalHeight/2,storyImage.naturalWidth/2,storyImage.naturalHeight/2,0,0,tile.width,tile.height);game.style.setProperty('--og-story-scene-'+i,'url("'+tile.toDataURL('image/webp',.88)+'")');}}
- const deferArt=fn=>requestAnimationFrame(()=>setTimeout(fn,0));
- if(storyImage?.complete)deferArt(prepareStory);else if(storyImage)storyImage.addEventListener('load',()=>deferArt(prepareStory),{once:true});
- const roomImage=images.rooms;
- function prepareRooms(){if(!roomImage?.naturalWidth)return;const root=document.getElementById('orbit-game');root.style.setProperty('--og-room-aspect',String((roomImage.naturalWidth/2)/(roomImage.naturalHeight/3)));for(let i=0;i<6;i++){const tile=document.createElement('canvas');tile.width=Math.round(roomImage.naturalWidth/2);tile.height=Math.round(roomImage.naturalHeight/3);tile.getContext('2d').drawImage(roomImage,(i%2)*roomImage.naturalWidth/2,Math.floor(i/2)*roomImage.naturalHeight/3,roomImage.naturalWidth/2,roomImage.naturalHeight/3,0,0,tile.width,tile.height);root.style.setProperty('--og-room-'+i,'url("'+tile.toDataURL('image/webp',.88)+'")');}}
- if(roomImage?.complete)deferArt(prepareRooms);else if(roomImage)roomImage.addEventListener('load',()=>deferArt(prepareRooms),{once:true});
- window.OrbitArt={images,ready,module,icon,world,galaxy,phenomenon,star,types};
- const root=document.getElementById('orbit-game');if(root&&window.OrbitIllustrations?.modules)root.style.setProperty('--og-module-art',`url("${window.OrbitIllustrations.modules}")`);
- const premiumCache=new Map();
+ const game=document.getElementById('orbit-game');for(const key of ['commerce','biology','cosmic','relics','purpose','lume','warpCell'])if(key in sources)game.style.setProperty('--og-'+key+'-art','url("'+sources[key]+'")');
+ // Story and room scenes are cut at build time (qa/prepare-ui-art.py): no canvas crop or WebP encode on the main thread.
+ for(let i=0;i<4;i++)if(('story'+i)in sources)game.style.setProperty('--og-story-scene-'+i,'url("'+sources['story'+i]+'")');
+ game.style.setProperty('--og-room-aspect','2.25');for(let i=0;i<6;i++)if(('room'+i)in sources)game.style.setProperty('--og-room-'+i,'url("'+sources['room'+i]+'")');
+ const loading=key=>{const im=created[key];return !!im&&!im.complete;};
+ window.OrbitArt={images,ready,loading,module,icon,world,galaxy,phenomenon,star,types};
+ if('modules' in sources)game.style.setProperty('--og-module-art',`url("${sources.modules}")`);
+ const premiumCache=new Map(),tintCache=new Map();
+ // Paint colours were a canvas filter re-applied to the full hull on every frame; bake each tint once.
+ function tintedHull(key,paint){
+  if(paint==='none')return images[key];const id=key+'|'+paint;let tile=tintCache.get(id);
+  if(!tile){const im=images[key];tile=document.createElement('canvas');tile.width=im.naturalWidth;tile.height=im.naturalHeight;const g=tile.getContext('2d');g.filter=paint;g.drawImage(im,0,0);if(tintCache.size>=4)tintCache.delete(tintCache.keys().next().value);tintCache.set(id,tile);}
+  return tile;
+ }
  function premiumHull(key,tint){
   const id=key+tint;if(premiumCache.has(id))return premiumCache.get(id);
   const im=images[key],tile=document.createElement('canvas');tile.width=im.naturalWidth;tile.height=im.naturalHeight;const g=tile.getContext('2d');
@@ -64,7 +79,7 @@
    if(warm<.05)continue;const light=Math.max(r,green,b)/255;
    for(let k=0;k<3;k++){const enamel=target[k]*(.36+.64*light)+Math.pow(light,8)*28;data[i+k]=lerp(data[i+k],clamp(enamel,0,255),warm*.96);}
   }
-  g.putImageData(pixels,0,0);premiumCache.set(id,tile);return tile;
+  g.putImageData(pixels,0,0);if(premiumCache.size>=4)premiumCache.delete(premiumCache.keys().next().value);premiumCache.set(id,tile);return tile;
  }
  function premiumAura(c,w,h,t,tint){
   c.save();c.globalCompositeOperation='screen';
@@ -86,7 +101,9 @@
  function premiumReflection(renderer,key,w,h,t,tint){
   const tile=renderer.premiumReflectionCanvas||(renderer.premiumReflectionCanvas=document.createElement('canvas'));
   if(tile.width!==256){tile.width=256;tile.height=384;}
-  const g=tile.getContext('2d');g.clearRect(0,0,256,384);g.globalCompositeOperation='source-over';g.drawImage(images[key],0,0,256,384);g.globalCompositeOperation='source-in';
+  const bases=renderer.premiumReflectionBases||(renderer.premiumReflectionBases={});
+  if(!bases[key]){const base=document.createElement('canvas');base.width=256;base.height=384;base.getContext('2d').drawImage(images[key],0,0,256,384);bases[key]=base;}
+  const g=tile.getContext('2d');g.clearRect(0,0,256,384);g.globalCompositeOperation='source-over';g.drawImage(bases[key],0,0);g.globalCompositeOperation='source-in';
   const pos=((t*.10)%1)*2-.5,shine=g.createLinearGradient(0,0,256,384);shine.addColorStop(0,'#ffffff00');
   for(const [offset,color]of [[pos-.12,'#ffffff00'],[pos-.04,tint+'50'],[pos,'#eaffff99'],[pos+.025,tint+'60'],[pos+.1,'#ffffff00']])if(offset>0&&offset<1)shine.addColorStop(offset,color);
   shine.addColorStop(1,'#ffffff00');g.fillStyle=shine;g.fillRect(0,0,256,384);
@@ -95,7 +112,7 @@
  window.OrbitArt.previewCustomization=function(canvas,state){
   if(!canvas)return;
   const renderer={ctx:canvas.getContext('2d'),state:{shipDetail:{mode:'exterior'},shipColor:state.ship.color,shipTrail:state.ship.trail||'blue',modules:state.equipped},yaw:.18,pitch:.2,reduced:window.OrbitAudio?.prefs.light||matchMedia('(prefers-reduced-motion: reduce)').matches,publishHotspots(){},publishCargoHotspots(){}};
-  const start=performance.now();function frame(now){if(!canvas.isConnected)return;if(document.hidden){setTimeout(()=>frame(performance.now()),500);return;}const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2),w=rect.width,h=rect.height;if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}const c=renderer.ctx;c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);renderer.width=w;renderer.height=h;
+  const start=performance.now();function frame(now){if(!canvas.isConnected)return;if(document.hidden){document.addEventListener('visibilitychange',()=>requestAnimationFrame(frame),{once:true});return;}const dpr=Math.min(devicePixelRatio||1,2),w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}const c=renderer.ctx;c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);renderer.width=w;renderer.height=h;
    const scale=Math.min(w/225,h/430);OrbitScene.prototype.drawPaintedShip.call(renderer,w/2,h*.43,scale,(now-start)/1000,0,0,now,false,false);if(!renderer.reduced||!ready('ship'))requestAnimationFrame(frame);
   }requestAnimationFrame(frame);
  };
@@ -131,12 +148,13 @@
   let hue=delta?(hi===rgb[0]?(rgb[1]-rgb[2])/delta:hi===rgb[1]?(rgb[2]-rgb[0])/delta+2:(rgb[0]-rgb[1])/delta+4)*60:0;
   const neon=['#a34dff','#31ffbb','#ff4795'].includes(this.state.shipColor);
   const originalHues={'#71bdc4':148,'#c9b1df':252,'#9bb68c':72,'#e7d8b5':12};
-  if(this.state.shipColor==='#f0a270')c.filter='none';
-  else if(originalHues[this.state.shipColor]!==undefined){const h=originalHues[this.state.shipColor];c.filter=`hue-rotate(${h}deg) saturate(${h===12?.55:.85})`;}
-  else c.filter=`hue-rotate(${hue-24}deg) saturate(${neon?1.7:.65}) brightness(${neon?1.08:1.04})`;
-  if(neon){c.filter='none';c.save();c.globalAlpha=1-cam.focus;premiumAura(c,baseW,baseH,this.reduced?2:t,this.state.shipColor);c.restore();}
-  if(cam.open<.999){c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull('ship',this.state.shipColor):images.ship,-baseW/2,-baseH/2,baseW,baseH);}
-  if(cam.open>.001){c.globalAlpha=(1-cam.focus*.83)*cam.open;c.drawImage(neon?premiumHull('interior',this.state.shipColor):images.interior,-baseW/2,-baseH/2,baseW,baseH);}
+  let paint='none';
+  if(this.state.shipColor==='#f0a270')paint='none';
+  else if(originalHues[this.state.shipColor]!==undefined){const h=originalHues[this.state.shipColor];paint=`hue-rotate(${h}deg) saturate(${h===12?.55:.85})`;}
+  else paint=`hue-rotate(${hue-24}deg) saturate(${neon?1.7:.65}) brightness(${neon?1.08:1.04})`;
+  if(neon){paint='none';c.save();c.globalAlpha=1-cam.focus;premiumAura(c,baseW,baseH,this.reduced?2:t,this.state.shipColor);c.restore();}
+  if(cam.open<.999){c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull('ship',this.state.shipColor):tintedHull('ship',paint),-baseW/2,-baseH/2,baseW,baseH);}
+  if(cam.open>.001){c.globalAlpha=(1-cam.focus*.83)*cam.open;c.drawImage(neon?premiumHull('interior',this.state.shipColor):tintedHull('interior',paint),-baseW/2,-baseH/2,baseW,baseH);}
   if(neon){c.globalAlpha=(1-cam.focus*.83);premiumReflection(this,cam.open>.5?'interior':'ship',baseW,baseH,this.reduced?2:t,this.state.shipColor);}
   c.restore();
   const jets=1-cam.open,trail=this.state.shipTrail||'blue',special=['cosmic','aurora','solar'].includes(trail),colors=({blue:['#9deeff','#419eeacc','#516bf000'],orange:['#ffe0a3','#ff8c35cc','#ff542000'],cosmic:['#ead0ff','#a351ffcc','#6633ee00'],aurora:['#c6ffea','#34edb3cc','#22aacc00'],solar:['#ffe1f3','#ff55b0cc','#9a22ee00']})[trail]||['#9deeff','#419eeacc','#516bf000'];

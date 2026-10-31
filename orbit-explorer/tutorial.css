@@ -8,7 +8,7 @@
 #orbit-game .og-guide-target{outline:3px solid #a5edf0!important;outline-offset:3px;box-shadow:0 0 18px #70dce96b!important}
 #orbit-game .og-field-cell.og-guide-target{background:#9eecef30!important;outline-offset:-3px}
 /* Prisma: four horizons, one compact flight-school instrument. */
-#orbit-game #og-guide{background:linear-gradient(115deg,#172c40f5,#302448f5);border-bottom:1px solid #baacf4;padding:8px 12px;backdrop-filter:blur(12px)}
+#orbit-game #og-guide{background:linear-gradient(115deg,#172c40f5,#302448f5);border-bottom:1px solid #baacf4;padding:8px 12px}
 #orbit-game .og-prisma-progress{display:flex;gap:5px;margin:0 0 6px}
 #orbit-game .og-prisma-progress span{flex:1;text-align:center;border-bottom:2px solid #587381;color:#b9c3d0;font-size:9px;line-height:18px;letter-spacing:.4px}
 #orbit-game .og-prisma-progress span[data-biome=forest]{--climate:#8fdbb5}#orbit-game .og-prisma-progress span[data-biome=ice]{--climate:#9edaff}#orbit-game .og-prisma-progress span[data-biome=volcanic]{--climate:#ffb17c}#orbit-game .og-prisma-progress span[data-biome=gas]{--climate:#d6b4ff}

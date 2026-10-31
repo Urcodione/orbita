@@ -50,3 +50,23 @@ Trilhas nos dez biomas, perigos com custo visível, distinção entre cristais c
 Prisma: mundo exclusivo do tutorial com quatro regiões climáticas, coleta, extração, produção de oxigênio e combustível, fabricação e instalação do abrigo criogênico. Concluir entrega o abrigo e inicia a campanha limpa; pular não transfere recursos de treinamento. Partidas existentes são preservadas.
 
 Explorações persistentes: reconhecimento, balizas, circuitos e clima continuam entre visitas. Retirar tecnologia anuncia uma reação após seis ações; estabilizador opcional custa 8 minério e 2 cristais. Avisos de falta de recursos ficam junto à descida. Cartão de recuperação em uma única tela.
+
+## Para a próxima versão (código pronto, APK ainda não gerado)
+
+Detalhes em `qa/REVISAO-2026-10-31.md`.
+
+- **Carregamento:** a página é lida direto do APK, sem montar uma cópia de ~27 MB na memória. A origem é a mesma, então as partidas salvas são preservadas.
+- **Travamento do WebView:** se o processo da página cair, o WebView é recriado e o app não fecha.
+- **Mudanças de configuração:** tema escuro, escala de fonte, densidade e janelas múltiplas não recriam mais a Activity.
+- **Teclado:** o espaço ocupado pelo teclado (inset) agora é respeitado no Android 15.
+- **Exportar e importar:**
+  - um toque duplo não abre dois seletores de arquivo;
+  - a exportação sobrevive à recriação da Activity;
+  - a importação espera a página carregar.
+- **Conteúdo misto:** fica bloqueado (`MIXED_CONTENT_NEVER_ALLOW`).
+- **Botão Voltar:**
+  - fecha a introdução;
+  - no tutorial, oferece sair;
+  - não empilha dois diálogos "Sair de Órbita?".
+
+Antes de publicar, aumente `versionCode`/`versionName` no `AndroidManifest.xml`.

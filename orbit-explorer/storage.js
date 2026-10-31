@@ -29,7 +29,7 @@ function check(s,a,p={}){
  const v=view(s);
  if(a==='discardCargo'){
   const valid=p.kind==='component'?E.componentRecipes.some(r=>r.id===p.id):p.kind==='resource'&&physical(p.id);
-  const owned=p.kind==='component'?s.components?.[p.id]:s.resources[p.id];
+  const owned=(p.kind==='component'?s.components?.[p.id]:s.resources[p.id])||0;
   if(s.expedition)return deny('Extraia a carga antes de organizar o depósito.');
   if(!valid||!Number.isInteger(p.amount)||p.amount<1||p.amount>owned)return deny('Escolha uma quantidade disponível para descartar.');
   return {allowed:true,cost:{}};

@@ -89,8 +89,11 @@
     resize() {
       if (this.dead) return;
       const rect = this.canvas.getBoundingClientRect();
-      this.width = rect.width || this.canvas.clientWidth || 320; this.height = rect.height || this.canvas.clientHeight || this.width;
+      const width = rect.width || this.canvas.clientWidth || 320, height = rect.height || this.canvas.clientHeight || width;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Same size: keep the bitmap and the terrain/fog/route caches instead of rebuilding them at 2x.
+      if (width === this.width && height === this.height && dpr === this.dpr) return;
+      this.width = width; this.height = height; this.dpr = dpr;
       this.canvas.width = Math.round(this.width * dpr); this.canvas.height = Math.round(this.height * dpr);
       this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0); this.cacheKey = ''; this.draw(performance.now());
     }
@@ -121,7 +124,9 @@
       if (this.paused || this.dead || this.frame || !this.visible || document.hidden || !this.data?.view || this.reduced) return;
       this.frame = requestAnimationFrame(now => {
         this.frame = 0;
-        if (now - this.lastFrame > 45 || this.motion) { this.lastFrame = now; this.draw(now); }
+        // Rover moves and scan/collect signals animate at full rate; the idle board (bob, pulse, motes) only needs ~15 fps.
+        const busy = this.motion || (this.signal && now - this.signal.start < 2500);
+        if (busy || now - this.lastFrame > 64) { this.lastFrame = now; this.draw(now); }
         this.wake();
       });
     }
@@ -239,8 +244,8 @@
         const p=this.currentPosition(now),x=g.left+(p.x+.5)*s,y=g.top+(p.y+.5)*s;
         c.save();c.translate(x,y);c.scale(s/52,s/52);this.rover(c,biome,now,view);c.restore();this.drawSignal(c,now,x,y,s);
       }
-      const vignette=c.createRadialGradient(this.width*.45,this.height*.4,this.width*.22,this.width*.5,this.height*.5,this.width*.77);
-      vignette.addColorStop(0,'#03152300');vignette.addColorStop(1,'#03152320');c.fillStyle=vignette;c.fillRect(0,0,this.width,this.height);
+      if(!this.vignette||this.vignette.w!==this.width||this.vignette.h!==this.height){const vignette=c.createRadialGradient(this.width*.45,this.height*.4,this.width*.22,this.width*.5,this.height*.5,this.width*.77);vignette.addColorStop(0,'#03152300');vignette.addColorStop(1,'#03152320');this.vignette={w:this.width,h:this.height,fill:vignette};}
+      c.fillStyle=this.vignette.fill;c.fillRect(0,0,this.width,this.height);
       c.strokeStyle='#7897a23b';c.lineWidth=1;c.strokeRect(g.left+.5,g.top+.5,g.columns*s-1,g.rows*s-1);
     }
 

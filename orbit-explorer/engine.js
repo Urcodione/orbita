@@ -143,6 +143,12 @@
   const pick = (rng, values) => values[Math.floor(rng() * values.length)];
   const rounded = value => Math.round(value * 100) / 100;
   const clone = value => JSON.parse(JSON.stringify(value));
+  // Replace a state's contents in place: unlike Object.assign, keys removed from the
+  // working copy (e.g. a previous galaxy's market) must disappear from the live state too.
+  function commit(target, next) {
+    for (const key of Object.keys(target)) if (!Object.prototype.hasOwnProperty.call(next, key)) delete target[key];
+    return Object.assign(target, next);
+  }
 
   function celestialName(seed, index, kind, slot) {
     if (index === 0) return slot === 0 ? 'Véu de Íris' : slot < 5 ? FIRST_SYSTEM_NAMES[slot - 1] : FIRST_PLANET_NAMES[slot - 5];
@@ -789,6 +795,13 @@
     return { afterReserve: expedition.reserve, afterIntegrity: expedition.integrity, costReserve: cost.reserve || 0, costIntegrity: cost.integrity || 0,
       returnReserve: route.reserve, returnIntegrity: route.integrity, returnMargin, integrityMargin, knownRoute: route.known, stranded, risky, reason };
   }
+  // Kind of the cell under the rover, as expeditionView would report it, without running every move/action preview.
+  function expeditionCellKind(state) {
+    const expedition = state.expedition;
+    if (!expedition) return null;
+    if (!expedition.revealed.includes(expedition.y * 6 + expedition.x)) return 'unknown';
+    return expeditionBoard(expedition).find(tile => tile.x === expedition.x && tile.y === expedition.y)?.kind ?? null;
+  }
   function expeditionView(state) {
     const expedition = state.expedition;
     if (!expedition) return null;
@@ -1348,7 +1361,7 @@
     clampResources(next);
     updateMission(next);
     addLog(next, message, kind);
-    Object.assign(state, next);
+    commit(state, next);
     return { ok: true, message, event, reward, cost: checked.cost };
   }
 
@@ -1401,7 +1414,7 @@
     if (!Array.isArray(state.inventory) || state.inventory.length > 24 || !state.inventory.every(validModule)) return false;
     const ids = [...Object.values(state.equipped), ...state.inventory].map(module => module.id);
     if (new Set(ids).size !== ids.length) return false;
-    if (!state.galaxy.planets.every(planet => planet && typeof planet.id === 'string' && typeof planet.name === 'string' && BIOMES[planet.biome] && Number.isFinite(planet.temperature) && Number.isFinite(planet.radiation) && Number.isFinite(planet.distance) && typeof planet.scanned === 'boolean' && Array.isArray(planet.sites) && (legacy ? planet.sites.length === 3 : planet.sites.length >= 2 && planet.sites.length <= 4) && planet.sites.every(site => site && typeof site.id === 'string' && typeof site.name === 'string' && typeof site.explored === 'boolean' && (legacy || Number.isInteger(site.difficulty) && site.difficulty >= 1 && site.difficulty <= 3)))) return false;
+    if (!state.galaxy.planets.every(planet => planet && typeof planet.id === 'string' && typeof planet.name === 'string' && Object.hasOwn(BIOMES, planet.biome) && Number.isFinite(planet.temperature) && Number.isFinite(planet.radiation) && Number.isFinite(planet.distance) && typeof planet.scanned === 'boolean' && Array.isArray(planet.sites) && (legacy ? planet.sites.length === 3 : planet.sites.length >= 2 && planet.sites.length <= 4) && planet.sites.every(site => site && typeof site.id === 'string' && typeof site.name === 'string' && typeof site.explored === 'boolean' && (legacy || Number.isInteger(site.difficulty) && site.difficulty >= 1 && site.difficulty <= 3)))) return false;
     const planetIds = state.galaxy.planets.map(planet => planet.id);
     if (new Set(planetIds).size !== planetIds.length) return false;
     if (!legacy) {
@@ -1409,7 +1422,7 @@
       if (!Array.isArray(state.galaxy.systems) || state.galaxy.systems.length < 3 || state.galaxy.systems.length > 4) return false;
       const systemIds = state.galaxy.systems.map(system => system.id);
       if (new Set(systemIds).size !== systemIds.length) return false;
-      if (!state.galaxy.systems.every(system => typeof system.id === 'string' && typeof system.name === 'string' && SYSTEM_KINDS[system.kind] && Number.isFinite(system.heat) && system.heat >= 0 && Number.isFinite(system.radiation) && system.radiation >= 0 && Array.isArray(system.planetIds) && system.planetIds.length >= 2 && system.planetIds.length <= 8 && system.planetIds.every(id => state.galaxy.planets.some(planet => planet.id === id && planet.systemId === system.id)))) return false;
+      if (!state.galaxy.systems.every(system => typeof system.id === 'string' && typeof system.name === 'string' && Object.hasOwn(SYSTEM_KINDS, system.kind) && Number.isFinite(system.heat) && system.heat >= 0 && Number.isFinite(system.radiation) && system.radiation >= 0 && Array.isArray(system.planetIds) && system.planetIds.length >= 2 && system.planetIds.length <= 8 && system.planetIds.every(id => state.galaxy.planets.some(planet => planet.id === id && planet.systemId === system.id)))) return false;
       const membership = state.galaxy.systems.flatMap(system => system.planetIds);
       if (membership.length !== planetIds.length || new Set(membership).size !== planetIds.length) return false;
       if (!state.galaxy.planets.every(planet => systemIds.includes(planet.systemId) && ['solid', 'liquid', 'gas'].includes(planet.medium) && Number.isFinite(planet.pressure) && planet.pressure >= 0 && Number.isFinite(planet.toxicity) && planet.toxicity >= 0 && planet.toxicity <= 100 && Number.isFinite(planet.weather) && planet.weather >= 0 && planet.weather <= 100 && planet.temperature >= -273 && planet.radiation >= 0)) return false;
@@ -1555,7 +1568,7 @@
     } catch (_) { return null; }
   }
 
-  const api = { siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
+  const api = { commit, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root) root.OrbitEngine = api;
 })(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this);

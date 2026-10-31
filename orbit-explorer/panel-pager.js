@@ -40,6 +40,10 @@
     content.replaceChildren();
     const make = () => { const page = document.createElement('div'); page.className = 'og-page-body'; content.append(page); pages.push(page); return page; };
     let page = make(), attempts = 0;
+    // Fast path: most panels fit on one page. Measure once instead of forcing a layout after every appended node.
+    page.append(...queue);
+    if (page.scrollHeight <= height + 1) queue.length = 0;
+    else page.replaceChildren();
     while (queue.length && attempts++ < 600) {
       const node = queue.shift(); page.append(node);
       if (page.scrollHeight <= height + 1) continue;

@@ -33,7 +33,9 @@ function known(state,id){return !specialty.includes(id)||state.materialDiscoveri
 E.materials=goods;E.deposits=deposits;E.materialKnown=known;
 const interval=600000;
 function market(state,now=Date.now()){
- const system=E.currentSystem(state),worlds=state.galaxy.planets.filter(p=>p.systemId===system.id),cycle=Math.floor(now/interval),saved=state.commerce?.galaxy===state.galaxyIndex?state.commerce.stocks?.[system.id]:null;
+ const system=E.currentSystem(state),worlds=state.galaxy.planets.filter(p=>p.systemId===system.id),saved=state.commerce?.galaxy===state.galaxyIndex?state.commerce.stocks?.[system.id]:null,clock=Math.floor(now/interval),
+  // Turning the device clock back must not reopen an already-used market: a recent saved cycle stays current until real time passes it.
+  cycle=Number.isSafeInteger(saved?.cycle)&&saved.cycle>clock&&saved.cycle<=clock+144?saved.cycle:clock;
  const stats=E.stats(state),rows=Object.entries(goods).map(([id,g])=>{
   const abundance=worlds.filter(p=>occurs(p,id)).length/worlds.length;
   const target=specialty.includes(id)?Math.round(abundance*(g.bio!==undefined?9:24)):Math.round(12+abundance*64),delta=saved?.cycle===cycle?(saved.delta[id]||0):0,stock=Math.max(0,target+delta);
@@ -89,7 +91,7 @@ E.dispatch=(state,action,payload)=>{
  entry.delta[q.resource]=(entry.delta[q.resource]||0)+(q.side==='buy'?-q.quantity:q.quantity);next.commerce.stocks[q.market.systemId]=entry;
  next.resources[q.resource]=(next.resources[q.resource]||0)+(q.side==='buy'?q.quantity:-q.quantity);next.resources.credits+=q.side==='buy'?-q.total:q.total;next.turn++;
  if(!E.validate(next))return {ok:false,message:'A transação excede os limites da nave.'};
- Object.assign(state,next);return {ok:true,message:(q.side==='buy'?'Compra':'Venda')+' concluída · '+q.total+' Lumes.',reward:{}};
+ E.commit(state,next);return {ok:true,message:(q.side==='buy'?'Compra':'Venda')+' concluída · '+q.total+' Lumes.',reward:{}};
 };
 E.restore=saved=>{try{const state=baseRestore(saved);if(!state)return null;if(specialty.some(id=>state.resources[id]!==undefined&&(!Number.isInteger(state.resources[id])||state.resources[id]<0||state.resources[id]>999)))return null;if(state.materialDiscoveries!==undefined&&(!Array.isArray(state.materialDiscoveries)||state.materialDiscoveries.length>specialty.length||state.materialDiscoveries.some(id=>!specialty.includes(id))))return null;const c=state.commerce;if(c){if(c.galaxy!==state.galaxyIndex||!c.stocks||Object.keys(c.stocks).length>4)return null;for(const [id,e]of Object.entries(c.stocks)){if(e.spent!==undefined&&(!Number.isInteger(e.spent)||e.spent<0||e.spent>400))return null;if(e.sold!==undefined&&(!e.sold||Object.entries(e.sold).some(([k,v])=>!goods[k]||!Number.isInteger(v)||v<0||v>40)))return null;if(!state.galaxy.systems.some(s=>s.id===id)||!Number.isSafeInteger(e.cycle)||!e.delta||Object.entries(e.delta).some(([k,v])=>!goods[k]||!Number.isInteger(v)||Math.abs(v)>999))return null;}}return state;}catch(_){return null;}};
 })(typeof window==='object'?window:globalThis);

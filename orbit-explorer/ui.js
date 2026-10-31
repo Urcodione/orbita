@@ -3,6 +3,7 @@
   const root=document.getElementById('orbit-game');
   if(!root||!window.OrbitEngine||!window.OrbitScene)return;
   if(window.orbitApp?.destroy)window.orbitApp.destroy();
+  const audioModule=window.OrbitAudio;
   const E=window.OrbitEngine,$=id=>root.querySelector('#'+id),storageKey='orbita-explorador-v1';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>Math.round(Number(v)||0),power=v=>Number(v).toFixed(2).replace('.',',');
@@ -35,7 +36,7 @@
   let lab={page:'home',type:null,recipeId:null,componentId:null,returnRecipeId:null,history:[]};
   let catalogView={page:'systems',systemId:null};
   const roles={engine:'Converte combustível em alcance entre mundos.',warp:'Dobra o espaço e reduz o custo para alcançar outras galáxias.',life:'Mantém o ar respirável e sustenta o tempo de exploração.',shield:'Protege a nave e o veículo. Cada blindagem resiste a perigos diferentes.',scanner:'Revela o terreno oculto e transforma sinais em pesquisa.',arm:'Extrai recursos; uma garra eficiente coleta mais gastando menos energia.',cargo:'Guarda módulos a bordo e define quanto o veículo pode trazer de volta.',survival:'Sustenta a expedição longe da nave e reduz riscos nas travessias.'};
-  const scene=new window.OrbitScene($('og-canvas'),{onSelectModule:type=>navigate(()=>focusModule(type)),onOpenShip:()=>navigate(()=>showShip('interior')),onHotspots:positionHotspots,onModulePose:applyModulePose,onCargoSelect:key=>navigate(()=>openCargo(key))});
+  const scene=new window.OrbitScene($('og-canvas'),{onSelectModule:type=>{if(!state.guide?.active)navigate(()=>focusModule(type));},onOpenShip:()=>{if(!state.guide?.active)navigate(()=>showShip('interior'));},onHotspots:positionHotspots,onModulePose:applyModulePose,onCargoSelect:key=>{if(!state.guide?.active)navigate(()=>openCargo(key));}});
   const fieldScene=window.OrbitExpeditionScene?new window.OrbitExpeditionScene($('og-field-canvas'),{onSelectCell:(x,y)=>act('expeditionMove',{x,y})}):null;
   const here=()=>E.currentPlanet(state),target=()=>state.galaxy.planets.find(p=>p.id===selected)||here();
   const rarity=m=>E.rarities[m.rarity];
@@ -52,7 +53,13 @@
   if(window.openai?.widgetState)loaded=applySnapshot(window.openai.widgetState);
   let recovered=false;if(!loaded){const stored=window.OrbitSaves.read();if(stored){loaded=applySnapshot(stored.value);recovered=stored.recovered;}}
   if(loaded)saveNote=recovered?'Partida principal inválida. Ponto de recuperação restaurado.':'Sua expedição foi restaurada.';
+  // Module suggestions run full planet assessments for every stored module of a type (~1 ms each). The ship screen asks
+  // for them on every render, so they are reused until something they depend on changes.
+  let suggestionKey='',suggestionCache=new Map();
+  function suggestionsFor(type){const key=JSON.stringify([state.galaxy.id,state.galaxyIndex,selected,state.location,state.equipped,state.inventory.map(m=>m.id),state.resources,state.campaign?.worldOverride]);if(key!==suggestionKey){suggestionKey=key;suggestionCache=new Map();}if(!suggestionCache.has(type))suggestionCache.set(type,E.suggestions(state,type,selected));return suggestionCache.get(type);}
+  let saveTimer=0,saveCount=0,sheetBatch=0,sheetDirty=false,sheetAfter=[];
   function save(){
+    clearTimeout(saveTimer);saveTimer=0;saveCount++;
     const privateContent={state:E.snapshot?E.snapshot(state):state,tab,selected,shipDetail,mapLevel,selectedSystem,selectedDestination};let local=false;
     local=window.OrbitSaves.write(privateContent);if(local)saveNote=window.OrbitAndroid?'Progresso salvo neste celular.':'Progresso salvo neste navegador.';else toast('Não foi possível salvar. Exporte sua partida pelo menu Partida segura.',true);
     if(typeof window.openai?.setWidgetState==='function'){
@@ -77,7 +84,12 @@
     const [label,action]=places[sheet]||['Jogo','world'];return {label,action};
   }
   function updateHistoryButtons(){}
-  function navigate(fn){fn();save();}
+  function navigate(fn){const before=saveCount;fn();if(saveCount===before)saveSoon();}
+  // Pure navigation (tabs, selections, panels) only changes the remembered view, so its save is coalesced; game actions
+  // still save synchronously. A pending view save is flushed when the page is hidden or unloaded.
+  function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{saveTimer=0;save();},400);}
+  function flushSave(){if(saveTimer)save();}
+  function onHidden(){if(document.hidden)flushSave();}
   function stepNavigation(){
     if(sheet==='stock'&&commerceView.stockGroup){commerceView.stockGroup=null;sheetNotice='';renderSheet();return;}
     if(sheet==='catalog'&&parentPlace().action==='catalog-parent'){if(catalogView.materialId)delete catalogView.materialId;else catalogView={page:catalogView.page==='system'?'systems':'materials'};sheetNotice='';renderSheet();return;}
@@ -159,7 +171,8 @@
   }
   function syncExperience(){
     const light=window.OrbitAudio.prefs.light;scene.light=light;scene.reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    scene.setPaused(!!sheet||tab==='expedition');if(fieldScene)fieldScene.reduced=light||window.matchMedia('(prefers-reduced-motion: reduce)').matches;fieldScene?.setPaused?.(!!sheet||tab!=='expedition');
+    // A full-screen story clip hides the stage just like a sheet does: stop drawing the scene behind it.
+    scene.setPaused(!!sheet||tab==='expedition'||!!root.querySelector('.og-story-clip'));if(fieldScene)fieldScene.reduced=light||window.matchMedia('(prefers-reduced-motion: reduce)').matches;fieldScene?.setPaused?.(!!sheet||tab!=='expedition');
     window.OrbitAudio.update(state,tab,sheet);
   }
   function renderExplore(){
@@ -184,7 +197,7 @@
     $('og-ship-back').innerHTML=`‹ <span>${d.mode==='module'?'Nave aberta':d.mode==='interior'?'Fechar casco':'Voltar à órbita'}</span>`;
     window.OrbitJourney.backControls($('og-stage'));
     if(d.mode==='module'&&m){
-      const compatible=state.inventory.filter(item=>item.type===m.type).length,details=E.moduleDetails(state,m),recommendation=E.suggestions(state,m.type,selected).find(item=>item.kind==='upgrade'||item.kind==='tradeoff'&&item.score>0);
+      const compatible=state.inventory.filter(item=>item.type===m.type).length,details=E.moduleDetails(state,m),recommendation=suggestionsFor(m.type).find(item=>item.kind==='upgrade'||item.kind==='tradeoff'&&item.score>0);
       $('og-heading').innerHTML=`<div class="og-eyebrow">${esc(state.ship.name)} / Interior</div><h1>${shortLabels[m.type]}</h1><p>${d.expanded?'Arraste a peça de volta ao encaixe':m.type==='cargo'?'Toque na carga ou arraste o módulo':'Toque no módulo para ver seu cartão'}</p>`;
       const cargo=m.type==='cargo'?`<div class="og-cargo-contents" aria-label="Conteúdo do depósito">${Object.entries(cargoLabels).map(([key,label])=>`<button data-cargo="${key}" aria-label="Examinar ${label.toLowerCase()}: ${num(state.resources[key]||0)} unidades"><strong>${num(state.resources[key]||0)}</strong><span>${label}</span></button>`).join('')}</div>`:`<p>${esc(details.specialty)} · ${esc(details.metrics.slice(0,2).map(item=>item.label+': '+metricFormat(item.value,item.unit,item.key)).join(' · '))}</p>`;
       $('og-context').innerHTML=`<button class="og-button primary" data-action="module-info">Abrir cartão do módulo</button><button class="og-link" data-action="ship-back">Nave aberta</button>`;
@@ -483,7 +496,12 @@
     }
     return 2;
   }
-  function renderSheet(){
+  // One tap used to rebuild the open panel 2-3 times (act → render → renderSheet, then openSheet → renderSheet), each with
+  // its own pagination layout passes. Inside an input handler the rebuild is deferred and done once when the handler ends.
+  function renderSheet(){if(sheetBatch){sheetDirty=true;return;}renderSheetNow();}
+  function afterSheet(fn){if(sheetBatch)sheetAfter.push(fn);else fn();}
+  function batchSheet(fn){sheetBatch++;try{return fn();}finally{if(--sheetBatch===0){const after=sheetAfter;sheetAfter=[];if(sheetDirty){sheetDirty=false;if(sheet)renderSheetNow();}after.forEach(f=>f());}}}
+  function renderSheetNow(){
     const info=sheetBody(),backdrop=$('og-sheet-backdrop'),active=document.activeElement,hadFocus=backdrop.contains(active);
     if(sheet==='expedition-puzzle'){
       const fragment=document.createElement('div');fragment.innerHTML=info.html+(info.footer||'');const recover=fragment.querySelector('[data-action="expeditionRecover"]');
@@ -491,12 +509,20 @@
     }
 
     const focusKey=active?.id?{id:active.id}:active?.dataset?{...active.dataset}:null;
+    // Re-rendering the same panel (a swatch tap, a resize when the keyboard opens) must not discard text the player is typing.
+    const drafts=backdrop.querySelector('.og-sheet')?.dataset.sheet===sheet?[...backdrop.querySelectorAll('input[id]:not([type]),input[id][type=text],textarea[id]')].filter(el=>el.value!==el.defaultValue).map(el=>({id:el.id,value:el.value,start:el.selectionStart,end:el.selectionEnd})):[];
     backdrop.hidden=false;
     backdrop.innerHTML=`<section class="og-sheet ${info.singleCard?'og-single-card':''}" data-sheet="${esc(sheet)}" data-card-kind="${info.cardKind||'module'}" data-room="${roomForSheet()}" role="dialog" aria-modal="true" aria-labelledby="og-sheet-title"><div class="og-room-heading"><nav class="og-panel-navigation" aria-label="Navegação do painel"><button data-action="nav-back" class="og-place-exit">‹ ${esc(parentPlace().label)}</button><button class="og-sheet-close" data-action="close-sheet" aria-label="${inModuleDetails()?'Fechar detalhes e voltar à nave aberta':'Fechar painel e ver o jogo'}">×</button></nav><div class="og-sheet-header"><h2 id="og-sheet-title">${esc(info.title)}</h2></div></div>${info.header?`<div class="og-sheet-fixed">${info.header}</div>`:''}<div class="og-sheet-content">${sheetNotice?`<p class="og-note" role="status">${esc(sheetNotice)}</p>`:''}${info.html}</div><nav class="og-page-controls" aria-label="Páginas deste painel"><button data-sheet-page="-1" aria-label="Página anterior">‹ Anterior</button><span class="og-page-status" aria-live="polite"></span><button data-sheet-page="1" aria-label="Próxima página">Próxima ›</button></nav>${info.footer?`<div class="og-sheet-footer">${info.footer}</div>`:''}</section>`;
     window.OrbitJourney.controls(backdrop);
     if(sheet==='catalog')window.OrbitDiscoveryCatalog.paint(backdrop,state);
     Array.from(root.children).forEach(el=>{if(el!==backdrop)el.inert=true;});
-    const content=backdrop.querySelector('.og-sheet-content'),pages=backdrop.querySelector('.og-page-controls'),markup=content.innerHTML,requested=sheetPage;pages.hidden=true;if(info.singleCard){content.dataset.pages='1';sheetPage=0;pages.hidden=true;}else sheetPage=window.OrbitPanelPager.mount(content,pages,requested);if(!info.singleCard&&Number(content.dataset.pages)>1){pages.hidden=false;content.innerHTML=markup;sheetPage=window.OrbitPanelPager.mount(content,pages,requested);}
+    const content=backdrop.querySelector('.og-sheet-content'),pages=backdrop.querySelector('.og-page-controls'),requested=sheetPage;pages.hidden=true;if(info.singleCard){content.dataset.pages='1';sheetPage=0;pages.hidden=true;}else{
+      // Content that already overflows will need page controls: show them first and paginate once (not twice).
+      if(content.scrollHeight>content.clientHeight+1)pages.hidden=false;
+      const markup=pages.hidden?content.innerHTML:'';sheetPage=window.OrbitPanelPager.mount(content,pages,requested);
+      if(pages.hidden&&Number(content.dataset.pages)>1){pages.hidden=false;content.innerHTML=markup;sheetPage=window.OrbitPanelPager.mount(content,pages,requested);}
+    }
+    for(const d of drafts){const el=backdrop.querySelector('#'+CSS.escape(d.id));if(el){el.value=d.value;if(el.id===focusKey?.id)try{el.setSelectionRange(d.start,d.end);}catch{}}}
     if(sheet==='customize')window.OrbitArt.previewCustomization($('og-custom-preview'),state);
     updateHistoryButtons();syncExperience();
     if(hadFocus){const candidates=[...backdrop.querySelectorAll('button,input,select')].filter(el=>el.getClientRects().length);const previous=focusKey&&candidates.find(el=>focusKey.id?el.id===focusKey.id:Object.keys(focusKey).length&&Object.entries(focusKey).every(([key,value])=>el.dataset[key]===value));(previous&&!previous.disabled?previous:backdrop.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});}
@@ -509,7 +535,7 @@
     if(name==='modules'&&!source&&tab==='ship')placeParents.modules={label:shipDetail.mode==='interior'?'Nave aberta':'Nave',action:shipDetail.mode==='interior'?'ship-overview':'world'};
     else if(entrances[name]){if(entrances[name].includes(source))placeParents[name]={label:labels[source],action:source};else if(!source)delete placeParents[name];}
     if(name==='modules'&&!['stored-module','system-module','salvage-review'].includes(source))moduleOrigin='inventory';
-    sheetPage=0;if(!sheet)focusBeforeSheet=document.activeElement;sheet=name;sheetNotice='';$('og-toast').hidden=true;renderSheet();$('og-sheet-backdrop').querySelector('button:not(:disabled)')?.focus({preventScroll:true});}
+    sheetPage=0;if(!sheet)focusBeforeSheet=document.activeElement;sheet=name;sheetNotice='';$('og-toast').hidden=true;renderSheet();afterSheet(()=>$('og-sheet-backdrop').querySelector('button:not(:disabled)')?.focus({preventScroll:true}));}
   function closeSheet(){sheet=null;syncExperience();sheetNotice='';const backdrop=$('og-sheet-backdrop');backdrop.hidden=true;backdrop.innerHTML='';Array.from(root.children).forEach(el=>{el.inert=false;});const restore=focusBeforeSheet?.isConnected&&root.contains(focusBeforeSheet)&&focusBeforeSheet.getClientRects().length?focusBeforeSheet:root.querySelector(`.og-tabs [data-tab="${tab}"]`);restore?.focus({preventScroll:true});}
   function dismissSheet(){if(moduleOrigin==='ship'&&['system-module','stored-module'].includes(sheet))shipOverview();else closeSheet();}
   function toast(text,error){const el=$('og-toast');clearTimeout(toastTimer);el.textContent=text;el.classList.toggle('error',!!error);el.hidden=false;toastTimer=setTimeout(()=>el.hidden=true,4400);}
@@ -644,11 +670,14 @@
   }
   function receiveSave(text){try{pendingImport=window.OrbitSaves.decode(text);openSheet('save-review');}catch(error){sheetNotice=error.message;renderSheet();}}
   window.orbitReceiveSave=receiveSave;
-  function onChange(event){if(event.target.hasAttribute('data-campaign-select')){campaignPage=event.target.value;sheetPage=0;renderSheet();return;}if(event.target.hasAttribute('data-help-topic')){window.OrbitHelp.topic=Number(event.target.value);renderSheet();return;}if(event.target.dataset.atlasSelect){catalogView[event.target.dataset.atlasSelect]=Number(event.target.value);renderSheet();return;}if(event.target.hasAttribute('data-atlas-source')){catalogView.sourceId=event.target.value;renderSheet();return;}if(event.target.dataset.preference){const k=event.target.dataset.preference;window.OrbitAudio.set(k,k==='light'?event.target.checked:Number(event.target.value)/100);syncExperience();return;}if(event.target.id==='og-save-file'){const file=event.target.files?.[0];if(file){if(file.size>2000000){sheetNotice='Arquivo grande demais.';renderSheet();return;}file.text().then(receiveSave).catch(()=>{sheetNotice='Não foi possível ler o arquivo.';renderSheet();});}return;}if(event.target.id==='og-module-choice')navigate(()=>{selectedCandidateId=event.target.value;sheetPage=0;sheetNotice='';renderSheet();$('og-module-choice')?.focus({preventScroll:true});});}
+  const onChangeBatched=e=>batchSheet(()=>onChange(e)),onClickBatched=e=>batchSheet(()=>onClick(e)),onSubmitBatched=e=>batchSheet(()=>onSubmit(e)),onKeyBatched=e=>batchSheet(()=>onKey(e));
+  function onChange(event){if(event.target.hasAttribute('data-campaign-select')){campaignPage=event.target.value;sheetPage=0;renderSheet();return;}if(event.target.hasAttribute('data-help-topic')){window.OrbitHelp.topic=Number(event.target.value);renderSheet();return;}if(event.target.dataset.atlasSelect){catalogView[event.target.dataset.atlasSelect]=Number(event.target.value);renderSheet();return;}if(event.target.hasAttribute('data-atlas-source')){catalogView.sourceId=event.target.value;renderSheet();return;}if(event.target.dataset.preference){const k=event.target.dataset.preference;window.OrbitAudio.set(k,k==='light'?event.target.checked:Number(event.target.value)/100);syncExperience();return;}if(event.target.id==='og-save-file'){const file=event.target.files?.[0];if(file){if(file.size>2000000){sheetNotice='Arquivo grande demais.';renderSheet();return;}file.text().then(receiveSave).catch(()=>{sheetNotice='Não foi possível ler o arquivo.';renderSheet();});}return;}if(event.target.id==='og-module-choice')navigate(()=>{selectedCandidateId=event.target.value;sheetPage=0;sheetNotice='';renderSheet();afterSheet(()=>$('og-module-choice')?.focus({preventScroll:true}));});}
   function onClick(event){const control=event.target.closest('button');if(['nav-back','nav-forward'].includes(control?.dataset.action)||control?.dataset.sheetPage)handleClick(event);else navigate(()=>handleClick(event));}
   function onSubmit(event){if(event.target.id==='og-name-form'){event.preventDefault();act('rename',{name:$('og-name').value.trim()});}}
   function navigateBack(){
-    if(root.querySelector('.og-story-clip')||state.guide?.active)return true;
+    // Back skips/closes a story clip; during the guided training it falls through to the exit prompt instead of doing nothing.
+    if(root.querySelector('.og-story-clip')){window.OrbitCampaignUI?.closeClip();return true;}
+    if(state.guide?.active)return false;
     if(sheet){stepNavigation();save();return true;}
     if(tab==='ship'){shipBack();return true;}
     if(tab!=='explore'&&!state.expedition){tab='explore';render();save();return true;}
@@ -659,14 +688,16 @@
     
     if(sheet&&event.key==='Tab'){const c=Array.from($('og-sheet-backdrop').querySelectorAll('button,input,select,summary')).filter(e=>!e.disabled&&e.getClientRects().length);if(event.shiftKey&&document.activeElement===c[0]){event.preventDefault();c[c.length-1].focus();}else if(!event.shiftKey&&document.activeElement===c[c.length-1]){event.preventDefault();c[0].focus();}return;}
     if(sheet||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;
+    // Held keys and browser shortcuts must not fire game actions; the guided training only accepts its highlighted target.
+    if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||root.querySelector('.og-story-clip'))return;
     if(tab==='expedition'&&state.expedition&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d'].includes(event.key)){
-      event.preventDefault();const ex=E.expeditionView(state),delta=({ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]})[event.key];act('expeditionMove',{x:ex.position.x+delta[0],y:ex.position.y+delta[1]});return;
+      event.preventDefault();const ex=E.expeditionView(state),delta=({ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]})[event.key],x=ex.position.x+delta[0],y=ex.position.y+delta[1];if(state.guide?.active&&!root.querySelector(`[data-expedition-x="${x}"][data-expedition-y="${y}"].og-guide-target`))return;act('expeditionMove',{x,y});return;
     }
-    if(['1','2','3','4'].includes(event.key)){tab=['ship','explore','galaxy','expedition'][Number(event.key)-1];render();save();}
+    if(['1','2','3','4'].includes(event.key)&&!state.guide?.active){tab=['ship','explore','galaxy','expedition'][Number(event.key)-1];render();save();}
   }
   function onGlobals(event){const snapshot=event.detail?.globals?.widgetState;if(snapshot&&applySnapshot(snapshot)){if(sheet==='system-module'&&!labels[systemType]||sheet?.startsWith('expedition-')&&!state.expedition)closeSheet();render();}}
-  root.addEventListener('change',onChange);root.addEventListener('click',onClick);root.addEventListener('submit',onSubmit);root.addEventListener('keydown',onKey);window.addEventListener('openai:set_globals',onGlobals);
-  window.orbitApp={back:navigateBack,getState:()=>state,getView:()=>({tab,selected,sheet,sheetPage,campaignPage,history:{back:history.past.length,forward:history.future.length},systemType,selectedCandidateId,lab:{...lab},catalogView:{...catalogView},cargoResource,mapLevel,selectedSystem,selectedDestination,environmentSite,shipDetail:{...shipDetail}}),getInspection:()=>scene.getInspection?.()||null,act,destroy(){tutorialCleanup?.();window.OrbitCampaignUI?.closeClip();resizeObserver.disconnect();scene.destroy();fieldScene?.destroy();clearTimeout(toastTimer);clearTimeout(effectTimer);root.removeEventListener('change',onChange);root.removeEventListener('click',onClick);root.removeEventListener('submit',onSubmit);root.removeEventListener('keydown',onKey);window.removeEventListener('openai:set_globals',onGlobals);window.OrbitAudio.destroy();delete window.orbitReceiveSave;}};
+  root.addEventListener('change',onChangeBatched);root.addEventListener('click',onClickBatched);root.addEventListener('submit',onSubmitBatched);root.addEventListener('keydown',onKeyBatched);root.addEventListener('orbit-clip',syncExperience);document.addEventListener('visibilitychange',onHidden);window.addEventListener('pagehide',flushSave);window.addEventListener('openai:set_globals',onGlobals);
+  window.orbitApp={back:navigateBack,getState:()=>state,getView:()=>({tab,selected,sheet,sheetPage,campaignPage,history:{back:history.past.length,forward:history.future.length},systemType,selectedCandidateId,lab:{...lab},catalogView:{...catalogView},cargoResource,mapLevel,selectedSystem,selectedDestination,environmentSite,shipDetail:{...shipDetail}}),getInspection:()=>scene.getInspection?.()||null,act,destroy(){tutorialCleanup?.();window.OrbitCampaignUI?.closeClip();resizeObserver.disconnect();scene.destroy();fieldScene?.destroy();clearTimeout(toastTimer);clearTimeout(effectTimer);root.removeEventListener('orbit-clip',syncExperience);flushSave();document.removeEventListener('visibilitychange',onHidden);window.removeEventListener('pagehide',flushSave);root.removeEventListener('change',onChangeBatched);root.removeEventListener('click',onClickBatched);root.removeEventListener('submit',onSubmitBatched);root.removeEventListener('keydown',onKeyBatched);window.removeEventListener('openai:set_globals',onGlobals);audioModule?.destroy();delete window.orbitReceiveSave;}};
   let lastSize='';
   const resizeObserver=new ResizeObserver(()=>{const size=root.clientWidth+'x'+root.clientHeight;if(size===lastSize)return;lastSize=size;fitStage();if(sheet)renderSheet();});resizeObserver.observe(root);
   if(window.OrbitCampaignUI){const menu=root.querySelector('.og-header [data-action="menu"]');menu.insertAdjacentHTML('beforebegin','<button class="og-round og-campaign-access" data-action="campaign" aria-label="O Coro do Limiar: missão atual">✦</button>');}

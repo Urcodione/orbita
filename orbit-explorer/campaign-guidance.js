@@ -64,11 +64,11 @@ E.campaignDebrief=function(before,s,reward){
  let title='Um eco a mais',message='O núcleo trouxe outra parte da transmissão. Cada eco extraído aproxima a receita de '+lead.unlock+'.';
  if(a.sitesDone===1&&v.chapter===1){title='Não estamos sozinhos';message='Aurora: “O sinal chegou. As florestas de Íris ainda podem florescer. Cruzem os ecos de outros mundos; um único registro não revela o caminho.”';}
  else if(a.sitesDone===1){title='A próxima voz do Coro';message=a.story;}
- else if(a.systemsDone>old.systemsDone&&old.systemsDone>0){title:'A voz atravessa sistemas';message='Dois céus diferentes repetem a mesma assinatura. A Aurora existe: agora podemos separar sua voz do ruído das estrelas.';}
- else if(a.worldsDone>old.worldsDone){title:'Outro mundo respondeu';message='A frequência reapareceu longe do primeiro núcleo. Os registros pertencem à mesma rede viva que pode restaurar Íris.';}
- if(a.transmission&&!old.transmission){title:'Mensagem da Aurora';message=a.transmission;}
+ else if(a.systemsDone>old.systemsDone&&old.systemsDone>0){title='A voz atravessa sistemas';message='Dois céus diferentes repetem a mesma assinatura. A Aurora existe: agora podemos separar sua voz do ruído das estrelas.';}
+ else if(a.worldsDone>old.worldsDone){title='Outro mundo respondeu';message='A frequência reapareceu longe do primeiro núcleo. Os registros pertencem à mesma rede viva que pode restaurar Íris.';}
+ if(a.transmission&&!old.transmission){title='Mensagem da Aurora';message=a.transmission;}
  if(a.itemOwned&&!old.itemOwned){title=a.item.name+' preservado';message=a.item.description+' Esta descoberta será usada em '+lead.unlock+', não vendida.';}
- if(a.ready&&!old.ready){title:'Transmissão reconstruída';message='Os ecos formaram a receita de '+lead.unlock+'. Receba a tecnologia: você abriu o próximo passo da busca pela Aurora.';}
+ if(a.ready&&!old.ready){title='Transmissão reconstruída';message='Os ecos formaram a receita de '+lead.unlock+'. Receba a tecnologia: você abriu o próximo passo da busca pela Aurora.';}
  return {title,message,consequence,advanced:true,sites:a.sitesDone,required:a.sitesRequired,worlds:a.worldsDone,worldsRequired:a.worldsRequired,systems:a.systemsDone,systemsRequired:a.systemsRequired};
 };
 })(typeof window==='object'?window:globalThis);

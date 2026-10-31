@@ -347,8 +347,6 @@
       this.callbacks = callbacks || {}; this.hotspots = [];
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d', { alpha: false });
-      this.illustration = new Image();
-      if(window.OrbitIllustrations?.ship) this.illustration.src = window.OrbitIllustrations.ship;
       this.state = { view: 'explore', mode: 'orbit', shipColor: '#f08b54', modules: {}, shipDetail: { mode: 'exterior', selectedModule: null, expanded: false }, resources: {}, planet: { id: 'auralis', biome: 'forest', seed: 123 } };
       this.width = 800; this.height = 430; this.yaw = .18; this.pitch = .20; this.zoom = 1; this.dragging = false;
       this.reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
@@ -358,6 +356,8 @@
       this.debris = Array.from({ length: 8 }, () => ({ x: rand(), y: rand(), size: 1 + rand() * 2, phase: rand() * TAU }));
       this.ship = makeShip(this.state.shipColor, this.state.modules, this.state.resources);
       this.resize = this.resize.bind(this); this.tick = this.tick.bind(this);
+      this.onArtReady = () => { if (!this.dead && this.reduced && !this.paused && this.ship && !document.hidden) this.draw(performance.now()); };
+      window.addEventListener('orbit-art-ready', this.onArtReady);
       this.onVisibility = () => { if (!document.hidden && !this.dead && !this.paused && !this.raf) this.raf = requestAnimationFrame(this.tick); };
       this.onDown = e => {
         if (e.button && e.button !== 0) return;
@@ -422,16 +422,34 @@
     }
     resize() {
       const rect = this.canvas.getBoundingClientRect();
-      this.width = Math.max(1, rect.width || 800); this.height = Math.max(1, rect.height || 430);
+      const width = Math.max(1, rect.width || 800), height = Math.max(1, rect.height || 430);
       const dpr = Math.min(2, window.devicePixelRatio || 1);
+      // Assigning canvas.width clears the bitmap and reallocates it: only do that when the size really changed.
+      if (width === this.width && height === this.height && dpr === this.dpr) return;
+      this.width = width; this.height = height; this.mapRect = null;
       this.canvas.width = Math.round(this.width * dpr); this.canvas.height = Math.round(this.height * dpr);
       this.dpr = dpr;
       this.ctx.imageSmoothingEnabled = true;
       this.ctx.imageSmoothingQuality = "high";
+      // Paused or reduced-motion scenes have no running loop to repaint the cleared canvas.
+      if ((this.paused || this.reduced) && !this.dead && this.ship) this.draw(performance.now());
+    }
+    // Static full-screen layers (background gradients, vignette) are painted once per size instead of every frame.
+    layer(name, paint) {
+      const w = this.width, h = this.height, key = w + 'x' + h + '@' + this.dpr;
+      this.layers = this.layers || {};
+      let entry = this.layers[name];
+      if (!entry || entry.key !== key) {
+        const canvas = entry?.canvas || document.createElement('canvas');
+        canvas.width = Math.round(w * this.dpr); canvas.height = Math.round(h * this.dpr);
+        const g = canvas.getContext('2d'); g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); paint(g, w, h);
+        entry = this.layers[name] = { key, canvas };
+      }
+      return entry.canvas;
     }
     update(next = {}) {
       const oldKey = this.shipKey;
-      this.state = { ...this.state, ...next };
+      this.state = { ...this.state, ...next }; this.mapRect = null;
       if (this.moduleDrag && (this.state.shipDetail?.mode !== 'module' || this.state.shipDetail.selectedModule !== this.moduleDrag.type || !['ship', 'hangar'].includes(this.state.view))) {
         this.moduleDrag = null; this.pointer = null; this.dragging = false;
       }
@@ -441,8 +459,6 @@
       const cargo = this.state.resources || {};
       this.shipKey = `${this.state.shipColor}:${JSON.stringify(this.state.modules)}:${cargo.oxygen || 0}:${Number(cargo.ore || 0) > 0}:${Number(cargo.crystals || 0) > 0}`;
       if (oldKey !== this.shipKey) this.ship = makeShip(this.state.shipColor, this.state.modules, this.state.resources);
-      const p = this.state.planet;
-      if (p) this.planetTexture = this.planetTextureFor(p);
     }
     planetTextureFor(planet, map = false) {
       const size = map ? 176 : 400;
@@ -464,7 +480,10 @@
     tick(now) {
       this.raf = null;
       if (this.dead || this.paused || document.hidden) return;
-      if (this.ctx&&(!this.light||!this.lastLightFrame||now-this.lastLightFrame>=32)){this.draw(now);this.lastLightFrame=now;}
+      // Idle scenes (slow drift, twinkling) run at ~30 fps; drags and short effects get every display frame.
+      // On 90/120 Hz phones an uncapped loop redrew the whole canvas up to 120 times a second.
+      const busy = !this.light && (this.dragging || this.moduleDrag || Object.values(this.effects).some(start => now - start < 2400));
+      if (this.ctx&&(busy||!this.lastLightFrame||now-this.lastLightFrame>=29)){this.draw(now);this.lastLightFrame=now;}
       if(!this.reduced)this.raf = requestAnimationFrame(this.tick);
     }
     draw(now) {
@@ -485,19 +504,22 @@
       const drawDt = clamp(now - (this.lastDrawNow || now - 16), 1, 48); this.lastDrawNow = now;
       if (this.planetOpacity === undefined) this.planetOpacity = planetTarget;
       this.planetOpacity = this.reduced ? planetTarget : lerp(this.planetOpacity, planetTarget, 1 - Math.exp(-drawDt / 90));
-      const bg = c.createLinearGradient(0, 0, w, h); bg.addColorStop(0, '#081721'); bg.addColorStop(.48, '#0b1b29'); bg.addColorStop(1, '#09131f'); c.fillStyle = bg; c.fillRect(0, 0, w, h);
-      const fog = c.createRadialGradient(w * .70, h * .22, 0, w * .70, h * .22, w * .65); fog.addColorStop(0, 'rgba(68, 82, 113, .20)'); fog.addColorStop(.55, 'rgba(36, 61, 84, .07)'); fog.addColorStop(1, 'rgba(6,18,28,0)'); c.fillStyle = fog; c.fillRect(0, 0, w, h);
-      c.save(); c.translate(w * .54, h * .43); c.rotate(-.38); c.scale(1, .3); const dust = c.createRadialGradient(0, 0, 10, 0, 0, w * .7); dust.addColorStop(0, 'rgba(98, 90, 128, .09)'); dust.addColorStop(.5, 'rgba(70, 96, 125, .065)'); dust.addColorStop(1, 'rgba(16,29,43,0)'); c.fillStyle = dust; c.fillRect(-w, -w, w * 2, w * 2); c.restore();
+      c.drawImage(this.layer('backdrop', (c, w, h) => {
+        const bg = c.createLinearGradient(0, 0, w, h); bg.addColorStop(0, '#081721'); bg.addColorStop(.48, '#0b1b29'); bg.addColorStop(1, '#09131f'); c.fillStyle = bg; c.fillRect(0, 0, w, h);
+        const fog = c.createRadialGradient(w * .70, h * .22, 0, w * .70, h * .22, w * .65); fog.addColorStop(0, 'rgba(68, 82, 113, .20)'); fog.addColorStop(.55, 'rgba(36, 61, 84, .07)'); fog.addColorStop(1, 'rgba(6,18,28,0)'); c.fillStyle = fog; c.fillRect(0, 0, w, h);
+        c.save(); c.translate(w * .54, h * .43); c.rotate(-.38); c.scale(1, .3); const dust = c.createRadialGradient(0, 0, 10, 0, 0, w * .7); dust.addColorStop(0, 'rgba(98, 90, 128, .09)'); dust.addColorStop(.5, 'rgba(70, 96, 125, .065)'); dust.addColorStop(1, 'rgba(16,29,43,0)'); c.fillStyle = dust; c.fillRect(-w, -w, w * 2, w * 2); c.restore();
+      }), 0, 0, w, h);
       if(cruising)this.drawCruise(t);
       this.stars.forEach((s,index) => {
         if(cruising&&index%3!==0)return;
         const x = ((s.x * w - t * (cruising ? 3+s.r*s.r*9 : s.r*.34)) % w + w) % w, y = cruising ? (s.y*h+t*(1+s.r*s.r*2.4))%h : s.y*h;
         const alpha = s.a * (.85 + Math.sin(t * .75 + s.phase) * .15);
-        c.fillStyle = s.blue ? `rgba(148,194,215,${alpha})` : `rgba(216,225,222,${alpha})`;
+        c.globalAlpha = alpha; c.fillStyle = s.blue ? '#94c2d7' : '#d8e1de';
         if (warp || travel) { const strength = warp ? Math.sin(warp * Math.PI) * 75 : Math.sin(travel * Math.PI) * 16; c.strokeStyle = c.fillStyle; c.lineWidth = s.r * .8; c.beginPath(); c.moveTo(x, y); c.lineTo(x - strength * (1 + s.r), y + strength * .2); c.stroke(); }
         if(cruising&&s.r>1.1){c.strokeStyle=c.fillStyle;c.lineWidth=.65;c.beginPath();c.moveTo(x,y);c.lineTo(x+3+s.r*2,y-1.2);c.stroke();}
         c.beginPath(); c.arc(x, y, cruising?s.r*.75:s.r, 0, TAU); c.fill();
-        if (s.r > 1.32) { c.globalAlpha = .32; c.fillRect(x - 3.3, y - .35, 6.6, .7); c.fillRect(x - .35, y - 3.3, .7, 6.6); c.globalAlpha = 1; }
+        if (s.r > 1.32) { c.globalAlpha = alpha * .32; c.fillRect(x - 3.3, y - .35, 6.6, .7); c.fillRect(x - .35, y - 3.3, .7, 6.6); }
+        c.globalAlpha = 1;
       });
       if (galaxy) { if (Array.isArray(this.state.navigation?.nodes)) this.drawNavigation(t); else this.drawGalaxy(t, portrait); }
       const planet = this.state.planet || {};
@@ -509,7 +531,7 @@
         c.save(); c.globalAlpha = this.planetOpacity;
         // The orbit sits behind the sphere; the break in its arc makes its depth readable.
         c.save(); c.translate(px, py + pr * .2); c.rotate(-.28); c.strokeStyle = 'rgba(150,181,185,.15)'; c.lineWidth = .8; c.setLineDash([3, 7]); c.beginPath(); c.ellipse(0, 0, pr * 1.52, pr * .39, 0, 0, TAU); c.stroke(); c.setLineDash([]); c.restore();
-        this.drawPlanetBody(px, py, pr, planet, this.planetTexture);
+        this.drawPlanetBody(px, py, pr, planet, false);
         if (scan > 0) { c.save(); c.strokeStyle = `rgba(123,235,204,${scan * .7})`; c.lineWidth = 1; for (let i = 0; i < 3; i++) { const rad = pr * (.7 + ((1 - scan + i / 3) % 1) * .8); c.beginPath(); c.arc(px, py, rad, 0, TAU); c.stroke(); } c.restore(); }
         if (dock > 0 || explore > 0) {
           const amount = Math.max(dock, explore), tx = px - pr * (medium === 'gas' ? 1.03 : medium === 'liquid' ? .38 : .63), ty = py + pr * (medium === 'gas' ? -.40 : .30);
@@ -541,10 +563,10 @@
       else { this.shipHit = null; this.inspection = null; this.cargoHitFaces = []; this.publishHotspots([]); this.publishCargoHotspots([]); }
       if (!shipView) this.debris.forEach(d => { const dx = d.x * w, dy = d.y * h; if (dx < w * .2 || dy > h * .82) { c.fillStyle = 'rgba(81,112,128,.28)'; c.save(); c.translate(dx + Math.sin(t * .12 + d.phase) * 5, dy); c.rotate(d.phase + t * .015); c.fillRect(-d.size, -d.size * .5, d.size * 2, d.size); c.restore(); } });
       // A subtle vignette keeps labels legible without flattening the central art.
-      const vignette = c.createRadialGradient(w * .5, h * .48, Math.min(w, h) * .28, w * .5, h * .48, w * .75); vignette.addColorStop(0, 'rgba(2,9,15,0)'); vignette.addColorStop(1, 'rgba(2,9,15,.48)'); c.fillStyle = vignette; c.fillRect(0, 0, w, h);
+      c.drawImage(this.layer('vignette', (c, w, h) => { const vignette = c.createRadialGradient(w * .5, h * .48, Math.min(w, h) * .28, w * .5, h * .48, w * .75); vignette.addColorStop(0, 'rgba(2,9,15,0)'); vignette.addColorStop(1, 'rgba(2,9,15,.48)'); c.fillStyle = vignette; c.fillRect(0, 0, w, h); }), 0, 0, w, h);
       if (warp > 0) { c.fillStyle = `rgba(139,209,225,${Math.sin(warp * Math.PI) * .07})`; c.fillRect(0, 0, w, h); }
     }
-    drawPlanetBody(x, y, radius, planet, texture) {
+    drawPlanetBody(x, y, radius, planet, map) {
       const c = this.ctx, biome = planet.biome || (planet.medium === 'gas' ? 'gas' : 'forest');
       const palette = PALETTES[biome] || PALETTES.forest, rings = biome === 'gas' || biome === 'crystal';
       const ring = front => {
@@ -561,7 +583,12 @@
       const glow = c.createRadialGradient(x, y, radius * .83, x, y, radius * (biome === 'magma' ? 1.35 : 1.17));
       glow.addColorStop(0, palette.glow + '00'); glow.addColorStop(.59, palette.glow + (biome === 'magma' ? '2e' : biome === 'rogue' ? '0c' : '30')); glow.addColorStop(1, palette.glow + '00');
       c.fillStyle = glow; c.fillRect(x - radius * 1.4, y - radius * 1.4, radius * 2.8, radius * 2.8);
-      if (!window.OrbitArt?.world(c,planet,x,y,radius) && texture) c.drawImage(texture, x - radius, y - radius, radius * 2, radius * 2);
+      // The painted worlds atlas replaces the procedural texture, which costs 0.2-0.3 s per planet to generate.
+      // Generate it only when that art is unavailable; while the atlas is still loading, draw a plain disc.
+      if (!window.OrbitArt?.world(c,planet,x,y,radius)) {
+        if (window.OrbitArt?.loading?.('worlds')) { c.fillStyle = palette.glow + '55'; c.beginPath(); c.arc(x, y, radius, 0, TAU); c.fill(); }
+        else c.drawImage(this.planetTextureFor(planet, map), x - radius, y - radius, radius * 2, radius * 2);
+      }
       if(radius>45 && ['forest','ocean','toxic','ice'].includes(biome)){
         const key=planet.id||planet.name;
         if(!this.weatherCache.has(key)){if(this.weatherCache.size>=12)this.weatherCache.delete(this.weatherCache.keys().next().value);this.weatherCache.set(key,createWeather(planet));}
@@ -603,8 +630,10 @@
     }
     drawNavigation(t) {
       const c = this.ctx, nav = this.state.navigation || {}, level = nav.level || 'system';
-      const map = this.canvas.parentElement.querySelector('.og-map');
-      const rect = map && map.offsetWidth ? {x:map.offsetLeft,y:map.offsetTop,width:map.offsetWidth,height:map.offsetHeight} : { x: 22, y: 145, width: this.width - 44, height: this.height - 350 };
+      // Reading layout inside every frame could force a synchronous reflow after DOM changes; the map box only
+      // changes with a render (update) or a resize, so it is measured once per change.
+      if (!this.mapRect) { const map = this.canvas.parentElement.querySelector('.og-map'); this.mapRect = map && map.offsetWidth ? {x:map.offsetLeft,y:map.offsetTop,width:map.offsetWidth,height:map.offsetHeight} : { x: 22, y: 145, width: this.width - 44, height: this.height - 350 }; }
+      const rect = this.mapRect;
       const center = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
       const nodes = (nav.nodes || []).filter(n => Number.isFinite(Number(n.x)) && Number.isFinite(Number(n.y))).map(n => ({ ...n, px: rect.x + clamp(Number(n.x), 0, 100) * rect.width / 100, py: rect.y + clamp(Number(n.y), 0, 100) * rect.height / 100, radius: clamp(Number(n.size) || 17, 10, 28), isSelected: !!n.selected || n.id === nav.selectedId, isCurrent: !!n.current || n.id === nav.currentId }));
       c.save(); c.beginPath(); c.rect(0, Math.max(0,rect.y-10), this.width, rect.height+60); c.clip();
@@ -642,7 +671,7 @@
         }
         if (level === 'system') {
           const planet = node.planet || { id: node.id, seed: node.id, biome: node.kind || 'forest' };
-          this.drawPlanetBody(x, y, r, planet, this.planetTextureFor(planet, true));
+          this.drawPlanetBody(x, y, r, planet, true);
           // Decorative satellites are deterministic and have no interactive targets.
           const moonSeed=Array.from(String(planet.id)).reduce((n,ch)=>(n*31+ch.charCodeAt(0))>>>0,7);
           const moons=planet.medium==='gas'?2:moonSeed%3===0?1:0;
@@ -840,13 +869,14 @@
         const opacity = glow.interior ? cam.open * (cam.focus > .1 && glow.module !== selected ? .2 : 1) : 1 - cam.focus;
         c.save(); c.globalAlpha = opacity * (1-artBlend); c.shadowBlur = 8 * sc; c.shadowColor = glow.color; c.fillStyle = glow.color; c.beginPath(); c.arc(p[0], p[1], Math.max(1, glow.size * sc * .6), 0, TAU); c.fill(); c.restore();
       });
-      if(artBlend > .001) {
-        const center=project([0,0,-3]),height=310*sc,width=height*this.illustration.naturalWidth/this.illustration.naturalHeight;
+      const illustration=artBlend > .001 && window.OrbitArt?.ready('ship') ? window.OrbitArt.images.ship : null;
+      if(illustration) {
+        const center=project([0,0,-3]),height=310*sc,width=height*illustration.naturalWidth/illustration.naturalHeight;
         c.save();c.globalAlpha=artBlend;c.translate(center[0],center[1]);c.rotate((cam.yaw-.18)*.05);
         // Existing paint customization also changes the illustration's accent palette.
         const hue={'#71bdc4':148,'#c9b1df':252,'#9bb68c':72,'#e7d8b5':12}[this.state.shipColor];
         if(hue!==undefined)c.filter=`hue-rotate(${hue}deg) saturate(${hue===12?.55:.85})`;
-        c.drawImage(this.illustration,-width/2,-height/2,width,height);c.restore();
+        c.drawImage(illustration,-width/2,-height/2,width,height);c.restore();
       }
       if (cam.open < .8 && !inspecting) {
         const p = project([0, 40, 15]); c.save(); c.globalAlpha = (1 - cam.open) * (1-artBlend); c.translate(p[0], p[1]); c.fillStyle = '#405765'; c.textAlign = 'center'; c.font = `700 ${Math.max(4, 4.8 * sc)}px monospace`; c.fillText('A N D O R I N H A', 0, 0); c.fillStyle = '#79908f'; c.fillRect(-8 * sc, 8 * sc, 16 * sc, 1.2 * sc); c.restore();
@@ -948,7 +978,7 @@
     getHotspots() { return (this.hotspots || []).map(p => ({ ...p })); }
     destroy() {
       this.dead = true; if (this.raf) cancelAnimationFrame(this.raf);
-      this.observer?.disconnect(); window.removeEventListener('resize', this.resize); document.removeEventListener('visibilitychange', this.onVisibility);
+      this.observer?.disconnect(); window.removeEventListener('resize', this.resize); document.removeEventListener('visibilitychange', this.onVisibility); window.removeEventListener('orbit-art-ready', this.onArtReady);
       this.canvas.removeEventListener('pointerdown', this.onDown); this.canvas.removeEventListener('pointermove', this.onMove); this.canvas.removeEventListener('pointerup', this.onUp); this.canvas.removeEventListener('pointercancel', this.onUp); this.canvas.removeEventListener('lostpointercapture', this.onUp); this.canvas.removeEventListener('wheel', this.onWheel); this.planetCache.clear(); this.weatherCache.clear(); this.mapArtCache.clear();
     }
   }

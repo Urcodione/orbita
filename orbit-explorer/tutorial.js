@@ -14,7 +14,7 @@ function trainingWorld(s,galaxy=s.galaxy){if(s.guide?.v!==2||!s.guide.active)ret
 E.restoreTrainingWorld=trainingWorld;
 function graduate(s,skip=false){const old=s.guide,crafted=s.inventory.find(m=>m.id===old.crafted)||Object.values(s.equipped).find(m=>m.id===old.crafted),next=base.create(s.seed);next.guide={...old,active:false,completed:!skip};next.campaign.introSeen=true;
  if(!skip&&crafted){next.inventory.push({...crafted,id:'prisma-graduate',favorite:true});next.log.unshift({id:next.turn,text:'Prisma concluído. Seu Abrigo Zero Absoluto acompanha a Andorinha. A jornada real começa em Auralis.',kind:'success'});}
- for(const k of Object.keys(s))delete s[k];Object.assign(s,next);
+ for(const k of Object.keys(s))delete s[k];E.commit(s,next);
 }
 function trainingBlocked(s,a,p){const g=s.guide;if(g?.v!==2||!g.active)return '';
  if(['stationDock','warp','travel','launch','salvage','expeditionSalvage','expeditionAbort','rescue'].includes(a))return 'Prisma é um treinamento separado. Conclua as regiões ou use Pular tutorial.';
