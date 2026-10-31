@@ -567,6 +567,12 @@
   }
   function expeditionBeacons(e){const g=expeditionGeometry(e);return [4,2].map(y=>[...g.path].find(i=>Math.floor(i/6)===y));}
   const reactions={forest:'Esporos de defesa',ice:'Nevasca das ruínas',volcanic:'Instabilidade vulcânica',magma:'Erupção de plasma',gas:'Colapso da corrente',ocean:'Corrente abissal',toxic:'Vazamento corrosivo',desert:'Tempestade de poeira',crystal:'Ressonância dos cristais',rogue:'Descarga das ruínas'};
+  // Every site is explored or out of reach even after swapping in any owned module, and warp fuel is short.
+  function galaxyExhausted(state) {
+    if (state.resources.warpFuel >= warpCost(state)) return false;
+    const variants = [state, ...state.inventory.filter(module => module && state.equipped[module.type]).map(module => ({ ...state, equipped: { ...state.equipped, [module.type]: module } }))];
+    return state.galaxy.planets.every(item => item.sites.every(site => site.explored || variants.every(variant => !assess(variant, item.id, site.id).allowed)));
+  }
   function siteOperation(state,siteId){
     const id=siteId||state.expedition?.siteId,op=state.siteOperations?.[id];
     const planet=state.galaxy.planets.find(p=>p.sites.some(s=>s.id===id));
@@ -747,30 +753,39 @@
     };
     // Keep nondominated energy/damage routes: the shortest route may cross hazards
     // the suit cannot survive, while a slightly longer, safe route remains possible.
+    // Each step is priced on the turn it would actually be taken (weather phase and the site reaction
+    // change over time). Pricing every step at the worst case refused returns that walking completed
+    // and overcharged the automatic return by 4-6 energy right after a core recovery.
+    const stepCost = (tile, offset) => offset ? movementCost({ ...state, expedition: { ...expedition, turns: expedition.turns + offset } }, tile) : movementCost(state, tile);
     const first = { node: start, reserve: 0, integrity: 0, path: [] };
-    const labels = Array.from({ length: 36 }, () => []), queue = [first];
-    labels[start].push(first);
+    const labels = new Map(), heap = [first];
+    const key = label => label.node * 64 + label.path.length;
+    const better = (a, b) => a.reserve - b.reserve || a.integrity - b.integrity || a.path.length - b.path.length;
+    const push = label => { heap.push(label); let i = heap.length - 1; while (i) { const parent = (i - 1) >> 1; if (better(heap[parent], heap[i]) <= 0) break; [heap[parent], heap[i]] = [heap[i], heap[parent]]; i = parent; } };
+    const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let i = 0; for (;;) { const l = i * 2 + 1, r = l + 1; let m = i; if (l < heap.length && better(heap[l], heap[m]) < 0) m = l; if (r < heap.length && better(heap[r], heap[m]) < 0) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } } return top; };
+    labels.set(key(first), [first]);
     let fallback = null;
-    while (queue.length) {
-      queue.sort((a, b) => a.reserve - b.reserve || a.integrity - b.integrity || a.path.length - b.path.length);
-      const label = queue.shift();
-      if (!labels[label.node].includes(label)) continue;
+    while (heap.length) {
+      const label = pop();
+      if (!(labels.get(key(label)) || []).includes(label)) continue;
       if (label.node === 32) {
         if (label.integrity < expedition.integrity) return summarize(label);
         if (!fallback) fallback = label;
         continue;
       }
+      if (label.path.length >= 48) continue;
       const tile = board[label.node];
       for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
         const x = tile.x + dx, y = tile.y + dy;
         if (x < 0 || y < 0 || x >= 6 || y >= 6) continue;
         const index = y * 6 + x;
         if (!known.has(index) || board[index].kind === 'wall') continue;
-        const cost = movementCost(state, board[index],true);
+        const cost = stepCost(board[index], label.path.length);
         const candidate = { node: index, reserve: label.reserve + cost.reserve, integrity: label.integrity + cost.integrity, path: [...label.path, index] };
-        if (labels[index].some(existing => existing.reserve <= candidate.reserve && existing.integrity <= candidate.integrity)) continue;
-        labels[index] = labels[index].filter(existing => !(candidate.reserve <= existing.reserve && candidate.integrity <= existing.integrity));
-        labels[index].push(candidate); queue.push(candidate);
+        const slot = key(candidate), existing = labels.get(slot) || [];
+        if (existing.some(other => other.reserve <= candidate.reserve && other.integrity <= candidate.integrity)) continue;
+        labels.set(slot, [...existing.filter(other => !(candidate.reserve <= other.reserve && candidate.integrity <= other.integrity)), candidate]);
+        push(candidate);
       }
     }
     return summarize(fallback);
@@ -783,6 +798,8 @@
     expedition.integrity -= cost.integrity || 0;
     if (result.ok && action === 'expeditionMove') { expedition.x = result.info.x; expedition.y = result.info.y; }
     if (result.ok && action === 'expeditionReturn') { expedition.x = 2; expedition.y = 5; }
+    // Every expedition action advances the field clock; price the way back from the turn after it.
+    if (result.ok) expedition.turns = (expedition.turns || 0) + 1;
     if(result.ok&&action==='expeditionRecover'&&result.info.matched&&!state.guide?.active){projected.siteOperations=clone(state.siteOperations||{});const id=expedition.siteId;projected.siteOperations[id]={...(projected.siteOperations[id]||{}),reactionAt:(expedition.weatherOffset||0)+expedition.turns+6};}
     const route = expeditionReturnRoute(projected);
     const returnMargin = route.known ? expedition.reserve - route.reserve : null;
@@ -955,7 +972,8 @@
       }
       case 'refuel':
         if (res.fuel >= computed.maxFuel) return reject('O tanque de combustível já está cheio.');
-        info.amount = Math.min(12, computed.maxFuel - res.fuel);
+        // Use whatever ore is on board (1 ore → up to 4 fuel) instead of refusing when 1-2 ore cannot fill 12.
+        info.amount = Math.min(12, computed.maxFuel - res.fuel, Math.max(1, (res.ore || 0) * 4));
         cost = { ore: Math.ceil(info.amount / 4) };
         break;
       case 'refillOxygen':
@@ -982,9 +1000,11 @@
         break;
       }
       case 'rescue': {
-        const minimumFuel = Math.min(...state.galaxy.planets.filter(item => item.id !== planet.id).map(item => travelCost(state, item.id)));
-        const critical = res.fuel < minimumFuel || res.oxygen < 3 || res.hull < Math.ceil(computed.maxHull * 0.25);
-        const exhausted = res.warpFuel < warpCost(state) && state.galaxy.planets.every(item => item.sites.every(site => site.explored || !assess(state, item.id, site.id).allowed));
+        // Stranded: no destination the ship may enter (environment gates) is affordable in fuel and oxygen.
+        // Counting planets of the current system that the ship can no longer enter refused rescue in blue-giant/pulsar systems.
+        const reachable = state.galaxy.planets.some(item => item.id !== planet.id && assessSystem(state, item.systemId).allowed && res.fuel >= travelCost(state, item.id) && res.oxygen >= (item.systemId === planet.systemId ? 3 : 6));
+        const critical = !reachable || res.oxygen < 3 || res.hull < Math.ceil(computed.maxHull * 0.25);
+        const exhausted = galaxyExhausted(state);
         if (!critical && !exhausted) return reject('Resgate indisponível: a nave tem condições de seguir viagem. Use a manutenção para abastecer ou reparar.');
         break;
       }
@@ -1152,7 +1172,9 @@
         const expedition = next.expedition, tile = expeditionBoard(expedition)[expedition.y * 6 + expedition.x];
         const bonus = stats(next).collectionBonus;
         const research = tile.kind === 'data' ? 1 + stats(next).scanBonus : 1;
-        const amount = Math.round((tile.kind === 'ore' ? 8 : tile.kind === 'data' ? 10 : 2) * bonus * research * expedition.rewardMultiplier * (info.intensive?1.5:1));
+        // Round the normal yield first so an intensive collect is the advertised +50% (it ranged from +40% to +100%).
+        const normal = Math.round((tile.kind === 'ore' ? 8 : tile.kind === 'data' ? 10 : 2) * bonus * research * expedition.rewardMultiplier);
+        const amount = info.intensive ? Math.round(normal * 1.5) : normal;
         const key = tile.kind === 'crystal' ? 'crystals' : tile.kind;
         expedition.pending[key] += amount;
         expedition.pending.credits += Math.round(5 * expedition.rewardMultiplier);
@@ -1337,7 +1359,11 @@
         res.credits = Math.floor(res.credits * 0.9);
         res.crystals = Math.max(0, res.crystals - 1);
         message = 'Resgate concluído na órbita de ' + safe.name + '. Sistemas recuperados; taxa de 20% do minério, 10% dos créditos e até 1 cristal.';
-        if (next.galaxy.planets.every(item => item.sites.every(site => site.explored || !assess(next, item.id, site.id).allowed)) && res.warpFuel < warpCost(next)) {
+        // The emergency warp cell is only for a galaxy with nothing left to explore, judged with every module the
+        // player owns (not just the installed ones, which made it a repeatable bypass of refining), and only when a
+        // warp is actually permitted afterwards (the campaign can hold the ship in a chapter galaxy).
+        const fueled = { ...next, resources: { ...res, warpFuel: warpCost(next) } }, heldByCampaign = preview(fueled, 'warp').allowed && !api.preview(fueled, 'warp').allowed;
+        if (galaxyExhausted(next) && !heldByCampaign) {
           res.warpFuel = warpCost(next);
           message += ' Uma carga de dobra de emergência permite alcançar novos refúgios quando não restam locais acessíveis.';
         }

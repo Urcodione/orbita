@@ -17,6 +17,9 @@ function graduate(s,skip=false){const old=s.guide,crafted=s.inventory.find(m=>m.
  for(const k of Object.keys(s))delete s[k];E.commit(s,next);
 }
 function trainingBlocked(s,a,p){const g=s.guide;if(g?.v!==2||!g.active)return '';
+ // Evacuating is the way out when energy ran out (away from base, or at base without enough to collect a
+ // sample): without it the only exit was skipping the whole training and its reward.
+ if(a==='expeditionAbort'&&s.expedition&&(!E.expeditionReturnRoute(s)?.canReturn||s.expedition.reserve<3))return '';
  if(['stationDock','warp','travel','launch','salvage','expeditionSalvage','expeditionAbort','rescue'].includes(a))return 'Prisma é um treinamento separado. Conclua as regiões ou use Pular tutorial.';
  if(a==='explore'&&p?.siteId!=='g0-p0-s'+g.region)return 'Siga a região indicada no treinamento.';
  if(a==='expeditionExtract'&&g.region===0&&(!s.expedition?.coreRecovered||!s.expedition?.harvested.includes(25)||!s.expedition?.harvested.includes(10)))return 'Recupere minério, cristais e o módulo antes de voltar com a primeira carga.';

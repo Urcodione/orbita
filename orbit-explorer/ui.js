@@ -353,7 +353,7 @@
     if(on?.kind==='beacon'&&preview('expeditionBeacon').allowed)action=button('expeditionBeacon','Ativar baliza',{primary:true,cost:true});
     else if(ex.atBase&&ex.turns>0)action=button('expeditionExtract','Extrair carga',{primary:true});
     else if(on?.kind==='core'&&!ex.coreRecovered)action=button('expeditionInteract','Abrir circuito do núcleo',{primary:true});
-    else if(['ore','data','crystal'].includes(on?.kind)&&!on.collected)action=button('expeditionCollect','Recolher '+({ore:'minério',data:'pesquisa',crystal:'cristais'}[on.kind]),{primary:true,cost:true})+(!state.guide?.active?button('expeditionCollect','Extração intensiva: +50% de material, +3 energia e −1 integridade',{payload:{intensive:true},attrs:'data-intensive="true" data-caption="Intensiva +50%"',cost:true}):'');
+    else if(['ore','data','crystal'].includes(on?.kind)&&!on.collected)action=button('expeditionCollect','Recolher '+({ore:'minério',data:'pesquisa',crystal:'cristais'}[on.kind])+(!ex.coreSecured&&!ex.coreRecovered&&ex.load+4>ex.capacity?' · o núcleo não caberá depois':''),{primary:true,cost:true})+(!state.guide?.active?button('expeditionCollect','Extração intensiva: +50% de material, +3 energia e −1 integridade',{payload:{intensive:true},attrs:'data-intensive="true" data-caption="Intensiva +50%"',cost:true}):'');
     const contextAction=ex.atBase&&ex.turns>0?'expeditionExtract':on?.kind==='core'&&!ex.coreRecovered?'expeditionInteract':['ore','data','crystal'].includes(on?.kind)&&!on.collected?'expeditionCollect':null;
     const contextPreview=contextAction?preview(contextAction):null;
     const operation=E.siteOperation(state);

@@ -93,7 +93,10 @@ test('collection and both puzzle outcomes advertise the exact reserve available 
   const right = purePreview(puzzle, 'expeditionRecover');
   assert.equal(right.cost.reserve, 3);
   assert.equal(right.safety.afterReserve, 4);
-  assert.equal(right.safety.returnMargin, -7, 'recovery forecasts the persistent reaction on the return route');
+  // The reaction starts six field actions after the recovery: the forecast prices each return step on the turn it
+  // is taken, so this six-step walk home pays no reaction surcharge (the final step onto the base never does).
+  assert.equal(right.safety.returnReserve, 6, 'recovery forecasts the reaction only from the turn it begins');
+  assert.equal(right.safety.returnMargin, -2);
   assert.equal(right.safety.stranded, true);
 });
 

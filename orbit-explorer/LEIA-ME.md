@@ -47,7 +47,7 @@ Na visão aproximada, você também pode **arrastar a própria peça para fora**
 
 A seta superior indica o local de retorno: nave aberta, módulos, receita, estoque ou mercado, conforme a origem do cartão. **Esc** e o botão Voltar do Android seguem essa mesma organização. O **×** fecha o painel; na inspeção, revela a nave aberta. **Anterior/Próxima**, nos painéis longos, troca apenas a página do conteúdo. As ações secundárias têm superfície de botão e resposta ao toque.
 
-As decisões são por turno: deixar a aba aberta não gasta recursos. Oxigênio é gratuito quando a nave está ancorada em um planeta respirável; fora dele, a oficina cobra créditos ou minério. O resgate preserva seus módulos e cobra parte dos recursos.
+As decisões são por turno: deixar a aba aberta não gasta recursos. Oxigênio é gratuito quando a nave está ancorada em um planeta respirável; fora dele, a oficina converte 1 Samambaia-lume em até 12 de oxigênio, ou você compra oxigênio no entreposto. O resgate preserva seus módulos e cobra parte dos recursos.
 
 Análises orbitais continuam possíveis sem o equipamento exigido pela superfície. Entrar em um sistema hostil também exige proteção contra a estrela. Nos gigantes gasosos, a nave opera com sondas atmosféricas; nos mundos líquidos, com módulos de submersão. Os requisitos são limites mínimos: tempestades e locais profundos ainda podem danificar o casco. Não há consumo quando uma ação é bloqueada. Trocar uma peça altera imediatamente os ambientes acessíveis, inclusive se você já estiver operando no planeta; retornar à órbita permanece disponível.
 
