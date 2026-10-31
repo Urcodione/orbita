@@ -153,3 +153,16 @@ Cada fase deve passar pelo bot de campanha para medir as curvas de Lumes e dados
 - **Registro do explorador.**
 - **Estaleiro modular.**
 - **Pacote de civilizações.**
+
+### Atualização seguinte
+
+- **Exemplares únicos:**
+  - cinemática de captura exclusiva para cada um dos 16, sem opção de pular;
+  - avisos da caçada no topo da tela, no planeta, na Ajuda e no tutorial;
+  - coleção "Únicos" no Catálogo, com sombras até a captura;
+  - ilustrações provisórias das ferramentas e encaixe pronto para a arte pintada (`assets/XENO-ARTE.md`).
+- **Estaleiro estelar:**
+  - planta do casco em grade, 12 peças de 3 facções;
+  - limites de massa e energia e penalidade de voo por peso;
+  - código compartilhável `ORB1`.
+  - Ainda faltam: arte pintada das peças, a nave exibindo as peças na tela principal, o cartão-imagem e o ranking.

@@ -292,6 +292,8 @@
     const power = type => state.equipped[type].power;
     const effects = {};
     Object.values(state.equipped).forEach(module => Object.entries(moduleEffects(module)).forEach(([key, amount]) => { effects[key] = (effects[key] || 0) + amount; }));
+    // Hull parts mounted in the star shipyard (shipyard.js) add their effects, including the mass penalty.
+    if (typeof api.yardEffects === 'function') Object.entries(api.yardEffects(state) || {}).forEach(([key, amount]) => { effects[key] = (effects[key] || 0) + amount; });
     const effect = key => effects[key] || 0;
     return {
       maxFuel: Math.round(100 + 15 * (power('engine') - 1) + effect('maxFuel')),

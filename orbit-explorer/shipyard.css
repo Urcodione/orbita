@@ -1,0 +1,30 @@
+#orbit-game .og-yard{display:grid;grid-template-columns:minmax(150px,1fr) minmax(110px,.8fr);gap:10px;align-items:start}
+#orbit-game .og-yard-blueprint{position:relative;display:grid;grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),1fr);gap:3px;aspect-ratio:5/7.4;padding:6px;border-radius:14px;background:repeating-linear-gradient(0deg,#0b2a3a 0 1px,transparent 1px 18px),repeating-linear-gradient(90deg,#0b2a3a 0 1px,transparent 1px 18px),#061826;border:1px solid #2f5566}
+#orbit-game .og-yard-ship{position:absolute;inset:4px;background:var(--og-ship-art) center/contain no-repeat;opacity:.22;pointer-events:none;filter:saturate(.6)}
+#orbit-game .og-yard-cell{position:relative;border-radius:6px;border:1px dashed #3d6f80;background:#0d304166;min-height:0;padding:0}
+#orbit-game .og-yard-cell.is-target{border:1.5px solid #8ff0b8;background:#1d5a4a99;box-shadow:0 0 8px #8ff0b866}
+#orbit-game .og-yard-cell:disabled{opacity:.35}
+#orbit-game .og-yard-part{position:relative;border-radius:8px;border:1px solid #c8763d;background:#20140c99;padding:2px;min-height:0;display:grid;place-items:center}
+#orbit-game .og-yard-part svg{width:100%;height:100%}
+#orbit-game .og-yard-side{display:flex;flex-direction:column;gap:8px}
+#orbit-game .og-yard-meter{display:grid;grid-template-columns:1fr auto;gap:2px 6px;font-size:11px;color:#9dbccb}
+#orbit-game .og-yard-meter strong{color:#eaf7f7;font-variant-numeric:tabular-nums}
+#orbit-game .og-yard-meter progress{grid-column:1/-1;width:100%;height:6px}
+#orbit-game .og-yard-meter.is-warning strong{color:#ffcf8a}
+#orbit-game .og-yard-effects{display:flex;flex-wrap:wrap;gap:4px}
+#orbit-game .og-yard-effects span{font-size:11px;padding:2px 7px;border-radius:999px;background:#0d2231;border:1px solid #2f5566;color:#c8dde4}
+#orbit-game .og-yard-effects .is-up{color:#8ff0b8}
+#orbit-game .og-yard-effects .is-down{color:#ff9d8a}
+#orbit-game .og-yard-heading{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:#9dbccb;margin:12px 0 6px}
+#orbit-game .og-yard-hint,#orbit-game .og-yard-note,#orbit-game .og-yard-empty{font-size:12px;color:#9dbccb;margin:6px 0}
+#orbit-game .og-yard-hangar,#orbit-game .og-yard-shop{display:grid;gap:6px}
+#orbit-game .og-yard-stock,#orbit-game .og-yard-offer{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;text-align:left;padding:6px 8px;border-radius:12px;background:#0d2231;border:1px solid #23404f;color:#e9f6f6}
+#orbit-game .og-yard-stock{grid-template-columns:44px 1fr}
+#orbit-game .og-yard-stock svg,#orbit-game .og-yard-offer svg{width:44px;height:44px}
+#orbit-game .og-yard-stock span,#orbit-game .og-yard-offer span{display:flex;flex-direction:column;gap:1px;min-width:0}
+#orbit-game .og-yard-stock small,#orbit-game .og-yard-offer small{font-size:10px;color:#9dbccb}
+#orbit-game .og-yard-stock.is-selected{border-color:#8ff0b8;box-shadow:0 0 10px #8ff0b844}
+#orbit-game .og-yard-stock:disabled{opacity:.5}
+#orbit-game .og-yard-share{display:flex;gap:6px;align-items:center;margin:4px 0}
+#orbit-game .og-yard-share code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;padding:6px 8px;border-radius:8px;background:#061826;border:1px solid #2f5566;color:#bff7f2}
+#orbit-game .og-yard-share input{flex:1;min-width:0;font-size:12px;padding:7px 8px;border-radius:8px;background:#061826;border:1px solid #2f5566;color:#eaf7f7}
