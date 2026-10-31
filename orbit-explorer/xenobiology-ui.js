@@ -61,7 +61,7 @@ function scene(container,sp,mode){
  const el=document.createElement('div');el.className='og-xeno-scene is-'+sp.behavior+' is-'+mode;el.setAttribute('role','status');
  const line=mode==='capture'?{foge:'Ele dispara pelo terreno… a garra o alcança.',camufla:'A rede revela o contorno escondido.',veneno:'Uma nuvem de toxina! O casulo sela a tempo.',voa:'Ele sobe no vento… o laço o ancora.',congela:'A geada se espalha; a cápsula mantém o frio.',irradia:'Calor intenso! O coletor isola a planta.'}[sp.behavior]:'Chegou ao laboratório de bordo. Estude-o para revelar sua runa.';
  el.innerHTML=`<div class="og-xeno-stage">${art(sp,{size:'is-large'})}<i class="og-xeno-fx"></i><i class="og-xeno-tool-fx"></i></div><strong>${mode==='capture'?'Exemplar único contido':'Novo exemplar no laboratório'}</strong><span>${esc(sp.name)}</span><small>${esc(line)}</small>`;
- el.addEventListener('click',()=>el.remove());container.append(el);setTimeout(()=>el.classList.add('is-leaving'),3600);setTimeout(()=>el.remove(),4100);
+ container.append(el);setTimeout(()=>el.classList.add('is-leaving'),3600);setTimeout(()=>el.remove(),4100);
 }
 function find(id){return E.xenoCatalog.SPECIMENS.find(s=>s.id===id);}
 root.OrbitXenoUI={sheet,moduleRune,cellArt(id){const sp=find(id);return sp?art(sp,{size:'is-cell'}):'';},select(specimen,rune){selected={specimen:specimen||selected.specimen,rune:rune||selected.rune};},

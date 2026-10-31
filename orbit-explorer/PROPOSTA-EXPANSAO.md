@@ -1,6 +1,6 @@
 # Proposta: economia viva, expansões e retorno visual
 
-Rascunho para decisão, de 31/10/2026. Os números vêm das simulações registradas em `qa/REVISAO-2026-10-31.md`: 20 campanhas completas jogadas por um bot e 50 mil ações aleatórias.
+Rascunho para decisão, de 31/10/2026. **Atualização:** a xenobiologia com runas, a regra B da reação, as recompensas animadas e o cartão "Nova espécie" já foram implementados. Veja a seção 6. Os números vêm das simulações registradas em `qa/REVISAO-2026-10-31.md`: 20 campanhas completas jogadas por um bot e 50 mil ações aleatórias.
 
 ## 1. Diagnóstico da economia
 
@@ -131,3 +131,25 @@ Antes, o próprio jogo induzia essa evacuação, com o falso "Livre −1". Isso 
 | 5 | Ranking online validado por repetição da partida | Servidor | — |
 
 Cada fase deve passar pelo bot de campanha para medir as curvas de Lumes e dados, mirando um saldo que oscile em vez de crescer sem parar.
+
+## 6. Status da implementação (31/10/2026)
+
+**Feito:**
+
+- **Exemplares únicos e runas** (sua versão da xenobiologia): 16 exemplares, ferramentas, captura por comportamento, estudo, runas gravadas em módulos, bloqueio de reciclagem e validação de save. Testado em `xenobiology.test.cjs` e no navegador, em 390 e 320 px.
+- **Reação após evacuar:** opção B, mais o aviso no cartão do local.
+- **Retorno visual:**
+  - recompensas sobem em verde e custos descem em vermelho;
+  - cartão "Nova espécie" na primeira vez em que cada espécie chega à nave;
+  - cenas curtas de captura e de chegada ao laboratório;
+  - painel de atributos e cartão "Nave atualizada" também ao gravar ou remover runas.
+- **Resgate:** passa a valer quando a nave fica sem condições de operar, isto é, quando nem convertendo tudo o que tem paga a expedição mais barata.
+- **Capítulo 2:** o primeiro arquivo devolve uma célula de dobra. No bot de 20 campanhas, 18 terminam (antes 13). As esperas por mercado no capítulo 2 continuam em cerca de metade das partidas. O aperto diminuiu mas não sumiu; vale observar com jogadores antes de ajustar mais.
+
+**Próximo:**
+
+- **Arte dedicada:** dos 16 exemplares, das ferramentas e dos quadros de garra e rede.
+- **Cinemáticas completas:** atracagem no entreposto e colheita de flora.
+- **Registro do explorador.**
+- **Estaleiro modular.**
+- **Pacote de civilizações.**

@@ -42,7 +42,7 @@
 #orbit-game .og-field-cell{position:relative}
 @keyframes og-xeno-pulse{50%{transform:scale(1.15);opacity:.55}}
 /* Capture / arrival scene */
-#orbit-game .og-xeno-scene{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:40;width:min(300px,calc(100% - 40px));padding:14px;border-radius:18px;background:#071722f2;border:1px solid #7f62c9;box-shadow:0 18px 40px #000a;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;color:#eaf7f7;cursor:pointer;animation:og-xeno-in .35s ease-out}
+#orbit-game .og-xeno-scene{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:40;width:min(300px,calc(100% - 40px));padding:14px;border-radius:18px;background:#071722f2;border:1px solid #7f62c9;box-shadow:0 18px 40px #000a;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;color:#eaf7f7;pointer-events:none;animation:og-xeno-in .35s ease-out}
 #orbit-game .og-xeno-scene strong{font-size:13px;letter-spacing:.4px;color:#d9c8ff}
 #orbit-game .og-xeno-scene span{font-size:17px}
 #orbit-game .og-xeno-scene small{font-size:12px;color:#a9c4cf}
@@ -73,3 +73,20 @@
 #orbit-game .og-xeno-art.is-cell{position:absolute;inset:8%;width:auto;height:auto;pointer-events:none;animation:og-xeno-bob 2.4s ease-in-out infinite}
 @keyframes og-xeno-bob{50%{transform:translateY(-3px)}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-xeno-art.is-cell{animation:none}}
+/* Reward / cost feedback and first-species card */
+#orbit-game .og-reward-float{position:absolute;left:50%;top:118px;transform:translateX(-50%);z-index:35;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
+#orbit-game .og-reward-float span{font-size:14px;font-weight:600;padding:3px 10px;border-radius:999px;background:#06121ccc;font-variant-numeric:tabular-nums;opacity:0;animation:og-reward-rise 2.2s ease-out forwards;animation-delay:calc(var(--i) * 110ms)}
+#orbit-game .og-reward-float span small{font-size:10px;font-weight:400;color:#9dbccb}
+#orbit-game .og-reward-float .is-gain{color:#8ff0b8}
+#orbit-game .og-reward-float .is-cost{color:#ff9d8a;animation-name:og-cost-fall}
+@keyframes og-reward-rise{0%{opacity:0;transform:translateY(14px)}15%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-22px)}}
+@keyframes og-cost-fall{0%{opacity:0;transform:translateY(-10px)}15%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(18px)}}
+#orbit-game .og-species-card{position:absolute;left:12px;right:12px;top:110px;z-index:36;pointer-events:none;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:16px;background:#071722f2;border:1px solid #5fd0b6;box-shadow:0 14px 30px #000a;color:#eaf7f7;animation:og-species-in .4s ease-out}
+#orbit-game .og-species-card.is-leaving{opacity:0;transition:opacity .45s}
+#orbit-game .og-species-card div{display:flex;flex-direction:column;gap:2px;min-width:0}
+#orbit-game .og-species-card small{font-size:11px;color:#9dbccb}
+#orbit-game .og-species-card strong{font-size:16px}
+#orbit-game .og-species-card p{margin:0;font-size:12px;line-height:1.35;color:#dceeee}
+#orbit-game .og-species-art{display:block;width:72px;height:72px;flex:none;background-image:var(--og-biology-art);background-size:200% 300%;background-position:var(--art-x) var(--art-y);background-repeat:no-repeat;filter:drop-shadow(0 0 8px #8ff0b866)}
+@keyframes og-species-in{from{opacity:0;transform:translateY(-12px)}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-reward-float span{animation:none;opacity:1}#orbit-game .og-species-card{animation:none}}

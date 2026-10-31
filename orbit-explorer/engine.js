@@ -1019,7 +1019,12 @@
         // Stranded: no destination the ship may enter (environment gates) is affordable in fuel and oxygen.
         // Counting planets of the current system that the ship can no longer enter refused rescue in blue-giant/pulsar systems.
         const reachable = state.galaxy.planets.some(item => item.id !== planet.id && assessSystem(state, item.systemId).allowed && res.fuel >= travelCost(state, item.id) && res.oxygen >= (item.systemId === planet.systemId ? 3 : 6));
-        const critical = !reachable || res.oxygen < 3 || res.hull < Math.ceil(computed.maxHull * 0.25);
+        // Grounded: even converting everything on board (Samambaia-lume → oxygen, ore → fuel, Lumes at ~2 per unit)
+        // cannot pay the cheapest expedition the ship may launch, so no productive action is left.
+        let cheapest = null;
+        for (const item of state.galaxy.planets) for (const site of item.sites) { const a = assess(state, item.id, site.id); if (a.allowed && (!cheapest || a.cost.oxygen + a.cost.fuel < cheapest.oxygen + cheapest.fuel)) cheapest = a.cost; }
+        const grounded = !!cheapest && (res.oxygen + (res.lumenfern || 0) * 12 + Math.floor(res.credits / 2) < cheapest.oxygen || res.fuel + res.ore * 4 + Math.floor(res.credits / 2) < cheapest.fuel);
+        const critical = !reachable || grounded || res.oxygen < 3 || res.hull < Math.ceil(computed.maxHull * 0.25);
         const exhausted = galaxyExhausted(state);
         if (!critical && !exhausted) return reject('Resgate indisponível: a nave tem condições de seguir viagem. Use a manutenção para abastecer ou reparar.');
         break;
@@ -1194,6 +1199,8 @@
         const key = tile.kind === 'crystal' ? 'crystals' : tile.kind;
         expedition.pending[key] += amount;
         expedition.pending.credits += Math.round(5 * expedition.rewardMultiplier);
+        // Reported for on-screen feedback only; the amounts stay in the expedition cargo until extraction.
+        reward[key] = amount; reward.credits = Math.round(5 * expedition.rewardMultiplier);
         expedition.collected.push(tile.y * 6 + tile.x);
         expedition.harvested.push(tile.y * 6 + tile.x);
         expedition.load++;
@@ -1266,13 +1273,18 @@
         kind = 'discovery';
         break;
       }
-      case 'expeditionAbort':
+      case 'expeditionAbort': {
         next.discovery.evacuations++;
         checkpointSite(next);
+        // The planet reacts to technology that leaves it. Evacuating loses the recovered core, so it stays and the
+        // site calms down (a reaction from an earlier, extracted recovery is kept; a stabilizer stays installed).
+        const op = !next.guide?.active && next.expedition.coreRecovered ? next.siteOperations?.[next.expedition.siteId] : null;
+        if (op && !op.stabilized) op.reactionAt = null;
         next.expedition = null;
-        message = 'Evacuação concluída. A carga desta saída foi perdida; sua nave e seus equipamentos foram preservados.';
+        message = 'Evacuação concluída. A carga desta saída foi perdida; sua nave e seus equipamentos foram preservados.' + (op && !op.stabilized ? ' Sem a tecnologia, o local voltou a se acalmar.' : '');
         kind = 'warning';
         break;
+      }
       case 'claimBeacon': {
         const module = makeModule(next, 'warp', 'epic', 1, 'beacon');
         module.name = 'Núcleo do Cartógrafo';

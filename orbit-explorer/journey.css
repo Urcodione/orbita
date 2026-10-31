@@ -613,7 +613,7 @@
 #orbit-game .og-ship-stats .is-down dd::after{content:' ▼';font-size:8px}
 @media(max-width:350px){#orbit-game .og-ship-stats{left:4px;right:4px}#orbit-game .og-ship-stats dl{width:64px;padding:4px 5px}#orbit-game .og-ship-stats dt{font-size:8px}#orbit-game .og-ship-stats dd{font-size:10px}}
 @media(max-height:620px){#orbit-game .og-ship-stats{top:56px}#orbit-game .og-ship-stats dl{gap:2px}#orbit-game .og-ship-stats dt{font-size:8px}#orbit-game .og-ship-stats dd{font-size:10px}}
-#orbit-game .og-delta{position:absolute;left:50%;top:84px;transform:translateX(-50%);z-index:30;width:min(320px,calc(100% - 32px));padding:10px 12px;border-radius:14px;background:#081a26ed;border:1px solid #7fd6c455;box-shadow:0 12px 30px #0008;color:#eaf7f7;cursor:pointer}
+#orbit-game .og-delta{position:absolute;left:50%;top:84px;transform:translateX(-50%);z-index:30;width:min(320px,calc(100% - 32px));padding:10px 12px;border-radius:14px;background:#081a26ed;border:1px solid #7fd6c455;box-shadow:0 12px 30px #0008;color:#eaf7f7;pointer-events:none}
 #orbit-game .og-delta strong{display:block;font-size:12px;margin-bottom:6px;color:#bfe9e4;letter-spacing:.3px}
 #orbit-game .og-delta ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
 #orbit-game .og-delta li{display:flex;justify-content:space-between;gap:10px;font-size:12px;opacity:0;transform:translateY(6px);animation:og-delta-row .35s ease-out forwards;animation-delay:calc(var(--i) * 90ms + 120ms)}

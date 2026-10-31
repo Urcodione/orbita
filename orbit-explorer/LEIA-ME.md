@@ -65,6 +65,35 @@ A expedição é salva a cada ação, inclusive posição, terreno revelado, cir
 
 O primeiro local oferece uma rota de aprendizado. Nos demais, o núcleo e os caminhos variam por semente. O desafio está em decidir quais recursos justificam um desvio e quanto reservar para voltar. Recuperar o núcleo usa 3 de energia; uma tentativa com circuito desalinhado gasta 2. As setas do alvo sempre mostram a solução desejada, e girar os rotores é gratuito.
 
+## Xenobiologia: exemplares únicos e runas
+
+**Exemplares únicos.** Cada galáxia da campanha esconde um animal e uma planta que existem em um único exemplar, em um dos locais de um mundo do seu bioma. São 16 ao todo. Em **Menu → Xenobiologia**, "Sinais vivos neste setor" indica o planeta. Depois de capturado, o exemplar nunca mais aparece.
+
+**Comportamento e ferramenta.** Cada exemplar se comporta de um jeito e exige uma ferramenta, comprada uma única vez em qualquer entreposto (**Estação → Captura**):
+
+| Comportamento | Ferramenta | Custo da captura |
+|---|---|---|
+| Foge | Garra de contenção | 3 de energia |
+| Camufla-se (só aparece depois de um escaneamento na saída) | Rede de plasma | 2 de energia |
+| Libera toxina | Casulo selado | 2 de energia e 2 de integridade |
+| Flutua no vento | Laço gravitacional | 3 de energia |
+| Congela ao toque | Cápsula criogênica | 2 de energia |
+| Irradia calor | Coletor térmico | 2 de energia e 1 de integridade |
+
+**Captura.** No terreno, o exemplar aparece com um anel violeta. A captura é recusada se deixar você sem energia para voltar. O exemplar só chega ao laboratório quando você **extrai** a carga; se evacuar, ele volta ao terreno.
+
+**Laboratório.**
+
+- **Estudar** custa dados e Lumes e revela a runa do exemplar.
+- **Criar a runa** custa Lumes, minério e cristais.
+- **Gravar** a runa custa 40 Lumes. Vale em qualquer módulo, instalado ou guardado, de qualquer raridade, e cada módulo aceita uma runa.
+- **Remover** a runa é gratuito; depois ela pode ser gravada em outro módulo.
+- **Reciclagem:** um módulo com runa não pode ser reciclado.
+
+**Efeitos das runas.** Algumas somam atributos à nave: energia, oxigênio, casco, alcance do scanner, eficiência de voo ou de dobra, carga e coleta. Outras reforçam a proteção do próprio módulo gravado, como +40 °C de proteção térmica numa blindagem. A gravação mostra o que mudou na nave.
+
+**Arte.** Por enquanto, os exemplares usam a arte do atlas de biologia com variação de cor; ilustrações próprias podem substituí-la depois.
+
 ## Escolher uma configuração
 
 A raridade não decide tudo. A Cerâmica Solar tolera 1.400 °C, mas a Malha Magnetar chega a 450 rad com apenas 220 °C de proteção térmica. A Dobra Âncora Pulsar oferece blindagem radiológica em outro encaixe; combiná-la com um escudo térmico pode abrir rotas que cada peça sozinha não permite. Um scanner de alcance ajuda a revelar o terreno; o Arquivista prioriza pesquisa. Guarde alternativas para preparar a próxima rota.
