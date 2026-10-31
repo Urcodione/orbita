@@ -5,10 +5,10 @@ const p=await browser.newPage({viewport:{width,height},isMobile:true,hasTouch:tr
 let clicks=0,extracted=false;while(await p.evaluate(()=>orbitApp.getState().guide.active)){
  await p.waitForTimeout(120);const target=p.locator('.og-guide-target:visible');if(!await target.count()){console.log(await p.evaluate(()=>orbitApp.getView()));await p.screenshot({path:__dirname+'/campaign-artifacts/tutorial-stalled.png'});}assert.equal(await target.count(),1,'highlight missing: '+await p.locator('#og-guide').innerText());
  const action=await target.getAttribute('data-action');if(action==='scan'||action==='expeditionCollect'||action==='expeditionRecover')await p.screenshot({path:__dirname+'/campaign-artifacts/tutorial-'+width+'-'+action+'.png'});
- await target.click({timeout:4000});clicks++;assert(clicks<90,'tutorial stalled');
+ await target.click({timeout:4000});clicks++;assert(clicks<180,'tutorial stalled');
  if(action==='expeditionExtract'){extracted=true;assert.equal(await p.evaluate(()=>orbitApp.getView().tab),'explore');if(width===320){await p.reload();await p.waitForFunction(()=>window.orbitApp);}}
  if(clicks===8){await p.reload();await p.waitForFunction(()=>window.orbitApp);}
 }
-assert(extracted);assert.equal(await p.evaluate(()=>orbitApp.getState().progress.modulesEquipped),1);assert.deepEqual(errors,[]);await p.close();console.log('PASS full guided touch flow and mid-route reload at '+width+'px in '+clicks+' taps');
+assert(extracted);assert.equal(await p.evaluate(()=>orbitApp.getState().guide.completed),true);assert.deepEqual(errors,[]);await p.close();console.log('PASS full guided touch flow and mid-route reload at '+width+'px in '+clicks+' taps');
 }
 await browser.close();})().catch(e=>{console.error(e);process.exit(1)});

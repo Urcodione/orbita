@@ -36,7 +36,7 @@
   let lab={page:'home',type:null,recipeId:null,componentId:null,returnRecipeId:null,history:[]};
   let catalogView={page:'systems',systemId:null};
   const roles={engine:'Converte combustível em alcance entre mundos.',warp:'Dobra o espaço e reduz o custo para alcançar outras galáxias.',life:'Mantém o ar respirável e sustenta o tempo de exploração.',shield:'Protege a nave e o veículo. Cada blindagem resiste a perigos diferentes.',scanner:'Revela o terreno oculto e transforma sinais em pesquisa.',arm:'Extrai recursos; uma garra eficiente coleta mais gastando menos energia.',cargo:'Guarda módulos a bordo e define quanto o veículo pode trazer de volta.',survival:'Sustenta a expedição longe da nave e reduz riscos nas travessias.'};
-  const scene=new window.OrbitScene($('og-canvas'),{onSelectModule:type=>{if(!state.guide?.active)navigate(()=>focusModule(type));},onOpenShip:()=>{if(!state.guide?.active)navigate(()=>showShip('interior'));},onHotspots:positionHotspots,onModulePose:applyModulePose,onCargoSelect:key=>{if(!state.guide?.active)navigate(()=>openCargo(key));}});
+  const scene=new window.OrbitScene($('og-canvas'),{onSelectModule:type=>{if(canvasAllowed())navigate(()=>focusModule(type));},onOpenShip:()=>{if(canvasAllowed())navigate(()=>showShip('interior'));},onHotspots:positionHotspots,onModulePose:applyModulePose,onCargoSelect:key=>{if(canvasAllowed())navigate(()=>openCargo(key));}});
   const fieldScene=window.OrbitExpeditionScene?new window.OrbitExpeditionScene($('og-field-canvas'),{onSelectCell:(x,y)=>act('expeditionMove',{x,y})}):null;
   const here=()=>E.currentPlanet(state),target=()=>state.galaxy.planets.find(p=>p.id===selected)||here();
   const rarity=m=>E.rarities[m.rarity];
@@ -57,6 +57,8 @@
   // for them on every render, so they are reused until something they depend on changes.
   let suggestionKey='',suggestionCache=new Map();
   function suggestionsFor(type){const key=JSON.stringify([state.galaxy.id,state.galaxyIndex,selected,state.location,state.equipped,state.inventory.map(m=>m.id),state.resources,state.campaign?.worldOverride]);if(key!==suggestionKey){suggestionKey=key;suggestionCache=new Map();}if(!suggestionCache.has(type))suggestionCache.set(type,E.suggestions(state,type,selected));return suggestionCache.get(type);}
+  // During the guided training, taps on the ship canvas count only when the guide is highlighting the canvas itself.
+  function canvasAllowed(){return !state.guide?.active||!!$('og-canvas')?.classList.contains('og-guide-target');}
   let saveTimer=0,saveCount=0,sheetBatch=0,sheetDirty=false,sheetAfter=[];
   function save(){
     clearTimeout(saveTimer);saveTimer=0;saveCount++;
@@ -675,9 +677,8 @@
   function onClick(event){const control=event.target.closest('button');if(['nav-back','nav-forward'].includes(control?.dataset.action)||control?.dataset.sheetPage)handleClick(event);else navigate(()=>handleClick(event));}
   function onSubmit(event){if(event.target.id==='og-name-form'){event.preventDefault();act('rename',{name:$('og-name').value.trim()});}}
   function navigateBack(){
-    // Back skips/closes a story clip; during the guided training it falls through to the exit prompt instead of doing nothing.
-    if(root.querySelector('.og-story-clip')){window.OrbitCampaignUI?.closeClip();return true;}
-    if(state.guide?.active)return false;
+    // By design, Back is consumed during the introduction and the guided training (use the scene controls or Skip).
+    if(root.querySelector('.og-story-clip')||state.guide?.active)return true;
     if(sheet){stepNavigation();save();return true;}
     if(tab==='ship'){shipBack();return true;}
     if(tab!=='explore'&&!state.expedition){tab='explore';render();save();return true;}

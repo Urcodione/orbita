@@ -64,9 +64,6 @@ Detalhes em `qa/REVISAO-2026-10-31.md`.
   - a exportação sobrevive à recriação da Activity;
   - a importação espera a página carregar.
 - **Conteúdo misto:** fica bloqueado (`MIXED_CONTENT_NEVER_ALLOW`).
-- **Botão Voltar:**
-  - fecha a introdução;
-  - no tutorial, oferece sair;
-  - não empilha dois diálogos "Sair de Órbita?".
+- **Botão Voltar:** não empilha mais dois diálogos "Sair de Órbita?". Na introdução e no tutorial, continua sem efeito, como definido.
 
 Antes de publicar, aumente `versionCode`/`versionName` no `AndroidManifest.xml`.
