@@ -5,8 +5,10 @@ const assert=require('node:assert/strict');const fs=require('node:fs');const pat
  const results=[],errors=[];
  for(const dpr of [1,2]){
   const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:dpr,reducedMotion:'reduce'});
-  const page=await context.newPage();await page.addInitScript(()=>{const draw=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(image,...args){if(image instanceof HTMLImageElement&&image.src.startsWith('data:image/webp'))window.illustrationDraws=(window.illustrationDraws||0)+1;return draw.call(this,image,...args);};});page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('file://'+path.resolve(__dirname,'../index.html'));await page.waitForFunction(()=>window.orbitApp);await page.waitForTimeout(400);
+  const page=await context.newPage();await page.addInitScript(()=>{const draw=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(image,...args){if(image instanceof HTMLImageElement&&/^(data:image\/webp|blob:)/.test(image.src))window.illustrationDraws=(window.illustrationDraws||0)+1;return draw.call(this,image,...args);};});page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('file://'+path.resolve(__dirname,'../index.html'));await page.waitForFunction(()=>window.orbitApp);
+  // The scene is paused behind the introduction; start from the first playable screen.
+  await page.locator('[data-story-action=skip]').click();await page.locator('[data-guide-skip]').click();await page.waitForTimeout(400);
   await page.waitForFunction(()=>window.illustrationDraws>1);
   const art=await page.locator('#og-canvas').evaluate(c=>({width:c.width,cssWidth:c.clientWidth,frame:c.toDataURL()}));
   assert.ok(Math.abs(art.width-art.cssWidth*dpr)<=1);
