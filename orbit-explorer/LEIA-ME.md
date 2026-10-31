@@ -92,7 +92,17 @@ O primeiro local oferece uma rota de aprendizado. Nos demais, o núcleo e os cam
 
 **Efeitos das runas.** Algumas somam atributos à nave: energia, oxigênio, casco, alcance do scanner, eficiência de voo ou de dobra, carga e coleta. Outras reforçam a proteção do próprio módulo gravado, como +40 °C de proteção térmica numa blindagem. A gravação mostra o que mudou na nave.
 
-**Arte.** Por enquanto, os exemplares usam a arte do atlas de biologia com variação de cor; ilustrações próprias podem substituí-la depois.
+**Onde acompanhar a caçada.**
+
+- **Topo da tela:** o botão de xenobiologia mostra um ponto violeta quando há um exemplar não capturado no setor atual.
+- **Planeta:** a tela do planeta avisa "Sinal vivo único".
+- **Catálogo → Coleções → Únicos:** mostra os 16 como sombras até serem capturados.
+- **Ajuda:** tem o tópico "Caça aos únicos".
+- **Tutorial:** o fim do tutorial e o aviso ao pular explicam a caçada.
+
+**Cinemáticas.** Cada exemplar tem uma cinemática de captura própria, de cerca de 7 segundos, que não pode ser pulada.
+
+**Arte.** As ferramentas usam ilustrações vetoriais provisórias, e os exemplares usam o atlas de biologia com variação de cor. A arte pintada definitiva está especificada em `assets/XENO-ARTE.md` e é incorporada automaticamente quando os arquivos existirem.
 
 ## Escolher uma configuração
 

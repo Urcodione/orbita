@@ -8,13 +8,13 @@ const costText=cost=>Object.entries(cost||{}).filter(([,n])=>n).map(([k,n])=>n+'
 const biomeName=b=>E.biomes?.[b]?.name||b;
 let selected={specimen:null,rune:null};
 // Painted biology atlas (2 columns × 3 rows) with a hue shift: each exemplar reads as its own creature.
-function art(sp,{unknown=false,size=''}={}){const [index,hue]=sp.art;return `<span class="og-xeno-art ${unknown?'is-unknown':''} ${size}" style="--art-x:${index%2*100}%;--art-y:${Math.floor(index/2)*50}%;--hue:${hue}deg" aria-hidden="true"></span>`;}
+function art(sp,{unknown=false,size=''}={}){const order=E.xenoCatalog.SPECIMENS.findIndex(x=>x.id===sp.id);if(root.OrbitIllustrations?.xenoSpecimens&&order>=0)return `<span class="og-xeno-art is-painted ${unknown?'is-unknown':''} ${size}" style="--art-x:${order%4/3*100}%;--art-y:${Math.floor(order/4)/3*100}%" aria-hidden="true"></span>`;const [index,hue]=sp.art;return `<span class="og-xeno-art ${unknown?'is-unknown':''} ${size}" style="--art-x:${index%2*100}%;--art-y:${Math.floor(index/2)*50}%;--hue:${hue}deg" aria-hidden="true"></span>`;}
 function status(sp){return sp.engraved?'Runa gravada':sp.hasRune?'Runa pronta':sp.studied?'Estudado':sp.captured?'No laboratório':sp.pending?'Na carga':sp.hint?'Neste setor':'Desconhecido';}
 function actionButton(action,label,preview,attrs){return `<button class="og-button ${preview.allowed?'primary':''}" data-action="${action}" ${attrs} ${preview.allowed?'':'disabled'} title="${esc(preview.reason||'')}">${esc(label)}<span class="og-cost">${esc(costText(preview.cost))}</span></button>${preview.allowed?'':`<p class="og-xeno-reason">${esc(preview.reason)}</p>`}`;}
 function lab(s){
  const v=E.xenoView(s),here=v.specimens.filter(sp=>sp.hint),known=v.specimens.filter(sp=>sp.captured||sp.pending);
  const tile=sp=>{const open=sp.captured||sp.hint||sp.pending;return `<button class="og-xeno-tile ${sp.captured?'is-captured':''}" ${open?`data-xeno-sheet="xeno-specimen" data-xeno-specimen="${esc(sp.id)}"`:'disabled'} aria-label="${esc(open?sp.name:'Exemplar desconhecido')}">${art(sp,{unknown:!sp.captured&&!sp.pending})}<strong>${esc(sp.captured||sp.pending?sp.name:sp.hint?'Sinal vivo':'???')}</strong><small>${esc(status(sp))}</small></button>`;};
- return {title:'Laboratório de xenobiologia',html:`<div class="og-xeno-summary"><strong>${v.captured}/${v.total}</strong><span>exemplares únicos · ${v.runes.length} runas</span></div>`+
+ return {title:'Laboratório de xenobiologia',html:`<p class="og-xeno-howto">Dezesseis seres existem uma única vez. Cada galáxia esconde um animal e uma planta num local de um mundo do seu bioma. Ache o sinal, leve a ferramenta certa, capture e extraia. Estude o exemplar e grave sua runa num módulo.</p><div class="og-xeno-summary"><strong>${v.captured}/${v.total}</strong><span>exemplares únicos · ${v.runes.length} runas</span></div>`+
   (here.length?`<h3 class="og-xeno-heading">Sinais vivos neste setor</h3><div class="og-xeno-hints">${here.map(sp=>`<button class="og-xeno-hint" data-xeno-sheet="xeno-specimen" data-xeno-specimen="${esc(sp.id)}">${art(sp,{unknown:true})}<span><strong>${sp.kind==='fauna'?'Fauna':'Flora'} única em ${esc(sp.hint.planetName)}</strong><small>${esc(sp.behaviorLabel)} · requer ${esc(sp.toolName)}</small></span></button>`).join('')}</div>`:'<p class="og-xeno-empty">Nenhum sinal vivo único neste setor.</p>')+
   `<h3 class="og-xeno-heading">Coleção</h3><div class="og-xeno-collection">${[0,4,8,12].map(i=>`<div class="og-xeno-grid">${v.specimens.slice(i,i+4).map(tile).join('')}</div>`).join('')}</div>`+
   (v.runes.length?`<h3 class="og-xeno-heading">Runas</h3><div class="og-xeno-runes">${v.runes.map(r=>`<button class="og-xeno-rune" data-xeno-sheet="xeno-rune" data-xeno-rune="${esc(r.id)}"><b>◆</b><span><strong>${esc(r.name)}</strong><small>${esc(r.text)}${r.module?' · em '+esc(r.module.name):' · livre'}</small></span></button>`).join('')}</div>`:'')};
@@ -23,7 +23,7 @@ function specimenSheet(s){
  const sp=E.xenoView(s).specimens.find(x=>x.id===selected.specimen);if(!sp)return {title:'Laboratório',html:'<p>Exemplar indisponível.</p>'};
  const known=sp.captured||sp.pending;
  let body;
- if(!known)body=`<p>${esc(sp.kind==='fauna'?'Um animal':'Uma planta')} único vive em <strong>${esc(sp.hint?.planetName||'algum mundo')}</strong>, em um dos locais de exploração. ${esc(sp.behaviorLabel)}: ${esc(E.xenoCatalog.BEHAVIORS[sp.behavior].hint)}</p><p class="og-xeno-tool">Ferramenta: <strong>${esc(sp.toolName)}</strong> · ${E.xenoView(s).tools.find(t=>t.id===sp.tool).owned?'na nave':'à venda nos entrepostos'}</p>`;
+ if(!known)body=`<p>${esc(sp.kind==='fauna'?'Um animal':'Uma planta')} único vive em <strong>${esc(sp.hint?.planetName||'algum mundo')}</strong>, em um dos locais de exploração. ${esc(sp.behaviorLabel)}: ${esc(E.xenoCatalog.BEHAVIORS[sp.behavior].hint)}</p><p class="og-xeno-tool">${root.OrbitXenoTools?.html(sp.tool,'is-small')||''}Ferramenta: <strong>${esc(sp.toolName)}</strong> · ${E.xenoView(s).tools.find(t=>t.id===sp.tool).owned?'na nave':'à venda nos entrepostos'}</p>`;
  else if(sp.pending)body='<p>Contido na carga da expedição. Extraia-o na nave para levá-lo ao laboratório.</p>';
  else body=`<p class="og-xeno-lore">${esc(sp.lore)}</p>`+(sp.studied?`<div class="og-xeno-runecard"><b>◆</b><span><strong>${esc(sp.rune.name)}</strong><small>${esc(sp.rune.text)}</small></span></div>`:'<div class="og-xeno-runecard is-locked"><b>◇</b><span><strong>Runa desconhecida</strong><small>O estudo revela o que este exemplar pode gravar em um módulo.</small></span></div>')+
   (!sp.studied?actionButton('xenoStudy','Estudar exemplar',sp.studyPreview,`data-xeno-specimen="${esc(sp.id)}"`):!sp.hasRune?actionButton('xenoRune','Criar '+sp.rune.name,sp.runePreview,`data-xeno-specimen="${esc(sp.id)}"`):`<button class="og-button primary" data-xeno-sheet="xeno-rune" data-xeno-rune="${esc(sp.rune.id)}">${sp.engraved?'Mover runa':'Gravar runa em um módulo'}</button>`);
@@ -39,7 +39,7 @@ function runeSheet(s){
 }
 function toolsSheet(s){
  const v=E.xenoView(s),beh=E.xenoCatalog.BEHAVIORS;
- return {title:'Ferramentas de captura',html:`<p>Cada exemplar único exige uma ferramenta. Elas ficam na nave para sempre.</p><div class="og-xeno-tools">${v.tools.map(t=>`<article class="og-xeno-toolcard ${t.owned?'is-owned':''}"><strong>${esc(t.name)}</strong><small>${esc(t.description)}</small><small>Para: ${esc(Object.values(beh).filter(b=>b.tool===t.id).map(b=>b.label.toLowerCase()).join(', '))}</small>${t.owned?'<span class="og-xeno-owned">Na nave</span>':actionButton('xenoBuyTool','Comprar',t.preview,`data-xeno-tool="${esc(t.id)}"`)}</article>`).join('')}</div>`};
+ return {title:'Ferramentas de captura',html:`<p>Cada exemplar único exige uma ferramenta. Elas ficam na nave para sempre.</p><div class="og-xeno-tools">${v.tools.map(t=>`<article class="og-xeno-toolcard ${t.owned?'is-owned':''}">${root.OrbitXenoTools?.html(t.id)||''}<strong>${esc(t.name)}</strong><small>${esc(t.description)}</small><small>Para: ${esc(Object.values(beh).filter(b=>b.tool===t.id).map(b=>b.label.toLowerCase()).join(', '))}</small>${t.owned?'<span class="og-xeno-owned">Na nave</span>':actionButton('xenoBuyTool','Comprar',t.preview,`data-xeno-tool="${esc(t.id)}"`)}</article>`).join('')}</div>`};
 }
 function sheet(name,s){
  if(name==='xeno')return lab(s);
@@ -64,6 +64,9 @@ function scene(container,sp,mode){
  container.append(el);setTimeout(()=>el.classList.add('is-leaving'),3600);setTimeout(()=>el.remove(),4100);
 }
 function find(id){return E.xenoCatalog.SPECIMENS.find(s=>s.id===id);}
-root.OrbitXenoUI={sheet,moduleRune,cellArt(id){const sp=find(id);return sp?art(sp,{size:'is-cell'}):'';},select(specimen,rune){selected={specimen:specimen||selected.specimen,rune:rune||selected.rune};},
+// Header access with a pulsing dot while an uncaptured exemplar lives in this sector.
+function header(container,s){const b=container.querySelector('.og-xeno-access');if(!b)return;const live=!s.guide?.active&&E.xenoView(s).specimens.some(x=>x.hint&&!x.captured&&!x.pending);b.classList.toggle('has-signal',live);b.setAttribute('aria-label','Xenobiologia'+(live?': sinal vivo único neste setor':': caça aos exemplares únicos'));}
+function planetSignal(s,planetId){if(s.guide?.active)return '';const sp=E.xenoView(s).specimens.find(x=>x.hint&&x.hint.planetId===planetId&&!x.captured&&!x.pending);return sp?`<p class="og-xeno-signal"><b>◆</b> Sinal vivo único em um local deste planeta · ${sp.kind==='fauna'?'fauna':'flora'} · ${esc(sp.behaviorLabel.toLowerCase())}</p>`:'';}
+root.OrbitXenoUI={sheet,moduleRune,header,planetSignal,art,cellArt(id){const sp=find(id);return sp?art(sp,{size:'is-cell'}):'';},select(specimen,rune){selected={specimen:specimen||selected.specimen,rune:rune||selected.rune};},
  captured(container,id){const sp=find(id);if(sp)scene(container,sp,'capture');},arrived(container,id){const sp=find(id);if(sp)scene(container,sp,'arrival');}};
 })(window);

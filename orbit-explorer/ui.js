@@ -169,6 +169,7 @@
     $('og-canvas').setAttribute('aria-label',tab==='ship'&&shipDetail.mode!=='exterior'?'Interior do foguete com oito módulos. Selecione um compartimento para examinar seu encaixe.':'Foguete e planeta. Toque na nave para abrir o casco. Arraste para girar.');
     if(tab==='explore')renderExplore();else if(tab==='ship')renderShip();else if(tab==='galaxy')renderMap();else renderExpedition(ex);
     renderShipStats();
+    window.OrbitXenoUI?.header(root,state);
     window.OrbitJourney.controls($('og-context'));
     fitStage();if(sheet)renderSheet();updateHistoryButtons();syncExperience();
   }
@@ -181,6 +182,7 @@
   function renderExplore(){
     const p=here(),docked=state.location.mode==='docked',remaining=p.sites.filter(s=>!E.siteStatus(state,s.id).exhausted).length,a=assessment(p);
     const operation=p.medium==='gas'?'Sonda na atmosfera':p.medium==='liquid'?'Operação submersa':'Ancorada na superfície';
+    const signal=window.OrbitXenoUI?.planetSignal(state,p.id)||'';
     $('og-heading').innerHTML=`<div class="og-eyebrow">${esc(biomes[p.biome]||p.biomeName)}</div><h1>${esc(p.name)}</h1><p class="og-live">${docked?operation:'Em órbita · '+esc(currentSystem().name)}</p>`;
     let content='';
     if(state.location.stationId){$('og-heading').innerHTML='<div class="og-eyebrow">Nave atracada</div><h1>Entreposto</h1><p>'+esc(currentSystem().name)+'</p>';content='<div class="og-station-portrait">'+window.OrbitCommerce.art('station')+'</div><button class="og-button" data-action="station">Acessar estação</button>'+button('stationLeave','Desatracar',{cost:true});}
@@ -192,7 +194,7 @@
     else if(remaining)content=`${riskBadge(a)}<h2>${p.medium==='gas'?'Sinais entre as tempestades.':p.medium==='liquid'?'Abaixo da superfície.':'A escotilha está aberta.'}</h2><p>${remaining} pontos com descobertas restantes · ${p.sites.filter(x=>x.explored).length}/${p.sites.length} tecnologias extraídas</p><button class="og-button primary" data-action="sites">Iniciar uma expedição</button><div class="og-context-links"><button class="og-link" data-action="environment">Ver condições</button><button class="og-link" data-action="launch">Voltar à órbita ↑</button></div>`;
     else content=`<h2>Fronteira catalogada.</h2><p>Os locais foram explorados. Há outros sistemas para descobrir.</p>${button('launch','Voltar às estrelas',{primary:true})}<button class="og-link" data-action="planet-info">Ver análise do planeta</button>`;
     $('og-heading').insertAdjacentHTML('beforeend',window.OrbitJourney.tracker(state));
-    $('og-context').innerHTML=content;
+    $('og-context').innerHTML=(state.location.stationId||state.expedition?'':signal)+content;
   }
   function renderShip(){
     const d=shipDetail,m=state.equipped[d.selectedModule];
@@ -610,7 +612,8 @@
     if(sheet)sheetNotice=['expeditionTune','expeditionTask','craftComponent','paint','trail','rename'].includes(action)?'':result.message;
     beep(action);save();render();
     if(metricsBefore&&result.ok)showShipDelta(metricsBefore,E.shipMetrics(state));
-    if(result.ok&&action==='xenoCapture'&&state.xeno?.pending)window.OrbitXenoUI?.captured(root,state.xeno.pending);
+    // Each exemplar has its own capture cinematic; it cannot be skipped (taps, keys and Back wait for it).
+    if(result.ok&&action==='xenoCapture'&&state.xeno?.pending){if(window.OrbitXenoCinema)window.OrbitXenoCinema.play(root,state.xeno.pending);else window.OrbitXenoUI?.captured(root,state.xeno.pending);}
     if(result.ok&&result.reward?.specimen)window.OrbitXenoUI?.arrived(root,result.reward.specimen);
     window.OrbitFeedback?.show(root,result,action,state);
     if(installedType){scene.effect('equip',installedType);const equipped=state.equipped[installedType],resistance=E.campaignView(state).resistance;toast(equipped.name+' instalado.'+(equipped.mission?' Resistência dimensional: '+resistance+'%.':''));}
@@ -721,6 +724,7 @@
   function onSubmit(event){if(event.target.id==='og-name-form'){event.preventDefault();act('rename',{name:$('og-name').value.trim()});}}
   function navigateBack(){
     // By design, Back is consumed during the introduction and the guided training (use the scene controls or Skip).
+    if(window.OrbitXenoCinema?.isPlaying())return true;
     if(root.querySelector('.og-story-clip')||state.guide?.active)return true;
     if(sheet){stepNavigation();save();return true;}
     if(tab==='ship'){shipBack();return true;}
@@ -729,6 +733,7 @@
     return false;
   }
   function onKey(event){
+    if(window.OrbitXenoCinema?.isPlaying()){event.preventDefault();return;}
     if(event.key==='Escape'&&navigateBack()){event.preventDefault();return;}
     
     if(sheet&&event.key==='Tab'){const c=Array.from($('og-sheet-backdrop').querySelectorAll('button,input,select,summary')).filter(e=>!e.disabled&&e.getClientRects().length);if(event.shiftKey&&document.activeElement===c[0]){event.preventDefault();c[c.length-1].focus();}else if(!event.shiftKey&&document.activeElement===c[c.length-1]){event.preventDefault();c[0].focus();}return;}
@@ -745,7 +750,7 @@
   window.orbitApp={back:navigateBack,getState:()=>state,getView:()=>({tab,selected,sheet,sheetPage,campaignPage,history:{back:history.past.length,forward:history.future.length},systemType,selectedCandidateId,lab:{...lab},catalogView:{...catalogView},cargoResource,mapLevel,selectedSystem,selectedDestination,environmentSite,shipDetail:{...shipDetail}}),getInspection:()=>scene.getInspection?.()||null,act,destroy(){tutorialCleanup?.();window.OrbitCampaignUI?.closeClip();resizeObserver.disconnect();scene.destroy();fieldScene?.destroy();clearTimeout(toastTimer);clearTimeout(effectTimer);clearTimeout(deltaTimer);root.removeEventListener('orbit-clip',syncExperience);flushSave();document.removeEventListener('visibilitychange',onHidden);window.removeEventListener('pagehide',flushSave);root.removeEventListener('change',onChangeBatched);root.removeEventListener('click',onClickBatched);root.removeEventListener('submit',onSubmitBatched);root.removeEventListener('keydown',onKeyBatched);window.removeEventListener('openai:set_globals',onGlobals);audioModule?.destroy();delete window.orbitReceiveSave;}};
   let lastSize='';
   const resizeObserver=new ResizeObserver(()=>{const size=root.clientWidth+'x'+root.clientHeight;if(size===lastSize)return;lastSize=size;fitStage();if(sheet)renderSheet();});resizeObserver.observe(root);
-  if(window.OrbitCampaignUI){const menu=root.querySelector('.og-header [data-action="menu"]');menu.insertAdjacentHTML('beforebegin','<button class="og-round og-campaign-access" data-action="campaign" aria-label="O Coro do Limiar: missão atual">✦</button>');}
+  if(window.OrbitCampaignUI){const menu=root.querySelector('.og-header [data-action="menu"]');if(window.OrbitXenoUI)menu.insertAdjacentHTML('beforebegin','<button class="og-round og-xeno-access" data-action="xeno" aria-label="Xenobiologia: caça aos exemplares únicos"><span class="og-xeno-access-art" aria-hidden="true"></span><i class="og-xeno-dot" aria-hidden="true"></i></button>');menu.insertAdjacentHTML('beforebegin','<button class="og-round og-campaign-access" data-action="campaign" aria-label="O Coro do Limiar: missão atual">✦</button>');}
   render();
   tutorialCleanup=window.OrbitTutorial?.mount(root,window.orbitApp);
   if(window.OrbitCampaignUI&&!E.campaignView(state).introSeen)window.OrbitCampaignUI.playClip(root,()=>{E.dispatch(state,'campaignIntro');save();render();});

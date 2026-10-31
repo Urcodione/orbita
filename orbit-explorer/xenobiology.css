@@ -37,7 +37,7 @@
 #orbit-game .og-xeno-toolcard{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:#0d2231;border:1px solid #23404f}
 #orbit-game .og-xeno-toolcard small{font-size:11px;color:#9dbccb}
 #orbit-game .og-xeno-owned{font-size:11px;color:#8ff0b8}
-#orbit-game .og-xeno-tool{font-size:12px;color:#c8f6ea}
+#orbit-game .og-xeno-tool{font-size:12px;color:#c8f6ea;display:flex;align-items:center;gap:8px}
 #orbit-game .og-field-cell[data-specimen]::after{content:'';position:absolute;inset:18%;border-radius:50%;border:2px solid #b38cff;box-shadow:0 0 10px #a46cff;animation:og-xeno-pulse 1.6s ease-in-out infinite;pointer-events:none}
 #orbit-game .og-field-cell{position:relative}
 @keyframes og-xeno-pulse{50%{transform:scale(1.15);opacity:.55}}
@@ -90,3 +90,30 @@
 #orbit-game .og-species-art{display:block;width:72px;height:72px;flex:none;background-image:var(--og-biology-art);background-size:200% 300%;background-position:var(--art-x) var(--art-y);background-repeat:no-repeat;filter:drop-shadow(0 0 8px #8ff0b866)}
 @keyframes og-species-in{from{opacity:0;transform:translateY(-12px)}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-reward-float span{animation:none;opacity:1}#orbit-game .og-species-card{animation:none}}
+#orbit-game .og-xeno-access{position:relative;margin-left:auto;margin-right:6px;border-color:#7fe3d055}
+#orbit-game .og-xeno-access+.og-campaign-access{margin-left:0}
+#orbit-game .og-xeno-access-art{display:block;width:26px;height:26px;background-image:var(--og-biology-art);background-size:200% 300%;background-position:0 0;background-repeat:no-repeat;filter:drop-shadow(0 0 4px #7fe3d088)}
+#orbit-game .og-xeno-dot{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#b38cff;box-shadow:0 0 8px #a46cff;opacity:0}
+#orbit-game .og-xeno-access.has-signal .og-xeno-dot{opacity:1;animation:og-xeno-dot 1.4s ease-in-out infinite}
+@keyframes og-xeno-dot{50%{transform:scale(1.5);opacity:.6}}
+#orbit-game .og-xeno-signal{margin:0 auto 6px;width:fit-content;max-width:100%;padding:4px 12px;border-radius:999px;background:#120a24d9;border:1px solid #6b4fa8;font-size:12px;color:#e6dbff;text-align:center}
+#orbit-game .og-xeno-signal b{color:#b38cff;text-shadow:0 0 6px #a46cff}
+#orbit-game .og-xeno-howto{font-size:12px;line-height:1.4;color:#c8dde4;margin:0 0 8px;padding:8px 10px;border-radius:12px;background:#0d2231;border:1px solid #2f5566}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-xeno-access.has-signal .og-xeno-dot{animation:none}}
+#orbit-game .og-xeno-art.is-painted{background-image:var(--og-xeno-specimens-art);background-size:400% 400%;filter:drop-shadow(0 0 6px #b7f5e566)}
+#orbit-game .og-xeno-toolart{display:block;width:52px;height:52px;flex:none;background-size:200% 300%;background-repeat:no-repeat}
+#orbit-game .og-xeno-toolart svg{width:100%;height:100%;display:block}
+#orbit-game .og-xeno-toolart.is-small{width:30px;height:30px}
+#orbit-game .og-xeno-toolcard{display:grid;grid-template-columns:52px 1fr;column-gap:10px;align-items:start}
+#orbit-game .og-xeno-toolcard>.og-xeno-toolart{grid-row:span 4}
+#orbit-game .og-xeno-toolcard>*:not(.og-xeno-toolart){grid-column:2}
+#orbit-game .og-xeno-cine{position:absolute;inset:0;z-index:80;background:#03080e;overflow:hidden;animation:og-cine-in .5s ease-out}
+#orbit-game .og-xeno-cine canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#orbit-game .og-xeno-cine.is-leaving{opacity:0;transition:opacity .4s}
+#orbit-game .og-xeno-cine-caption{position:absolute;left:20px;right:20px;bottom:18%;text-align:center;font-size:17px;line-height:1.35;color:#f2f6ff;text-shadow:0 2px 8px #000,0 0 2px #000;min-height:2.7em}
+#orbit-game .og-xeno-cine-title{position:absolute;left:24px;right:24px;top:16%;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+#orbit-game .og-xeno-cine-title.is-shown{opacity:1;transform:none}
+#orbit-game .og-xeno-cine-title small{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#d9c8ff;text-shadow:0 0 8px #a46cff}
+#orbit-game .og-xeno-cine-title strong{font-size:26px;color:#fff;text-shadow:0 2px 10px #000}
+#orbit-game .og-xeno-cine-title span{font-size:13px;color:#cfe3ea;text-shadow:0 1px 6px #000}
+@keyframes og-cine-in{from{opacity:0}}
