@@ -263,7 +263,7 @@
 #orbit-game .og-sheet[data-card-kind=recipe] .og-lab-progress{padding:4px;margin:0}
 #orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient small{font-size:8px}
 #orbit-game .og-sheet[data-card-kind=recipe] .og-lab-ingredient{min-height:42px;padding:4px 6px}
-#orbit-game .og-sheet[data-card-kind=recipe] .og-capacity-tools{display:none}
+
 #orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 #orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-ingredient{display:flex;flex-direction:column;align-items:stretch;gap:2px;min-height:62px;background:#102532;border:1px solid #3d5a6b;border-radius:9px;padding:5px}
 #orbit-game .og-sheet[data-card-kind=recipe] .og-recipe-ingredients .og-lab-quantity{display:flex;justify-content:space-between;gap:2px}

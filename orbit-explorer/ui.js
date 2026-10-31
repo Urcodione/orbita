@@ -81,7 +81,7 @@
     if(sheet==='environment'&&environmentSite)return {label:'Locais do planeta',action:'sites'};
     if(['stored-module','system-module'].includes(sheet)&&moduleOrigin==='ship')return {label:'Nave aberta',action:'ship-overview'};
     if(sheet==='system-module'&&moduleOrigin==='inventory'&&!selectedCandidateId)return {label:'Módulos',action:'modules'};
-    if(sheet==='fabricator'){const prev=lab.history?.at(-1);return {label:lab.page==='component'?(prev?.page==='component'?'Peça principal':lab.returnRecipeId?'Receita':'Bancada'):lab.page==='recipe'?'Categoria':lab.page==='type'?'Categorias':'Oficina',action:'lab-parent'};}
+    if(sheet==='fabricator'){const prev=lab.history?.at(-1);return {label:lab.page==='component'?(prev?.page==='component'?'Peça principal':lab.returnRecipeId?'Receita':prev?.page==='components'?'Componentes':'Bancada'):lab.page==='recipe'?'Categoria':lab.page==='type'?'Categorias':'Oficina',action:'lab-parent'};}
     const places={'station-route':['Mapa','world'],settings:['Menu','menu'],saves:['Menu','menu'],'save-review':['Partida segura','saves'],contracts:['Estação','station'],'overdrive-menu':['Retorno à nave','expedition-return-menu'],'stock-components':['Estoque','stock'],station:['Mapa','world'],market:['Estação','station'],'market-item':['Mercado','market'],stock:['Nave','world'],modules:['Estoque','stock'],'stored-module':['Módulos','modules'],'salvage-review':['Cartão','stored-module'],workshop:['Nave','world'],maintenance:['Oficina','workshop'],fabricated:['Módulos','modules'],'system-module':[selectedCandidateId?'Cartão':'Nave aberta',selectedCandidateId?'stored-module':'ship-overview'],'cargo-content':['Estoque','stock']};
     const [label,action]=places[sheet]||['Jogo','world'];return {label,action};
   }
@@ -531,8 +531,8 @@
   }
   function openSheet(name){
     if(['station','market','contracts'].includes(name)&&!state.location.stationId)name='station-route';
-    const source=sheet,labels={journey:'Objetivo',stock:'Estoque',station:'Estação',workshop:'Oficina',menu:'Menu',market:'Mercado',modules:'Módulos',fabricator:'Receita',journey:'Objetivo','planet-info':'Análise do planeta',sites:'Pontos de exploração'};
-    const entrances={campaign:['journey','stock'],stock:['station','workshop','menu'],workshop:['station','menu'],modules:['stock','workshop','station','menu','fabricator'],market:['station'], 'market-item':['stock','market'],catalog:['menu'],help:['menu'],environment:['planet-info','sites'],sites:['planet-info'],'rescue-menu':['workshop'],customize:['menu']};
+    const source=sheet,labels={journey:'Objetivo',stock:'Estoque',station:'Estação',workshop:'Oficina',menu:'Menu',status:'Condição da nave',market:'Mercado',modules:'Módulos',fabricator:'Receita',journey:'Objetivo','planet-info':'Análise do planeta',sites:'Pontos de exploração'};
+    const entrances={campaign:['journey','stock','menu'],'reset-menu':['menu'],stock:['station','workshop','menu'],workshop:['station','menu','status'],modules:['stock','workshop','station','menu','fabricator'],market:['station'], 'market-item':['stock','market'],catalog:['menu'],help:['menu'],environment:['planet-info','sites'],sites:['planet-info'],'rescue-menu':['workshop'],customize:['menu']};
     if(name==='planet-info')delete placeParents['planet-info'];
     if(name==='modules'&&!source&&tab==='ship')placeParents.modules={label:shipDetail.mode==='interior'?'Nave aberta':'Nave',action:shipDetail.mode==='interior'?'ship-overview':'world'};
     else if(entrances[name]){if(entrances[name].includes(source))placeParents[name]={label:labels[source],action:source};else if(!source)delete placeParents[name];}
@@ -682,6 +682,7 @@
     if(sheet){stepNavigation();save();return true;}
     if(tab==='ship'){shipBack();return true;}
     if(tab!=='explore'&&!state.expedition){tab='explore';render();save();return true;}
+    if(state.expedition&&tab!=='expedition'){tab='expedition';render();save();return true;}
     return false;
   }
   function onKey(event){

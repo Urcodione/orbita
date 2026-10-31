@@ -52,7 +52,7 @@
 #orbit-game .og-cosmic-tag{display:block;text-align:center;border:1px solid #b88fe075;padding:7px;margin:9px 0;border-radius:9px;color:#d3aff5;background:#47305b66;font-size:11px}
 #orbit-game .og-item-card.is-cosmic .og-card-crest>span:first-child{color:#d6b2ff}
 #orbit-game .og-quest-protected{font-size:11px;color:#c5a6db;display:flex;align-items:center;gap:5px;padding:8px 4px}
-#orbit-game .og-wormhole-node{position:absolute;left:82%;top:67%;transform:translate(-50%,-50%);width:63px;height:63px;background:transparent;border:0;border-radius:50%;color:#dfc5ff;font-size:9px}
+#orbit-game .og-wormhole-node{pointer-events:auto;position:absolute;left:82%;top:67%;transform:translate(-50%,-50%);width:63px;height:63px;background:transparent;border:0;border-radius:50%;color:#dfc5ff;font-size:9px}
 #orbit-game .og-wormhole-node>span{position:absolute;top:54px;left:-20px;right:-20px;text-align:center;text-shadow:0 2px 5px #000}
 #orbit-game .og-story-clip{position:absolute;inset:0;z-index:80;isolation:isolate;overflow:hidden;background:#100c1b;color:#f6edff;display:flex;flex-direction:column;justify-content:space-between;border-radius:inherit}
 #orbit-game .og-story-pan{position:absolute;inset:0;z-index:-2;overflow:hidden}
