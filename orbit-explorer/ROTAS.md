@@ -2,7 +2,7 @@
 
 ## Regra
 
-A seta superior volta ao local funcional indicado pelo rótulo. O X fecha o painel e revela o jogo por trás; cartões abertos pela inspeção da nave voltam à nave aberta. Abas trocam explicitamente o local principal. Paginação muda somente o conteúdo do painel, sem mudar seu local.
+A seta superior volta ao local funcional indicado pelo rótulo; a legenda da seta mostra o nome desse local (Menu, Oficina, Receita…). O X fecha o painel e revela o jogo por trás; cartões abertos pela inspeção da nave voltam à nave aberta. Abas trocam explicitamente o local principal. Paginação muda somente o conteúdo do painel, sem mudar seu local.
 
 ## Destinos após ações
 
@@ -24,7 +24,7 @@ A seta superior volta ao local funcional indicado pelo rótulo. O X fecha o pain
 | Fabricar componente | Receita da peça; lote de ingrediente retorna à receita que o pediu |
 | Fabricar módulo | Peça pronta; seta retorna à receita de fabricação |
 | Receber recompensa Farol | Peça pronta; seta retorna à campanha |
-| Instalar módulo | Compartimento da peça na nave |
+| Instalar módulo | Permanece no local de origem: lista de módulos (para instalar outros), receita da oficina (para fabricar outros) ou painel da missão; peças escolhidas na nave aberta voltam à nave aberta. Um cartão translúcido lista os atributos que mudaram. |
 | Cancelar desmontagem | Mesmo cartão e mesmo módulo |
 | Desmontar | Módulos guardados ou módulo instalado do compartimento, conforme origem |
 | Favoritar / pintar / renomear | Mesmo contexto, valores atualizados |
@@ -38,7 +38,7 @@ A seta superior volta ao local funcional indicado pelo rótulo. O X fecha o pain
 - Oficina aberta pela estação volta à estação; aberta pelo menu volta ao menu.
 - Categorias da oficina voltam ao início da oficina de fabricação.
 - Requisitos de um local voltam à seleção de locais.
-- Comparar peça recuperada retorna à carga; peça recém-fabricada retorna ao resultado da fabricação.
+- Peça recém-fabricada retorna ao resultado da fabricação. O resumo "Carga entregue" não oferece comparar/instalar: instalações são feitas pelo estoque ou pela oficina.
 - Voltar de uma comparação não reaproveita a seleção de uma reciclagem anterior.
 - Recursos do depósito voltam ao compartimento do depósito.
 - Armazém acessado pela nave aberta volta à nave aberta.

@@ -327,6 +327,11 @@
     return key === 'scanBonus' ? Math.round(computed[key] * 100) : computed[key];
   }
   function metricText(key, value) { return typeof value === 'boolean' ? value ? 'disponível' : 'ausente' : String(value).replace('.', ',') + ' ' + METRICS[key][1]; }
+  // Every ship attribute with its label, unit, direction and current value (installed modules only).
+  function shipMetrics(state) {
+    const computed = stats(state);
+    return Object.keys(METRICS).map(key => ({ key, label: METRICS[key][0], unit: METRICS[key][1], higherIsBetter: METRICS[key][2], value: metricValue(computed, key) }));
+  }
   function moduleDetails(state, module) {
     if (typeof module === 'string') module = [...Object.values(state.equipped), ...state.inventory].find(item => item.id === module);
     if (!module || !TYPES.includes(module.type)) return null;
@@ -1594,7 +1599,7 @@
     } catch (_) { return null; }
   }
 
-  const api = { commit, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
+  const api = { commit, shipMetrics, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root) root.OrbitEngine = api;
 })(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this);

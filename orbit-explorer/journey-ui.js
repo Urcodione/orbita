@@ -42,7 +42,11 @@ function backControls(container){
   const destination=button.getAttribute('aria-label')||button.textContent.trim().replace(/^‹\s*/,'');
   button.setAttribute('aria-label',destination.startsWith('Voltar')?destination:'Voltar: '+destination);
   button.title=button.getAttribute('aria-label');button.classList.add('og-back-control');
-  button.innerHTML=cosmicArrow()+'<small class="og-control-caption">'+(cancel?'Cancelar':'Voltar')+'</small>';
+  // Panel arrows name the place they return to (Menu, Oficina, Receita...), as ROTAS.md describes; generic
+  // "Voltar"/"Continuar" buttons and cancels keep their verb.
+  const place=destination.replace(/^Voltar:\s*/,'');
+  const named=!cancel&&button.dataset.action!=='close-sheet'&&place&&!/^(Voltar|Retornar|Continuar)/.test(place);
+  button.innerHTML=cosmicArrow()+'<small class="og-control-caption'+(named?' og-place-caption':'')+'">'+esc(cancel?'Cancelar':named?place:'Voltar')+'</small>';
  });
 }
 function panelFigures(container){

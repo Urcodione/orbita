@@ -600,3 +600,29 @@
 #orbit-game .og-operation-note.is-compact>.og-operation-stabilize{grid-column:2;grid-row:1/3;margin:0;font-size:10px}
 #orbit-game .og-operation-note.is-compact .og-painted-module{width:26px;height:32px}
 @media(max-height:650px){#orbit-game .og-sheet[data-sheet=sites] .og-site-choices button{padding:4px}#orbit-game .og-sheet[data-sheet=sites] .og-site-choices .og-action-world{width:24px;height:24px}#orbit-game .og-sheet[data-sheet=sites] .og-descent-note{font-size:10px;margin:3px 0}}
+
+#orbit-game .og-back-control .og-place-caption{max-width:84px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#orbit-game .og-ship-stats{position:absolute;left:8px;right:8px;top:64px;display:flex;justify-content:space-between;pointer-events:none;z-index:2}
+#orbit-game .og-ship-stats dl{margin:0;display:grid;gap:4px;width:86px;padding:6px 8px;border-radius:12px;background:#06121c8c;border:1px solid #7fb6c426}
+#orbit-game .og-ship-stats div{display:flex;flex-direction:column;line-height:1.15}
+#orbit-game .og-ship-stats dt{font-size:9px;color:#9dbccb;letter-spacing:.2px}
+#orbit-game .og-ship-stats dd{margin:0;font-size:12px;color:#eaf7f7;font-variant-numeric:tabular-nums;white-space:nowrap;transition:color .4s}
+#orbit-game .og-ship-stats .is-up dd{color:#8ff0b8}
+#orbit-game .og-ship-stats .is-up dd::after{content:' ▲';font-size:8px}
+#orbit-game .og-ship-stats .is-down dd{color:#ff9d8a}
+#orbit-game .og-ship-stats .is-down dd::after{content:' ▼';font-size:8px}
+@media(max-width:350px){#orbit-game .og-ship-stats{left:4px;right:4px}#orbit-game .og-ship-stats dl{width:64px;padding:4px 5px}#orbit-game .og-ship-stats dt{font-size:8px}#orbit-game .og-ship-stats dd{font-size:10px}}
+@media(max-height:620px){#orbit-game .og-ship-stats{top:56px}#orbit-game .og-ship-stats dl{gap:2px}#orbit-game .og-ship-stats dt{font-size:8px}#orbit-game .og-ship-stats dd{font-size:10px}}
+#orbit-game .og-delta{position:absolute;left:50%;top:84px;transform:translateX(-50%);z-index:30;width:min(320px,calc(100% - 32px));padding:10px 12px;border-radius:14px;background:#081a26ed;border:1px solid #7fd6c455;box-shadow:0 12px 30px #0008;color:#eaf7f7;cursor:pointer}
+#orbit-game .og-delta strong{display:block;font-size:12px;margin-bottom:6px;color:#bfe9e4;letter-spacing:.3px}
+#orbit-game .og-delta ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+#orbit-game .og-delta li{display:flex;justify-content:space-between;gap:10px;font-size:12px;opacity:0;transform:translateY(6px);animation:og-delta-row .35s ease-out forwards;animation-delay:calc(var(--i) * 90ms + 120ms)}
+#orbit-game .og-delta li b{font-variant-numeric:tabular-nums;white-space:nowrap}
+#orbit-game .og-delta li.is-up b{color:#8ff0b8}
+#orbit-game .og-delta li.is-down b{color:#ff9d8a}
+#orbit-game .og-delta small{display:block;margin-top:6px;font-size:10px;color:#9dbccb}
+#orbit-game .og-delta.is-entering{animation:og-delta-in .3s ease-out}
+#orbit-game .og-delta.is-leaving{opacity:0;transition:opacity .35s}
+@keyframes og-delta-row{to{opacity:1;transform:none}}
+@keyframes og-delta-in{from{opacity:0;transform:translate(-50%,-8px)}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-delta li{animation:none;opacity:1;transform:none}#orbit-game .og-delta.is-entering{animation:none}}
