@@ -1,5 +1,7 @@
 # Estaleiro estelar: arte das peças a gerar
 
+> **Atualização:** o briefing completo, item a item (o que é, o que faz, clima, silhueta, prompt), e o fluxo de entrega estão em `BRIEFING-ARTE-CODEX.md`. Ele substitui os prompts abaixo; a montagem dos atlas é feita por `qa/prepare-xeno-yard-art.py`.
+
 O jogo já funciona sem esta arte: as peças usam ilustrações vetoriais provisórias (`shipyard-ui.js`), tanto no painel quanto na própria nave. Quando `assets/yard-parts.webp` existir, o `build.py` incorpora a imagem automaticamente, e a planta, o hangar, a loja e a nave da tela principal passam a usá-la, sem outra mudança de código.
 
 ## Arquivo e grade
