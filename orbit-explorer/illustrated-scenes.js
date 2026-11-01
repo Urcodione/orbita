@@ -60,7 +60,11 @@
  for(let i=0;i<4;i++)if(('story'+i)in sources)game.style.setProperty('--og-story-scene-'+i,'url("'+sources['story'+i]+'")');
  game.style.setProperty('--og-room-aspect','2.25');for(let i=0;i<6;i++)if(('room'+i)in sources)game.style.setProperty('--og-room-'+i,'url("'+sources['room'+i]+'")');
  const loading=key=>{const im=created[key];return !!im&&!im.complete;};
- window.OrbitArt={images,ready,loading,module,icon,world,galaxy,phenomenon,star,types};
+ // Painting keys of the active ship (ships.js): the Andorinha uses ship/interior, the fleet hull-<id>/open-<id>.
+ const hullKeys=id=>id&&id!=='andorinha'&&('hull-'+id)in sources&&('open-'+id)in sources?{ship:'hull-'+id,interior:'open-'+id}:{ship:'ship',interior:'interior'};
+ const ANDORINHA_NOZZLES=[[21,84,0],[50,95.5,1],[79,84,0]];
+ const nozzlesOf=id=>window.OrbitEngine?.fleetCatalog?.SHIPS.find(s=>s.id===id)?.nozzles||ANDORINHA_NOZZLES;
+ window.OrbitArt={images,ready,loading,module,icon,world,galaxy,phenomenon,star,types,hullKeys};
  if('modules' in sources)game.style.setProperty('--og-module-art',`url("${sources.modules}")`);
  const premiumCache=new Map(),tintCache=new Map();
  // Paint colours were a canvas filter re-applied to the full hull on every frame; bake each tint once.
@@ -111,13 +115,14 @@
  }
  window.OrbitArt.previewCustomization=function(canvas,state){
   if(!canvas)return;
-  const renderer={ctx:canvas.getContext('2d'),state:{shipDetail:{mode:'exterior'},shipColor:state.ship.color,shipTrail:state.ship.trail||'blue',modules:state.equipped},yaw:.18,pitch:.2,reduced:window.OrbitAudio?.prefs.light||matchMedia('(prefers-reduced-motion: reduce)').matches,publishHotspots(){},publishCargoHotspots(){}};
+  const renderer={ctx:canvas.getContext('2d'),state:{shipDetail:{mode:'exterior'},shipModel:state.fleet?.active,shipColor:state.ship.color,shipTrail:state.ship.trail||'blue',modules:state.equipped},yaw:.18,pitch:.2,reduced:window.OrbitAudio?.prefs.light||matchMedia('(prefers-reduced-motion: reduce)').matches,publishHotspots(){},publishCargoHotspots(){}};
   const start=performance.now();function frame(now){if(!canvas.isConnected)return;if(document.hidden){document.addEventListener('visibilitychange',()=>requestAnimationFrame(frame),{once:true});return;}const dpr=Math.min(devicePixelRatio||1,2),w=canvas.clientWidth,h=canvas.clientHeight;if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}const c=renderer.ctx;c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);renderer.width=w;renderer.height=h;
-   const scale=Math.min(w/225,h/430);OrbitScene.prototype.drawPaintedShip.call(renderer,w/2,h*.43,scale,(now-start)/1000,0,0,now,false,false);if(!renderer.reduced||!ready('ship'))requestAnimationFrame(frame);
+   const scale=Math.min(w/225,h/430);OrbitScene.prototype.drawPaintedShip.call(renderer,w/2,h*.43,scale,(now-start)/1000,0,0,now,false,false);if(!renderer.reduced||!ready(hullKeys(renderer.state.shipModel).ship))requestAnimationFrame(frame);
   }requestAnimationFrame(frame);
  };
  OrbitScene.prototype.drawPaintedShip=function(cx,cy,scale,t,warp,travel,now,shipView,portrait){
-  if(!ready('ship')||!ready('interior')||!ready('modules'))return false;
+  const hull=hullKeys(this.state.shipModel);
+  if(!ready(hull.ship)||!ready(hull.interior)||!ready('modules'))return false;
   const c=this.ctx,detail=this.state.shipDetail||{},selected=types.includes(detail.selectedModule)?detail.selectedModule:null;
   const inspecting=shipView&&detail.mode==='module'&&!!selected,interior=shipView&&(detail.mode==='interior'||inspecting);
   const drag=inspecting&&this.moduleDrag?.type===selected?this.moduleDrag:null,side=selected?(types.indexOf(selected)%2?1:-1):1;
@@ -153,16 +158,16 @@
   else if(originalHues[this.state.shipColor]!==undefined){const h=originalHues[this.state.shipColor];paint=`hue-rotate(${h}deg) saturate(${h===12?.55:.85})`;}
   else paint=`hue-rotate(${hue-24}deg) saturate(${neon?1.7:.65}) brightness(${neon?1.08:1.04})`;
   if(neon){paint='none';c.save();c.globalAlpha=1-cam.focus;premiumAura(c,baseW,baseH,this.reduced?2:t,this.state.shipColor);c.restore();}
-  if(cam.open<.999){const hullAlpha=c.globalAlpha;c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull('ship',this.state.shipColor):tintedHull('ship',paint),-baseW/2,-baseH/2,baseW,baseH);
+  if(cam.open<.999){const hullAlpha=c.globalAlpha;c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull(hull.ship,this.state.shipColor):tintedHull(hull.ship,paint),-baseW/2,-baseH/2,baseW,baseH);
    c.globalAlpha=hullAlpha;}
-  if(cam.open>.001){c.globalAlpha=(1-cam.focus*.83)*cam.open;c.drawImage(neon?premiumHull('interior',this.state.shipColor):tintedHull('interior',paint),-baseW/2,-baseH/2,baseW,baseH);}
-  if(neon){c.globalAlpha=(1-cam.focus*.83);premiumReflection(this,cam.open>.5?'interior':'ship',baseW,baseH,this.reduced?2:t,this.state.shipColor);}
+  if(cam.open>.001){c.globalAlpha=(1-cam.focus*.83)*cam.open;c.drawImage(neon?premiumHull(hull.interior,this.state.shipColor):tintedHull(hull.interior,paint),-baseW/2,-baseH/2,baseW,baseH);}
+  if(neon){c.globalAlpha=(1-cam.focus*.83);premiumReflection(this,cam.open>.5?hull.interior:hull.ship,baseW,baseH,this.reduced?2:t,this.state.shipColor);}
   c.restore();
   const jets=1-cam.open,trail=this.state.shipTrail||'blue',special=['cosmic','aurora','solar'].includes(trail),colors=({blue:['#9deeff','#419eeacc','#516bf000'],orange:['#ffe0a3','#ff8c35cc','#ff542000'],cosmic:['#ead0ff','#a351ffcc','#6633ee00'],aurora:['#c6ffea','#34edb3cc','#22aacc00'],solar:['#ffe1f3','#ff55b0cc','#9a22ee00']})[trail]||['#9deeff','#419eeacc','#516bf000'];
   if(jets>.01){
    c.save();c.globalCompositeOperation='screen';
-   for(const dx of [-.29,0,.29]){
-    const p=point(dx*baseW,baseH*(dx?.34:.455)),pulse=this.reduced?1:1+Math.sin(t*17+dx*9)*.12+Math.sin(t*29+dx*21)*.055;
+   for(const [nx,ny,main] of nozzlesOf(this.state.shipModel)){
+    const dx=main?0:nx/100-.5,p=point((nx/100-.5)*baseW,baseH*(ny/100-.5)),pulse=this.reduced?1:1+Math.sin(t*17+dx*9)*.12+Math.sin(t*29+dx*21)*.055;
     const len=(dx?34:57)*cam.scale*(1+warp+travel*.5)*(special?1.65:1)*pulse,width=(dx?5:8)*cam.scale;
     for(let layer=0;layer<3;layer++){
      const length=len*(1-layer*.23),radius=width*(1-layer*.25),sway=this.reduced?0:Math.sin(t*13+layer+dx*17)*radius*.3;

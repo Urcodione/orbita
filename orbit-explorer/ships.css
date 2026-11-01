@@ -1,0 +1,34 @@
+/* Merchant and hangar (ships-ui.js). */
+#orbit-game .og-fleet-art{display:block;flex:none;width:64px;height:96px;object-fit:contain;filter:drop-shadow(0 0 8px #7fe3d044)}
+#orbit-game .og-fleet-art.is-large{width:118px;height:177px}
+#orbit-game .og-fleet-art.is-thumb{width:38px;height:57px}
+#orbit-game .og-fleet-art.is-empty{background:#0d2231;border-radius:10px}
+#orbit-game .og-fleet-hero{display:flex;align-items:center;gap:14px;padding:6px 4px;background:radial-gradient(ellipse at 25% 50%,#24485699,transparent 70%)}
+#orbit-game .og-fleet-hero div{display:flex;flex-direction:column;gap:2px;min-width:0}
+#orbit-game .og-fleet-hero small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#f0b57e}
+#orbit-game .og-fleet-hero strong{font-size:22px;line-height:1.1;color:#f3fbfa}
+#orbit-game .og-fleet-hero span{font-size:13px;color:#a9c6cf}
+#orbit-game .og-fleet-lore{font-size:13px;line-height:1.4;color:#dceeee;margin:8px 0}
+#orbit-game .og-fleet-traits{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+#orbit-game .og-fleet-traits li{font-size:12px;line-height:1.3;padding-left:16px;position:relative;color:#dceeee}
+#orbit-game .og-fleet-traits li::before{position:absolute;left:0;top:0;font-weight:700}
+#orbit-game .og-fleet-traits li.is-plus::before{content:'+';color:#7be3a6}
+#orbit-game .og-fleet-traits li.is-minus::before{content:'−';color:#ff9a86}
+#orbit-game .og-fleet-reason{font-size:12px;color:#ffb39f;margin:4px 0 0}
+#orbit-game .og-fleet-count{font-size:13px;color:#c8dde4;margin:0 0 8px}
+#orbit-game .og-fleet-count strong{color:#f3fbfa}
+#orbit-game .og-fleet-list{display:flex;flex-direction:column;gap:8px}
+#orbit-game .og-fleet-card{display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:14px;background:#0d2231;border:1px solid #23404f}
+#orbit-game .og-fleet-card.is-active{border-color:#5fe0d6;box-shadow:0 0 0 1px #5fe0d655 inset}
+#orbit-game .og-fleet-body{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+#orbit-game .og-fleet-body small{font-size:11px;color:#a9c6cf}
+#orbit-game .og-fleet-body strong{font-size:16px;color:#f3fbfa}
+#orbit-game .og-fleet-body .og-button{margin-top:4px;min-height:40px}
+#orbit-game .og-fleet-badge{align-self:flex-start;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#06202a;background:#5fe0d6;border-radius:999px;padding:3px 10px}
+#orbit-game .og-fleet-empty{font-size:12px;color:#a9c6cf;margin:8px 0 0}
+#orbit-game .og-fleet-row{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+#orbit-game .og-fleet-merchant{display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px;border-radius:14px;text-align:left;color:#f3fbfa;background:linear-gradient(90deg,#3b2a14,#16323d);border:1px solid #f0a35e;box-shadow:0 0 12px #f0a35e33}
+#orbit-game .og-fleet-merchant span{display:flex;flex-direction:column;min-width:0}
+#orbit-game .og-fleet-merchant small{font-size:11px;color:#f0c79a}
+#orbit-game .og-fleet-merchant strong{font-size:14px}
+#orbit-game .og-fleet-hangar{align-self:center;min-height:36px}

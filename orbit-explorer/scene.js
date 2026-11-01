@@ -869,7 +869,7 @@
         const opacity = glow.interior ? cam.open * (cam.focus > .1 && glow.module !== selected ? .2 : 1) : 1 - cam.focus;
         c.save(); c.globalAlpha = opacity * (1-artBlend); c.shadowBlur = 8 * sc; c.shadowColor = glow.color; c.fillStyle = glow.color; c.beginPath(); c.arc(p[0], p[1], Math.max(1, glow.size * sc * .6), 0, TAU); c.fill(); c.restore();
       });
-      const illustration=artBlend > .001 && window.OrbitArt?.ready('ship') ? window.OrbitArt.images.ship : null;
+      const hullKey=window.OrbitArt?.hullKeys?.(this.state.shipModel).ship||'ship',illustration=artBlend > .001 && window.OrbitArt?.ready(hullKey) ? window.OrbitArt.images[hullKey] : null;
       if(illustration) {
         const center=project([0,0,-3]),height=310*sc,width=height*illustration.naturalWidth/illustration.naturalHeight;
         c.save();c.globalAlpha=artBlend;c.translate(center[0],center[1]);c.rotate((cam.yaw-.18)*.05);

@@ -197,3 +197,22 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - [ ] Posições dos bocais anotadas em `assets/src/ships/naves.json`.
 - [ ] Em 120 px, as 10 naves se distinguem só pela silhueta: Andorinha (pera com dois propulsores), Beija-flor (agulha), Albatroz (asas longas e retas), Pelicano (bojuda com porão), Coruja (cúpula e lentes), Martim-pescador (broca), Pinguim (oval atarracada), Carcará (asas angulosas), Garça (torre alta e estabilizadores finos), Fênix (leque de aletas).
 - [ ] Prompts finais em `assets/src/ships/prompts.json` e registro no fim de `ARTE.md`.
+
+---
+
+## 7. Revisão pedida (01/11/2026)
+
+As 18 pinturas estão instaladas e funcionando no jogo: as naves fechadas, as abertas com os módulos nos encaixes e as chamas nos bocais anotados. A qualidade está no nível da Andorinha. O que falta é **silhueta**. Na prancha a 120 px, quatro naves parecem a Andorinha (foguete com dois propulsores laterais) e se confundem entre si.
+
+Refaça estas quatro, mantendo materiais, câmera, altura e encaixes. Basta trocar os arquivos em `assets/src/ships/`, atualizar os bocais em `naves.json` e rodar `python3 qa/prepare-ships-art.py`. Nenhum código muda.
+
+| Nave | Como está | O que o briefing pede (seção 5) |
+|---|---|---|
+| Pinguim | alta e estreita, com propulsores laterais | **oval e atarracada**, barriga larga, duas nadadeiras curtas para baixo, **um** motor central largo e curto, sem propulsores laterais |
+| Garça | foguete fino com propulsores | **torre de cabine alta e fina** (pescoço) sobre corpo esbelto, e **dois estabilizadores longos e finos** descendo como pernas, com motores nas pontas |
+| Carcará | foguete com aletas laterais | **asas largas e angulosas**, quebradas no meio, abertas para os lados e para baixo, com escudo térmico na borda de ataque; deve ficar entre as naves mais largas (cerca de 80%) |
+| Martim-pescador | broca boa, mas o corpo repete a Andorinha | manter a broca e mudar o corpo: **compacto e angular**, com os dois braços de coleta dobrados bem visíveis e **dois** motores médios |
+
+**Aceitas como estão:** Pelicano com cinco bocais (lê bem como cargueira) e Albatroz com as asas em diagonal (lê como asa planadora). Beija-flor, Coruja e Fênix estão ótimas.
+
+**Teste de aceite:** em silhueta preta a 120 px, as 10 naves precisam se distinguir sem legenda (seção 6).

@@ -281,6 +281,8 @@
     for (const module of Object.values(state.equipped)) {
       for (const [key, value] of Object.entries(moduleCapabilities(module))) out[key] = key === 'gas' || key === 'liquid' ? out[key] || value : Math.max(out[key], value);
     }
+    // The active ship (ships.js) adds or removes protection on top of the best module.
+    for (const [key, value] of Object.entries(shipBonus(state)?.capabilities || {})) if (CAPABILITY_KEYS.includes(key)) out[key] = rounded(Math.max(0, out[key] + value));
     return out;
   }
   function moduleEffects(module) {
@@ -288,10 +290,13 @@
     for (const [key, value] of Object.entries(runeBonus(module)?.effects || {})) out[key] = rounded((out[key] || 0) + value);
     return out;
   }
+  // Ready-made ships are defined by ships.js (api.shipBonus); the engine only reads the active ship's bonus.
+  function shipBonus(state) { return typeof api.shipBonus === 'function' ? api.shipBonus(state) : null; }
   function stats(state) {
     const power = type => state.equipped[type].power;
     const effects = {};
     Object.values(state.equipped).forEach(module => Object.entries(moduleEffects(module)).forEach(([key, amount]) => { effects[key] = (effects[key] || 0) + amount; }));
+    Object.entries(shipBonus(state)?.effects || {}).forEach(([key, amount]) => { effects[key] = (effects[key] || 0) + amount; });
     const effect = key => effects[key] || 0;
     return {
       maxFuel: Math.round(100 + 15 * (power('engine') - 1) + effect('maxFuel')),

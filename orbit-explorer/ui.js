@@ -82,7 +82,7 @@
     if(['stored-module','system-module'].includes(sheet)&&moduleOrigin==='ship')return {label:'Nave aberta',action:'ship-overview'};
     if(sheet==='system-module'&&moduleOrigin==='inventory'&&!selectedCandidateId)return {label:'Módulos',action:'modules'};
     if(sheet==='fabricator'){const prev=lab.history?.at(-1);return {label:lab.page==='component'?(prev?.page==='component'?'Peça principal':lab.returnRecipeId?'Receita':prev?.page==='components'?'Componentes':'Bancada'):lab.page==='recipe'?'Categoria':lab.page==='type'?'Categorias':'Oficina',action:'lab-parent'};}
-    const places={xeno:['Menu','menu'],'xeno-specimen':['Laboratório','xeno'],'xeno-rune':['Laboratório','xeno'],'xeno-tools':['Estação','station'],'station-route':['Mapa','world'],settings:['Menu','menu'],saves:['Menu','menu'],'save-review':['Partida segura','saves'],contracts:['Estação','station'],'overdrive-menu':['Retorno à nave','expedition-return-menu'],'stock-components':['Estoque','stock'],station:['Mapa','world'],market:['Estação','station'],'market-item':['Mercado','market'],stock:['Nave','world'],modules:['Estoque','stock'],'stored-module':['Módulos','modules'],'salvage-review':['Cartão','stored-module'],workshop:['Nave','world'],maintenance:['Oficina','workshop'],fabricated:['Módulos','modules'],'system-module':[selectedCandidateId?'Cartão':'Nave aberta',selectedCandidateId?'stored-module':'ship-overview'],'cargo-content':['Estoque','stock']};
+    const places={fleet:['Nave aberta','ship-overview'],'fleet-trader':['Estação','station'],xeno:['Menu','menu'],'xeno-specimen':['Laboratório','xeno'],'xeno-rune':['Laboratório','xeno'],'xeno-tools':['Estação','station'],'station-route':['Mapa','world'],settings:['Menu','menu'],saves:['Menu','menu'],'save-review':['Partida segura','saves'],contracts:['Estação','station'],'overdrive-menu':['Retorno à nave','expedition-return-menu'],'stock-components':['Estoque','stock'],station:['Mapa','world'],market:['Estação','station'],'market-item':['Mercado','market'],stock:['Nave','world'],modules:['Estoque','stock'],'stored-module':['Módulos','modules'],'salvage-review':['Cartão','stored-module'],workshop:['Nave','world'],maintenance:['Oficina','workshop'],fabricated:['Módulos','modules'],'system-module':[selectedCandidateId?'Cartão':'Nave aberta',selectedCandidateId?'stored-module':'ship-overview'],'cargo-content':['Estoque','stock']};
     const [label,action]=places[sheet]||['Jogo','world'];return {label,action};
   }
   function updateHistoryButtons(){}
@@ -161,7 +161,8 @@
     if(window.OrbitCampaignUI)root.querySelector('.og-tabs [data-tab="expedition"]').innerHTML='<span aria-hidden="true">◆</span>'+(state.expedition?'Expedição':'Missão');
     $('og-resources').innerHTML=ex?`<div id="og-field-energy" class="og-field-energy ${ex.returnBlocked?'is-danger':ex.returnMargin<=3?'is-warning':''}" aria-label="Reserva da expedição"><div><span>${window.OrbitJourney.glyph('reserve')}ENERGIA</span><strong>${ex.reserve}<small> / ${ex.maxReserve}</small></strong></div><div><span>${window.OrbitJourney.glyph('return')}VOLTA</span><strong>${ex.returnReserve??'—'}</strong></div><div><span>${window.OrbitJourney.glyph('free')}LIVRE</span><strong>${ex.returnMargin??'—'}</strong></div></div>`:resource('hull','Casco',r.hull,s.maxHull,'var(--og-green)')+resource('oxygen','Oxigênio',r.oxygen,s.maxOxygen,'var(--og-blue)')+resource('fuel','Combustível',r.fuel,s.maxFuel,'var(--og-orange)');
     root.querySelectorAll('.og-tabs button').forEach(b=>{b.classList.toggle('is-active',b.dataset.tab===tab);b.setAttribute('aria-pressed',String(b.dataset.tab===tab));});
-    scene.update({planet:p,shipColor:state.ship.color,shipTrail:state.ship.trail||'blue',modules:state.equipped,resources:state.resources,shipDetail:tab==='ship'?shipDetail:{mode:'exterior',selectedModule:null,expanded:false},mode:state.location.mode,view:tab==='ship'?'ship':tab==='galaxy'?'galaxy':'explore',viewport:'mobile',navigation:tab==='galaxy'?navigationData():null});
+    window.OrbitFleetUI?.apply(state);
+    scene.update({planet:p,shipModel:state.fleet?.active||'andorinha',shipColor:state.ship.color,shipTrail:state.ship.trail||'blue',modules:state.equipped,resources:state.resources,shipDetail:tab==='ship'?shipDetail:{mode:'exterior',selectedModule:null,expanded:false},mode:state.location.mode,view:tab==='ship'?'ship':tab==='galaxy'?'galaxy':'explore',viewport:'mobile',navigation:tab==='galaxy'?navigationData():null});
     $('og-map').hidden=tab!=='galaxy';$('og-field').hidden=!ex;$('og-beacon').hidden=tab!=='expedition'||!!ex;$('og-context').hidden=false;$('og-heading').hidden=false;root.querySelector('.og-camera-control').hidden=tab==='galaxy'||tab==='expedition';
     fieldScene?.update({planet:here(),view:ex});
     $('og-map-levels').hidden=tab!=='galaxy';$('og-map-levels').querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.mapLevel===mapLevel));b.classList.toggle('is-active',b.dataset.mapLevel===mapLevel);});
@@ -208,7 +209,7 @@
       $('og-context').innerHTML=`<button class="og-button primary" data-action="module-info">Abrir cartão do módulo</button><button class="og-link" data-action="ship-back">Nave aberta</button>`;
     }else if(d.mode==='interior'){
       $('og-heading').innerHTML=`<div class="og-eyebrow">${esc(state.ship.name)} / Casco aberto</div><h1>Por dentro.</h1><p>Toque no desenho de um módulo</p>`;
-      $('og-context').innerHTML=`<button class="og-button primary" data-action="modules" aria-label="Abrir armazém: ${state.inventory.length} módulos guardados">Peças · ${state.inventory.length}</button><button class="og-link" data-action="workshop">Oficina de bordo</button><button class="og-link" data-action="customize">Pintura</button>`;
+      $('og-context').innerHTML=`<button class="og-button primary" data-action="modules" aria-label="Abrir armazém: ${state.inventory.length} módulos guardados">Peças · ${state.inventory.length}</button><button class="og-link" data-action="workshop">Oficina de bordo</button><button class="og-link" data-action="fleet">Hangar</button><button class="og-link" data-action="customize">Pintura</button>`;
       const container=$('og-module-hotspots');
       if(!container.children.length)container.innerHTML=Object.keys(labels).map(type=>`<button class="og-module-hotspot" data-module-focus="${type}" aria-label="Examinar ${labels[type]}" style="visibility:hidden"></button>`).join('');
       positionHotspots(scene.getHotspots?.()||[]);
@@ -404,6 +405,7 @@
   }
   function sheetBody(){
     const xeno=window.OrbitXenoUI?.sheet(sheet,state);if(xeno)return xeno;
+    const fleet=window.OrbitFleetUI?.sheet(sheet,state);if(fleet)return fleet;
     const extra=window.OrbitVoyageUI.sheet(sheet,state,pendingImport);if(extra)return extra;
     const p=here(),r=state.resources,s=E.stats(state);
     if(sheet==='discard-review'){const d=discardChoice,owned=d.kind==='component'?state.components[d.id]:state.resources[d.id],amount=Math.min(10,owned),name=E.componentRecipes.find(p=>p.id===d.id)?.name||E.materials?.[d.id]?.name||costNames[d.id];return {title:'Liberar espaço',html:`<p>Descartar ${amount} × ${esc(name)}? A carga será perdida sem pagamento.</p><p>Você possui ${owned}. Restarão ${owned-amount}.</p>`,footer:button('discardCargo','Confirmar descarte',{payload:{...d,amount},attrs:`data-kind="${d.kind}" data-id="${d.id}" data-amount="${amount}"`})};}
@@ -568,8 +570,8 @@
   }
   function openSheet(name){
     if(['station','market','contracts'].includes(name)&&!state.location.stationId)name='station-route';
-    const source=sheet,labels={journey:'Objetivo',stock:'Estoque',station:'Estação',workshop:'Oficina',menu:'Menu',status:'Condição da nave',market:'Mercado',modules:'Módulos',fabricator:'Receita',journey:'Objetivo','planet-info':'Análise do planeta',sites:'Pontos de exploração'};
-    const entrances={campaign:['journey','stock','menu'],'reset-menu':['menu'],stock:['station','workshop','menu'],workshop:['station','menu','status'],modules:['stock','workshop','station','menu','fabricator'],market:['station'], 'market-item':['stock','market'],catalog:['menu'],help:['menu'],environment:['planet-info','sites'],sites:['planet-info'],'rescue-menu':['workshop'],customize:['menu']};
+    const source=sheet,labels={fleet:'Hangar','fleet-trader':'Viajante',journey:'Objetivo',stock:'Estoque',station:'Estação',workshop:'Oficina',menu:'Menu',status:'Condição da nave',market:'Mercado',modules:'Módulos',fabricator:'Receita',journey:'Objetivo','planet-info':'Análise do planeta',sites:'Pontos de exploração'};
+    const entrances={fleet:['station','fleet-trader'],'fleet-trader':['station'],campaign:['journey','stock','menu'],'reset-menu':['menu'],stock:['station','workshop','menu'],workshop:['station','menu','status'],modules:['stock','workshop','station','menu','fabricator'],market:['station'], 'market-item':['stock','market'],catalog:['menu'],help:['menu'],environment:['planet-info','sites'],sites:['planet-info'],'rescue-menu':['workshop'],customize:['menu']};
     if(name==='planet-info')delete placeParents['planet-info'];
     if(name==='modules'&&!source&&tab==='ship')placeParents.modules={label:shipDetail.mode==='interior'?'Nave aberta':'Nave',action:shipDetail.mode==='interior'?'ship-overview':'world'};
     else if(entrances[name]){if(entrances[name].includes(source))placeParents[name]={label:labels[source],action:source};else if(!source)delete placeParents[name];}
@@ -592,7 +594,7 @@
     const craftAnchor=action==='craftComponent'?root.querySelector('[data-action="craftComponent"]')?.getBoundingClientRect():null;
     const craftBefore=action==='craftComponent'?(state.components?.[payload.componentId]||0):0;
     const beforeCampaign=E.campaignView?.(state),wasGuided=!!state.guide?.active;
-    const oldSheet=sheet,wasInField=!!state.expedition,installedType=action==='equip'?state.inventory.find(m=>m.id===payload.moduleId)?.type:null,metricsBefore=(installedType||['runeEngrave','runeRemove'].includes(action))&&E.shipMetrics?E.shipMetrics(state):null,result=E.dispatch(state,action,payload);
+    const oldSheet=sheet,wasInField=!!state.expedition,installedType=action==='equip'?state.inventory.find(m=>m.id===payload.moduleId)?.type:null,metricsBefore=(installedType||['runeEngrave','runeRemove','fleetSwitch'].includes(action))&&E.shipMetrics?E.shipMetrics(state):null,result=E.dispatch(state,action,payload);
     if(!result.ok){if(sheet){sheetNotice=result.message;renderSheet();}else toast(result.message,true);beep('error');return result;}
     const fieldAction=action.startsWith('expedition'),fieldEnded=wasInField&&!state.expedition;
     if(action==='discardCargo'){const parent=parentPlace();openSheet(parent.action);}
@@ -696,7 +698,7 @@
     if(action==='system-lab'){lab={page:'type',type:control.dataset.type,history:[{page:'home'}]};openSheet('fabricator');return;}
     if(action==='fabricator'){lab={page:'home',history:[]};openSheet('fabricator');return;}
     if(action==='rescue-menu'&&!preview('rescue').allowed)return;
-    if(['overdrive-menu','menu','help','xeno','xeno-tools','planet-info','sites','modules','customize','workshop','status','warp-menu','rescue-menu','reset-menu','settings','saves','contracts','route-info','expedition-cargo','expedition-abort-menu'].includes(action)){openSheet(action);return;}
+    if(['overdrive-menu','menu','help','xeno','xeno-tools','fleet','fleet-trader','planet-info','sites','modules','customize','workshop','status','warp-menu','rescue-menu','reset-menu','settings','saves','contracts','route-info','expedition-cargo','expedition-abort-menu'].includes(action)){openSheet(action);return;}
     if(action==='close-sheet'){dismissSheet();return;}
     if(action==='open-interior'){showShip('interior');return;}
     if(action==='ship-back'){shipBack();return;}
@@ -709,6 +711,9 @@
     if(action==='save-accept'){if(pendingImport){save();window.OrbitSaves.checkpoint();if(applySnapshot(pendingImport)){pendingImport=null;history.past=[];history.future=[];closeSheet();save();render();toast('Jornada restaurada.');}}return;}
     if(action==='sound'){sound=!window.OrbitAudio.prefs.sound;window.OrbitAudio.set('sound',sound);beep('toggle');renderSheet();return;}
     if(action==='confirm-reset'){closeSheet();state=E.create();tab='explore';selected=state.location.planetId;shipDetail={mode:'exterior',selectedModule:null,expanded:false};mapLevel='system';selectedSystem=currentSystem().id;selectedDestination=null;environmentSite=null;reward=null;save();render();toast('Sua nova expedição está pronta.');window.OrbitCampaignUI?.playClip(root,()=>{E.dispatch(state,'campaignIntro');save();render();});return;}
+    if(action==='fleetSwitch'){act(action,{shipId:control.dataset.ship});return;}
+    // A bought ship goes straight to the hangar, reached as from the station (the merchant has left).
+    if(action==='fleetBuy'){const id=control.dataset.ship;act(action,{shipId:id});if(state.fleet?.owned.includes(id)&&sheet==='fleet-trader'){const notice=sheetNotice;sheet='station';openSheet('fleet');sheetNotice=notice;renderSheet();}return;}
     if(['xenoCapture','xenoBuyTool','xenoStudy','xenoRune','runeEngrave','runeRemove'].includes(action)){act(action,{toolId:control.dataset.xenoTool,specimenId:control.dataset.xenoSpecimen,runeId:control.dataset.xenoRune,moduleId:control.dataset.xenoModule});return;}
     const payload={};if(control.dataset.intensive)payload.intensive=true;if(control.dataset.contract)payload.contractId=control.dataset.contract;if(control.dataset.trail)payload.trail=control.dataset.trail;if(control.dataset.payment)payload.payment=control.dataset.payment;if(control.dataset.planet)payload.planetId=control.dataset.planet;if(control.dataset.site)payload.siteId=control.dataset.site;if(control.dataset.module)payload.moduleId=control.dataset.module;if(control.dataset.color)payload.color=control.dataset.color;
     if(control.dataset.component){payload.componentId=control.dataset.component;payload.amount=Number(control.dataset.amount||1);payload.returnToRecipe=control.dataset.labReturn==='true';}
