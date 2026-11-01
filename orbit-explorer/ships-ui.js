@@ -12,7 +12,7 @@ const reason=preview=>preview.allowed?'':`<p class="og-fleet-reason">${esc(previ
 
 function trader(s){
  const v=E.fleetView(s),o=v.offer;
- if(!o)return {title:'Viajante',html:'<p class="og-fleet-empty">Não há nave à venda agora. O viajante aparece de vez em quando nos entrepostos, cada vez com uma nave diferente.</p><button class="og-button" data-action="fleet">Abrir hangar</button>'};
+ if(!o)return {title:'Viajante',html:'<p class="og-fleet-empty">Não há nave à venda agora. Em cada galáxia, um viajante pode passar pelo entreposto com uma nave diferente.</p><button class="og-button" data-action="fleet">Abrir hangar</button>'};
  const current=v.ships.find(x=>x.active);
  return {title:'Viajante',singleCard:true,
   html:`<div class="og-fleet-hero">${picture(o.id,'is-large')}<div><small>${esc(o.rarityLabel)} · ${esc(o.peopleName)}</small><strong>${esc(o.name)}</strong><span>${esc(o.role)}</span></div></div>`+
@@ -26,7 +26,7 @@ function hangar(s){
   (x.active?'<span class="og-fleet-badge">Em uso</span>':v.docked?`<button class="og-button ${x.preview.allowed?'primary':''}" data-action="fleetSwitch" data-ship="${esc(x.id)}" ${x.preview.allowed?'':'disabled'}>Pilotar esta nave</button>${reason(x.preview)}`:'')+`</div></article>`).join('');
  const note=v.docked?'Escolha a nave que vai pilotar. Módulos, runas, pintura e rastro passam para ela.':'A troca de nave é feita atracado num entreposto.';
  return {title:'Hangar',html:`<p class="og-fleet-count"><strong>${v.ships.length} de ${v.total}</strong> naves · ${esc(note)}</p><div class="og-fleet-list">${cards}</div>`+
-  (v.ships.length<v.total?'<p class="og-fleet-empty">Outras naves aparecem com o viajante, de vez em quando, nos entrepostos.</p>':'')};
+  (v.ships.length<v.total?'<p class="og-fleet-empty">Outras naves aparecem com o viajante: em cada galáxia, ele pode passar pelo entreposto.</p>':'')};
 }
 function sheet(name,s){if(name==='fleet-trader')return trader(s);if(name==='fleet')return hangar(s);return null;}
 // Row under the station destinations: the merchant (when present) and the hangar.

@@ -8,7 +8,7 @@ Cada item traz: o que a nave é, o que ela muda no jogo, quem a vende, o clima, 
 
 ## 1. O que muda no jogo
 
-O jogador começa com a Andorinha. Um **viajante** aparece de vez em quando numa estação espacial com **uma nave sorteada** à venda, paga em Lumes. Se o jogador não comprar, na próxima visita pode ser outra. As naves compradas ficam num **hangar**, e o jogador troca de nave numa estação. Os 8 módulos, as runas, a pintura e o rastro passam para a nave nova.
+O jogador começa com a Andorinha. Em cada galáxia, um **viajante** pode esperar no entreposto com **uma nave sorteada** à venda, paga em Lumes. Ele fica até o jogador comprar ou partir para outra galáxia. As naves compradas ficam num **hangar**, e o jogador troca de nave numa estação. Os 8 módulos, as runas, a pintura e o rastro passam para a nave nova.
 
 Cada nave tem **personalidade**: dois pontos fortes e um ponto fraco claros. É isso que a arte precisa contar. Quem vê a silhueta deve adivinhar para que a nave serve.
 
@@ -96,7 +96,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Não repetir:** as outras nove não podem ser "Andorinha com outra proporção". Cada uma precisa de uma silhueta própria.
 
 ### 5.1 Beija-flor — `beija-flor`
-- **Facção:** Nômades Veyra · **Raridade:** comum · **Preço sugerido:** 2.200 Lumes.
+- **Facção:** Nômades Veyra · **Raridade:** comum · **Preço:** 1.300 Lumes.
 - **Papel:** batedora. A nave mais rápida e econômica para voar entre planetas.
 - **No jogo:** ✦ +25% de eficiência de voo · ✦ +10% de eficiência de dobra · ✧ −20 de casco e −1 de carga na expedição.
 - **Clima:** agilidade, alegria e leveza. A nave que chega primeiro.
@@ -106,7 +106,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `BEIJA-FLOR scout ship: the slimmest and smallest of the fleet, needle-thin ivory fuselage about 45% of the image width, long pointed nose with a fine bow antenna, narrow teardrop turquoise cockpit, two short high swept-back winglets near mid-body like wings caught in motion, tiny micro-thrusters at the winglet tips and one small central engine, thin copper spiral stripes, Veyra nomad travel patches, joyful and agile.`
 
 ### 5.2 Albatroz — `albatroz`
-- **Facção:** Coletivo Aural · **Raridade:** comum · **Preço sugerido:** 2.600 Lumes.
+- **Facção:** Coletivo Aural · **Raridade:** comum · **Preço:** 1.500 Lumes.
 - **Papel:** longo curso. Vai mais longe sem reabastecer.
 - **No jogo:** ✦ +40 de tanque de combustível · ✦ +15% de eficiência do ar (os painéis solares ajudam o suporte de vida) · ✧ −10% de rendimento de coleta.
 - **Clima:** serenidade, travessias longas, horizonte.
@@ -116,7 +116,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `ALBATROZ long-range cruiser: slender ivory central fuselage with the widest wingspan of the fleet, two long straight wings spanning about 95% of the image width and drooping slightly, deep-blue solar panels inlaid in the wings with copper edges, navigation lamps at the wing tips, two elongated fuel tanks under the wings near the body, elongated panoramic turquoise cockpit, one broad central engine, smooth rounded Aural civilian design, serene.`
 
 ### 5.3 Pelicano — `pelicano`
-- **Facção:** Coletivo Aural · **Raridade:** comum · **Preço sugerido:** 2.400 Lumes.
+- **Facção:** Coletivo Aural · **Raridade:** comum · **Preço:** 1.400 Lumes.
 - **Papel:** cargueira. Carrega mais módulos e mais coleta em cada expedição.
 - **No jogo:** ✦ +3 espaços no armazém de módulos · ✦ +1 de carga na expedição e +20 de casco · ✧ −15% de eficiência de voo.
 - **Clima:** trabalhadora, confiável e bonachona.
@@ -126,7 +126,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `PELICANO cargo hauler: bulky ivory hull widening toward the base, about 75% of the image width, small cockpit high on top, a large rounded cargo hold bulging at the front below the cockpit with marked cargo doors and copper strap bands, tie-down handles, amber cargo lights, short thick fins, four engines in a row at the wide base, sturdy but charming rounded Aural design.`
 
 ### 5.4 Coruja — `coruja`
-- **Facção:** Liga Thar · **Raridade:** rara · **Preço sugerido:** 3.600 Lumes.
+- **Facção:** Liga Thar · **Raridade:** rara · **Preço:** 2.900 Lumes.
 - **Papel:** observatório. Enxerga mais longe e pesquisa melhor.
 - **No jogo:** ✦ +1 setor de alcance do scanner · ✦ +15% de bônus de pesquisa · ✧ −15 de combustível.
 - **Clima:** sabedoria, noite, silêncio de laboratório.
@@ -136,7 +136,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `CORUJA observatory ship: compact rounded ivory body about 70% of the image width, a wide observation dome on top, two large round turquoise telescope lenses side by side at the front of the dome with copper lens rings (scientific instruments, not a face), two short pointed antennas rising from the top of the dome, discreet engines hidden under a rounded skirt, fine technical lines and cyan lights, precise Thar science design, wise and quiet.`
 
 ### 5.5 Martim-pescador — `martim-pescador`
-- **Facção:** Nômades Veyra · **Raridade:** rara · **Preço sugerido:** 3.400 Lumes.
+- **Facção:** Nômades Veyra · **Raridade:** rara · **Preço:** 2.700 Lumes.
 - **Papel:** mineradora. Rende mais em cada coleta e aguenta mais tempo em campo.
 - **No jogo:** ✦ +15% de rendimento de coleta · ✦ +3 de energia em cada expedição · ✧ −10% de eficiência do ar.
 - **Clima:** mergulho certeiro, trabalho de precisão.
@@ -146,7 +146,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `MARTIM-PESCADOR mining ship: compact upward-pointing ivory hull about 55% of the image width, its nose is a long sharp spiral copper drill bit, low armoured turquoise cockpit right behind the drill, two folded collection arms tucked against the sides, two medium engines, ore dust in the panel seams, tools strapped to the hull, Veyra nomad patches, precise and hard-working, not a weapon.`
 
 ### 5.6 Pinguim — `pinguim`
-- **Facção:** Coletivo Aural · **Raridade:** rara · **Preço sugerido:** 3.200 Lumes.
+- **Facção:** Coletivo Aural · **Raridade:** rara · **Preço:** 2.500 Lumes.
 - **Papel:** polar e submersa. Feita para mundos gelados e oceanos profundos.
 - **No jogo:** ✦ +60 °C de isolamento contra o frio · ✦ +3 atm de resistência à pressão · ✧ −10% de eficiência de voo e −20 °C de proteção contra o calor.
 - **Clima:** resistência serena em lugares hostis, aconchego.
@@ -156,7 +156,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `PINGUIM polar and deep-sea ship: stout oval ivory hull about 60% of the image width, wide at the belly, thick padded ceramic plating, a smooth pale front belly plate, two short downward side flippers, small round cockpit with thick turquoise glass, pressurised hatches with big bolts, frost residue on the edges, pale blue lights, one short wide central engine, rugged serious equipment finish, rounded Aural design.`
 
 ### 5.7 Carcará — `carcara`
-- **Facção:** Nômades Veyra · **Raridade:** rara · **Preço sugerido:** 3.400 Lumes.
+- **Facção:** Nômades Veyra · **Raridade:** rara · **Preço:** 2.600 Lumes.
 - **Papel:** mundos ardentes. Feita para vulcões, oceanos de magma e radiação.
 - **No jogo:** ✦ +60 °C de proteção contra o calor · ✦ +60 rad de blindagem contra radiação · ✧ −10% de eficiência de dobra.
 - **Clima:** coragem, resistência e sertão.
@@ -166,7 +166,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `CARCARÁ heat-shielded ship: angular raptor-like silhouette about 80% of the image width, strong central body, two broad wings angled downward with a bend at mid-span, thermal shield plates along the leading edges with heat-darkened scorched rims, finned heat sinks, narrow deep-set turquoise cockpit under a protective visor, three engines, Veyra nomad wear, brave and rugged, absolutely no weapons and no military markings.`
 
 ### 5.8 Garça — `garca`
-- **Facção:** Liga Thar · **Raridade:** rara · **Preço sugerido:** 3.000 Lumes.
+- **Facção:** Liga Thar · **Raridade:** rara · **Preço:** 2.400 Lumes.
 - **Papel:** pântanos e gigantes gasosos. Filtra toxinas e protege o traje.
 - **No jogo:** ✦ +25% de filtragem tóxica · ✦ +2 de integridade nas expedições · ✧ −1 espaço no armazém de módulos.
 - **Clima:** elegância, calma, precisão.
@@ -176,7 +176,7 @@ Todas as naves têm **nome de ave**, como a Andorinha. A forma lembra a ave sem 
 - **Prompt:** `GARÇA filter ship: tall elegant silhouette, a tall thin cockpit tower like a long neck rising above a slender ivory body, the body widening at the bottom into two long thin stabilisers reaching down with small engines at their tips plus one central engine, about 60% of the image width, round air filters with turquoise grilles set into the hull, clean intakes, fine technical lines, precise Thar science design, calm and graceful, not a spider and not a walking robot.`
 
 ### 5.9 Fênix — `fenix`
-- **Facção:** nenhuma; aparece com qualquer viajante, muito raramente · **Raridade:** lendária · **Preço sugerido:** 7.500 Lumes.
+- **Facção:** nenhuma; aparece com qualquer viajante, muito raramente · **Raridade:** lendária · **Preço:** 6.000 Lumes.
 - **Papel:** a nave de dobra lendária. Atravessa galáxias gastando muito menos.
 - **No jogo:** ✦ +40% de eficiência de dobra · ✦ +2 de integridade e +3 de energia nas expedições · ✧ só aparece raramente e custa caro.
 - **Clima:** mito, renascimento, a joia da frota.

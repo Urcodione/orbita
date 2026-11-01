@@ -106,23 +106,23 @@ O primeiro local oferece uma rota de aprendizado. Nos demais, o núcleo e os cam
 
 ## Naves e hangar
 
-Além da Andorinha, existem 9 naves prontas. Elas não são vendidas em loja: um **viajante** às vezes espera num entreposto com uma nave sorteada à venda. A primeira visita depois do tutorial sempre o encontra; depois, ele aparece em cerca de 40% das atracagens e prefere naves do povo da galáxia. Se você não comprar, ao sair do entreposto ele parte, e na próxima visita pode trazer outra.
+Além da Andorinha, existem 9 naves prontas. Elas não são vendidas em loja: em cada galáxia, um **viajante** pode esperar no entreposto com uma nave sorteada (75% de chance por galáxia, com preferência pelas naves do povo daquela galáxia). A primeira atracagem depois do tutorial sempre o encontra. Ele fica no entreposto até você comprar ou partir para outra galáxia; atracar de novo não sorteia outra nave.
 
 **Hangar.** As naves compradas ficam no Hangar (Nave aberta → Hangar, ou pela Estação). A troca é feita atracado: módulos, runas, pintura e rastro passam para a nave escolhida. Se o armazém da nova nave for menor que o número de módulos guardados, o jogo pede para liberar espaço antes.
 
 | Nave | Papel | Raridade | Preço |
 |---|---|---|---|
-| Beija-flor | batedora: +25% voo, +10% dobra; −20 casco, −1 carga na expedição | comum | 2.200 |
-| Albatroz | longo curso: +40 tanque, +15% ar; −10% coleta | comum | 2.600 |
-| Pelicano | cargueira: +3 armazém, +1 carga na expedição, +20 casco; −15% voo | comum | 2.400 |
-| Coruja | observatório: +1 alcance do scanner, +15% pesquisa; −15 combustível | rara | 3.600 |
-| Martim-pescador | mineradora: +15% coleta, +3 energia na expedição; −10% ar | rara | 3.400 |
-| Pinguim | gelo e profundezas: +60 °C frio, +3 atm; −10% voo, −20 °C calor | rara | 3.200 |
-| Carcará | mundos ardentes: +60 °C calor, +60 rad; −10% dobra | rara | 3.400 |
-| Garça | pântanos e gás: +25% filtragem tóxica, +2 integridade; −1 armazém | rara | 3.000 |
-| Fênix | dobra lendária: +40% dobra, +2 integridade, +3 energia na expedição | lendária | 7.500 |
+| Beija-flor | batedora: +25% voo, +10% dobra; −20 casco, −1 carga na expedição | comum | 1.300 |
+| Albatroz | longo curso: +40 tanque, +15% ar; −10% coleta | comum | 1.500 |
+| Pelicano | cargueira: +3 armazém, +1 carga na expedição, +20 casco; −15% voo | comum | 1.400 |
+| Coruja | observatório: +1 alcance do scanner, +15% pesquisa; −15 combustível | rara | 2.900 |
+| Martim-pescador | mineradora: +15% coleta, +3 energia na expedição; −10% ar | rara | 2.700 |
+| Pinguim | gelo e profundezas: +60 °C frio, +3 atm; −10% voo, −20 °C calor | rara | 2.500 |
+| Carcará | mundos ardentes: +60 °C calor, +60 rad; −10% dobra | rara | 2.600 |
+| Garça | pântanos e gás: +25% filtragem tóxica, +2 integridade; −1 armazém | rara | 2.400 |
+| Fênix | dobra lendária: +40% dobra, +2 integridade, +3 energia na expedição | lendária | 6.000 |
 
-Os preços são uma primeira proposta, ainda sem calibração pelo bot de campanha. A arte das naves vem de `assets/src/ships/` (briefing em `assets/BRIEFING-NAVES-CODEX.md`) e é convertida por `qa/prepare-ships-art.py`. Cada nave tem a pintura fechada, a aberta com os 8 encaixes e a posição dos bocais para as chamas.
+Preços calibrados pelo bot de campanha (12 campanhas, 01/11/2026). Comprando sempre que sobram 600 Lumes, o jogador leva de 1 a 3 naves na campanha: a primeira entre os capítulos 5 e 6, as raras entre o 5 e o 8. A Fênix fica para depois do fim. Mesmo comprando sem reserva, todas as campanhas que o bot termina continuam terminando, com menos esperas por recurso. A arte das naves vem de `assets/src/ships/` (briefing em `assets/BRIEFING-NAVES-CODEX.md`) e é convertida por `qa/prepare-ships-art.py`. Cada nave tem a pintura fechada, a aberta com os 8 encaixes e a posição dos bocais para as chamas.
 
 ## Escolher uma configuração
 
