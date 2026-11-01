@@ -15,7 +15,8 @@ A Google Play pede que as capturas de tela mostrem a experiência real do app ou
 
 - **Ícone:** 512 × 512 PNG (já está no projeto Android).
 - **Imagem de destaque:** `2026-10-playstore/capa-google-play-1024x500.jpg`.
-- **Capturas de telefone (2 a 8):** `2026-10-playstore/images/` (com frases) ou `captures/` (sem frases). As capturas atuais são de antes da Xenobiologia e do Estaleiro estelar. Vale acrescentar duas novas, do laboratório ou de uma captura de exemplar e da planta do estaleiro, para mostrar as novidades.
+- **Capturas de telefone (2 a 8):** `2026-10-playstore/images/` (com frases) ou `captures/` (sem frases), todas em 1080 × 1920. A Play aceita até 8, e há 9. Sugestão de 8: 01 nave, 02 módulos, 03 mundos, 04 expedição, 07 xenobiologia, 08 captura, 09 estaleiro e 06 história, deixando 05 mercado de fora.
+- As capturas 07–09 mostram as novidades: o laboratório com a coleção de exemplares únicos, a cinemática de captura do Leviatã de vidro e a planta do Estaleiro estelar. Para refazê-las depois de um build novo, rode a partir de `orbit-explorer/`: `node promo/2026-10-playstore/source/capture-novidades.cjs [index.html]`.
 - **Vídeo:** a Play aceita só um link do YouTube. Envie o MP4 como público ou não listado, com incorporação habilitada e sem anúncios, e cole a URL na ficha.
 
 ## Arquivos grandes
