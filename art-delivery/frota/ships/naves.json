@@ -1,0 +1,182 @@
+[
+  {
+    "id": "beija-flor",
+    "bocais": [
+      {
+        "x": 52.22,
+        "y": 95.25,
+        "tipo": "principal"
+      },
+      {
+        "x": 28.32,
+        "y": 75.69,
+        "tipo": "lateral"
+      },
+      {
+        "x": 71.61,
+        "y": 80.7,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "albatroz",
+    "bocais": [
+      {
+        "x": 50.05,
+        "y": 94.48,
+        "tipo": "principal"
+      },
+      {
+        "x": 29.57,
+        "y": 81.36,
+        "tipo": "lateral"
+      },
+      {
+        "x": 69.25,
+        "y": 81.36,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "pelicano",
+    "bocais": [
+      {
+        "x": 33.5,
+        "y": 92.54,
+        "tipo": "principal"
+      },
+      {
+        "x": 50.05,
+        "y": 93.53,
+        "tipo": "lateral"
+      },
+      {
+        "x": 67.97,
+        "y": 93.53,
+        "tipo": "lateral"
+      },
+      {
+        "x": 21.56,
+        "y": 86.12,
+        "tipo": "lateral"
+      },
+      {
+        "x": 78.45,
+        "y": 87.6,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "coruja",
+    "bocais": [
+      {
+        "x": 49.01,
+        "y": 93.65,
+        "tipo": "principal"
+      },
+      {
+        "x": 33.63,
+        "y": 92.03,
+        "tipo": "lateral"
+      },
+      {
+        "x": 66.7,
+        "y": 92.03,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "martim-pescador",
+    "bocais": [
+      {
+        "x": 48.46,
+        "y": 93.72,
+        "tipo": "principal"
+      },
+      {
+        "x": 29.48,
+        "y": 84.12,
+        "tipo": "lateral"
+      },
+      {
+        "x": 69.69,
+        "y": 85.19,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "pinguim",
+    "bocais": [
+      {
+        "x": 50.84,
+        "y": 94.92,
+        "tipo": "principal"
+      },
+      {
+        "x": 28.86,
+        "y": 86.87,
+        "tipo": "lateral"
+      },
+      {
+        "x": 71.18,
+        "y": 87.25,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "carcara",
+    "bocais": [
+      {
+        "x": 51.82,
+        "y": 92.81,
+        "tipo": "principal"
+      },
+      {
+        "x": 32.08,
+        "y": 79.37,
+        "tipo": "lateral"
+      },
+      {
+        "x": 70.09,
+        "y": 79.37,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "garca",
+    "bocais": [
+      {
+        "x": 51.19,
+        "y": 86.77,
+        "tipo": "principal"
+      },
+      {
+        "x": 26.01,
+        "y": 95.06,
+        "tipo": "lateral"
+      },
+      {
+        "x": 74.07,
+        "y": 95.06,
+        "tipo": "lateral"
+      }
+    ]
+  },
+  {
+    "id": "fenix",
+    "bocais": [
+      {
+        "x": 50.05,
+        "y": 91.66,
+        "tipo": "principal"
+      }
+    ]
+  }
+]
