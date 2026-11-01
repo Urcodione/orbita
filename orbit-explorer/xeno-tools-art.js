@@ -27,9 +27,12 @@ const ORDER=['garra','rede','casulo','laco','crio','termico'];
 function html(id,cls=''){const src=root.OrbitIllustrations?.xenoTools,i=ORDER.indexOf(id);
  if(src&&i>=0)return `<span class="og-xeno-toolart ${cls}" style="background-image:var(--og-xeno-tools-art);background-position:${i%2*100}% ${Math.floor(i/2)*50}%" aria-hidden="true"></span>`;
  return `<span class="og-xeno-toolart ${cls}" aria-hidden="true">${svg(id)}</span>`;}
-// Image for canvas use (cinematics).
-const images={};
-function image(id){if(images[id])return images[id];const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(id,256));return images[id]=im;}
+// Image for canvas use (cinematics): the painted atlas cell once it has loaded (reading it starts the load), else the vector.
+const images={},painted={};
+function image(id){const i=ORDER.indexOf(id),art=root.OrbitArt;
+ if(i>=0&&root.OrbitIllustrations?.xenoTools&&art?.images.xenoTools&&art.ready('xenoTools')){if(painted[id])return painted[id];
+  const p=art.images.xenoTools,cv=document.createElement('canvas');cv.width=cv.height=256;cv.getContext('2d').drawImage(p,i%2*p.width/2,Math.floor(i/2)*p.height/3,p.width/2,p.height/3,0,0,256,256);return painted[id]=cv;}
+ if(images[id])return images[id];const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg(id,256));return images[id]=im;}
 const game=root.document?.getElementById('orbit-game');
 if(game){for(const [key,name]of [['xenoTools','xeno-tools'],['xenoSpecimens','xeno-specimens']])if(root.OrbitIllustrations?.[key])game.style.setProperty('--og-'+name+'-art','url("'+root.OrbitIllustrations[key]+'")');}
 root.OrbitXenoTools={svg,html,image,ORDER};

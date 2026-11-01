@@ -94,7 +94,7 @@ function drawFx(c,w,h,fx,t,pos,size,still){
 // Tool action, t 0..1, specific to each capture tool.
 function drawTool(c,w,h,tool,t,pos,size){
  const x=pos.x*w,y=pos.y*h,img=root.OrbitXenoTools?.image(tool),s=size*.9;c.save();
- const place=(px,py,scale,rot=0,alpha=1)=>{if(!img?.complete)return;c.globalAlpha=alpha;c.translate(px,py);c.rotate(rot);c.drawImage(img,-s*scale/2,-s*scale/2,s*scale,s*scale);c.setTransform(1,0,0,1,0,0);};
+ const place=(px,py,scale,rot=0,alpha=1)=>{if(!img||img.complete===false)return;c.globalAlpha=alpha;c.translate(px,py);c.rotate(rot);c.drawImage(img,-s*scale/2,-s*scale/2,s*scale,s*scale);c.setTransform(1,0,0,1,0,0);};
  if(tool==='garra'){place(x+s*.2,y-h*.55*(1-ease(t))-s*.1,1,-.5+.5*t);}
  else if(tool==='rede'){c.globalAlpha=.8;c.strokeStyle='#7ff7ee';c.lineWidth=1.5;const r=s*(1.6-1.1*ease(t));for(let i=0;i<8;i++){const a=i/8*Math.PI;c.beginPath();c.moveTo(x+Math.cos(a)*r,y+Math.sin(a)*r);c.lineTo(x-Math.cos(a)*r,y-Math.sin(a)*r);c.stroke();}c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();place(x,y+s*.75,.5,0,1-t);}
  else if(tool==='casulo'){c.globalAlpha=.35*ease(t);c.fillStyle='#cfeff0';c.beginPath();c.ellipse(x,y,s*.75,s*.9*ease(t),0,0,Math.PI*2);c.fill();c.globalAlpha=.9*ease(t);c.strokeStyle='#e9fffb';c.lineWidth=2;c.stroke();place(x+s*.9,y-s*.6,.45);}
@@ -106,7 +106,7 @@ function drawTool(c,w,h,tool,t,pos,size){
 function tinted(spec){
  const im=root.OrbitArt?.images.biology,painted=root.OrbitArt?.images.xenoSpecimens&&root.OrbitIllustrations?.xenoSpecimens;
  const cv=document.createElement('canvas');cv.width=cv.height=256;const g=cv.getContext('2d');
- if(painted&&root.OrbitArt.ready('xenoSpecimens')){const p=root.OrbitArt.images.xenoSpecimens,i=E.xenoCatalog.SPECIMENS.findIndex(x=>x.id===spec.id);g.drawImage(p,(i%4)*p.width/4,Math.floor(i/4)*p.height/4,p.width/4,p.height/4,0,0,256,256);return cv;}
+ if(painted&&root.OrbitArt.ready('xenoSpecimens')){const p=root.OrbitArt.images.xenoSpecimens,i=E.xenoCatalog.SPECIMENS.findIndex(x=>x.id===spec.id);g.drawImage(p,(i%4)*p.width/4,Math.floor(i/4)*p.height/4,p.width/4,p.height/4,0,0,256,256);cv.painted=true;return cv;}
  if(!im||!root.OrbitArt.ready('biology'))return null;
  const [index,hue]=spec.art;g.filter=`hue-rotate(${hue}deg)`;g.drawImage(im,(index%2)*im.width/2,Math.floor(index/2)*im.height/3,im.width/2,im.height/3,0,0,256,256);return cv;
 }
@@ -122,10 +122,13 @@ function play(container,id,onDone){
  title.querySelector('strong').textContent=spec.name;title.querySelector('span').textContent=spec.rune?.name?'Estude-o para revelar a '+spec.rune.name+'.':'';
  const rect=container.getBoundingClientRect(),dpr=Math.min(2,root.devicePixelRatio||1),w=rect.width,h=rect.height;
  canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);c.setTransform(dpr,0,0,dpr,0,0);
- const land=root.OrbitArt?.images.landscapes,sprite=tinted(spec),list=particles(script.particles,spec.id.length*97+spec.tier);
+ const land=root.OrbitArt?.images.landscapes,list=particles(script.particles,spec.id.length*97+spec.tier);
+ // The painted exemplar replaces the stand-in as soon as its atlas finishes loading (it is read lazily).
+ let sprite=tinted(spec);
  const start=performance.now();let lastLine='';
  function frame(now){
   if(playing?.el!==el)return;
+  if(!sprite||!sprite.painted&&root.OrbitIllustrations?.xenoSpecimens&&root.OrbitArt?.ready('xenoSpecimens'))sprite=tinted(spec);
   const ms=Math.min(DURATION,now-start),act=phase(ms,ACT),tp=phase(ms,TOOL),seal=phase(ms,SEAL),intro=phase(ms,[0,700]);
   c.setTransform(dpr,0,0,dpr,0,0);c.globalAlpha=1;c.fillStyle=script.sky;c.fillRect(0,0,w,h);
   if(land&&root.OrbitArt.ready('landscapes')){const pw=land.width/2,ph=land.height/4,sx=(script.bg%2)*pw,sy=Math.floor(script.bg/2)*ph,scale=Math.max(w/pw,h/ph)*1.15,dw=pw*scale,dh=ph*scale,pan=still?0:(ms/DURATION)*(dw-w)*.5;c.globalAlpha=intro;c.drawImage(land,sx,sy,pw,ph,-pan-(dw-w)*.25,(h-dh)/2,dw,dh);}

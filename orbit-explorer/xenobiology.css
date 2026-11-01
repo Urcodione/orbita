@@ -101,6 +101,8 @@
 #orbit-game .og-xeno-howto{font-size:12px;line-height:1.4;color:#c8dde4;margin:0 0 8px;padding:8px 10px;border-radius:12px;background:#0d2231;border:1px solid #2f5566}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-xeno-access.has-signal .og-xeno-dot{animation:none}}
 #orbit-game .og-xeno-art.is-painted{background-image:var(--og-xeno-specimens-art);background-size:400% 400%;filter:drop-shadow(0 0 6px #b7f5e566)}
+/* Undiscovered exemplars stay black silhouettes with the painted atlas too (.is-painted would otherwise restore the colours). */
+#orbit-game .og-xeno-art.is-painted.is-unknown{filter:brightness(0) drop-shadow(0 0 5px #7fe3d0aa);opacity:.75}
 #orbit-game .og-xeno-toolart{display:block;width:52px;height:52px;flex:none;background-size:200% 300%;background-repeat:no-repeat}
 #orbit-game .og-xeno-toolart svg{width:100%;height:100%;display:block}
 #orbit-game .og-xeno-toolart.is-small{width:30px;height:30px}
