@@ -1,0 +1,32 @@
+[
+  {
+    "id": "01-nave",
+    "duration": 5,
+    "errors": []
+  },
+  {
+    "id": "02-modulos",
+    "duration": 5,
+    "errors": []
+  },
+  {
+    "id": "03-mundos",
+    "duration": 5,
+    "errors": []
+  },
+  {
+    "id": "04-expedicao",
+    "duration": 6,
+    "errors": []
+  },
+  {
+    "id": "05-mercado",
+    "duration": 5,
+    "errors": []
+  },
+  {
+    "id": "06-historia",
+    "duration": 5,
+    "errors": []
+  }
+]
