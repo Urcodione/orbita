@@ -80,3 +80,8 @@ Prompt: Transparent game sprite atlas with six isolated alien collectible specim
 Geração individual com a ferramenta de imagens do Codex (imagegen), em modo de geração com referências, uma pintura por item. Referências visuais: Andorinha, módulos, biologia comum e atlas cósmico. Mesma luz quente superior esquerda, sombras teal, marfim e cobre na engenharia. Os contornos dos exemplares foram conferidos em preto a 48 px.
 
 Os prompts finais, por ID, estão em [src/xeno-prompts.json](src/xeno-prompts.json); as fichas de direção em [BRIEFING-XENO-CODEX.md](BRIEFING-XENO-CODEX.md). Fontes PNG RGBA 1024 × 1024 em src/xeno-tools/ (6) e src/xeno-specimens/ (16). Gerados os atlas WebP e suas versões inline com qa/prepare-xeno-art.py.
+
+
+## 2026-11-01 — Frota de exploração
+
+Nove pares de cascos fechados e abertos em PNG RGBA 1024 × 1536. Geração individual com imagegen, seguida de edição de cada casco com referência e registro dos encaixes na guia. Referências: Andorinha fechada e aberta, atlas de módulos e atlas cósmico. Prompts em [src/ships/prompts.json](src/ships/prompts.json) e coordenadas dos bocais em [src/ships/naves.json](src/ships/naves.json).
