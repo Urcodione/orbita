@@ -75,8 +75,8 @@ Ferramenta integrada image_gen. Assets: `biology-atlas.png`, `biology-atlas.webp
 Prompt: Transparent game sprite atlas with six isolated alien collectible specimens in strict 2 columns by 3 rows. Top left luminous emerald alien fern with curled leaves and turquoise spores. Top right ice orchid with crystalline pale blue petals. Middle left ember succulent with copper cactus and glowing orange flowers. Middle right friendly moss fox with leafy green fur, full body. Bottom left translucent violet ocean jellyfish with pearlescent bell. Bottom right floating cyan sky manta ray with golden markings. Premium hand-painted dimensional realistic cartoon consistent with the space exploration game, warm highlights, cool shadows, transparent background, no text or boxes.
 
 
-## 2026-10-31 — Xenobiologia e Estaleiro estelar · 34 pinturas
+## 2026-10-31 — Xenobiologia · 22 pinturas
 
 Geração individual com a ferramenta de imagens do Codex (imagegen), em modo de geração com referências, uma pintura por item. Referências visuais: Andorinha, módulos, biologia comum e atlas cósmico. Mesma luz quente superior esquerda, sombras teal, marfim e cobre na engenharia. Os contornos dos exemplares foram conferidos em preto a 48 px.
 
-Os prompts finais, por ID, estão em [src/xeno-yard-prompts.json](src/xeno-yard-prompts.json); as fichas de direção em [BRIEFING-ARTE-CODEX.md](BRIEFING-ARTE-CODEX.md). Fontes PNG RGBA 1024 × 1024 em src/xeno-tools/ (6), src/xeno-specimens/ (16) e src/yard-parts/ (12). Gerados os atlas WebP e suas versões inline com qa/prepare-xeno-yard-art.py.
+Os prompts finais, por ID, estão em [src/xeno-prompts.json](src/xeno-prompts.json); as fichas de direção em [BRIEFING-XENO-CODEX.md](BRIEFING-XENO-CODEX.md). Fontes PNG RGBA 1024 × 1024 em src/xeno-tools/ (6) e src/xeno-specimens/ (16). Gerados os atlas WebP e suas versões inline com qa/prepare-xeno-art.py.

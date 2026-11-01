@@ -1,8 +1,8 @@
-# Briefing de arte: Xenobiologia e Estaleiro estelar
+# Briefing de arte: Xenobiologia
 
-Para quem vai pintar (Codex, com a mesma ferramenta de imagens usada em `ARTE.md`). São **34 ilustrações**: 6 ferramentas de captura, 16 exemplares únicos (animais e plantas) e 12 peças de nave. O código já está pronto. Basta entregar as imagens no formato da seção 3, sem mudar nenhum código.
+Para quem vai pintar (Codex, com a mesma ferramenta de imagens usada em `ARTE.md`). São **22 ilustrações**: 6 ferramentas de captura e 16 exemplares únicos (animais e plantas). Entregues em 31/10/2026; este documento fica como registro e como guia para retoques. O código já está pronto. Basta entregar as imagens no formato da seção 3, sem mudar nenhum código.
 
-Este documento substitui os prompts curtos de `XENO-ARTE.md` e `ESTALEIRO-ARTE.md`. Cada item traz: o que é, o que faz no jogo, onde vive, qual o clima e o que **não** pode parecer.
+Este documento substitui os prompts curtos de `XENO-ARTE.md`. Cada item traz: o que é, o que faz no jogo, onde vive, qual o clima e o que **não** pode parecer.
 
 ---
 
@@ -10,14 +10,14 @@ Este documento substitui os prompts curtos de `XENO-ARTE.md` e `ESTALEIRO-ARTE.m
 
 Órbita é um jogo mobile de exploração espacial. O jogador pilota a **Andorinha**, um foguete retrofuturista de cerâmica marfim, cabine de vidro turquesa e propulsores de cobre. Ele viaja entre galáxias, desce em planetas, coleta recursos e agora **caça exemplares únicos**: cada animal ou planta existe **uma única vez** no jogo. O exemplar capturado vira uma **runa**, gravada num módulo da nave.
 
-O tom é de **maravilhamento e aventura contemplativa**, com algo de filme de animação de alto nível: calor, curiosidade e beleza. Não é terror, não é militar, não é fofo infantil. Os animais são **majestosos e raros**, como encontrar uma lenda viva. As ferramentas e peças são **equipamento de explorador**: bem-feito, um pouco gasto pelo uso e com vontade de ser tocado.
+O tom é de **maravilhamento e aventura contemplativa**, com algo de filme de animação de alto nível: calor, curiosidade e beleza. Não é terror, não é militar, não é fofo infantil. Os animais são **majestosos e raros**, como encontrar uma lenda viva. As ferramentas são **equipamento de explorador**: bem-feito, um pouco gasto pelo uso e com vontade de ser tocado.
 
 ## 2. Padrão visual obrigatório (o mesmo da arte aprovada)
 
 **Referências que devem estar abertas ao gerar**, como imagem de referência ou de estilo:
 
-- `andorinha-illustrated.png`: materiais e luz da nave. É a referência principal das ferramentas e peças.
-- `modules-atlas.png`: família direta das ferramentas e peças (radar, garra, caixas, cilindros, escudo, motor, dobra).
+- `andorinha-illustrated.png`: materiais e luz da nave. É a referência principal das ferramentas.
+- `modules-atlas.png`: família direta das ferramentas (radar, garra, caixas, cilindros, escudo, motor, dobra).
 - `biology-atlas.png`: família direta dos exemplares (samambaia, orquídea de gelo, suculenta de brasa, raposa de musgo, água-viva, arraia do céu).
 - `cosmic-atlas.png`: brilho violeta "cósmico", para os itens mais raros.
 
@@ -52,19 +52,18 @@ Salve em:
 ```
 assets/src/xeno-tools/<id>.png          (6 arquivos)
 assets/src/xeno-specimens/<id>.png      (16 arquivos)
-assets/src/yard-parts/<id>.png          (12 arquivos)
 ```
 
 Os `<id>` estão em cada item abaixo. Depois, rode a partir de `orbit-explorer/`:
 
 ```bash
-python3 qa/prepare-xeno-yard-art.py
+python3 qa/prepare-xeno-art.py
 ```
 
-O script monta `assets/xeno-tools.webp` (2×3), `assets/xeno-specimens.webp` (4×4) e `assets/yard-parts.webp` (4×3), além das versões `-inline` para a prévia compacta, na ordem exata que o jogo espera. O `build.py` incorpora esses arquivos sozinho. Se preferir gerar o atlas inteiro de uma vez, salve como `assets/src/xeno-tools.png` (e equivalentes) na ordem da grade. O script aceita os dois formatos.
+O script monta `assets/xeno-tools.webp` (2×3) e `assets/xeno-specimens.webp` (4×4), além das versões `-inline` para a prévia compacta, na ordem exata que o jogo espera. O `build.py` incorpora esses arquivos sozinho. Se preferir gerar o atlas inteiro de uma vez, salve como `assets/src/xeno-tools.png` (e equivalentes) na ordem da grade. O script aceita os dois formatos.
 
 ### Enquadramento por item
-- Objeto **centralizado**, ocupando cerca de **70–75% do quadrado** (ferramentas e peças) ou **75–80%** (animais e plantas), com margem transparente em volta.
+- Objeto **centralizado**, ocupando cerca de **70–75% do quadrado** (ferramentas) ou **75–80%** (animais e plantas), com margem transparente em volta.
 - Nada encostando na borda: o glow precisa sumir antes da borda.
 - Fundo **realmente transparente** (alfa), nada de branco ou xadrez desenhado.
 
@@ -76,12 +75,10 @@ O script monta `assets/xeno-tools.webp` (2×3), `assets/xeno-specimens.webp` (4�
 | Exemplares | ícone no mapa da expedição (flutuando), laboratório, ficha do exemplar (120 px), catálogo "Únicos" | 44–120 px |
 | Exemplares (sombra) | **catálogo antes da captura**: a mesma imagem vira silhueta preta (brightness 0) com um "?" | 48 px, só a silhueta |
 | Exemplares (cinemática) | cinemática exclusiva de 7 s, sem pular, sobre a paisagem pintada do bioma, com partículas e movimento | ocupa boa parte da tela do celular (~256 px de origem) |
-| Peças | planta do estaleiro, hangar, loja e **montadas por cima da nave pintada** na tela principal | 30–60 px |
 
 Consequências:
 - Cada exemplar precisa de uma **silhueta única e reconhecível só pelo contorno preto**. Exemplo: raposa com cauda de fitas, urso volumoso, mariposa de asas abertas, arraia em losango, samambaia com espirais, cacto em colunas.
-- Ferramentas e peças precisam ser lidas a **48 px**: 2 a 4 formas grandes, com detalhe só de acabamento.
-- As peças ficam **em cima do casco marfim da Andorinha**: precisam ter a mesma luz, os mesmos materiais e a mesma câmera da nave.
+- Ferramentas precisam ser lidas a **48 px**: 2 a 4 formas grandes, com detalhe só de acabamento.
 
 ---
 
@@ -339,108 +336,13 @@ São os **16 seres mais raros do jogo**, e cada um existe uma única vez. Precis
 
 ---
 
-## 6. Peças do Estaleiro estelar (`yard-parts`, grade 4 colunas × 3 linhas)
+## 6. Checklist antes de entregar
 
-O Estaleiro é uma grade de **5×7 com forma de foguete**, sobreposta à Andorinha. O jogador compra peças em entrepostos (cada galáxia tem uma facção que vende 4 peças) e as monta por cima do casco, com limite de **massa** e **energia**. As peças aparecem **desenhadas sobre a nave pintada** na tela principal. Por isso precisam ser **acessórios aparafusáveis da mesma nave**: mesma cerâmica marfim, mesmo cobre, mesmas juntas teal e a mesma luz da `andorinha-illustrated.png`. A câmera deve ser **quase frontal** (como a nave), para encaixar na vista da nave.
-
-**Formato da peça na grade:** a célula da imagem é quadrada, mas a peça ocupa 1×1, 1×2 (alta), 2×1 (larga) ou 2×2. Desenhe o objeto **com a proporção do encaixe** e centralizado no quadrado: peça alta = objeto alto e estreito; peça larga = objeto largo e baixo.
-
-**Sotaque de cada facção** (sutil, sem fugir dos materiais da nave):
-- **Coletivo Aural:** civil e solar. Formas arredondadas e lisas, mais marfim, acentos azul-solar.
-- **Nômades Veyra:** viajantes de propulsão. Formas varridas e aerodinâmicas, mais cobre, remendos e desgaste de longa viagem, brilho âmbar.
-- **Liga Thar:** ciência e sensores. Geometria precisa, lentes e vidros turquesa, linhas técnicas finas.
-
-**Prompt-base (prefixo):**
-`Use case: stylized-concept. Single production game sprite of ONE external bolt-on hull part for the referenced Andorinha retrofuturist rocket, same materials and lighting exactly: premium hand-painted dimensional realistic cartoon, animated-film concept art, ivory ceramic panels, brushed copper and orange-copper trims, dark teal metal joints, turquoise glass, tiny warm lamps, gentle travel wear, warm upper-left key light, cool teal shadows. Near-front view matching the ship's front view so it can be attached on top of it. Centered on a square 1024x1024 canvas with transparent margins, truly transparent alpha background. No text, no labels, no frame, no background, no complete ship, no hands. Readable at 40 px.` + o prompt do item.
-
-### 6.1 Tanque externo — `tanque-externo` (linha 1, coluna 1) · Coletivo Aural · **1×2 (alta)**
-- **O que faz:** +20 de tanque de combustível. Massa 4, sem consumo de energia. 140 Lumes.
-- **Clima:** autonomia para ir mais longe.
-- **Aparência:** **cápsula de combustível alta**, de pontas arredondadas, marfim, com **duas cintas de cobre** e uma janelinha de nível turquesa; suportes teal de fixação nas costas.
-- **Prompt:** `TANQUE EXTERNO (tall, 1x2): tall rounded ivory capsule fuel tank standing vertical, two copper straps, a small turquoise fuel gauge window, dark teal mounting brackets, smooth Aural civilian design.`
-
-### 6.2 Reservatório de O₂ — `reservatorio-o2` (linha 1, coluna 2) · Coletivo Aural · **1×1**
-- **O que faz:** +15 de reserva de oxigênio. Massa 2. 120 Lumes.
-- **Clima:** fôlego extra, segurança.
-- **Aparência:** **esfera marfim** de oxigênio com anel equatorial de cobre, válvula teal no topo e uma luzinha verde-turquesa.
-- **Diferenciar de:** os cilindros de oxigênio dos módulos, que são verticais e aos pares. Aqui é **uma esfera**.
-- **Prompt:** `RESERVATÓRIO DE O₂ (1x1): compact round ivory oxygen sphere with a copper equator band, a dark teal valve on top and a small turquoise indicator light, mounting collar.`
-
-### 6.3 Placas de casco — `placas-casco` (linha 1, coluna 3) · Coletivo Aural · **1×1**
-- **O que faz:** +10 de resistência do casco. Massa 3. 110 Lumes. Pode-se montar várias.
-- **Clima:** proteção sólida.
-- **Aparência:** **placa de blindagem em forma de escudo**, levemente curva, cerâmica marfim sobre base teal, borda de cobre rebitada, marcas de desgaste.
-- **Prompt:** `PLACAS DE CASCO (1x1): slightly curved shield-shaped ivory ceramic armour plate layered over a dark teal backing plate, riveted copper rim, subtle scratches and wear.`
-
-### 6.4 Vela solar — `vela-solar` (linha 1, coluna 4) · Coletivo Aural · **2×1 (larga)**
-- **O que faz:** +5% de eficiência do ar e **gera 2 de energia** para outras peças. Massa 1. 260 Lumes.
-- **Clima:** leveza, energia limpa.
-- **Aparência:** **par de painéis solares azul-profundo** (células em grade, reflexo brilhante), molduras de cobre, abertos para os dois lados de um pequeno eixo marfim.
-- **Prompt:** `VELA SOLAR (wide, 2x1): wide pair of glossy deep-blue photovoltaic solar panels with fine cell grid, copper frames, unfolded left and right from a small ivory hinge hub, sparkling reflections.`
-
-### 6.5 Quilha estabilizadora — `quilha` (linha 2, coluna 1) · Nômades Veyra · **1×2 (alta)**
-- **O que faz:** +6% de eficiência de voo. Massa 3, consome 1 de energia. 180 Lumes.
-- **Clima:** voo estável, viajante experiente.
-- **Aparência:** **aleta varrida para trás**, alta, marfim, com **espinha de cobre** no bordo de ataque, base teal e uma lâmpada teal pequena; leves remendos de viagem.
-- **Prompt:** `QUILHA ESTABILIZADORA (tall, 1x2): tall swept-back ivory stabiliser fin with a copper spine along its leading edge, dark teal root mount, tiny teal lamp, travel-worn patches, Veyra nomad aerodynamic style.`
-
-### 6.6 Nacela auxiliar — `nacela` (linha 2, coluna 2) · Nômades Veyra · **1×2 (alta)**
-- **O que faz:** +10% de voo e +5% de dobra. Massa 4, consome 2 de energia. 300 Lumes.
-- **Clima:** impulso extra, velocidade.
-- **Aparência:** **nacela de propulsão esguia de cobre**, alta, nariz marfim, bocal teal escuro embaixo com **brilho âmbar** suave.
-- **Diferenciar de:** os propulsores laterais da própria Andorinha. A nacela é **mais fina e alta, um propulsor acoplável**.
-- **Prompt:** `NACELA AUXILIAR (tall, 1x2): slim tall copper auxiliary booster nacelle, ivory nose cap, dark teal bell nozzle at the bottom with a faint warm amber glow, small intake vents, Veyra nomad style.`
-
-### 6.7 Baia de drones — `baia-drones` (linha 2, coluna 3) · Nômades Veyra · **2×2**
-- **O que faz:** +10% de coleta e +1 de carga na expedição. Massa 5, consome 3 de energia. 420 Lumes.
-- **Clima:** pequenos ajudantes, colmeia útil.
-- **Aparência:** **caixa-hangar marfim** robusta com **escotilha aberta**, mostrando dois **drones teal** pequenos (um saindo), luzes turquesa dentro da baia, acabamento de cobre.
-- **Prompt:** `BAIA DE DRONES (2x2): sturdy ivory hangar box module with an open hatch, two tiny teal survey drones (one flying out), turquoise bay lights inside, copper trim, chunky square proportion.`
-
-### 6.8 Reator compacto — `reator-compacto` (linha 2, coluna 4) · Nômades Veyra · **1×1**
-- **O que faz:** **gera 4 de energia** para outras peças. Massa 3. 240 Lumes.
-- **Clima:** coração quente, pulsante.
-- **Aparência:** **cápsula marfim arredondada** com janela redonda mostrando um **núcleo âmbar-laranja brilhante**, anéis de refrigeração de cobre.
-- **Diferenciar de:** o reservatório de O₂, que é uma esfera fria com luz turquesa. O reator é **quente, âmbar, com janela de núcleo**.
-- **Prompt:** `REATOR COMPACTO (1x1): rounded ivory reactor pod with a round window showing a glowing amber-orange core, copper cooling rings around it, warm pulsing light.`
-
-### 6.9 Antena de longo alcance — `antena-longa` (linha 3, coluna 1) · Liga Thar · **1×1**
-- **O que faz:** +1 setor de alcance do scanner. Massa 1, consome 3 de energia. 320 Lumes.
-- **Clima:** escuta do distante.
-- **Aparência:** **prato parabólico marfim** pequeno sobre **mastro fino de cobre**, ponta emissora turquesa no foco.
-- **Diferenciar de:** o radar do `modules-atlas.png` (prato grande sobre base). Aqui é **um prato menor num mastro alto e fino**.
-- **Prompt:** `ANTENA DE LONGO ALCANCE (1x1): small ivory parabolic dish on a slender copper mast, turquoise emitter tip at its focus, precise Thar technical lines.`
-
-### 6.10 Matriz de sensores — `matriz-sensores` (linha 3, coluna 2) · Liga Thar · **2×1 (larga)**
-- **O que faz:** +10% de bônus de pesquisa. Massa 2, consome 2 de energia. 220 Lumes.
-- **Clima:** observação atenta.
-- **Aparência:** **barra horizontal marfim** com **três olhos de vidro turquesa** em linha, tampas de cobre nas pontas.
-- **Prompt:** `MATRIZ DE SENSORES (wide, 2x1): horizontal ivory sensor bar with three round turquoise glass sensor eyes in a row, copper end caps, fine technical engravings.`
-
-### 6.11 Defletor de campo — `defletor` (linha 3, coluna 3) · Liga Thar · **2×1 (larga)**
-- **O que faz:** +1 de integridade nas expedições. Massa 2, consome 2 de energia. 260 Lumes.
-- **Clima:** proteção invisível.
-- **Aparência:** **arco emissor curvo horizontal** (teal escuro e cobre) projetando acima uma **cúpula de energia turquesa translúcida**.
-- **Diferenciar de:** o escudo do `modules-atlas.png` (esfera fechada). Aqui é **um arco largo com uma meia-cúpula de energia**.
-- **Prompt:** `DEFLETOR DE CAMPO (wide, 2x1): wide curved horizontal emitter arc of dark teal metal and copper, projecting a translucent turquoise energy shield half-dome above it, faint hexagonal shimmer.`
-
-### 6.12 Contêiner orbital — `conteiner-orbital` (linha 3, coluna 4) · Liga Thar · **2×2**
-- **O que faz:** +2 espaços no armazém de módulos. Massa 6 (a mais pesada). 380 Lumes.
-- **Clima:** robustez, carga.
-- **Aparência:** **contêiner de carga** quadrado e robusto, marfim com **cintas e cantoneiras de cobre**, uma placa de identificação marfim **sem texto**, escotilha e pequenas luzes de status.
-- **Diferenciar de:** a baia de drones, que tem escotilha aberta e drones. O contêiner é **fechado e pesado**.
-- **Prompt:** `CONTÊINER ORBITAL (2x2): sturdy closed square cargo container, ivory body with copper bands and corner brackets, a blank ivory plate (no text), sealed hatch, small status lights, heavy and solid.`
-
----
-
-## 7. Checklist antes de entregar
-
-- [ ] 34 PNGs com fundo transparente real, nos nomes `<id>.png` das pastas da seção 3.
+- [ ] 22 PNGs com fundo transparente real, nos nomes `<id>.png` das pastas da seção 3.
 - [ ] Mesmo estilo de pintura das referências, com luz vindo de cima à esquerda em todas.
-- [ ] A 48 px, cada ferramenta se distingue das outras cinco, e cada peça das outras onze.
+- [ ] A 48 px, cada ferramenta se distingue das outras cinco.
 - [ ] Em silhueta preta, cada exemplar é reconhecível e diferente dos outros quinze.
 - [ ] Os exemplares únicos não repetem as espécies comuns do `biology-atlas.png` (água-viva violeta, raposa de musgo, arraia ciano, samambaia turquesa, orquídea-lírio, suculenta de cobre).
-- [ ] As peças altas (1×2) são altas, as largas (2×1) são largas, e todas ficam bem sobre o casco marfim.
 - [ ] Nenhum texto, moldura, chão grande ou glow cortado na borda.
-- [ ] Rodou `python3 qa/prepare-xeno-yard-art.py` e conferiu os três `.webp` gerados em `assets/`.
+- [ ] Rodou `python3 qa/prepare-xeno-art.py` e conferiu os dois `.webp` gerados em `assets/`.
 - [ ] Registrou ao final de `ARTE.md` (data, ferramenta, prompts usados), como nas seções anteriores.

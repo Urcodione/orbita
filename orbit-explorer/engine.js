@@ -292,8 +292,6 @@
     const power = type => state.equipped[type].power;
     const effects = {};
     Object.values(state.equipped).forEach(module => Object.entries(moduleEffects(module)).forEach(([key, amount]) => { effects[key] = (effects[key] || 0) + amount; }));
-    // Hull parts mounted in the star shipyard (shipyard.js) add their effects, including the mass penalty.
-    if (typeof api.yardEffects === 'function') Object.entries(api.yardEffects(state) || {}).forEach(([key, amount]) => { effects[key] = (effects[key] || 0) + amount; });
     const effect = key => effects[key] || 0;
     return {
       maxFuel: Math.round(100 + 15 * (power('engine') - 1) + effect('maxFuel')),
@@ -1575,6 +1573,18 @@
     }
     return output;
   }
+  // The star shipyard (bolt-on hull parts) was retired. Saves that bought parts get their price back in Lumes.
+  const RETIRED_SHIPYARD_PRICES = { 'tanque-externo': 140, 'reservatorio-o2': 120, 'placas-casco': 110, 'vela-solar': 260, quilha: 180, nacela: 300, 'baia-drones': 420, 'reator-compacto': 240, 'antena-longa': 320, 'matriz-sensores': 220, defletor: 260, 'conteiner-orbital': 380 };
+  function refundRetiredShipyard(state) {
+    const owned = state.yard && typeof state.yard.owned === 'object' ? state.yard.owned : {};
+    const refund = Object.entries(owned).reduce((sum, [id, count]) => sum + (RETIRED_SHIPYARD_PRICES[id] || 0) * (Number.isInteger(count) ? Math.max(0, Math.min(6, count)) : 0), 0);
+    delete state.yard;
+    if (refund > 0 && state.resources && Number.isFinite(state.resources.credits) && Array.isArray(state.log)) {
+      state.resources.credits += refund;
+      addLog(state, `O estaleiro estelar foi desativado. As peças de casco foram reembolsadas: +${refund} Lumes.`, 'good');
+    }
+  }
+
   function restore(saved) {
     try {
       let state = typeof saved === 'string' ? JSON.parse(saved) : clone(saved);
@@ -1608,6 +1618,7 @@
         }
       }
       if (state.components === undefined) state.components = {};
+      if (state.yard !== undefined) refundRetiredShipyard(state);
       if (state.expedition === undefined) state.expedition = null;
       if (state.siteCaches === undefined) state.siteCaches = {};
       if(state.siteOperations===undefined)state.siteOperations={};

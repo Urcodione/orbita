@@ -1,6 +1,6 @@
 # Xenobiologia: arte a gerar
 
-> **Atualização:** o briefing completo, item a item (o que é, o que faz, clima, silhueta, prompt), e o fluxo de entrega estão em `BRIEFING-ARTE-CODEX.md`. Ele substitui os prompts abaixo; a montagem dos atlas é feita por `qa/prepare-xeno-yard-art.py`.
+> **Atualização:** o briefing completo, item a item (o que é, o que faz, clima, silhueta, prompt), e o fluxo de entrega estão em `BRIEFING-XENO-CODEX.md`. Ele substitui os prompts abaixo; a montagem dos atlas é feita por `qa/prepare-xeno-art.py`.
 
 O jogo já funciona sem esta arte: as ferramentas usam ilustrações vetoriais provisórias (`xeno-tools-art.js`) e os exemplares usam o atlas de biologia com variação de cor. Quando os arquivos abaixo existirem em `assets/`, o `build.py` os incorpora automaticamente e a interface e as cinemáticas passam a usá-los, sem outra mudança de código.
 

@@ -102,33 +102,7 @@ O primeiro local oferece uma rota de aprendizado. Nos demais, o núcleo e os cam
 
 **Cinemáticas.** Cada exemplar tem uma cinemática de captura própria, de cerca de 7 segundos, que não pode ser pulada.
 
-**Arte.** As ferramentas usam ilustrações vetoriais provisórias, e os exemplares usam o atlas de biologia com variação de cor. A arte pintada definitiva está especificada em `assets/XENO-ARTE.md` e é incorporada automaticamente quando os arquivos existirem.
-
-## Estaleiro estelar
-
-Em **Nave aberta → Estaleiro** ou **Estação → Estaleiro**, você monta peças de casco numa planta com o formato da Andorinha.
-
-**Encaixe.** Toque numa peça do hangar e depois num encaixe destacado em verde. Para devolver uma peça ao hangar, toque nela no casco.
-
-**Limites.** Cada peça ocupa de 1 a 4 encaixes e tem massa e consumo de energia.
-
-| Limite | Valor |
-|---|---|
-| Massa máxima da estrutura | 30 |
-| Massa a partir da qual a nave perde 1% de eficiência de voo por unidade | 18 |
-| Energia fornecida pelo reator | 10 |
-
-O reator compacto e a vela solar geram energia extra.
-
-**Peças.** Cada galáxia vende, no entreposto, as quatro peças da sua facção:
-
-- **Coletivo Aural:** tanque externo, reservatório de O₂, placas de casco e vela solar.
-- **Nômades Veyra:** quilha, nacela auxiliar, baia de drones e reator compacto.
-- **Liga Thar:** antena de longo alcance, matriz de sensores, defletor e contêiner orbital.
-
-São 12 peças no total, de 110 a 420 Lumes cada.
-
-**Código da nave.** Cada montagem gera um código curto (`ORB1-…`) que pode ser copiado e compartilhado. Colar o código de outro jogador aplica o modelo, desde que você tenha as peças no hangar; se faltar alguma, o jogo diz quais. As peças montadas aparecem também na própria nave, na tela principal. Por enquanto usam ilustrações vetoriais provisórias; os prompts da arte pintada estão em `assets/ESTALEIRO-ARTE.md`.
+**Arte.** Ferramentas e exemplares são pinturas dedicadas (`assets/xeno-tools.webp` e `assets/xeno-specimens.webp`), montadas a partir de `assets/src/` por `qa/prepare-xeno-art.py`. O briefing de cada item está em `assets/BRIEFING-XENO-CODEX.md`.
 
 ## Escolher uma configuração
 

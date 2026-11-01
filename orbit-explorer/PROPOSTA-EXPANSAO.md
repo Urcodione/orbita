@@ -20,17 +20,17 @@ Princípio, conforme `CAMPANHA-RITMO.md`: não inflar preços nem cobrar taxas. 
 
 ## 2. Em que o jogador gastaria Lumes
 
-### A. Estaleiro modular (sua ideia de customização da nave)
+### A. Naves prontas à venda (substitui o estaleiro modular)
 
-Hoje a nave tem 8 encaixes fixos. A proposta é um **casco em grade**, com:
+A primeira versão foi um estaleiro de peças presas por cima da Andorinha. Depois veio um protótipo de montagem livre, tipo Lego. Os dois foram descartados em 01/11/2026: peças avulsas nunca encaixam com o acabamento de uma nave pintada inteira.
 
-- **Peças de estrutura:** seções de casco, nacelas, quilhas, antenas, tanques externos e baias de drones. Cada uma ocupa células da grade e tem massa, consumo de energia e um efeito pequeno.
-- **Limites:** área da grade, massa máxima (mais massa piora a eficiência de voo) e energia do reator. Esses limites obrigam a escolher, e daí nascem naves diferentes.
-- **Fontes das peças:** compradas com Lumes nos entrepostos (cada facção vende um estilo próprio), fabricadas com materiais ou recebidas como recompensa rara de núcleos.
-- **Pinturas, decalques e rastros premium:** são gastos cosméticos; a pintura neon já existe.
-- **Compartilhamento:** a nave vira um **código curto** (texto ou QR) e um **cartão-imagem** com nome, atributos e registro de exploração. Funciona offline: outro jogador cola o código para ver a nave ou usá-la como modelo de construção, pagando as peças.
+A direção agora é de **naves prontas**:
 
-O estaleiro gasta Lumes de forma contínua, porque sempre há uma peça melhor ou um visual novo. É também a base do compartilhamento.
+- **Viajante:** às vezes aparece numa estação vendendo uma nave sorteada. Se o jogador não comprar, na próxima visita pode ser outra.
+- **Hangar:** guarda as naves compradas. A troca de nave é feita numa estação, e os 8 módulos, as runas, a pintura e o rastro passam para a nave nova.
+- **Personalidade:** cada nave tem um jeito próprio de jogar, como mais carga, mais velocidade, proteção para um tipo de mundo ou dobra mais barata.
+
+São 10 naves: a Andorinha e mais 9. O briefing de arte está em `assets/BRIEFING-NAVES-CODEX.md`. É um gasto de Lumes contínuo e desejado: sempre há uma nave que ainda não apareceu.
 
 ### B. Xenobiologia: fauna e flora com propósito (sua ideia de mais animais)
 
@@ -40,14 +40,14 @@ O estaleiro gasta Lumes de forma contínua, porque sempre há uma peça melhor o
   - Arraia celeste: sonda atmosférica gasta menos energia.
 - **Ferramentas de captura (compráveis):** garra, rede de plasma, armadilha térmica e cápsula criogênica. Cada espécie exige uma ferramenta e tem um comportamento: foge, solta veneno, se camufla ou congela.
 - **Mais espécies:** passar de 6 para cerca de 24, com 2 ou 3 por bioma e raridades diferentes.
-- **Bestiário com marcos:** completar uma família rende peça do estaleiro, pintura ou traço.
+- **Bestiário com marcos:** completar uma família rende pintura, traço ou desconto com o viajante de naves.
 
 ### C. Civilizações e facções
 
 Os três entrepostos já têm nome: Coletivo Aural, Nômades Veyra e Liga Thar. A proposta:
 
 - Dar a cada um **reputação**, que sobe com encomendas, doações (gasto de Lumes) e missões em cadeia.
-- A reputação libera **catálogo exclusivo**: peças de estaleiro, receitas e pinturas.
+- A reputação libera **catálogo exclusivo**: naves, receitas e pinturas.
 - **Postos alienígenas** em alguns planetas: povos com diálogo curto e trocas (espécie por tecnologia, por exemplo).
 
 Isso é conteúdo de expansão: o "pacote de civilizações".
@@ -126,7 +126,7 @@ Antes, o próprio jogo induzia essa evacuação, com o falso "Livre −1". Isso 
 |---|---|---|---|
 | 1 | Recompensas animadas; cartão "Nova espécie"; reação opção B; ajuste do capítulo 2; Registro do explorador; estudo de espécies (dados + Lumes → traços) | Não | Dados e Lumes desde o capítulo 2 |
 | 2 | Ferramentas de captura; cinemáticas de captura, colheita e atracagem; +6 espécies | Sim | Ferramentas e estudos |
-| 3 | Estaleiro modular (grade, massa, energia); cosméticos; código e cartão compartilháveis | Sim (peças) | Contínuo, até o fim do jogo |
+| 3 | Naves prontas: viajante, hangar e troca de nave; cosméticos | Sim (9 naves) | Contínuo, até o fim do jogo |
 | 4 | Pacote de civilizações: reputação, postos alienígenas, missões em cadeia, catálogos exclusivos | Sim | Doações, catálogos |
 | 5 | Ranking online validado por repetição da partida | Servidor | — |
 
@@ -151,7 +151,7 @@ Cada fase deve passar pelo bot de campanha para medir as curvas de Lumes e dados
 - **Arte dedicada:** dos 16 exemplares, das ferramentas e dos quadros de garra e rede.
 - **Cinemáticas completas:** atracagem no entreposto e colheita de flora.
 - **Registro do explorador.**
-- **Estaleiro modular.**
+- **Naves prontas** (viajante e hangar).
 - **Pacote de civilizações.**
 
 ### Atualização seguinte
@@ -161,14 +161,9 @@ Cada fase deve passar pelo bot de campanha para medir as curvas de Lumes e dados
   - avisos da caçada no topo da tela, no planeta, na Ajuda e no tutorial;
   - coleção "Únicos" no Catálogo, com sombras até a captura;
   - ilustrações provisórias das ferramentas e encaixe pronto para a arte pintada (`assets/XENO-ARTE.md`).
-- **Estaleiro estelar:**
-  - planta do casco em grade, 12 peças de 3 facções;
-  - limites de massa e energia e penalidade de voo por peso;
-  - código compartilhável `ORB1`.
-  - Ainda faltam: arte pintada das peças, a nave exibindo as peças na tela principal, o cartão-imagem e o ranking.
+### Naves e backlog (01/11/2026)
 
-### Arte, peças e backlog (01/11/2026)
-
-- **Peças na nave da tela principal:** as peças montadas no estaleiro já aparecem projetadas sobre o casco pintado. As colunas externas ficam como acoplamentos laterais.
-- **Prompts prontos:** `assets/XENO-ARTE.md` traz as ferramentas e os 16 exemplares; `assets/ESTALEIRO-ARTE.md` traz as 12 peças. Gerado cada arquivo, o build o incorpora sem mudança de código.
+- **Estaleiro aposentado:** as peças de casco saíram do jogo. Saves que tinham peças recebem o valor de volta em Lumes ao carregar, com um aviso no registro.
+- **Arte dos exemplares e das ferramentas:** pinturas dedicadas instaladas (`assets/BRIEFING-XENO-CODEX.md`).
+- **Naves prontas:** briefing das 9 naves novas em `assets/BRIEFING-NAVES-CODEX.md`. A mecânica (viajante, hangar e troca de nave) é o próximo passo.
 - **Backlog sem definição:** ranking de exploração e cartão-imagem compartilhável. Ainda não está decidido o que mediriam nem se precisam de servidor.

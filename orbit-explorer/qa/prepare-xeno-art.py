@@ -1,16 +1,15 @@
-"""Build the xenobiology and shipyard atlases the game reads, from the painted sources.
+"""Build the xenobiology atlases the game reads, from the painted sources.
 
 Sources (either form works, per set):
-  - one full atlas PNG:        assets/src/xeno-tools.png, assets/src/xeno-specimens.png, assets/src/yard-parts.png
-  - or one PNG per item:       assets/src/xeno-tools/<id>.png, assets/src/xeno-specimens/<id>.png, assets/src/yard-parts/<id>.png
+  - one full atlas PNG:        assets/src/xeno-tools.png, assets/src/xeno-specimens.png
+  - or one PNG per item:       assets/src/xeno-tools/<id>.png, assets/src/xeno-specimens/<id>.png
     (any square-ish size; the subject centered with transparent margins, see assets/BRIEFING-ARTE-CODEX.md)
 
 Outputs (in assets/, picked up automatically by build.py):
   xeno-tools.webp 1024x1536 (2x3, 512 cells)      + xeno-tools-inline.webp (half size)
   xeno-specimens.webp 1536x1536 (4x4, 384 cells)  + xeno-specimens-inline.webp
-  yard-parts.webp 1536x1152 (4x3, 384 cells)      + yard-parts-inline.webp
 
-Run from orbit-explorer/:  python3 qa/prepare-xeno-yard-art.py
+Run from orbit-explorer/:  python3 qa/prepare-xeno-art.py
 """
 from pathlib import Path
 from PIL import Image
@@ -25,9 +24,6 @@ SETS = {
                                    'escaravelho-ferro', 'leviata-vidro', 'lesma-acida', 'arraia-tempestade',
                                    'samambaia-mae', 'orquidea-eterna', 'flor-vazio', 'lirio-solar',
                                    'cacto-magma', 'alga-nebular', 'coral-cantor', 'trepadeira-prisma']),
-    'yard-parts': (4, 3, 384, ['tanque-externo', 'reservatorio-o2', 'placas-casco', 'vela-solar',
-                               'quilha', 'nacela', 'baia-drones', 'reator-compacto',
-                               'antena-longa', 'matriz-sensores', 'defletor', 'conteiner-orbital']),
 }
 
 
