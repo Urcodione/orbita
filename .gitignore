@@ -1,3 +1,6 @@
 
 # Local agent worktrees
 .claude/worktrees/
+
+# Art delivery packages stay outside Git; installed sources live in orbit-explorer/assets/src/
+art-delivery/
