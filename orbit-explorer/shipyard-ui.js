@@ -19,7 +19,9 @@ const SHAPES={
  'defletor':'<path d="M4 40 Q32 8 60 40" fill="none" stroke="url(#yp-t)" stroke-width="7"/><path d="M4 40 Q32 8 60 40" fill="none" stroke="#e9fffb" stroke-width="1.5"/><rect x="24" y="38" width="16" height="14" rx="3" fill="url(#yp-c)"/>',
  'conteiner-orbital':'<rect x="6" y="8" width="52" height="48" rx="4" fill="url(#yp-c)" stroke="#6e3519"/><path d="M6 20 H58 M6 44 H58" stroke="#ffd09a" stroke-width="2"/><rect x="18" y="26" width="28" height="12" rx="2" fill="url(#yp-i)"/>'
 };
-const svg=(id,w=1,h=1)=>`<svg viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${G}${SHAPES[id]||''}</svg>`;
+const PART_ORDER=()=>E.yardCatalog.PARTS.map(p=>p.id);
+const svg=(id,w=1,h=1)=>root.OrbitIllustrations?.yardParts?`<span class="og-yard-art" style="background-position:${PART_ORDER().indexOf(id)%4/3*100}% ${Math.floor(PART_ORDER().indexOf(id)/4)/2*100}%" aria-hidden="true"></span>`:vector(id);
+const vector=(id,w=1,h=1)=>`<svg viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${G}${SHAPES[id]||''}</svg>`;
 let selected=null;
 function select(id){selected=selected===id?null:id;}
 function meter(label,value,max,warn){return `<div class="og-yard-meter ${warn?'is-warning':''}"><span>${label}</span><strong>${value} / ${max}</strong><progress value="${Math.min(value,max)}" max="${max}"></progress></div>`;}
@@ -41,5 +43,18 @@ function sheet(name,s){
   `<h3 class="og-yard-heading">Compartilhar modelo</h3><div class="og-yard-share"><code>${esc(v.code)}</code><button class="og-button small" data-action="yard-copy" data-yard-code="${esc(v.code)}">Copiar código</button></div><div class="og-yard-share"><input id="og-yard-code" placeholder="Cole um código ORB1-…" autocomplete="off" aria-label="Código de nave"><button class="og-button small" data-action="yardApply">Aplicar</button></div>`+
   (v.layout.length?'<button class="og-link" data-action="yardClear">Remover todas as peças</button>':'')};
 }
-root.OrbitYardUI={sheet,select,svg,selected:()=>selected};
+// Painted parts atlas (assets/yard-parts.webp, 4 columns × 3 rows in PARTS order) when present, else the vectors.
+const images={};
+function partImage(id){if(images[id])return images[id];const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(vector(id).replace('<svg ','<svg width="256" height="256" '));return images[id]=im;}
+const BOX={x0:.18,x1:.82,y0:.06,y1:.86};
+function drawOnHull(c,layout,w,h){
+ const {COLS,ROWS,PARTS}=E.yardCatalog,cw=(BOX.x1-BOX.x0)*w/COLS,ch=(BOX.y1-BOX.y0)*h/ROWS,atlas=root.OrbitIllustrations?.yardParts&&root.OrbitArt?.ready('yardParts')?root.OrbitArt.images.yardParts:null;
+ for(const item of layout){const part=PARTS.find(p=>p.id===item.p);if(!part)continue;
+  const x=-w/2+BOX.x0*w+(item.c%COLS)*cw,y=-h/2+BOX.y0*h+Math.floor(item.c/COLS)*ch,dw=part.w*cw,dh=part.h*ch,size=Math.min(dw,dh)*1.05,cx=x+dw/2,cy=y+dh/2;
+  if(atlas){const i=PARTS.indexOf(part),sw=atlas.width/4,sh=atlas.height/3;c.drawImage(atlas,(i%4)*sw,Math.floor(i/4)*sh,sw,sh,cx-size/2,cy-size/2,size,size);}
+  else{const im=partImage(part.id);if(im.complete&&im.naturalWidth)c.drawImage(im,cx-size/2,cy-size/2,size,size);}
+ }
+}
+const game=root.document?.getElementById('orbit-game');if(game&&root.OrbitIllustrations?.yardParts)game.style.setProperty('--og-yard-parts-art','url("'+root.OrbitIllustrations.yardParts+'")');
+root.OrbitYardUI={sheet,select,svg,selected:()=>selected,drawOnHull,partImage};
 })(window);

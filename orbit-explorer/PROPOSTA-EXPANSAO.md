@@ -166,3 +166,9 @@ Cada fase deve passar pelo bot de campanha para medir as curvas de Lumes e dados
   - limites de massa e energia e penalidade de voo por peso;
   - código compartilhável `ORB1`.
   - Ainda faltam: arte pintada das peças, a nave exibindo as peças na tela principal, o cartão-imagem e o ranking.
+
+### Arte, peças e backlog (01/11/2026)
+
+- **Peças na nave da tela principal:** as peças montadas no estaleiro já aparecem projetadas sobre o casco pintado. As colunas externas ficam como acoplamentos laterais.
+- **Prompts prontos:** `assets/XENO-ARTE.md` traz as ferramentas e os 16 exemplares; `assets/ESTALEIRO-ARTE.md` traz as 12 peças. Gerado cada arquivo, o build o incorpora sem mudança de código.
+- **Backlog sem definição:** ranking de exploração e cartão-imagem compartilhável. Ainda não está decidido o que mediriam nem se precisam de servidor.

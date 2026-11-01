@@ -153,7 +153,11 @@
   else if(originalHues[this.state.shipColor]!==undefined){const h=originalHues[this.state.shipColor];paint=`hue-rotate(${h}deg) saturate(${h===12?.55:.85})`;}
   else paint=`hue-rotate(${hue-24}deg) saturate(${neon?1.7:.65}) brightness(${neon?1.08:1.04})`;
   if(neon){paint='none';c.save();c.globalAlpha=1-cam.focus;premiumAura(c,baseW,baseH,this.reduced?2:t,this.state.shipColor);c.restore();}
-  if(cam.open<.999){c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull('ship',this.state.shipColor):tintedHull('ship',paint),-baseW/2,-baseH/2,baseW,baseH);}
+  if(cam.open<.999){const hullAlpha=c.globalAlpha;c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull('ship',this.state.shipColor):tintedHull('ship',paint),-baseW/2,-baseH/2,baseW,baseH);
+   // Hull parts mounted in the star shipyard, projected from the 5×7 blueprint onto the painted hull: the outer
+   // columns hang beside the fuselage like pods, the nose and skirt rows follow the silhouette.
+   const yard=this.state.yard;if(yard?.length&&window.OrbitYardUI?.drawOnHull){c.save();c.filter='none';window.OrbitYardUI.drawOnHull(c,yard,baseW,baseH);c.restore();}
+   c.globalAlpha=hullAlpha;}
   if(cam.open>.001){c.globalAlpha=(1-cam.focus*.83)*cam.open;c.drawImage(neon?premiumHull('interior',this.state.shipColor):tintedHull('interior',paint),-baseW/2,-baseH/2,baseW,baseH);}
   if(neon){c.globalAlpha=(1-cam.focus*.83);premiumReflection(this,cam.open>.5?'interior':'ship',baseW,baseH,this.reduced?2:t,this.state.shipColor);}
   c.restore();

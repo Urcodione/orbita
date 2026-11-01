@@ -128,7 +128,7 @@ O reator compacto e a vela solar geram energia extra.
 
 São 12 peças no total, de 110 a 420 Lumes cada.
 
-**Código da nave.** Cada montagem gera um código curto (`ORB1-…`) que pode ser copiado e compartilhado. Colar o código de outro jogador aplica o modelo, desde que você tenha as peças no hangar; se faltar alguma, o jogo diz quais. As peças usam ilustrações vetoriais provisórias.
+**Código da nave.** Cada montagem gera um código curto (`ORB1-…`) que pode ser copiado e compartilhado. Colar o código de outro jogador aplica o modelo, desde que você tenha as peças no hangar; se faltar alguma, o jogo diz quais. As peças montadas aparecem também na própria nave, na tela principal. Por enquanto usam ilustrações vetoriais provisórias; os prompts da arte pintada estão em `assets/ESTALEIRO-ARTE.md`.
 
 ## Escolher uma configuração
 

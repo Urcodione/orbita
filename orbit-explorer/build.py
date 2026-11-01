@@ -23,7 +23,7 @@ art_files = {'ship':'andorinha-illustrated','interior':'andorinha-open','modules
 art_files.update({'story%d' % i: 'story-scene-%d' % i for i in range(4)})
 art_files.update({'room%d' % i: 'room-%d' % i for i in range(6)})
 # Optional art: embedded only when the asset exists (xeno-tools/xeno-specimens are painted later; see assets/XENO-ARTE.md).
-for key, name in {'landscapes': 'cine-landscapes', 'xenoTools': 'xeno-tools', 'xenoSpecimens': 'xeno-specimens'}.items():
+for key, name in {'landscapes': 'cine-landscapes', 'xenoTools': 'xeno-tools', 'xenoSpecimens': 'xeno-specimens', 'yardParts': 'yard-parts'}.items():
     if (base / ('assets/' + name + '.webp')).exists():
         art_files[key] = name
 def art_script(compact=False):
