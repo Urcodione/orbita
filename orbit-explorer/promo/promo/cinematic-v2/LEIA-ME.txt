@@ -1,0 +1,14 @@
+ÓRBITA • O CORO DO LIMIAR
+Campanha de divulgação em português.
+
+posters/: seis peças verticais de 1080 × 1920, prontas para divulgação.
+artes-sem-texto/: as seis pinturas originais em PNG, sem tipografia.
+video/orbita-cinematica.mp4: curta ilustrado, 32 segundos, 1080 × 1920 a 30 fps, H.264 com áudio AAC estéreo.
+01 • Travessia entre galáxias
+02 • Geleiras, rover e cristais
+03 • Mundos vulcânicos
+04 • Coleta em um gigante gasoso
+05 • Descoberta de vida
+06 • O Coro do Limiar
+
+São imagens promocionais, não capturas da interface nem gravação de gameplay. O curta anima as pinturas em camadas, com a Andorinha e o jato independentes nas travessias, partículas de clima e câmera. Inclui trilha original do projeto com efeitos ambientais sintetizados para as seis cenas. Arte: imagegen, com referências visuais do jogo. Os textos de geração estão em prompts/.
