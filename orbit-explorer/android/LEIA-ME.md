@@ -1,6 +1,6 @@
-# Órbita para Android — versão de teste 0.2.8
+# Órbita para Android — versão de teste 0.2.9
 
-APK: `dist/orbita-0.2.8.apk` (Android 8.0 ou superior, WebView atualizado).
+Último APK gerado: `dist/orbita-0.2.8.apk` (Android 8.0 ou superior, WebView atualizado). A 0.2.9 está pronta no código e no `index.html`; o APK é gerado no computador que tem a chave de assinatura (veja "Gerar o APK 0.2.9").
 
 ## Instalar
 
@@ -51,7 +51,9 @@ Prisma: mundo exclusivo do tutorial com quatro regiões climáticas, coleta, ext
 
 Explorações persistentes: reconhecimento, balizas, circuitos e clima continuam entre visitas. Retirar tecnologia anuncia uma reação após seis ações; estabilizador opcional custa 8 minério e 2 cristais. Avisos de falta de recursos ficam junto à descida. Cartão de recuperação em uma única tela.
 
-## Para a próxima versão (código pronto, APK ainda não gerado)
+## Alterações 0.2.9 (01/11/2026)
+
+Inclui também as correções do invólucro Android listadas abaixo, que estavam prontas no código desde a 0.2.8.
 
 Detalhes em `qa/REVISAO-2026-10-31.md`.
 
@@ -66,4 +68,22 @@ Detalhes em `qa/REVISAO-2026-10-31.md`.
 - **Conteúdo misto:** fica bloqueado (`MIXED_CONTENT_NEVER_ALLOW`).
 - **Botão Voltar:** não empilha mais dois diálogos "Sair de Órbita?". Na introdução e no tutorial, continua sem efeito, como definido.
 
-Antes de publicar, aumente `versionCode`/`versionName` no `AndroidManifest.xml`.
+
+**Jogo:**
+
+- **Xenobiologia com arte dedicada:** 16 exemplares únicos e 6 ferramentas de captura pintados, com cinemática exclusiva por exemplar; os não descobertos aparecem como silhueta no catálogo.
+- **Estaleiro estelar aposentado:** quem tinha peças recebe o valor de volta em Lumes ao abrir a partida, com aviso no registro.
+- **Frota:** 9 naves prontas além da Andorinha, cada uma com pintura fechada, aberta e chamas nos próprios bocais. Em cada galáxia, um viajante pode vendê-las no entreposto; o Hangar guarda as compradas e a troca é feita atracado. Preços calibrados pelo bot de campanha (1.300 a 6.000 Lumes).
+
+`versionCode` 11, `versionName` 0.2.9. Atualizar por cima preserva a partida, desde que o APK seja assinado com a mesma chave das versões anteriores.
+
+## Gerar o APK 0.2.9
+
+O APK precisa ser assinado com a mesma chave das versões instaladas (`android/.private/orbita-test.jks`, que fica fora do Git). Com outra chave, o Android recusa a atualização e seria preciso desinstalar, o que apaga a partida. Por isso, gere-o no computador que tem essa chave:
+
+```bash
+python3 android/prepare-toolchain.py
+python3 android/build-apk.py
+```
+
+Os comandos rodam a partir de `orbit-explorer/`. O primeiro baixa e confere as ferramentas oficiais (JDK 17, Android Platform 35 e Build Tools 35) em `/tmp/orbita-android-toolchain`; o segundo refaz o `index.html`, empacota, assina e verifica `dist/orbita-0.2.9.apk`. Se a pasta `android/.private/` não existir nesse computador, o script cria uma chave nova: nesse caso, desinstale a versão anterior antes de instalar a 0.2.9.
