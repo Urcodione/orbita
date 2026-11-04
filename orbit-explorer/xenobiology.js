@@ -78,7 +78,8 @@ function fieldSpecimen(s){
  const place=placements(s).find(p=>p.siteId===e.siteId);if(!place)return null;
  const specimen=place.specimen;if(x.captured.includes(specimen.id))return null;
  const cell=cellFor(e,specimen);if(!cell)return null;
- const behavior=BEHAVIORS[specimen.behavior],revealed=e.revealed.includes(cell.index),visible=revealed&&(!behavior.needsScan||e.scans>0);
+ // The Coruja's lenses (ships.js trait 'sight') show the exemplar from the landing, even camouflaged.
+ const sight=E.shipTrait?.(s)==='sight',behavior=BEHAVIORS[specimen.behavior],revealed=e.revealed.includes(cell.index),visible=(revealed||sight)&&(!behavior.needsScan||e.scans>0||sight);
  return {specimen,cell,behavior,visible,revealed,pending:x.pending===specimen.id,here:e.x===cell.x&&e.y===cell.y};
 }
 function summary(specimen){const b=BEHAVIORS[specimen.behavior];return {id:specimen.id,name:specimen.name,kind:specimen.kind,biomes:specimen.biomes,behavior:specimen.behavior,behaviorLabel:b.label,hint:b.hint,tool:b.tool,toolName:TOOLS[b.tool].name,tier:specimen.tier,art:specimen.art,lore:specimen.lore,rune:{id:runeId(specimen.id),...specimen.rune}};}

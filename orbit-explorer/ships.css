@@ -32,3 +32,9 @@
 #orbit-game .og-fleet-merchant small{font-size:11px;color:#f0c79a}
 #orbit-game .og-fleet-merchant strong{font-size:14px}
 #orbit-game .og-fleet-hangar{align-self:center;min-height:36px}
+#orbit-game .og-fleet-trait{display:flex;flex-direction:column;gap:2px;margin:6px 0;padding:8px 10px;border-radius:12px;background:linear-gradient(90deg,#3b2a14cc,#16323dcc);border:1px solid #f0a35e88}
+#orbit-game .og-fleet-trait b{font-size:12px;letter-spacing:.04em;color:#ffc98f}
+#orbit-game .og-fleet-trait span{font-size:12px;line-height:1.35;color:#f3fbfa}
+#orbit-game .og-fleet-unlocks,#orbit-game .og-fleet-hint{font-size:12px;line-height:1.35;color:#9fe8d8;margin:4px 0}
+#orbit-game .og-fleet-unlocks strong{color:#d9fff5}
+#orbit-game .og-fleet-hint{padding:6px 10px;border-radius:10px;background:#10303acc;border:1px solid #2f6a6a}

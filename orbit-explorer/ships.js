@@ -13,34 +13,34 @@ const PEOPLES=['Consórcio Aural','Nômades Veyra','Liga Thar'];
 const RARITY={inicial:{label:'Inicial',weight:0},comum:{label:'Comum',weight:6},rara:{label:'Rara',weight:4},lendaria:{label:'Lendária',weight:.6}};
 // nozzles: exhaust points in the exterior painting, in % of the 2:3 frame (assets/src/ships/naves.json).
 const SHIPS=[
- {id:'andorinha',name:'Andorinha',role:'Exploradora equilibrada',people:null,rarity:'inicial',price:0,effects:{},capabilities:{},plus:['Equilibrada em tudo'],minus:[],
+ {id:'andorinha',name:'Andorinha',role:'Exploradora equilibrada',people:null,rarity:'inicial',price:0,effects:{},capabilities:{},trait:null,plus:['Equilibrada em tudo'],minus:[],
   lore:'A nave com que tudo começou. Não se destaca em nada e não falha em nada.',nozzles:[[21,84,0],[50,95.5,1],[79,84,0]]},
- {id:'beija-flor',name:'Beija-flor',role:'Batedora',people:1,rarity:'comum',price:1300,effects:{fuelEfficiency:.25,warpEfficiency:.1,maxHull:-20,expeditionCapacity:-1},capabilities:{},
-  plus:['+25% de eficiência de voo','+10% de eficiência de dobra'],minus:['−20 de casco','−1 de carga na expedição'],
+ {id:'beija-flor',name:'Beija-flor',role:'Batedora',people:1,rarity:'comum',price:1300,effects:{fuelEfficiency:.15,maxHull:-20},capabilities:{},trait:{id:'shortHop',name:'Salto curto',text:'Viagens entre planetas do mesmo sistema não gastam combustível.'},
+  plus:['+15% de eficiência de voo'],minus:['−20 de casco'],
   lore:'Esguia como uma agulha. Chega primeiro e gasta pouco, mas não aguenta muita pancada.',nozzles:[[52.2,95.2,1],[28.3,75.7,0],[71.6,80.7,0]]},
- {id:'albatroz',name:'Albatroz',role:'Longo curso',people:0,rarity:'comum',price:1500,effects:{maxFuel:40,oxygenEfficiency:.15,collectionBonus:-.1},capabilities:{},
-  plus:['+40 de tanque de combustível','+15% de eficiência do ar'],minus:['−10% de rendimento de coleta'],
+ {id:'albatroz',name:'Albatroz',role:'Longo curso',people:0,rarity:'comum',price:1500,effects:{maxFuel:30,collectionBonus:-.1},capabilities:{},trait:{id:'solar',name:'Velas solares',text:'Viagens entre planetas não gastam oxigênio.'},
+  plus:['+30 de tanque de combustível'],minus:['−10% de rendimento de coleta'],
   lore:'Asas solares longas e tanques fundos. Feita para travessias que outras naves não terminam.',nozzles:[[50.0,94.5,1],[29.6,81.4,0],[69.2,81.4,0]]},
- {id:'pelicano',name:'Pelicano',role:'Cargueira',people:0,rarity:'comum',price:1400,effects:{cargoCapacity:3,expeditionCapacity:1,maxHull:20,fuelEfficiency:-.15},capabilities:{},
-  plus:['+3 espaços no armazém','+1 de carga na expedição e +20 de casco'],minus:['−15% de eficiência de voo'],
+ {id:'pelicano',name:'Pelicano',role:'Cargueira',people:0,rarity:'comum',price:1400,effects:{cargoCapacity:3,expeditionCapacity:1,fuelEfficiency:-.1},capabilities:{},trait:{id:'salvage',name:'Porão de resgate',text:'Ao evacuar uma expedição, metade da carga de recursos volta com você.'},
+  plus:['+3 espaços no armazém','+1 de carga na expedição'],minus:['−10% de eficiência de voo'],
   lore:'Bojuda e confiável. O porão da frente leva o que os outros deixam para trás.',nozzles:[[33.5,92.5,1],[50.0,93.5,1],[68.0,93.5,1],[21.6,86.1,0],[78.5,87.6,0]]},
- {id:'coruja',name:'Coruja',role:'Observatório',people:2,rarity:'rara',price:2900,effects:{scanRadius:1,scanBonus:.15,maxFuel:-15},capabilities:{},
+ {id:'coruja',name:'Coruja',role:'Observatório',people:2,rarity:'rara',price:2900,effects:{scanRadius:1,scanBonus:.15,maxFuel:-15},capabilities:{},trait:{id:'sight',name:'Lentes da Coruja',text:'Na expedição, o exemplar único aparece no mapa desde o pouso, mesmo camuflado.'},
   plus:['+1 setor de alcance do scanner','+15% de bônus de pesquisa'],minus:['−15 de combustível'],
   lore:'Duas lentes enormes e uma cúpula silenciosa. Vê setores que nenhuma outra nave alcança.',nozzles:[[49.0,93.7,1],[33.6,92.0,0],[66.7,92.0,0]]},
- {id:'martim-pescador',name:'Martim-pescador',role:'Mineradora',people:1,rarity:'rara',price:2700,effects:{collectionBonus:.15,expeditionReserve:3,oxygenEfficiency:-.1},capabilities:{},
-  plus:['+15% de rendimento de coleta','+3 de energia em cada expedição'],minus:['−10% de eficiência do ar'],
+ {id:'martim-pescador',name:'Martim-pescador',role:'Mineradora',people:1,rarity:'rara',price:2700,effects:{collectionBonus:.15,oxygenEfficiency:-.1},capabilities:{},trait:{id:'drill',name:'Broca de proa',text:'Na expedição, abre passagem por paredes de rocha gastando 3 de energia a mais.'},
+  plus:['+15% de rendimento de coleta'],minus:['−10% de eficiência do ar'],
   lore:'Uma broca na proa e braços de coleta dobrados. Mergulha no terreno e volta carregada.',nozzles:[[40.8,92.6,1],[63.0,92.6,1]]},
- {id:'pinguim',name:'Pinguim',role:'Gelo e profundezas',people:0,rarity:'rara',price:2500,effects:{fuelEfficiency:-.1},capabilities:{cold:60,pressure:3,heat:-20},
-  plus:['+60 °C de isolamento contra o frio','+3 atm de resistência à pressão'],minus:['−10% de eficiência de voo','−20 °C de proteção contra o calor'],
+ {id:'pinguim',name:'Pinguim',role:'Gelo e profundezas',people:0,rarity:'rara',price:2500,effects:{fuelEfficiency:-.1},capabilities:{liquid:true,pressure:10,cold:60},trait:{id:'dive',name:'Casco submersível',text:'Operação submersa e +10 atm: pousa na maioria dos oceanos sem o Módulo Mergulhador.'},
+  plus:['+60 °C de isolamento contra o frio'],minus:['−10% de eficiência de voo'],
   lore:'Casco grosso e acolchoado. Atravessa geleiras e oceanos profundos sem reclamar.',nozzles:[[51.2,93.3,1]]},
- {id:'carcara',name:'Carcará',role:'Mundos ardentes',people:1,rarity:'rara',price:2600,effects:{warpEfficiency:-.1},capabilities:{heat:60,radiation:60},
-  plus:['+60 °C de proteção contra o calor','+60 rad de blindagem contra radiação'],minus:['−10% de eficiência de dobra'],
+ {id:'carcara',name:'Carcará',role:'Mundos ardentes',people:1,rarity:'rara',price:2600,effects:{warpEfficiency:-.1},capabilities:{heat:260,radiation:45},trait:{id:'furnace',name:'Escudos de forja',text:'+260 °C e +45 rad: pousa nos mundos vulcânicos típicos sem trocar o escudo.'},
+  plus:[],minus:['−10% de eficiência de dobra'],
   lore:'Escudos térmicos chamuscados nas asas. Pousa onde a rocha ainda está derretendo.',nozzles:[[54.6,73.0,1],[46.7,72.6,0],[61.8,72.6,0]]},
- {id:'garca',name:'Garça',role:'Pântanos e gás',people:2,rarity:'rara',price:2400,effects:{expeditionIntegrity:2,cargoCapacity:-1},capabilities:{toxicity:25},
+ {id:'garca',name:'Garça',role:'Pântanos e gás',people:2,rarity:'rara',price:2400,effects:{expeditionIntegrity:2,cargoCapacity:-1},capabilities:{gas:true,pressure:5,toxicity:25},trait:{id:'probe',name:'Sonda atmosférica',text:'Sonda embutida e +5 atm: pousa nos gigantes gasosos típicos sem o Coletor de Tempestades.'},
   plus:['+25% de filtragem tóxica','+2 de integridade nas expedições'],minus:['−1 espaço no armazém'],
   lore:'Alta e elegante, com filtros por todo o casco. Respira onde o ar é veneno.',nozzles:[[50.0,73.2,1],[15.7,96.2,0],[83.8,96.2,0]]},
- {id:'fenix',name:'Fênix',role:'Dobra lendária',people:null,rarity:'lendaria',price:6000,effects:{warpEfficiency:.4,expeditionIntegrity:2,expeditionReserve:3},capabilities:{},
-  plus:['+40% de eficiência de dobra','+2 de integridade e +3 de energia nas expedições'],minus:['Rara de encontrar e cara'],
+ {id:'fenix',name:'Fênix',role:'Dobra lendária',people:null,rarity:'lendaria',price:6000,effects:{warpEfficiency:.25,expeditionIntegrity:2,expeditionReserve:3},capabilities:{},trait:{id:'phoenix',name:'Dobra da Fênix',text:'Cada dobra entre galáxias custa 1 célula a menos (mínimo 1).'},
+  plus:['+25% de eficiência de dobra','+2 de integridade e +3 de energia nas expedições'],minus:['Rara de encontrar e cara'],
   lore:'Ninguém sabe quem a construiu. Aparece pouco, e atravessa galáxias quase sem gastar.',nozzles:[[50.0,91.7,1]]},
 ];
 const BY=Object.fromEntries(SHIPS.map(s=>[s.id,s]));
@@ -87,6 +87,17 @@ function plan(s,a,p={}){
 function clamp(s){const c=E.stats(s);for(const [k,m]of [['fuel','maxFuel'],['oxygen','maxOxygen'],['hull','maxHull']])if(s.resources[k]>c[m])s.resources[k]=c[m];}
 
 E.shipBonus=s=>{const ship=BY[s?.fleet?.active];return ship?{effects:ship.effects,capabilities:ship.capabilities}:null;};
+E.shipTrait=s=>BY[s?.fleet?.active]?.trait?.id||null;
+// Trip costs changed by the active ship's trunfo: short hops, solar sails and the Phoenix warp.
+E.shipCost=(s,action,cost,info)=>{const trait=E.shipTrait(s);
+ if(action==='travel'&&info?.target){if(trait==='shortHop'&&info.target.systemId===E.currentPlanet(s)?.systemId)delete cost.fuel;if(trait==='solar')delete cost.oxygen;}
+ if(action==='warp'&&trait==='phoenix'&&cost.warpFuel>1)cost.warpFuel-=1;
+ return cost;};
+// Worlds of this galaxy that a ship would open: blocked by protection now, open with that ship flying.
+// The active ship is swapped in place for the check and always restored (no copy of the whole state per ship).
+E.fleetUnlocks=(s,id)=>{const f=s.fleet;if(!BY[id]||!f||f.active===id)return [];
+ const blocked=s.galaxy.planets.filter(p=>E.assess(s,p.id)?.missing?.length),was=f.active;
+ try{f.active=id;return blocked.filter(p=>!E.assess(s,p.id)?.missing?.length).map(p=>({id:p.id,name:p.name}));}finally{f.active=was;}};
 E.preview=(s,a,p)=>plan(s,a,p||{})||base.preview(s,a,p);
 E.dispatch=(s,a,p={})=>{
  const own=plan(s,a,p||{});
@@ -106,7 +117,7 @@ E.dispatch=(s,a,p={})=>{
  if(result?.ok&&a==='stationDock')rollOffer(s);
  return result;
 };
-const card=(ship,s)=>({...ship,rarityLabel:RARITY[ship.rarity].label,peopleName:ship.people===null?'Origem desconhecida':PEOPLES[ship.people]});
+const card=(ship,s)=>({...ship,rarityLabel:RARITY[ship.rarity].label,peopleName:ship.people===null?'Origem desconhecida':PEOPLES[ship.people],unlocks:E.fleetUnlocks(s,ship.id)});
 E.fleetView=s=>{const f=ensure(s),offer=f.offer&&BY[f.offer.ship];
  return {active:f.active,docked:docked(s),
   ships:f.owned.map(id=>({...card(BY[id],s),active:id===f.active,preview:E.preview(s,'fleetSwitch',{shipId:id})})),

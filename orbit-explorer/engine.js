@@ -282,7 +282,10 @@
       for (const [key, value] of Object.entries(moduleCapabilities(module))) out[key] = key === 'gas' || key === 'liquid' ? out[key] || value : Math.max(out[key], value);
     }
     // The active ship (ships.js) adds or removes protection on top of the best module.
-    for (const [key, value] of Object.entries(shipBonus(state)?.capabilities || {})) if (CAPABILITY_KEYS.includes(key)) out[key] = rounded(Math.max(0, out[key] + value));
+    for (const [key, value] of Object.entries(shipBonus(state)?.capabilities || {})) {
+      if (key === 'gas' || key === 'liquid') out[key] = out[key] || value === true;
+      else if (CAPABILITY_KEYS.includes(key)) out[key] = rounded(Math.max(0, out[key] + value));
+    }
     return out;
   }
   function moduleEffects(module) {
@@ -292,6 +295,8 @@
   }
   // Ready-made ships are defined by ships.js (api.shipBonus); the engine only reads the active ship's bonus.
   function shipBonus(state) { return typeof api.shipBonus === 'function' ? api.shipBonus(state) : null; }
+  function shipTrait(state, name) { return typeof api.shipTrait === 'function' && api.shipTrait(state) === name; }
+  const DRILL_RESERVE = 3;
   function stats(state) {
     const power = type => state.equipped[type].power;
     const effects = {};
@@ -634,6 +639,8 @@
     cells[32].kind = 'base'; cells[geometry.core.x].kind = expedition.coreSecured ? 'empty' : 'core';
     caches.forEach((index, i) => { cells[index].kind = ['ore', 'ore', 'data', 'crystal'][i]; });
     if(expedition.adventure&&!expedition.coreSecured)for(const index of expeditionBeacons(expedition))cells[index].kind='beacon';
+    // Walls drilled by a ship with a drill (ships.js trait 'drill') stay open for the rest of the expedition.
+    for (const index of expedition.drilled || []) if (cells[index] && cells[index].kind === 'wall') cells[index].kind = 'empty';
     return cells;
   }
   function expeditionPuzzle(seed) {
@@ -698,9 +705,11 @@
         if (!Number.isInteger(data.x) || !Number.isInteger(data.y) || data.x < 0 || data.x >= 6 || data.y < 0 || data.y >= 6) return reject('Escolha uma posição válida do mapa.');
         if (Math.abs(data.x - expedition.x) + Math.abs(data.y - expedition.y) !== 1) return reject('Avance um setor por vez, na horizontal ou vertical.');
         const tile = board[data.y * 6 + data.x];
-        if (tile.kind === 'wall') return reject('Passagem obstruída. Procure outra rota.');
-        Object.assign(cost, movementCost(state, tile));
-        Object.assign(info, { x: data.x, y: data.y, localCost: cost });
+        const drill = tile.kind === 'wall' && shipTrait(state, 'drill');
+        if (tile.kind === 'wall' && !drill) return reject('Passagem obstruída. Procure outra rota.');
+        Object.assign(cost, movementCost(state, drill ? { ...tile, kind: 'empty' } : tile));
+        if (drill) cost.reserve = (cost.reserve || 0) + DRILL_RESERVE;
+        Object.assign(info, { x: data.x, y: data.y, localCost: cost, drilled: drill ? data.y * 6 + data.x : undefined });
         break;
       }
       case 'expeditionReturn': {
@@ -1052,6 +1061,8 @@
       }
       default: return reject('Ação desconhecida.');
     }
+    // The active ship can change what a trip costs (ships.js: short hops, solar sails, the Phoenix warp).
+    if (typeof api.shipCost === 'function') cost = api.shipCost(state, action, { ...cost }, info) || cost;
     for (const [id, amount] of Object.entries(info.componentCosts || {})) {
       const available = (state.components || {})[id] || 0;
       if (available < amount) return { ...reject('Faltam ' + (amount - available) + ' × ' + componentRecipes.find(item => item.id === id).name + '. Fabrique os componentes primeiro.', cost), components: info.componentCosts };
@@ -1169,11 +1180,12 @@
       case 'expeditionWait':message='O abrigo aguarda a próxima fase do clima. Fora da base, esperar consome 1 energia.';break;
       case 'expeditionMove': {
         const expedition = next.expedition;
+        if (info.drilled !== undefined) expedition.drilled = [...(expedition.drilled || []), info.drilled];
         expedition.x = info.x; expedition.y = info.y;
         expedition.visited.push(info.y * 6 + info.x);
         expedition.visited = [...new Set(expedition.visited)];
         revealExpedition(expedition, 1);
-        message = info.localCost.integrity ? 'Travessia perigosa. A reserva e a integridade local diminuíram.' : 'Posição atualizada. Planeje a reserva para o retorno.';
+        message = info.drilled !== undefined ? 'A broca abriu passagem pela rocha.' : info.localCost.integrity ? 'Travessia perigosa. A reserva e a integridade local diminuíram.' : 'Posição atualizada. Planeje a reserva para o retorno.';
         break;
       }
       case 'expeditionReturn': {
@@ -1285,8 +1297,11 @@
         // site calms down (a reaction from an earlier, extracted recovery is kept; a stabilizer stays installed).
         const op = !next.guide?.active && next.expedition.coreRecovered ? next.siteOperations?.[next.expedition.siteId] : null;
         if (op && !op.stabilized) op.reactionAt = null;
+        // A ship with a salvage hold (ships.js trait 'salvage') brings back half of the resources already loaded.
+        const kept = {};
+        if (shipTrait(next, 'salvage')) for (const key of ['ore', 'crystals', 'data', 'credits']) { const half = Math.floor((next.expedition.pending[key] || 0) / 2); if (half) { kept[key] = half; res[key] = (res[key] || 0) + half; reward[key] = half; } }
         next.expedition = null;
-        message = 'Evacuação concluída. A carga desta saída foi perdida; sua nave e seus equipamentos foram preservados.' + (op && !op.stabilized ? ' Sem a tecnologia, o local voltou a se acalmar.' : '');
+        message = (Object.keys(kept).length ? 'Evacuação concluída. O porão de resgate salvou metade da carga.' : 'Evacuação concluída. A carga desta saída foi perdida;') + (Object.keys(kept).length ? '' : ' sua nave e seus equipamentos foram preservados.') + (op && !op.stabilized ? ' Sem a tecnologia, o local voltou a se acalmar.' : '');
         kind = 'warning';
         break;
       }
@@ -1436,6 +1451,7 @@
     if (!Number.isInteger(expedition.reserve) || expedition.reserve < 0 || expedition.reserve > expedition.maxReserve || !Number.isInteger(expedition.integrity) || expedition.integrity < 1 || expedition.integrity > expedition.maxIntegrity) return false;
     if (!Number.isInteger(expedition.load) || expedition.load < 0 || expedition.load > expedition.capacity || typeof expedition.coreRecovered !== 'boolean' || typeof expedition.firstExpedition !== 'boolean' || !Number.isFinite(expedition.rewardMultiplier) || expedition.rewardMultiplier < 1 || expedition.rewardMultiplier > 3) return false;
     if(expedition.weatherOffset!==undefined&&(!Number.isSafeInteger(expedition.weatherOffset)||expedition.weatherOffset<0))return false;
+    if (expedition.drilled !== undefined) { const solid = expeditionBoard({ ...expedition, drilled: [] }); if (!Array.isArray(expedition.drilled) || expedition.drilled.length > 36 || new Set(expedition.drilled).size !== expedition.drilled.length || !expedition.drilled.every(index => Number.isInteger(index) && solid[index] && solid[index].kind === 'wall')) return false; }
     const board = expeditionBoard(expedition);
     for (const key of ['revealed', 'visited', 'collected', 'harvested']) if (!Array.isArray(expedition[key]) || expedition[key].length > 36 || new Set(expedition[key]).size !== expedition[key].length || !expedition[key].every(index => Number.isInteger(index) && index >= 0 && index < 36)) return false;
     if (board[expedition.y * 6 + expedition.x].kind === 'wall' || !expedition.visited.includes(expedition.y * 6 + expedition.x) || !expedition.visited.every(index => expedition.revealed.includes(index) && board[index].kind !== 'wall')) return false;
