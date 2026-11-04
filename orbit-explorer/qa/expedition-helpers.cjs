@@ -17,7 +17,9 @@ async function completeTutorialExpedition(page) {
   const before = await page.evaluate(() => orbitApp.getState());
   assert.ok(before.expedition?.firstExpedition, 'Helper only handles the first expedition tutorial');
   assert.equal(before.expedition.x, 2); assert.equal(before.expedition.y, 5);
-  for (let y = 4; y >= 0; --y) await move(2, y);
+  // The core opens only after both terrain beacons on the path are activated (outside the guided training).
+  const beacon = async () => { const control = page.locator('[data-action="expeditionBeacon"]:visible').first(); if (await control.count()) await control.click(); };
+  for (let y = 4; y >= 0; --y) { await move(2, y); await beacon(); }
   await move(3, 0); await click('expeditionInteract');
   const puzzle = await page.evaluate(() => orbitApp.getState().expedition.puzzle);
   const counts = solveCounts(puzzle.dials, puzzle.target);

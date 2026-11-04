@@ -1411,6 +1411,10 @@
 @keyframes og-delta-in{from{opacity:0;transform:translate(-50%,-8px)}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-delta li{animation:none;opacity:1;transform:none}#orbit-game .og-delta.is-entering{animation:none}}
 
+#orbit-game .og-delivery-story{display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:12px;background:linear-gradient(110deg,#2c2148,#142d3b);border:1px solid #8f78c8}
+#orbit-game .og-delivery-story small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#d8c6ff}
+#orbit-game .og-delivery-story p{margin:0;font-size:13px;line-height:1.4;color:#f1ecff}
+
 #orbit-game .og-xeno-art{display:block;width:56px;height:56px;flex:none;background-image:var(--og-biology-art);background-size:200% 300%;background-position:var(--art-x) var(--art-y);background-repeat:no-repeat;filter:hue-rotate(var(--hue)) drop-shadow(0 0 6px #b7f5e566)}
 #orbit-game .og-xeno-art.is-large{width:120px;height:120px}
 #orbit-game .og-xeno-art.is-unknown{filter:brightness(0) drop-shadow(0 0 5px #7fe3d0aa);opacity:.75}
@@ -6512,7 +6516,9 @@ root.OrbitExtractionUI={render(state,reward={}){
  const unique=reward.storyItem?`<article class="og-delivery-special is-unique">${root.OrbitCampaignUI.icon(reward.storyItem)}<div><small>DESCOBERTA ÚNICA</small><strong>${esc(reward.storyItem.name)}</strong><span>Preservada · item de missão</span></div></article>`:'';
  const fragment=reward.fragment?`<article class="og-delivery-item is-signal">${root.OrbitControlIcons.art('beacon')}<b>${E.beaconView(state).count}/3</b><span>Farol · ${esc(({origin:'Origem',ember:'Brasa',tide:'Maré'})[reward.fragment])}</span></article>`:'';
  const note=reward.story?.consequence||reward.campaignProgress||'';
- return {singleCard:true,title:'Carga entregue',html:`<section class="og-delivery ${items.length+(fragment?1:0)>6?'is-full':''}" aria-label="Resultado da extração"><div class="og-delivery-stamp">${root.OrbitControlIcons.art('extract')}<div><strong>Extração concluída</strong><small>Itens já guardados na nave</small></div></div>${module}${unique}<div class="og-delivery-grid" style="--delivery-count:${items.length+(fragment?1:0)}">${items.map(([k,v],i)=>`<article class="og-delivery-item" style="--arrival:${i}" aria-label="${esc(E.materials[k]?.name||names[k])}: mais ${v}">${figure(k)}<b>+${v}</b><span>${esc(E.materials[k]?.name||names[k])}</span></article>`).join('')}${fragment}</div>${!items.length&&!m&&!unique&&!fragment?'<p class="og-delivery-empty">Veículo recolhido com segurança. Nenhuma carga nesta saída.</p>':''}${note?`<p class="og-delivery-progress">${esc(note)}</p>`:''}</section>`,footer:`<button class="og-delivery-done" data-action="close-sheet" data-icon-intent="base" aria-label="Concluir entrega e voltar ao planeta"><span class="og-control-symbol">${root.OrbitControlIcons.art('base')}</span><small class="og-control-caption">Concluir</small></button>`};
+ // When the extraction moves the campaign, its story beat (Aurora's first signal, transmissions, a preserved relic) is shown too.
+ const story=reward.story?.advanced&&reward.story.message?`<article class="og-delivery-story"><small>${esc(reward.story.title)}</small><p>${esc(reward.story.message)}</p></article>`:'';
+ return {singleCard:true,title:'Carga entregue',html:`<section class="og-delivery ${items.length+(fragment?1:0)>6?'is-full':''}" aria-label="Resultado da extração"><div class="og-delivery-stamp">${root.OrbitControlIcons.art('extract')}<div><strong>Extração concluída</strong><small>Itens já guardados na nave</small></div></div>${story}${module}${unique}<div class="og-delivery-grid" style="--delivery-count:${items.length+(fragment?1:0)}">${items.map(([k,v],i)=>`<article class="og-delivery-item" style="--arrival:${i}" aria-label="${esc(E.materials[k]?.name||names[k])}: mais ${v}">${figure(k)}<b>+${v}</b><span>${esc(E.materials[k]?.name||names[k])}</span></article>`).join('')}${fragment}</div>${!items.length&&!m&&!unique&&!fragment?'<p class="og-delivery-empty">Veículo recolhido com segurança. Nenhuma carga nesta saída.</p>':''}${note?`<p class="og-delivery-progress">${esc(note)}</p>`:''}</section>`,footer:`<button class="og-delivery-done" data-action="close-sheet" data-icon-intent="base" aria-label="Concluir entrega e voltar ao planeta"><span class="og-control-symbol">${root.OrbitControlIcons.art('base')}</span><small class="og-control-caption">Concluir</small></button>`};
 }};
 })(window);
 
@@ -6910,6 +6916,7 @@ root.OrbitFeedback={show(container,result,action,state){
   let fieldNotice='Toque em um setor vizinho para mover. O sinal antigo está ao norte.';
   let systemType='engine',selectedCandidateId='',salvageModuleId=null;
   let sheetPage=0,pendingFieldAction=null;
+  const pageMemory={};
   const history={past:[],future:[]};
   let restoringNavigation=false;
   let lab={page:'home',type:null,recipeId:null,componentId:null,returnRecipeId:null,history:[]};
@@ -6984,7 +6991,10 @@ root.OrbitFeedback={show(container,result,action,state){
       openSheet('workshop');return;
     }
     if(sheet==='salvage-review'&&parent.action==='stored-module'&&salvageModuleId)selectedCandidateId=salvageModuleId;
+    const page=pageMemory[parent.action]||0;
     openSheet(parent.action);
+    // Back lands on the page the card was opened from (the pager clamps it if the list got shorter).
+    if(page){sheetPage=page;renderSheet();}
   }
   function fitStage(){
     const stage=$('og-stage'),field=$('og-field');
@@ -7240,7 +7250,9 @@ root.OrbitFeedback={show(container,result,action,state){
     }
     $('og-map').innerHTML=nav.nodes.map(n=>`<button class="og-nav-node ${n.selected?'is-selected':''} ${n.blocked?'is-blocked':''}" ${mapLevel==='system'?`data-select="${esc(n.id)}"`:mapLevel==='galaxy'?`data-system="${esc(n.id)}"`:`data-destination="${esc(n.id)}"`} style="left:${n.x}%;top:${n.y}%" aria-label="${esc(n.name)}${n.current?', localização atual':''}${n.blocked?', exige preparo':''}" aria-pressed="${n.selected}"><span class="og-nav-hit" aria-hidden="true">${n.blocked?'<i>!</i>':''}</span><span class="og-nav-caption">${n.current?'AQUI':mapLevel!=='system'?esc(n.name):''}</span></button>`).join('');
     if(mapLevel==='galaxy')$('og-map').insertAdjacentHTML('beforeend',`<button class="og-station-node" data-action="station" aria-label="Traçar rota ao entreposto do sistema atual"><span class="og-nav-hit" aria-hidden="true"></span><span class="og-nav-caption">Entreposto local</span></button>`);
-    if(nav.wormhole)$('og-map').insertAdjacentHTML('beforeend','<button class="og-wormhole-node" data-action="campaign-gate" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>');
+    // The wormhole goes to the free corner farthest from the worlds, so its marker and label never cover a planet.
+    if(nav.wormhole){const spot=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46]].map(([x,y])=>({x,y,d:Math.min(...nav.nodes.map(n=>Math.hypot(n.x-x,(n.y-y)*1.4)))})).sort((a,b)=>b.d-a.d)[0];
+     $('og-map').insertAdjacentHTML('beforeend',`<button class="og-wormhole-node" data-action="campaign-gate" style="left:${spot.x}%;top:${spot.y}%" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>`);}
     $('og-context').innerHTML=content;
   }
   function renderExpedition(ex){
@@ -7455,8 +7467,10 @@ root.OrbitFeedback={show(container,result,action,state){
     if(name==='modules'&&!source&&tab==='ship')placeParents.modules={label:shipDetail.mode==='interior'?'Nave aberta':'Nave',action:shipDetail.mode==='interior'?'ship-overview':'world'};
     else if(entrances[name]){if(entrances[name].includes(source))placeParents[name]={label:labels[source],action:source};else if(!source)delete placeParents[name];}
     if(name==='modules'&&!['stored-module','system-module','salvage-review'].includes(source))moduleOrigin='inventory';
+    if(sheet&&sheet!==name)pageMemory[sheet]=sheetPage;
     sheetPage=0;if(!sheet)focusBeforeSheet=document.activeElement;sheet=name;sheetNotice='';$('og-toast').hidden=true;renderSheet();afterSheet(()=>$('og-sheet-backdrop').querySelector('button:not(:disabled)')?.focus({preventScroll:true}));}
-  function closeSheet(){sheet=null;syncExperience();sheetNotice='';const backdrop=$('og-sheet-backdrop');backdrop.hidden=true;backdrop.innerHTML='';Array.from(root.children).forEach(el=>{el.inert=false;});const restore=focusBeforeSheet?.isConnected&&root.contains(focusBeforeSheet)&&focusBeforeSheet.getClientRects().length?focusBeforeSheet:root.querySelector(`.og-tabs [data-tab="${tab}"]`);restore?.focus({preventScroll:true});}
+  function sameControl(el){if(!el?.dataset||!Object.keys(el.dataset).length)return null;const selector=el.tagName.toLowerCase()+Object.entries(el.dataset).map(([k,v])=>`[data-${k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())}="${CSS.escape(v)}"]`).join('');const match=root.querySelector(selector);return match&&match.getClientRects().length?match:null;}
+  function closeSheet(){sheet=null;for(const k in pageMemory)delete pageMemory[k];syncExperience();sheetNotice='';const backdrop=$('og-sheet-backdrop');backdrop.hidden=true;backdrop.innerHTML='';Array.from(root.children).forEach(el=>{el.inert=false;});const restore=focusBeforeSheet?.isConnected&&root.contains(focusBeforeSheet)&&focusBeforeSheet.getClientRects().length?focusBeforeSheet:sameControl(focusBeforeSheet)||root.querySelector(`.og-tabs [data-tab="${tab}"]`);restore?.focus({preventScroll:true});}
   function dismissSheet(){if(moduleOrigin==='ship'&&['system-module','stored-module'].includes(sheet))shipOverview();else closeSheet();}
   function toast(text,error){const el=$('og-toast');clearTimeout(toastTimer);el.textContent=text;el.classList.toggle('error',!!error);el.hidden=false;toastTimer=setTimeout(()=>el.hidden=true,4400);}
   function beep(action){window.OrbitAudio.fx(action);}
