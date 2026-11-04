@@ -29,17 +29,31 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
   async function fresh(seed = 'qa-expedition-route') {
     await page.goto(url); await page.waitForFunction(() => window.orbitApp && window.OrbitEngine?.expeditionView);
     await page.evaluate(seed => {
+      // A new journey: the story intro has been seen and the guided first landing skipped, through the game's own actions.
       const s = OrbitEngine.create(seed);
+      for (const action of ['campaignIntro', 'guideSkip']) if (!OrbitEngine.dispatch(s, action).ok) throw new Error(action);
       window.__qaSaved = [];
       window.openai = { setWidgetState: value => { window.__qaSaved.push(JSON.parse(JSON.stringify(value))); return Promise.resolve(); } };
       window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { widgetState: { privateContent: { state: s, tab: 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior', selectedModule: null, expanded: false } } } } } }));
     }, seed);
+    // The page's own new game may already be playing its intro clip; the injected journey has seen it.
+    if (await page.locator('[data-story-action="skip"]').count()) await page.locator('[data-story-action="skip"]').click();
+    assert.equal(await page.locator('.og-story-clip').count(), 0); assert.equal((await state()).guide.active, false);
   }
   // UI selectors are deliberately centralized: all play below uses actual controls.
   async function move(x, y) { await page.locator(`[data-expedition-x="${x}"][data-expedition-y="${y}"]:visible`).click(); }
-  async function goCore() { const ex = (await state()).expedition; if (ex.x !== 2) await move(2, ex.y); for (let y = ex.y - 1; y >= 0; --y) await move(2, y); await move(3, 0); }
+  // Adventure maps triangulate the core with two beacons on the trail: activate each one the vehicle stands on.
+  async function beacon() { if (await page.locator('[data-action="expeditionBeacon"]:visible').count()) await click('expeditionBeacon'); }
+  // Actions that leave a thin energy margin for the way back ask for confirmation first; the core panel is reopened afterwards.
+  async function recover() {
+    await click('expeditionRecover');
+    if ((await view()).sheet === 'expedition-risk-confirm') { assert.match(await page.getByRole('dialog').innerText(), /volta|energia/i); await click('confirm-field-action'); }
+    if ((await state()).expedition && !(await state()).expedition.coreRecovered && (await view()).sheet !== 'expedition-puzzle') await click('expeditionInteract');
+  }
+  async function goCore() { const ex = (await state()).expedition; await beacon(); if (ex.x !== 2) { await move(2, ex.y); await beacon(); } for (let y = ex.y - 1; y >= 0; --y) { await move(2, y); await beacon(); } await move(3, 0); assert.equal((await state()).expedition.beacons.length, 2, 'both beacons active'); }
   async function goBase() { await move(2, 0); for (let y = 1; y <= 5; ++y) await move(2, y); }
-  async function start() { await tab('explore'); await click('scan'); await click('dock'); await click('sites'); await click('explore'); }
+  // Scanning opens the exploration sites; descending from that panel anchors the ship and launches the vehicle.
+  async function start() { await tab('explore'); await click('scan'); assert.equal((await view()).sheet, 'sites'); await page.locator('#og-sheet-backdrop [data-action="explore"]').click(); }
   function countsToSolve(dials, target) {
     for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) for (let c = 0; c < 4; c++) {
       const counts = [a, b, c], next = dials.slice();
@@ -85,7 +99,8 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
       const s = orbitApp.getState();
       return ['equip', 'travel', 'launch', 'warp'].map(action => ({ action, preview: OrbitEngine.preview(s, action, { moduleId: s.inventory[0].id, planetId: s.galaxy.planets.find(p => p.id !== s.location.planetId).id }) }));
     });
-    for (const check of checks) { assert.equal(check.preview.allowed, false, check.action); assert.match(check.preview.reason, /expedi|equipe|retorn|resgate/i); }
+    // Warp is also held by the campaign until this chapter's module is built; either lock leaves the state untouched.
+    for (const check of checks) { assert.equal(check.preview.allowed, false, check.action); assert.match(check.preview.reason, check.action === 'warp' ? /expedi|equipe|retorn|resgate|frequência/i : /expedi|equipe|retorn|resgate/i, check.action); }
     assert.deepEqual(await state(), before);
   });
   await test('Scan uses a finite expedition reserve and reveals terrain without banking rewards', async () => {
@@ -111,19 +126,19 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
     const box = await page.evaluate(() => ({ captionBottom: document.getElementById('og-field-caption').getBoundingClientRect().bottom, contextTop: document.getElementById('og-context').getBoundingClientRect().top }));
     assert.ok(box.captionBottom <= box.contextTop - 5, JSON.stringify(box));
     await snap('core-field-desktop736'); await click('expeditionInteract'); await snap('core-puzzle-desktop736');
-    const clipped = await page.getByRole('dialog').locator('button').evaluateAll(es => es.filter(e => { const r = e.getBoundingClientRect(), g = document.getElementById('orbit-game').getBoundingClientRect(); return r.left < g.left || r.right > g.right; }).map(e => e.textContent)); assert.deepEqual(clipped, []);
+    const clipped = await page.getByRole('dialog').locator('button').evaluateAll(es => es.filter(e => e.getClientRects().length).filter(e => { const r = e.getBoundingClientRect(), g = document.getElementById('orbit-game').getBoundingClientRect(); return r.left < g.left || r.right > g.right; }).map(e => e.textContent)); assert.deepEqual(clipped, []);
     await page.setViewportSize({ width: 390, height: 900 }); await snap('core-puzzle');
   });
   await test('A solved coupled-rotor puzzle recovers cargo but does not equip or bank it', async () => {
     const before = await state();
     const puzzle = before.expedition.puzzle;
     assert.ok(!puzzle.dials.every((value, i) => value === puzzle.target[i]));
-    await click('expeditionRecover');
+    await recover();
     assert.equal((await state()).expedition.reserve, before.expedition.reserve - 2);
     assert.equal((await state()).expedition.pending.module, undefined);
     const counts = countsToSolve(puzzle.dials, puzzle.target);
     for (let i = 0; i < 3; i++) for (let n = 0; n < counts[i]; n++) await page.locator(`[data-action="expeditionTune"][data-index="${i}"]:visible`).click();
-    await click('expeditionRecover');
+    await recover();
     const after = await state();
     assert.deepEqual(after.inventory, before.inventory);
     assert.deepEqual(after.equipped, equippedBefore);
@@ -142,7 +157,17 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
     assert.equal((await view()).tab, 'expedition');
   });
   await test('Returning to base and extracting banks recovered rewards exactly once', async () => {
-    await closeSheet(); await goBase(); const before = await state(); await click('expeditionExtract'); const after = await state();
+    await closeSheet();
+    // The two beacons cost the energy this scripted detour used to keep: the return panel warns the vehicle is short,
+    // and the emergency discharge trades ship hull for vehicle energy so the cargo can still come home.
+    if (!(await page.evaluate(() => OrbitEngine.expeditionReturnRoute(orbitApp.getState()).canReturn))) {
+      await click('expedition-return'); assert.match(await page.getByRole('dialog').innerText(), /Faltam \d+ de energia/);
+      const hull = (await state()).resources.hull, reserve = (await state()).expedition.reserve;
+      await click('overdrive-menu'); await click('expeditionOverdrive');
+      assert.equal((await state()).resources.hull, hull - 12); assert.ok((await state()).expedition.reserve > reserve);
+      assert.equal(await page.evaluate(() => OrbitEngine.expeditionReturnRoute(orbitApp.getState()).canReturn), true); await closeSheet();
+    }
+    await goBase(); const before = await state(); await click('expeditionExtract'); const after = await state();
     assert.equal(after.expedition, null);
     assert.equal(after.progress.explorations, initial.progress.explorations + 1);
     assert.ok(after.inventory.some(m => m.id === pendingModule.id));
@@ -172,7 +197,7 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
     await goCore(); await click('expeditionInteract');
     const puzzle = (await state()).expedition.puzzle, counts = countsToSolve(puzzle.dials, puzzle.target);
     for (let i = 0; i < 3; i++) for (let n = 0; n < counts[i]; n++) await page.locator(`[data-action="expeditionTune"][data-index="${i}"]:visible`).click();
-    await click('expeditionRecover'); assert.ok((await state()).expedition.pending.module);
+    await recover(); assert.ok((await state()).expedition.pending.module);
     await click('expedition-abort-menu'); await click('expeditionAbort');
     const aborted = await state(); assert.equal(aborted.expedition, null); assert.deepEqual(aborted.equipped, before.equipped); assert.deepEqual(aborted.inventory, before.inventory);
     assert.equal(aborted.progress.explorations, before.progress.explorations);
@@ -182,7 +207,8 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
   await test('A touch-screen player can launch and steer the surface vehicle by tapping terrain', async () => {
     const c = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
     const p = await c.newPage(); listen(p); await p.goto(url); await p.waitForFunction(() => window.orbitApp);
-    for (const action of ['scan', 'dock', 'sites', 'explore']) await p.locator(`[data-action="${action}"]:visible`).first().tap();
+    await p.locator('[data-story-action="skip"]').tap(); await p.locator('[data-guide-skip]').tap();
+    await p.locator('[data-action="scan"]:visible').first().tap(); await p.locator('#og-sheet-backdrop [data-action="explore"]').tap();
     const before = await p.evaluate(() => orbitApp.getState().expedition);
     await p.locator('[data-expedition-x="2"][data-expedition-y="4"]').tap();
     const after = await p.evaluate(() => orbitApp.getState().expedition);
