@@ -167,3 +167,9 @@ Cada fase deve passar pelo bot de campanha para medir as curvas de Lumes e dados
 - **Arte dos exemplares e das ferramentas:** pinturas dedicadas instaladas (`assets/BRIEFING-XENO-CODEX.md`).
 - **Naves prontas:** briefing das 9 naves novas em `assets/BRIEFING-NAVES-CODEX.md`. A mecânica (viajante, hangar e troca de nave) é o próximo passo.
 - **Backlog sem definição:** ranking de exploração e cartão-imagem compartilhável. Ainda não está decidido o que mediriam nem se precisam de servidor.
+
+### Registro do explorador (04/11/2026)
+
+- **Feito:** aba Registro no Catálogo, com os números da jornada, a duração de cada capítulo em ações e 17 conquistas, com aviso curto ao conquistar. Em 4 campanhas do bot, todas terminam com o registro válido; o bot chega a 11–13 conquistas (ele não caça exemplares únicos nem grava runas).
+- **Próximos do item 5:** cinemáticas de atracagem e de colheita (dependem de arte), pacote de civilizações e equilíbrio das esperas do capítulo 2.
+

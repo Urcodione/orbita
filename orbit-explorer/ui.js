@@ -677,6 +677,9 @@
     // A chapter ends when its Coro technology is built: one of the eight big moments of the campaign.
     if(result.ok&&result.reward?.module?.origin==='campaign'&&state.campaign?.chapter>chapterBefore){const v=E.campaignView(state),lead=E.campaignLead(state);
      achievement({kind:'chapter',small:'Capítulo '+(beforeCampaign?.chapter||chapterBefore)+' de 8 concluído',title:result.reward.module.name,text:'Tecnologia do Coro '+v.completed+'/8. Instale-a para somar 12,5% de resistência dimensional.',next:lead?.title,module:result.reward.module});}
+    // An explorer's record achievement: a short banner, unless a mission milestone or a chapter card already speaks.
+    const conquest=result.achievements?.[0];
+    if(conquest&&!state.guide?.active&&!(newMarco&&action!=='expeditionExtract')&&!root.querySelector('.og-achievement.is-chapter')){const r=E.explorerRecord(state);achievement({kind:'marco',small:'Conquista · '+r.earned+'/'+r.total,title:conquest.title});}
     return result;
   }
   function handleClick(event){
