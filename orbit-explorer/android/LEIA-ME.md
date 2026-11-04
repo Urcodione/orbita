@@ -1,6 +1,6 @@
-# Órbita para Android — versão de teste 0.2.9
+# Órbita para Android — versão 0.3.0
 
-Último APK gerado: `dist/orbita-0.2.8.apk` (Android 8.0 ou superior, WebView atualizado). A 0.2.9 está pronta no código e no `index.html`; o APK é gerado no computador que tem a chave de assinatura (veja "Gerar o APK 0.2.9").
+Último APK gerado: `dist/orbita-0.2.8.apk` (a 0.2.9 foi gerada fora deste repositório). A 0.3.0 está pronta no código e no `index.html`: o APK de teste e o AAB da Google Play são gerados no computador que tem as chaves (veja "Gerar o APK de teste e o AAB 0.3.0"). A publicação na Play está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -12,13 +12,13 @@ Na instalação limpa, a campanha começa zerada, com uma introdução ilustrada
 
 O APK contém somente o jogo offline completo e o invólucro Android. Não inclui fixtures de teste, partidas salvas ou referências ao servidor localhost. Não solicita permissões de internet, arquivos, câmera ou localização. Backup Android desativado. Arte completa incluída.
 
-O botão Voltar do Android acompanha o retorno de cada tela do jogo: de um cartão para sua origem, da inspeção para a nave aberta e das áreas principais para a exploração. Na tela principal, pede confirmação para sair. Durante a introdução e o tutorial, use os controles da cena e a opção de pular. A área do jogo reserva espaço para recortes da tela e barras do sistema quando estão visíveis.
+O botão Voltar do Android acompanha o retorno de cada tela do jogo: de um cartão para sua origem, do cartão de um módulo para a nave aberta e das áreas principais para a exploração. Na tela principal, pede confirmação para sair. Durante a introdução e o tutorial, use os controles da cena e a opção de pular. A área do jogo reserva espaço para recortes da tela e barras do sistema quando estão visíveis.
 
 ## Compilar novamente
 
 `python3 android/build-apk.py --toolchain /caminho/para/ferramentas`
 
-A pasta de ferramentas deve conter um JDK 17, Android Platform 35 e Build Tools 35 extraídos dos distribuidores oficiais. O script executa o build do jogo e inclui apenas `assets/index.html`.
+A pasta de ferramentas deve conter um JDK 17, a Android Platform e o Build Tools da versão alvo do manifesto (36), extraídos dos distribuidores oficiais; `prepare-toolchain.py` prepara tudo. O script executa o build do jogo e inclui apenas `assets/index.html`.
 
 A chave local de teste é criada em `android/.private/orbita-test.jks`. Preserve-a para assinar futuras atualizações compatíveis. Não é uma chave de publicação na Play Store. `dist/build-report.json` contém o hash SHA-256 e o resumo do pacote.
 
@@ -77,13 +77,30 @@ Detalhes em `qa/REVISAO-2026-10-31.md`.
 
 `versionCode` 11, `versionName` 0.2.9. Atualizar por cima preserva a partida, desde que o APK seja assinado com a mesma chave das versões anteriores.
 
-## Gerar o APK 0.2.9
+## Alterações 0.3.0 (04/11/2026)
 
-O APK precisa ser assinado com a mesma chave das versões instaladas (`android/.private/orbita-test.jks`, que fica fora do Git). Com outra chave, o Android recusa a atualização e seria preciso desinstalar, o que apaga a partida. Por isso, gere-o no computador que tem essa chave:
+- **Android 16 e Google Play:** targetSdk 36, exigido pela Play desde 31/08/2026. O botão Voltar passa pelo `OnBackInvokedCallback` no Android 13 ou mais novo (o Android 16 não chama mais `onBackPressed` em apps com esse alvo). A tela cheia usa o `WindowInsetsController` no Android 11 ou mais novo.
+- **AAB:** `build-apk.py --bundle` gera o pacote da Play, assinado com a chave de upload.
+- **Jogo:** trunfos exclusivos das naves e dicas de onde cada uma pousaria, sinais no mapa que apontam o próximo passo da missão, marcos e cartão de fim de capítulo, atributos da nave na nave aberta, cartão do módulo direto sobre a nave aberta (sem a aproximação da peça) e o tópico "Naves e hangar" na Ajuda.
+
+`versionCode` 12, `versionName` 0.3.0.
+
+## Gerar o APK de teste e o AAB 0.3.0
+
+Os comandos rodam a partir de `orbit-explorer/`. Primeiro, prepare as ferramentas (JDK 17, Android Platform 36, Build Tools 36 e bundletool, conferidos por hash):
 
 ```bash
 python3 android/prepare-toolchain.py
+```
+
+**APK de teste**, para instalar à mão por cima das versões anteriores. Ele é assinado com `android/.private/orbita-test.jks`, que fica fora do Git. Com outra chave, o Android recusa a atualização e seria preciso desinstalar, o que apaga a partida. Por isso, gere-o no computador que tem essa chave:
+
+```bash
 python3 android/build-apk.py
 ```
 
-Os comandos rodam a partir de `orbit-explorer/`. O primeiro baixa e confere as ferramentas oficiais (JDK 17, Android Platform 35 e Build Tools 35) em `/tmp/orbita-android-toolchain`; o segundo refaz o `index.html`, empacota, assina e verifica `dist/orbita-0.2.9.apk`. Se a pasta `android/.private/` não existir nesse computador, o script cria uma chave nova: nesse caso, desinstale a versão anterior antes de instalar a 0.2.9.
+**AAB da Google Play**, assinado com a chave de upload (`android/.private/orbita-upload.jks`, criada no primeiro uso; detalhes em `play/PUBLICAR.md`):
+
+```bash
+python3 android/build-apk.py --bundle
+```

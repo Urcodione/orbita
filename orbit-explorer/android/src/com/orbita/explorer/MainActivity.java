@@ -84,6 +84,7 @@ public final class MainActivity extends Activity {
             return insets;
         });
         setContentView(viewport);
+        registerBack();
         viewport.requestApplyInsets();
         immersive();
         try (InputStream probe = getAssets().open("index.html")) {
@@ -132,14 +133,29 @@ public final class MainActivity extends Activity {
         game.loadUrl(PAGE);
     }
     private void immersive() {
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-            View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        if (Build.VERSION.SDK_INT >= 30) {
+            android.view.WindowInsetsController bars = getWindow().getInsetsController();
+            if (bars != null) {
+                bars.hide(WindowInsets.Type.systemBars());
+                bars.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
     }
     @Override public void onWindowFocusChanged(boolean focused) { super.onWindowFocusChanged(focused); if(focused) immersive(); }
     @Override protected void onPause() { if(game!=null){game.onPause(); game.pauseTimers();} super.onPause(); }
     @Override protected void onResume() { super.onResume(); if(game!=null){game.onResume();game.resumeTimers();} }
-    @Override public void onBackPressed() {
-        if (game == null) { super.onBackPressed(); return; }
+    // Android 13+ delivers Back through OnBackInvokedCallback (the manifest opts in, and apps targeting Android 16 no
+    // longer receive onBackPressed or KEYCODE_BACK). Older versions still call onBackPressed. Both lead to goBack().
+    private void registerBack() {
+        if (Build.VERSION.SDK_INT >= 33)
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::goBack);
+    }
+    @Override public void onBackPressed() { goBack(); }
+    private void goBack() {
+        if (game == null) { finish(); return; }
         if (backPending || (exitDialog != null && exitDialog.isShowing())) return;
         backPending = true;
         game.evaluateJavascript("Boolean(window.orbitApp && window.orbitApp.back && window.orbitApp.back())", result -> {
