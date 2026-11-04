@@ -631,9 +631,6 @@
 @keyframes og-delta-in{from{opacity:0;transform:translate(-50%,-8px)}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-delta li{animation:none;opacity:1;transform:none}#orbit-game .og-delta.is-entering{animation:none}}
 
-#orbit-game .og-delivery-story{display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:12px;background:linear-gradient(110deg,#2c2148,#142d3b);border:1px solid #8f78c8}
-#orbit-game .og-delivery-story small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#d8c6ff}
-#orbit-game .og-delivery-story p{margin:0;font-size:13px;line-height:1.4;color:#f1ecff}
 
 /* Achievements: mission milestone banner and end-of-chapter card. */
 #orbit-game .og-achievement.is-marco{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:220px;max-width:calc(100% - 32px);padding:8px 16px;border-radius:14px;background:linear-gradient(110deg,#3b2a14f2,#2c2148f2);border:1px solid #ffbf6b;box-shadow:0 8px 24px #0009,0 0 18px #ffb04f44;pointer-events:none;animation:og-achievement-in .35s ease-out}
@@ -649,9 +646,10 @@
 #orbit-game .og-achievement-card p{margin:0;font-size:14px;line-height:1.4;color:#dcd2f5}
 #orbit-game .og-achievement-card .og-achievement-next{color:#9fe8d8}
 #orbit-game .og-achievement-card .og-button{margin-top:8px;min-width:180px}
-#orbit-game .og-delivery-marco{display:flex;flex-direction:column;gap:2px;margin:0;padding:8px 11px;border-radius:12px;background:linear-gradient(110deg,#3b2a14,#16323d);border:1px solid #ffbf6b88}
-#orbit-game .og-delivery-marco small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ffd29a}
-#orbit-game .og-delivery-marco strong{font-size:14px;color:#fff6e6}
 @keyframes og-achievement-in{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 #orbit-game .og-achievement.is-marco{animation-name:og-achievement-in}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-achievement{animation:none}}
+#orbit-game .og-delivery-stamp.is-story{align-items:flex-start;background:linear-gradient(110deg,#2c2148,#142d3b);border-color:#8f78c8}
+#orbit-game .og-delivery-stamp.is-story strong{color:#f3ecff}
+#orbit-game .og-delivery-stamp.is-story p{margin:0;font-size:12px;line-height:1.35;color:#e4dcf7}
+#orbit-game .og-delivery-stamp .og-delivery-marco{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#ffd29a}

@@ -1423,9 +1423,6 @@
 @keyframes og-delta-in{from{opacity:0;transform:translate(-50%,-8px)}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-delta li{animation:none;opacity:1;transform:none}#orbit-game .og-delta.is-entering{animation:none}}
 
-#orbit-game .og-delivery-story{display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:12px;background:linear-gradient(110deg,#2c2148,#142d3b);border:1px solid #8f78c8}
-#orbit-game .og-delivery-story small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#d8c6ff}
-#orbit-game .og-delivery-story p{margin:0;font-size:13px;line-height:1.4;color:#f1ecff}
 
 /* Achievements: mission milestone banner and end-of-chapter card. */
 #orbit-game .og-achievement.is-marco{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:220px;max-width:calc(100% - 32px);padding:8px 16px;border-radius:14px;background:linear-gradient(110deg,#3b2a14f2,#2c2148f2);border:1px solid #ffbf6b;box-shadow:0 8px 24px #0009,0 0 18px #ffb04f44;pointer-events:none;animation:og-achievement-in .35s ease-out}
@@ -1441,12 +1438,13 @@
 #orbit-game .og-achievement-card p{margin:0;font-size:14px;line-height:1.4;color:#dcd2f5}
 #orbit-game .og-achievement-card .og-achievement-next{color:#9fe8d8}
 #orbit-game .og-achievement-card .og-button{margin-top:8px;min-width:180px}
-#orbit-game .og-delivery-marco{display:flex;flex-direction:column;gap:2px;margin:0;padding:8px 11px;border-radius:12px;background:linear-gradient(110deg,#3b2a14,#16323d);border:1px solid #ffbf6b88}
-#orbit-game .og-delivery-marco small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ffd29a}
-#orbit-game .og-delivery-marco strong{font-size:14px;color:#fff6e6}
 @keyframes og-achievement-in{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 #orbit-game .og-achievement.is-marco{animation-name:og-achievement-in}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-achievement{animation:none}}
+#orbit-game .og-delivery-stamp.is-story{align-items:flex-start;background:linear-gradient(110deg,#2c2148,#142d3b);border-color:#8f78c8}
+#orbit-game .og-delivery-stamp.is-story strong{color:#f3ecff}
+#orbit-game .og-delivery-stamp.is-story p{margin:0;font-size:12px;line-height:1.35;color:#e4dcf7}
+#orbit-game .og-delivery-stamp .og-delivery-marco{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#ffd29a}
 
 #orbit-game .og-xeno-art{display:block;width:56px;height:56px;flex:none;background-image:var(--og-biology-art);background-size:200% 300%;background-position:var(--art-x) var(--art-y);background-repeat:no-repeat;filter:hue-rotate(var(--hue)) drop-shadow(0 0 6px #b7f5e566)}
 #orbit-game .og-xeno-art.is-large{width:120px;height:120px}
@@ -6550,9 +6548,11 @@ root.OrbitExtractionUI={render(state,reward={}){
  const fragment=reward.fragment?`<article class="og-delivery-item is-signal">${root.OrbitControlIcons.art('beacon')}<b>${E.beaconView(state).count}/3</b><span>Farol · ${esc(({origin:'Origem',ember:'Brasa',tide:'Maré'})[reward.fragment])}</span></article>`:'';
  const note=reward.story?.consequence||reward.campaignProgress||'';
  // When the extraction moves the campaign, its story beat (Aurora's first signal, transmissions, a preserved relic) is shown too.
- const marco=reward.marco?`<p class="og-delivery-marco"><small>Marco da missão · ${reward.marco.count}/5</small><strong>${esc(reward.marco.label)}</strong></p>`:'';
- const story=reward.story?.advanced&&reward.story.message?`<article class="og-delivery-story"><small>${esc(reward.story.title)}</small><p>${esc(reward.story.message)}</p></article>`:'';
- return {singleCard:true,title:'Carga entregue',html:`<section class="og-delivery ${items.length+(fragment?1:0)>6?'is-full':''}" aria-label="Resultado da extração"><div class="og-delivery-stamp">${root.OrbitControlIcons.art('extract')}<div><strong>Extração concluída</strong><small>Itens já guardados na nave</small></div></div>${marco}${story}${module}${unique}<div class="og-delivery-grid" style="--delivery-count:${items.length+(fragment?1:0)}">${items.map(([k,v],i)=>`<article class="og-delivery-item" style="--arrival:${i}" aria-label="${esc(E.materials[k]?.name||names[k])}: mais ${v}">${figure(k)}<b>+${v}</b><span>${esc(E.materials[k]?.name||names[k])}</span></article>`).join('')}${fragment}</div>${!items.length&&!m&&!unique&&!fragment?'<p class="og-delivery-empty">Veículo recolhido com segurança. Nenhuma carga nesta saída.</p>':''}${note?`<p class="og-delivery-progress">${esc(note)}</p>`:''}</section>`,footer:`<button class="og-delivery-done" data-action="close-sheet" data-icon-intent="base" aria-label="Concluir entrega e voltar ao planeta"><span class="og-control-symbol">${root.OrbitControlIcons.art('base')}</span><small class="og-control-caption">Concluir</small></button>`};
+ // The stamp carries the extraction's meaning: the mission milestone it reached and the story beat it unlocked, when
+ // there is one; otherwise the plain confirmation. One block, so the receipt still fits a small phone without scrolling.
+ const story=reward.story?.advanced&&reward.story.message?reward.story:null,marco=reward.marco;
+ const stamp=story||marco?`<div class="og-delivery-stamp is-story">${root.OrbitControlIcons.art('extract')}<div>${marco?`<small class="og-delivery-marco">Marco da missão ${marco.count}/5 · ${esc(marco.label)}</small>`:''}<strong>${esc(story?story.title:'Extração concluída')}</strong>${story?`<p>${esc(story.message)}</p>`:'<small>Itens já guardados na nave</small>'}</div></div>`:`<div class="og-delivery-stamp">${root.OrbitControlIcons.art('extract')}<div><strong>Extração concluída</strong><small>Itens já guardados na nave</small></div></div>`;
+ return {singleCard:true,title:'Carga entregue',html:`<section class="og-delivery ${items.length+(fragment?1:0)>6?'is-full':''}" aria-label="Resultado da extração">${stamp}${module}${unique}<div class="og-delivery-grid" style="--delivery-count:${items.length+(fragment?1:0)}">${items.map(([k,v],i)=>`<article class="og-delivery-item" style="--arrival:${i}" aria-label="${esc(E.materials[k]?.name||names[k])}: mais ${v}">${figure(k)}<b>+${v}</b><span>${esc(E.materials[k]?.name||names[k])}</span></article>`).join('')}${fragment}</div>${!items.length&&!m&&!unique&&!fragment?'<p class="og-delivery-empty">Veículo recolhido com segurança. Nenhuma carga nesta saída.</p>':''}${note?`<p class="og-delivery-progress">${esc(note)}</p>`:''}</section>`,footer:`<button class="og-delivery-done" data-action="close-sheet" data-icon-intent="base" aria-label="Concluir entrega e voltar ao planeta"><span class="og-control-symbol">${root.OrbitControlIcons.art('base')}</span><small class="og-control-caption">Concluir</small></button>`};
 }};
 })(window);
 
@@ -7016,7 +7016,9 @@ root.OrbitFeedback={show(container,result,action,state){
     if(sheet==='stock'&&commerceView.stockGroup){commerceView.stockGroup=null;sheetNotice='';renderSheet();return;}
     if(sheet==='catalog'&&parentPlace().action==='catalog-parent'){if(catalogView.materialId)delete catalogView.materialId;else catalogView={page:catalogView.page==='system'?'systems':'materials'};sheetNotice='';renderSheet();return;}
     const parent=parentPlace();
-    if(parent.action==='world'){const destination=['station','station-route'].includes(sheet)?'galaxy':['stock','workshop'].includes(sheet)?'ship':tab;dismissSheet();tab=destination;render();save();return;}
+    if(parent.action==='world'){const destination=['station','station-route'].includes(sheet)?'galaxy':['stock','workshop'].includes(sheet)?'ship':tab,prior=focusBeforeSheet;dismissSheet();tab=destination;render();save();
+      // render() redraws the board after the sheet closed: hand focus back to the redrawn control (keyboard play continues).
+      const again=sameControl(prior);if(again)again.focus({preventScroll:true});return;}
     if(parent.action==='ship-overview'){shipOverview();return;}
     if(parent.action==='lab-parent'){
       if(lab.page==='component'){window.OrbitWorkshop.handle({dataset:{labBack:'previous'}},lab);sheetPage=0;renderSheet();save();return;}
@@ -7296,9 +7298,15 @@ root.OrbitFeedback={show(container,result,action,state){
     const caption=n=>n.current?'AQUI':signalOf(n)?(mapLevel==='system'?'Sinal do Coro':esc(n.name)+' · sinal'):livingOf(n)?'Sinal vivo':mapLevel!=='system'?esc(n.name):'';
     $('og-map').innerHTML=nav.nodes.map(n=>`<button class="og-nav-node ${n.selected?'is-selected':''} ${n.blocked?'is-blocked':''} ${signalOf(n)?'is-signal':''} ${livingOf(n)?'is-living':''}" ${mapLevel==='system'?`data-select="${esc(n.id)}"`:mapLevel==='galaxy'?`data-system="${esc(n.id)}"`:`data-destination="${esc(n.id)}"`} style="left:${n.x}%;top:${n.y}%" aria-label="${esc(n.name)}${n.current?', localização atual':''}${signalOf(n)?', próximo sinal da missão':''}${livingOf(n)?', sinal de exemplar único':''}${n.blocked?', exige preparo':''}" aria-pressed="${n.selected}"><span class="og-nav-hit" aria-hidden="true">${n.blocked?'<i>!</i>':''}</span><span class="og-nav-caption">${caption(n)}</span></button>`).join('');
     if(mapLevel==='galaxy')$('og-map').insertAdjacentHTML('beforeend',`<button class="og-station-node" data-action="station" aria-label="Traçar rota ao entreposto do sistema atual"><span class="og-nav-hit" aria-hidden="true"></span><span class="og-nav-caption">${state.fleet?.offer&&state.fleet.offer.stay===state.fleet.rolled?'Entreposto · viajante':'Entreposto local'}</span></button>`);
-    // The wormhole goes to the free corner farthest from the worlds, so its marker and label never cover a planet.
-    if(nav.wormhole){const spot=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46]].map(([x,y])=>({x,y,d:Math.min(...nav.nodes.map(n=>Math.hypot(n.x-x,(n.y-y)*1.4)))})).sort((a,b)=>b.d-a.d)[0];
-     $('og-map').insertAdjacentHTML('beforeend',`<button class="og-wormhole-node" data-action="campaign-gate" style="left:${spot.x}%;top:${spot.y}%" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>`);}
+    // The wormhole goes to a free spot measured on screen: its marker and label must not touch any world or caption.
+    if(nav.wormhole){const map=$('og-map'),spots=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46],[50,12]];
+     map.insertAdjacentHTML('beforeend','<button class="og-wormhole-node" data-action="campaign-gate" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>');
+     const hole=map.lastElementChild,box=map.getBoundingClientRect();
+     if(box.width){const taken=[...map.querySelectorAll('.og-nav-node')].flatMap(n=>[n.getBoundingClientRect(),n.querySelector('.og-nav-caption')?.getBoundingClientRect()]).filter(r=>r&&r.width);
+      const area=([x,y])=>{const cx=box.left+box.width*x/100,cy=box.top+box.height*y/100;return {left:cx-54,right:cx+54,top:cy-34,bottom:cy+40};};
+      const gap=(a,r)=>Math.max(r.left-a.right,a.left-r.right,r.top-a.bottom,a.top-r.bottom);
+      const scored=spots.map(spot=>({spot,clear:Math.min(...taken.map(r=>gap(area(spot),r)))})),free=scored.find(o=>o.clear>4)||scored.sort((a,b)=>b.clear-a.clear)[0];
+      hole.style.left=free.spot[0]+'%';hole.style.top=free.spot[1]+'%';}}
     $('og-context').innerHTML=content;
   }
   function renderExpedition(ex){

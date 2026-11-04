@@ -97,7 +97,9 @@
     if(sheet==='stock'&&commerceView.stockGroup){commerceView.stockGroup=null;sheetNotice='';renderSheet();return;}
     if(sheet==='catalog'&&parentPlace().action==='catalog-parent'){if(catalogView.materialId)delete catalogView.materialId;else catalogView={page:catalogView.page==='system'?'systems':'materials'};sheetNotice='';renderSheet();return;}
     const parent=parentPlace();
-    if(parent.action==='world'){const destination=['station','station-route'].includes(sheet)?'galaxy':['stock','workshop'].includes(sheet)?'ship':tab;dismissSheet();tab=destination;render();save();return;}
+    if(parent.action==='world'){const destination=['station','station-route'].includes(sheet)?'galaxy':['stock','workshop'].includes(sheet)?'ship':tab,prior=focusBeforeSheet;dismissSheet();tab=destination;render();save();
+      // render() redraws the board after the sheet closed: hand focus back to the redrawn control (keyboard play continues).
+      const again=sameControl(prior);if(again)again.focus({preventScroll:true});return;}
     if(parent.action==='ship-overview'){shipOverview();return;}
     if(parent.action==='lab-parent'){
       if(lab.page==='component'){window.OrbitWorkshop.handle({dataset:{labBack:'previous'}},lab);sheetPage=0;renderSheet();save();return;}
@@ -377,9 +379,15 @@
     const caption=n=>n.current?'AQUI':signalOf(n)?(mapLevel==='system'?'Sinal do Coro':esc(n.name)+' · sinal'):livingOf(n)?'Sinal vivo':mapLevel!=='system'?esc(n.name):'';
     $('og-map').innerHTML=nav.nodes.map(n=>`<button class="og-nav-node ${n.selected?'is-selected':''} ${n.blocked?'is-blocked':''} ${signalOf(n)?'is-signal':''} ${livingOf(n)?'is-living':''}" ${mapLevel==='system'?`data-select="${esc(n.id)}"`:mapLevel==='galaxy'?`data-system="${esc(n.id)}"`:`data-destination="${esc(n.id)}"`} style="left:${n.x}%;top:${n.y}%" aria-label="${esc(n.name)}${n.current?', localização atual':''}${signalOf(n)?', próximo sinal da missão':''}${livingOf(n)?', sinal de exemplar único':''}${n.blocked?', exige preparo':''}" aria-pressed="${n.selected}"><span class="og-nav-hit" aria-hidden="true">${n.blocked?'<i>!</i>':''}</span><span class="og-nav-caption">${caption(n)}</span></button>`).join('');
     if(mapLevel==='galaxy')$('og-map').insertAdjacentHTML('beforeend',`<button class="og-station-node" data-action="station" aria-label="Traçar rota ao entreposto do sistema atual"><span class="og-nav-hit" aria-hidden="true"></span><span class="og-nav-caption">${state.fleet?.offer&&state.fleet.offer.stay===state.fleet.rolled?'Entreposto · viajante':'Entreposto local'}</span></button>`);
-    // The wormhole goes to the free corner farthest from the worlds, so its marker and label never cover a planet.
-    if(nav.wormhole){const spot=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46]].map(([x,y])=>({x,y,d:Math.min(...nav.nodes.map(n=>Math.hypot(n.x-x,(n.y-y)*1.4)))})).sort((a,b)=>b.d-a.d)[0];
-     $('og-map').insertAdjacentHTML('beforeend',`<button class="og-wormhole-node" data-action="campaign-gate" style="left:${spot.x}%;top:${spot.y}%" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>`);}
+    // The wormhole goes to a free spot measured on screen: its marker and label must not touch any world or caption.
+    if(nav.wormhole){const map=$('og-map'),spots=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46],[50,12]];
+     map.insertAdjacentHTML('beforeend','<button class="og-wormhole-node" data-action="campaign-gate" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>');
+     const hole=map.lastElementChild,box=map.getBoundingClientRect();
+     if(box.width){const taken=[...map.querySelectorAll('.og-nav-node')].flatMap(n=>[n.getBoundingClientRect(),n.querySelector('.og-nav-caption')?.getBoundingClientRect()]).filter(r=>r&&r.width);
+      const area=([x,y])=>{const cx=box.left+box.width*x/100,cy=box.top+box.height*y/100;return {left:cx-54,right:cx+54,top:cy-34,bottom:cy+40};};
+      const gap=(a,r)=>Math.max(r.left-a.right,a.left-r.right,r.top-a.bottom,a.top-r.bottom);
+      const scored=spots.map(spot=>({spot,clear:Math.min(...taken.map(r=>gap(area(spot),r)))})),free=scored.find(o=>o.clear>4)||scored.sort((a,b)=>b.clear-a.clear)[0];
+      hole.style.left=free.spot[0]+'%';hole.style.top=free.spot[1]+'%';}}
     $('og-context').innerHTML=content;
   }
   function renderExpedition(ex){
