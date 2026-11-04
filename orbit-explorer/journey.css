@@ -603,6 +603,10 @@
 
 #orbit-game .og-back-control .og-place-caption{max-width:84px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #orbit-game .og-ship-stats{position:absolute;left:8px;right:8px;top:64px;display:flex;justify-content:space-between;pointer-events:none;z-index:2}
+#orbit-game .og-ship-stats.is-compact{flex-direction:column;align-items:flex-end;gap:6px}
+#orbit-game .og-ship-stats .og-stats-toggle{pointer-events:auto;min-height:36px;padding:6px 12px;border-radius:999px;background:#06121cd9;border:1px solid #7fb6c466;color:#dff3f3;font-size:12px}
+#orbit-game .og-ship-stats .og-stats-columns{display:flex;flex-direction:row;gap:6px;pointer-events:none}
+#orbit-game .og-ship-stats.is-open dl{background:#06121ce6}
 #orbit-game .og-ship-stats dl{margin:0;display:grid;gap:4px;width:86px;padding:6px 8px;border-radius:12px;background:#06121c8c;border:1px solid #7fb6c426}
 #orbit-game .og-ship-stats div{display:flex;flex-direction:column;line-height:1.15}
 #orbit-game .og-ship-stats dt{font-size:9px;color:#9dbccb;letter-spacing:.2px}

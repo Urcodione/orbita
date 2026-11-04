@@ -238,11 +238,17 @@
     const unit=Math.abs(diff)===1?({setores:'setor','espaços':'espaço'}[after.unit]||after.unit):after.unit;
     return {text:sign+String(Math.abs(diff)).replace('.',',')+' '+unit,good};
   }
+  // The flying ship stays clean; the attributes live on the open ship. Where the open hull leaves room beside it they
+  // flank the ship below the heading; on small screens a button opens them over the ship.
+  let statsOpen=false;
   function renderShipStats(){
     const panel=$('og-ship-stats');if(!panel)return;
-    const show=tab==='ship'&&shipDetail.mode==='exterior'&&!state.expedition&&E.shipMetrics;panel.hidden=!show;if(!show)return;
+    const show=tab==='ship'&&shipDetail.mode==='interior'&&!state.expedition&&E.shipMetrics;panel.hidden=!show;if(!show){statsOpen=false;return;}
     const metrics=Object.fromEntries(E.shipMetrics(state).map(m=>[m.key,m])),fresh=Date.now()<statHighlightUntil;
-    panel.innerHTML=statColumns.map(column=>`<dl>${column.map(([key,label])=>{const m=metrics[key];if(!m)return '';const mark=fresh&&statHighlight[key];return `<div class="${mark?(mark==='good'?'is-up':'is-down'):''}"><dt>${label}</dt><dd>${esc(metricValueText(m))}</dd></div>`;}).join('')}</dl>`).join('');
+    const roomy=root.clientWidth>=360&&root.clientHeight>=700,columns=statColumns.map(column=>`<dl>${column.map(([key,label])=>{const m=metrics[key];if(!m)return '';const mark=fresh&&statHighlight[key];return `<div class="${mark?(mark==='good'?'is-up':'is-down'):''}"><dt>${label}</dt><dd>${esc(metricValueText(m))}</dd></div>`;}).join('')}</dl>`).join('');
+    panel.classList.toggle('is-compact',!roomy);panel.classList.toggle('is-open',!roomy&&(statsOpen||fresh));
+    panel.innerHTML=roomy?columns:`<button class="og-stats-toggle" data-action="ship-stats" aria-expanded="${statsOpen||fresh}">Atributos ${statsOpen||fresh?'▴':'▾'}</button>${statsOpen||fresh?`<div class="og-stats-columns">${columns}</div>`:''}`;
+    requestAnimationFrame(()=>{if(panel.hidden||!panel.offsetParent)return;const heading=$('og-heading').getBoundingClientRect(),parent=panel.offsetParent.getBoundingClientRect();panel.style.top=Math.max(8,Math.round(heading.bottom-parent.top+6))+'px';});
   }
   let deltaTimer=0;
   function showShipDelta(before,after){
@@ -719,6 +725,7 @@
     if(action==='save-accept'){if(pendingImport){save();window.OrbitSaves.checkpoint();if(applySnapshot(pendingImport)){pendingImport=null;history.past=[];history.future=[];closeSheet();save();render();toast('Jornada restaurada.');}}return;}
     if(action==='sound'){sound=!window.OrbitAudio.prefs.sound;window.OrbitAudio.set('sound',sound);beep('toggle');renderSheet();return;}
     if(action==='confirm-reset'){closeSheet();state=E.create();tab='explore';selected=state.location.planetId;shipDetail={mode:'exterior',selectedModule:null,expanded:false};mapLevel='system';selectedSystem=currentSystem().id;selectedDestination=null;environmentSite=null;reward=null;save();render();toast('Sua nova expedição está pronta.');window.OrbitCampaignUI?.playClip(root,()=>{E.dispatch(state,'campaignIntro');save();render();});return;}
+    if(action==='ship-stats'){statsOpen=!statsOpen;renderShipStats();return;}
     if(action==='fleetSwitch'){act(action,{shipId:control.dataset.ship});return;}
     // A bought ship goes straight to the hangar, reached as from the station (the merchant has left).
     if(action==='fleetBuy'){const id=control.dataset.ship;act(action,{shipId:id});if(state.fleet?.owned.includes(id)&&sheet==='fleet-trader'){const notice=sheetNotice;sheet='station';openSheet('fleet');sheetNotice=notice;renderSheet();}return;}
