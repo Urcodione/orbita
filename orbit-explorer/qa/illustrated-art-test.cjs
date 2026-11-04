@@ -13,10 +13,12 @@ const assert=require('node:assert/strict');const fs=require('node:fs');const pat
   const art=await page.locator('#og-canvas').evaluate(c=>({width:c.width,cssWidth:c.clientWidth,frame:c.toDataURL()}));
   assert.ok(Math.abs(art.width-art.cssWidth*dpr)<=1);
   await page.waitForTimeout(400);assert.equal(await page.locator('#og-canvas').evaluate(c=>c.toDataURL()),art.frame,'Reduced motion keeps the illustration and weather stable');
-  await page.locator('.og-tabs [data-tab=ship]').click();await page.locator('[data-action=open-interior]').click();
-  await page.locator('[data-module-focus=engine]:visible').first().click();
-  for(let n=0;n<10 && !await page.locator('[data-action=inspect-module]:visible:not([inert] *)').count();n++) await page.locator('[data-sheet-page="1"]').click();
-  await page.locator('[data-action=inspect-module]:visible').click();await page.waitForTimeout(400);
+  // The exterior has no "Abrir nave" button any more: tapping the rocket opens the hull.
+  await page.locator('.og-tabs [data-tab=ship]').click();await page.locator('#og-canvas').click();await page.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');
+  // Tapping a module opens its card directly (the old "inspect-module" button is gone). The draggable close-up behind the
+  // card is shown when the game resumes in that view, so reload to reach it (the save keeps the selected module).
+  await page.locator('[data-module-focus=engine]:visible').first().click();await page.waitForFunction(()=>orbitApp.getView().sheet==='system-module'&&orbitApp.getView().shipDetail.selectedModule==='engine');
+  await page.reload();await page.waitForFunction(()=>window.orbitApp&&orbitApp.getView().sheet===null&&orbitApp.getInspection()?.type==='engine');await page.waitForTimeout(400);
   const resources=await page.evaluate(()=>JSON.stringify(orbitApp.getState().resources));
   for(const extract of [true,false]){
    const part=await page.evaluate(()=>orbitApp.getInspection()),box=await page.locator('#og-canvas').boundingBox();
@@ -28,7 +30,8 @@ const assert=require('node:assert/strict');const fs=require('node:fs');const pat
   assert.equal(await page.evaluate(()=>JSON.stringify(orbitApp.getState().resources)),resources);
   await page.locator('.og-tabs [data-tab=explore]').click();
   await page.locator('[data-action=scan]').click();assert.equal(await page.evaluate(()=>orbitApp.getState().progress.scans),1);
-  await page.locator('[data-action=dock]').click();await page.locator('[data-action=sites]').click();
+  // Scanning now opens the exploration-points panel directly (there is no separate dock/sites step).
+  await page.waitForFunction(()=>orbitApp.getView().sheet==='sites');
   const selector='[data-action=explore]';await page.locator(selector).first().click();await page.waitForTimeout(400);
   assert.ok(await page.evaluate(()=>!!orbitApp.getState().expedition));
   const field=await page.locator('#og-field-canvas').evaluate(c=>({w:c.width,css:c.clientWidth}));assert.ok(Math.abs(field.w-field.css*dpr)<=1);

@@ -40,9 +40,37 @@ fs.mkdirSync(out, { recursive: true });
     await p.waitForFunction(expected => orbitApp.getView().shipDetail.expanded === expected, extract, { timeout: 5000 });
     await p.waitForTimeout(850);
   }
+  // A new game opens with the story intro and the guided first expedition: skip both.
+  async function skipIntro(p, touch = false) {
+    for (const selector of ['[data-story-action=skip]', '[data-guide-skip]']) { const target = p.locator(selector); if (touch) await target.tap(); else await target.click(); }
+  }
+  // The exterior no longer has an "Abrir nave" button: tapping the rocket drawing opens the hull.
+  async function openHull(p, touch = false) {
+    const canvas = p.locator('#og-canvas'); if (touch) await canvas.tap(); else await canvas.click();
+    await p.waitForFunction(() => orbitApp.getView().shipDetail.mode === 'interior');
+  }
+  // Tapping a module drawing now opens its card directly (the old close-up step is gone from the flow). The draggable
+  // close-up is the view the game resumes into when the ship was left on a module, so reload to reach it.
+  async function closeUp(p, type, touch = false) {
+    const hotspot = p.locator(`[data-module-focus="${type}"]:visible`).first(); if (touch) await hotspot.tap(); else await hotspot.click();
+    await p.waitForFunction(type => orbitApp.getView().sheet === 'system-module' && orbitApp.getView().shipDetail.selectedModule === type, type);
+    await p.reload(); await p.waitForFunction(type => window.orbitApp?.getInspection && orbitApp.getView().sheet === null && orbitApp.getInspection()?.type === type, type);
+  }
   async function focusModule(type) {
-    if ((await view()).shipDetail.mode === 'module') await click('ship-back');
-    await page.locator(`[data-module-focus="${type}"]:visible`).first().click(); await settle();
+    if ((await view()).shipDetail.mode === 'module') await page.locator('#og-ship-back').click();
+    if ((await view()).shipDetail.mode === 'exterior') await openHull(page);
+    await closeUp(page, type); await settle();
+  }
+  // Cards can be paginated: page forward (then back) until the control is on the visible page.
+  async function reveal(selector) {
+    for (const dir of ['1', '-1']) for (let n = 0; n < 6 && !await page.locator(selector + ':visible').count(); n++) {
+      const step = page.locator(`[data-sheet-page="${dir}"]:visible:not(:disabled)`); if (!await step.count()) break; await step.click();
+    }
+  }
+  // The cargo shortcuts live on the Depósito card, opened from the close-up with the "Módulo" button.
+  async function cargoCard() {
+    if ((await view()).sheet !== 'system-module') await click('module-info');
+    assert.equal((await view()).sheet, 'system-module'); assert.equal((await view()).systemType, 'cargo');
   }
   async function assertQuantity(resource, quantity) {
     const dialog = page.getByRole('dialog');
@@ -52,9 +80,10 @@ fs.mkdirSync(out, { recursive: true });
     if (await marker.count()) assert.equal((await marker.first().innerText()).trim(), String(quantity));
     else assert.match(await dialog.innerText(), new RegExp(`(^|\\D)${quantity}(\\D|$)`), `Cargo sheet must show current ${resource} amount`);
   }
-  await page.goto(gameURL); await page.waitForFunction(() => window.orbitApp?.getInspection);
-  await click('scan');
-  await page.locator('.og-tabs [data-tab="ship"]').click(); await click('open-interior');
+  await page.goto(gameURL); await page.waitForFunction(() => window.orbitApp?.getInspection); await skipIntro(page);
+  // Scanning now opens the exploration-points panel over the tabs; close it before going to the ship.
+  await click('scan'); await page.waitForFunction(() => orbitApp.getState().progress.scans === 1); if ((await view()).sheet) await click('close-sheet');
+  await page.locator('.og-tabs [data-tab="ship"]').click(); await openHull(page);
   let inspectionResources, installedEngine;
   await test('Dragging the actual engine separates it from its socket without unequipping or spending resources', async () => {
     await focusModule('engine'); const before = await state(); inspectionResources = before.resources; installedEngine = before.equipped.engine;
@@ -105,12 +134,16 @@ fs.mkdirSync(out, { recursive: true });
     }
   });
   await test('Cargo shortcuts show actual contents and apply exactly the advertised resource transactions', async () => {
+    // The starting supplies no longer pay for all three services (a warp cell now costs 24 ore + 3 crystals, and air in
+    // orbit costs one Samambaia-lume), so stock exactly one operation of each: afterwards each one must become unavailable.
+    await page.evaluate(() => Object.assign(orbitApp.getState().resources, { fuel: 88, ore: 27, crystals: 3, oxygen: 88, lumenfern: 1 }));
     for (const [resource, action, output] of [['ore', 'refuel', 'fuel'], ['crystals', 'refine', 'warpFuel'], ['oxygen', 'refillOxygen', 'oxygen']]) {
+      await cargoCard(); await reveal(`[data-cargo="${resource}"]`);
       await page.locator(`[data-cargo="${resource}"]:visible`).first().click();
       const before = (await state()).resources;
       await assertQuantity(resource, before[resource]);
       const preview = await page.evaluate(action => OrbitEngine.preview(orbitApp.getState(), action), action);
-      assert.equal(preview.allowed, true, `Initial expedition should allow ${action}`);
+      assert.equal(preview.allowed, true, `Stocked supplies should allow ${action}`);
       const button = page.locator(`[data-action="${action}"]:visible`); assert.equal(await button.isEnabled(), true);
       await button.click();
       const after = (await state()).resources;
@@ -124,17 +157,20 @@ fs.mkdirSync(out, { recursive: true });
     }
   });
   await test('Cargo actions and controls remain usable at a 320px phone width', async () => {
-    await page.setViewportSize({ width: 320, height: 900 }); await settle();
+    await page.setViewportSize({ width: 320, height: 900 }); await settle(); await cargoCard(); await reveal('[data-cargo]');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth); assert.equal(overflow, false);
     const clipped = await page.locator('[data-cargo]:visible').evaluateAll(es => es.filter(e => { const r = e.getBoundingClientRect(); return r.left < 0 || r.right > innerWidth; }).map(e => e.textContent)); assert.deepEqual(clipped, []);
     await page.locator('[data-cargo="oxygen"]:visible').click(); await assertQuantity('oxygen', (await state()).resources.oxygen);
-    await screenshot('cargo-phone320'); await page.keyboard.press('Escape'); assert.equal(await page.getByRole('dialog').count(), 0);
+    // Esc now steps back through the places the panel came from (first the Depósito card) until the game is shown again.
+    await screenshot('cargo-phone320'); await page.keyboard.press('Escape'); assert.equal((await view()).sheet, 'system-module');
+    for (let n = 0; n < 3 && await page.getByRole('dialog').count(); n++) await page.keyboard.press('Escape');
+    assert.equal(await page.getByRole('dialog').count(), 0);
   });
   await test('A finger can pull out and reconnect a module in mobile emulation', async () => {
     const touchContext = await browser.newContext({ viewport: { width: 390, height: 900 }, isMobile: true, hasTouch: true });
-    const p = await touchContext.newPage(); capture(p); await p.goto(gameURL); await p.waitForFunction(() => window.orbitApp?.getInspection);
-    await p.locator('.og-tabs [data-tab="ship"]').tap(); await p.locator('[data-action="open-interior"]:visible').tap();
-    await p.locator('[data-module-focus="engine"]:visible').tap();
+    const p = await touchContext.newPage(); capture(p); await p.goto(gameURL); await p.waitForFunction(() => window.orbitApp?.getInspection); await skipIntro(p, true);
+    await p.locator('.og-tabs [data-tab="ship"]').tap(); await openHull(p, true);
+    await closeUp(p, 'engine', true);
     const resources = await p.evaluate(() => orbitApp.getState().resources);
     await dragModule(p, true, true); await dragModule(p, false, true);
     assert.deepEqual(await p.evaluate(() => orbitApp.getState().resources), resources);

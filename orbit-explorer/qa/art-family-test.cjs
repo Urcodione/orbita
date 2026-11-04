@@ -1,22 +1,26 @@
 const {chromium}=require('./node_modules/playwright'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path');
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const p=await b.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.addInitScript(()=>{const d=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(im,...args){for(const [k,v]of Object.entries(window.OrbitArt?.images||{}))if(im===v){window.artCalls??={};window.artCalls[k]=(window.artCalls[k]||0)+1;}return d.call(this,im,...args);};});await p.goto('file://'+path.resolve(__dirname,'../index.html'));await p.waitForFunction(()=>window.OrbitArt&&Object.keys(OrbitArt.images).every(OrbitArt.ready));
-const before=await p.evaluate(()=>JSON.stringify(orbitApp.getState()));await p.locator('.og-tabs [data-tab=ship]').click();await p.locator('[data-action=open-interior]').click();await p.waitForFunction(()=>window.artCalls?.interior>0&&window.artCalls?.modules>0);
+// A new game opens with the story intro and the guided first expedition; skip both to reach the free ship view.
+await p.locator('[data-story-action=skip]').click();await p.locator('[data-guide-skip]').click();
+const before=await p.evaluate(()=>JSON.stringify(orbitApp.getState()));await p.locator('.og-tabs [data-tab=ship]').click();/* The exterior no longer shows an "Abrir nave" button: tapping the rocket drawing opens the hull. */await p.locator('#og-canvas').click();await p.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');await p.waitForFunction(()=>window.artCalls?.interior>0&&window.artCalls?.modules>0);
 assert.equal(await p.locator('.og-module-hotspot:visible').count(),8);
 await p.screenshot({path:path.join(__dirname,'cartoon-artifacts/painted-interior.png')});
-await p.locator('[data-module-focus=engine]').click();assert.ok(await p.locator('.og-module-code.og-painted-module').count());
-for(let n=0;n<10&&!await p.locator('[data-action=inspect-module]:visible:not([inert] *)').count();n++)await p.locator('[data-sheet-page="1"]').click();await p.locator('[data-action=inspect-module]:visible').click();await p.waitForTimeout(250);await p.screenshot({path:path.join(__dirname,'cartoon-artifacts/painted-engine.png')});
-assert.equal(await p.evaluate(()=>JSON.stringify(orbitApp.getState())),before,'Art navigation preserves all resources and equipment');
+// Tapping a module drawing opens its card directly (the old "inspect-module" button is gone). The painted close-up
+// behind the card is shown when the game resumes in that view, so reload to reach it (the save keeps the selected module).
+async function closeUp(type){const d=(await p.evaluate(()=>orbitApp.getView())).shipDetail;if(d.mode==='module')await p.locator('#og-ship-back').click();if((await p.evaluate(()=>orbitApp.getView())).shipDetail.mode==='exterior'){await p.locator('#og-canvas').click();await p.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');}
+ await p.locator(`[data-module-focus=${type}]:visible`).click();await p.waitForFunction(type=>orbitApp.getView().sheet==='system-module'&&orbitApp.getView().shipDetail.selectedModule===type,type);
+ if(type==='engine')assert.ok(await p.locator('.og-module-code.og-painted-module').count(),'Module card shows the painted module');
+ await p.reload();await p.waitForFunction(type=>window.orbitApp&&window.OrbitArt&&Object.keys(OrbitArt.images).every(OrbitArt.ready)&&orbitApp.getView().sheet===null&&orbitApp.getView().shipDetail.mode==='module'&&orbitApp.getInspection()?.type===type,type);await p.waitForTimeout(150);}
+await closeUp('engine');await p.screenshot({path:path.join(__dirname,'cartoon-artifacts/painted-engine.png')});
+/* Reloading moves the galaxy key to the end of the state object; compare content, not key order. */assert.deepEqual(JSON.parse(await p.evaluate(()=>JSON.stringify(orbitApp.getState()))),JSON.parse(before),'Art navigation preserves all resources and equipment');
 for(const resource of ['ore','crystals','oxygen']){
- if((await p.evaluate(()=>orbitApp.getView())).shipDetail.mode==='module')await p.locator('[data-action=ship-back]').click();
- await p.locator('[data-module-focus=cargo]:visible').click();
- for(let n=0;n<10&&!await p.locator('[data-action=inspect-module]:visible:not([inert] *)').count();n++)await p.locator('[data-sheet-page="1"]').click();
- await p.locator('[data-action=inspect-module]:visible').click();await p.waitForTimeout(100);
+ await closeUp('cargo');
  const item=await p.evaluate(resource=>orbitApp.getInspection().contents.find(i=>i.resource===resource),resource);
  await p.locator('#og-canvas').click({position:{x:item.x,y:item.y}});
  assert.equal(await p.evaluate(()=>orbitApp.getView().sheet),'cargo-content');assert.equal(await p.evaluate(()=>orbitApp.getView().cargoResource),resource);
  await p.locator('[data-action=close-sheet]:visible').first().click();
 }
-assert.equal(await p.evaluate(()=>JSON.stringify(orbitApp.getState())),before,'Cargo illustration only opens the selected resource');
+assert.deepEqual(JSON.parse(await p.evaluate(()=>JSON.stringify(orbitApp.getState()))),JSON.parse(before),'Cargo illustration only opens the selected resource');
 await p.locator('.og-tabs [data-tab=galaxy]').click();await p.locator('[data-map-level=galaxy]').click();await p.waitForFunction(()=>window.artCalls?.galaxies>0&&window.artCalls?.stars>0);await p.screenshot({path:path.join(__dirname,'cartoon-artifacts/painted-current-galaxy.png')});await p.locator('[data-map-level=universe]').click();await p.waitForFunction(()=>window.artCalls?.phenomena>0);await p.screenshot({path:path.join(__dirname,'cartoon-artifacts/painted-galaxies.png')});
 const stock=await p.evaluate(()=>JSON.stringify(orbitApp.getState()));await p.locator('[data-action=catalog]').click();assert.equal(await p.evaluate(()=>JSON.stringify(orbitApp.getState())),stock);
 // Each generated biome remains visually distinguishable, rendered with a stable seed.

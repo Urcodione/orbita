@@ -4,7 +4,7 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { completeTutorialExpedition } = require('./expedition-helpers.cjs');
+const { solveCounts } = require('./expedition-helpers.cjs');
 const out = path.join(__dirname, 'modules-artifacts');
 fs.mkdirSync(out, { recursive: true });
 const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
@@ -31,11 +31,18 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
   async function boot(mode = 'vanilla') {
     await page.goto(gameURL);
     await page.waitForFunction(() => window.orbitApp && window.OrbitEngine?.componentRecipes);
+    // A new game opens with the story intro: skip it before loading the fixture.
+    if (await page.locator('[data-story-action=skip]').count()) await page.locator('[data-story-action=skip]').click();
     await page.evaluate(mode => {
       const E = OrbitEngine, s = E.create('qa-module-workbench-' + mode);
-      if (mode !== 'vanilla') Object.assign(s.resources, { ore: 300, crystals: 100, credits: 500, data: 300 });
+      // A fresh game starts in the guided Prisma training; leave it the way "Pular tutorial" does.
+      const skipped = E.dispatch(s, 'guideSkip'); if (!skipped.ok) throw new Error(skipped.message);
+      // Ore and crystals now occupy the cargo hold (250 units on the starting ship) and an overloaded hold refuses
+      // assembly, so the rich fixture stays within it; credits and data take no room.
+      if (mode !== 'vanilla') Object.assign(s.resources, { ore: 150, crystals: 50, credits: 500, data: 300 });
       if (mode === 'shields') {
-        for (const r of E.componentRecipes) s.components[r.id] = 15;
+        // Exactly the parts both shields need (stocking 15 of every component would overflow the hold).
+        Object.assign(s.components, { alloy: 2, prism: 1, seal: 2, 'field-core': 1 });
         for (const id of ['thermal-shield', 'radiation-mesh']) {
           const result = E.dispatch(s, 'fabricate', { recipeId: id });
           if (!result.ok) throw new Error(result.message);
@@ -49,17 +56,90 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
       window.openai = { setWidgetState: value => { window.__qaSaved.push(JSON.parse(JSON.stringify(value))); return Promise.resolve(); } };
       window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { widgetState: { privateContent: { state: s, tab: 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior', selectedModule: null, expanded: false } } } } } }));
     }, mode);
+    await page.waitForFunction(() => !orbitApp.getState().guide?.active);
+  }
+  // The exterior no longer has an "Abrir nave" button: tapping the rocket drawing opens the hull.
+  async function openHull() {
+    if ((await view()).shipDetail.mode === 'exterior') { await page.locator('#og-canvas').click(); await page.waitForFunction(() => orbitApp.getView().shipDetail.mode === 'interior'); }
   }
   async function inspect(type) {
     await closeSheet(); await tab('ship');
     if ((await view()).shipDetail.mode === 'module') await click('ship-back');
-    if ((await view()).shipDetail.mode === 'exterior') await click('open-interior');
+    await openHull();
     await page.locator(`[data-module-focus="${type}"]:visible`).first().click();
+  }
+  // Cards can be paginated on small screens: page forward (then back) until the control is on the visible page.
+  async function reveal(selector) {
+    for (const dir of ['1', '-1']) for (let n = 0; n < 6 && !await page.locator(selector + ':visible').count(); n++) {
+      const step = page.locator(`[data-sheet-page="${dir}"]:visible:not(:disabled)`); if (!await step.count()) break; await step.click();
+    }
+  }
+  // The stored-part <select> is gone: slide the module card to the stored part, then "Encaixar" opens the comparison.
+  async function chooseCandidate(id) {
+    for (let n = 0; n < 8 && (await view()).selectedCandidateId !== id; n++) {
+      const next = '[data-action="module-slide"][data-step="1"]:not(:disabled)'; await reveal(next); await page.locator(next + ':visible').first().click();
+    }
+    assert.equal((await view()).sheet, 'stored-module');
+    await reveal(`[data-action="compare-module"][data-module="${id}"]`); await page.locator(`[data-action="compare-module"][data-module="${id}"]:visible`).click();
+    assert.equal((await view()).sheet, 'system-module'); assert.equal((await view()).selectedCandidateId, id);
+  }
+  // The laboratory's back control is the panel's top arrow ("Voltar: Receita", "Categoria"...).
+  async function labBack() { await page.locator('#og-sheet-backdrop [data-action="nav-back"]:visible').first().click(); }
+  async function labHome() { for (let n = 0; n < 6 && (await view()).lab.page !== 'home'; n++) await labBack(); assert.equal((await view()).lab.page, 'home'); }
+  // "ESTOQUE / NECESSÁRIO" text of one ingredient row.
+  const ingredient = id => page.locator(`.og-lab-ingredient[data-ingredient="${id}"]`).first().innerText();
+  // Crafts with the component card's visible button and checks the exact advertised transaction; returns the amount.
+  async function craftShown(id, before) {
+    const button = page.locator(`[data-action="craftComponent"][data-component="${id}"]:visible`);
+    const amount = Number(await button.getAttribute('data-amount') || 1);
+    before = before || await state(); const p = await preview('craftComponent', { componentId: id, amount });
+    assert.equal(p.allowed, true, p.reason); await button.click();
+    exactTransaction(before, await state(), p.cost, p.components || {}, id, amount);
+    return amount;
+  }
+  async function closeUp(type) {
+    assert.equal((await view()).shipDetail.selectedModule, type);
+    await page.reload(); await page.waitForFunction(type => window.orbitApp?.getInspection && orbitApp.getView().sheet === null && orbitApp.getInspection()?.type === type, type);
+  }
+  // Outside the guided training an expedition is an adventure: two terrain beacons must be activated before the core
+  // circuit opens. The shared tutorial helper only knows the training path, so drive the visible field controls here:
+  // walk to each beacon, open and tune the circuit, recover the core and extract it at the base.
+  async function completeAdventureExpedition() {
+    const press = async action => {
+      await page.locator(`[data-action="${action}"]:visible`).first().click();
+      if ((await view()).sheet === 'expedition-risk-confirm') await page.locator('[data-action="confirm-field-action"]:visible').click();
+    };
+    const field = () => page.evaluate(() => { const ex = orbitApp.getState().expedition; return ex && { x: ex.x, y: ex.y, beacons: ex.beacons || [], coreRecovered: ex.coreRecovered, puzzle: ex.puzzle, board: OrbitEngine.expeditionBoard(ex).map(c => c.kind) }; });
+    async function walkTo(target) {
+      for (let guard = 0; guard < 40; guard++) {
+        const f = await field(); if (f.y * 6 + f.x === target) return;
+        // Cheapest route over passable sectors (hazards cost more reserve).
+        const dist = new Map([[target, 0]]), queue = [target];
+        while (queue.length) { queue.sort((a, b) => dist.get(a) - dist.get(b)); const i = queue.shift(); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x = i % 6 + dx, y = Math.floor(i / 6) + dy, j = y * 6 + x; if (x < 0 || y < 0 || x > 5 || y > 5 || f.board[j] === 'wall') continue; const d = dist.get(i) + (f.board[i] === 'hazard' ? 2 : 1); if (!dist.has(j) || d < dist.get(j)) { dist.set(j, d); queue.push(j); } } }
+        const here = f.y * 6 + f.x, next = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [f.x + dx, f.y + dy]).filter(([x, y]) => x >= 0 && y >= 0 && x < 6 && y < 6 && dist.has(y * 6 + x)).sort((a, b) => dist.get(a[1] * 6 + a[0]) - dist.get(b[1] * 6 + b[0]))[0];
+        assert.ok(next && dist.has(here), 'Reachable field sector ' + target);
+        await page.locator(`[data-expedition-x="${next[0]}"][data-expedition-y="${next[1]}"]:visible`).click();
+        if ((await view()).sheet === 'expedition-risk-confirm') await page.locator('[data-action="confirm-field-action"]:visible').click();
+      }
+      throw new Error('Could not reach sector ' + target);
+    }
+    let f = await field(); assert.ok(f, 'An expedition is active');
+    const beacons = f.board.map((kind, i) => kind === 'beacon' ? i : -1).filter(i => i >= 0 && !f.beacons.includes(i));
+    for (const beacon of beacons.slice(0, 2 - f.beacons.length)) { await walkTo(beacon); await press('expeditionBeacon'); }
+    await walkTo(f.board.indexOf('core')); await press('expeditionInteract');
+    f = await field(); const counts = solveCounts(f.puzzle.dials, f.puzzle.target);
+    for (let i = 0; i < 3; i++) for (let n = 0; n < counts[i]; n++) await page.locator(`[data-action="expeditionTune"][data-index="${i}"]:visible`).click();
+    const before = await state(); await press('expeditionRecover');
+    const recovered = await state(); assert.ok(recovered.expedition.coreRecovered);
+    assert.deepEqual(recovered.inventory, before.inventory, 'Recovered gear is pending until extraction');
+    await walkTo(32); await press('expeditionExtract');
+    const after = await state(); assert.equal(after.expedition, null);
+    return after.inventory.find(module => module.id === recovered.expedition.pending.module.id);
   }
   async function laboratory() {
     await closeSheet(); await tab('ship');
     if ((await view()).shipDetail.mode === 'module') await click('ship-back');
-    await click('workshop'); await click('fabricator');
+    await openHull(); await click('workshop'); await click('fabricator');
   }
   function exactTransaction(before, after, cost, components = {}, componentOutput, outputAmount = 1) {
     for (const [key, amount] of Object.entries(before.resources)) assert.equal(after.resources[key], amount - (cost[key] || 0), 'Resource cost: ' + key);
@@ -71,6 +151,12 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     await click('modules');
     if (await page.locator('[data-inventory="inventory"]:visible').count()) await page.locator('[data-inventory="inventory"]:visible').click();
   }
+  // Favorite and recycle controls now live on each stored part's card rather than on the storage list.
+  async function storedCard(id) {
+    await inventory(); await page.locator(`[data-action="stored-module"][data-module="${id}"]:visible`).click();
+    assert.equal((await view()).sheet, 'stored-module'); assert.equal((await view()).selectedCandidateId, id);
+  }
+  async function cardControl(selector) { await reveal(selector); await page.locator(selector + ':visible').click(); }
   await test('Tapping each physical ship module opens its purpose and actual operating metrics', async () => {
     await boot('shields');
     for (const type of ['engine', 'warp', 'life', 'shield', 'scanner', 'arm', 'cargo', 'survival']) {
@@ -87,7 +173,7 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
   await test('Choosing a shield shows heat lost and radiation gained; cancel leaves equipment and stock intact', async () => {
     await inspect('shield'); const before = await state();
     thermalId = before.equipped.shield.id; radiationId = before.inventory.find(module => module.recipeId === 'radiation-mesh').id;
-    await page.locator('#og-module-choice').selectOption(radiationId);
+    await chooseCandidate(radiationId);
     const text = await page.getByRole('dialog').innerText();
     assert.match(text, /térmic|calor/i); assert.match(text, /radiação|radiológic/i);
     const comparison = await page.evaluate(id => OrbitEngine.compareModule(orbitApp.getState(), id), radiationId);
@@ -96,13 +182,14 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     assert.equal(comparison.kind, 'tradeoff');
     assert.match(text, /1400|1[.,\s]400/); assert.match(text, /450/);
     await snap('shield-tradeoff-comparison');
-    await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
+    const cancel = page.locator('.og-system-confirm [data-action="nav-back"]:visible'); assert.equal((await cancel.innerText()).trim(), 'Cancelar');
+    await cancel.click();
     assert.deepEqual(await state(), before);
     const focusInside = await page.evaluate(() => document.activeElement !== document.body && document.getElementById('orbit-game').contains(document.activeElement));
     assert.equal(focusInside, true);
   });
   await test('Confirming the selected shield changes real protections and safely stores the previous piece', async () => {
-    await inspect('shield'); await page.locator('#og-module-choice').selectOption(radiationId);
+    await inspect('shield'); await chooseCandidate(radiationId);
     const before = await state(), capsBefore = await page.evaluate(() => OrbitEngine.stats(orbitApp.getState()).protection);
     await page.locator(`[data-action="equip"][data-module="${radiationId}"]:visible`).click();
     const after = await state(), capsAfter = await page.evaluate(() => OrbitEngine.stats(orbitApp.getState()).protection);
@@ -112,8 +199,8 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     await snap('shield-installed');
   });
   await test('Favorite protection blocks recycling and persists with a host save smaller than 16KiB', async () => {
-    await inventory();
-    await page.locator(`[data-action="favoriteModule"][data-module="${thermalId}"]:visible`).click();
+    await storedCard(thermalId);
+    await cardControl(`[data-action="favoriteModule"][data-module="${thermalId}"]`);
     assert.equal((await state()).inventory.find(module => module.id === thermalId).favorite, true);
     const p = await preview('salvage', { moduleId: thermalId }); assert.equal(p.allowed, false); assert.match(p.reason, /favorito|protegid/i);
     const before = await state();
@@ -122,17 +209,17 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     fs.writeFileSync(path.join(out, 'save-size.json'), JSON.stringify({ bytes, limit: 16384 }, null, 2));
     await page.reload(); await page.waitForFunction(() => window.orbitApp); assert.deepEqual(await state(), before);
     assert.equal((await state()).inventory.find(module => module.id === thermalId).favorite, true);
-    await inventory(); await snap('favorite-thermal-shield');
+    await storedCard(thermalId); await snap('favorite-thermal-shield');
   });
   await test('Recycling a unique specialist requires a warning and explicit confirmation; cancel is harmless', async () => {
-    await page.locator(`[data-action="favoriteModule"][data-module="${thermalId}"]:visible`).click();
+    await cardControl(`[data-action="favoriteModule"][data-module="${thermalId}"]`);
     const before = await state(), warning = await page.evaluate(id => OrbitEngine.salvageInfo(orbitApp.getState(), id), thermalId);
     assert.ok(warning.uniqueBenefits.length);
-    await page.locator(`[data-action="salvage-review"][data-module="${thermalId}"]:visible`).click();
+    await cardControl(`[data-action="salvage-review"][data-module="${thermalId}"]`);
     const text = await page.getByRole('dialog').innerText(); assert.match(text, /únic|exclusiv|perd/i); assert.match(text, /térmic|calor|1400|1[.,\s]400/i);
     assert.deepEqual(await state(), before); await snap('unique-module-recycle-warning');
     await page.keyboard.press('Escape'); assert.deepEqual(await state(), before);
-    await inventory(); await page.locator(`[data-action="salvage-review"][data-module="${thermalId}"]:visible`).click();
+    await storedCard(thermalId); await cardControl(`[data-action="salvage-review"][data-module="${thermalId}"]`);
     await click('salvage');
     const after = await state(); assert.ok(!after.inventory.some(module => module.id === thermalId));
     assert.equal(after.resources.ore, before.resources.ore + warning.ore);
@@ -144,8 +231,15 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     const categories = await page.locator('[data-lab-type]:visible').evaluateAll(nodes => nodes.map(node => node.dataset.labType).filter(type => type !== 'components'));
     assert.equal(categories.length, 8); assert.equal(new Set(categories).size, 8);
     assert.equal(await page.locator('[data-lab-recipe]:visible').count(), 0, 'No long list of recipes on the laboratory home');
-    for (const key of ['ore', 'crystals', 'data', 'credits']) assert.ok((await page.locator(`.og-lab-stock [data-stock="${key}"]`).innerText()).includes(String((await state()).resources[key])), key);
-    await snap('laboratory-home');
+    // The home no longer carries a stock strip: each recipe and component card now lists "ESTOQUE / NECESSÁRIO" per
+    // ingredient. Check that every resource stock shown there is the real amount.
+    const s = await state(), shown = {};
+    await page.locator('[data-lab-type="shield"]:visible').click(); await page.locator('[data-lab-recipe="thermal-shield"]:visible').click();
+    for (const key of ['data', 'credits']) shown[key] = await ingredient(key);
+    await page.locator('.og-lab-ingredient[data-lab-component="alloy"]:visible').click(); shown.ore = await ingredient('ore'); await labBack();
+    await page.locator('.og-lab-ingredient[data-lab-component="prism"]:visible').click(); shown.crystals = await ingredient('crystals');
+    for (const key of ['ore', 'crystals', 'data', 'credits']) assert.match(shown[key], new RegExp(`(^|\\D)${s.resources[key]}\\s*\\/`), key + ': ' + shown[key]);
+    await labHome(); await snap('laboratory-home');
   });
   await test('A recipe shows component counts, opens its ingredient and returns without losing the selected design', async () => {
     await page.locator('[data-lab-type="shield"]:visible').click();
@@ -155,25 +249,21 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     assert.equal((await preview('fabricate', { recipeId: 'thermal-shield' })).allowed, false);
     assert.match(await page.locator('.og-lab-ingredient[data-ingredient="alloy"]').innerText(), /0\s*(?:\/|de)\s*2/);
     await snap('thermal-recipe-missing-components');
-    await page.locator('[data-lab-component="alloy"]:visible').click();
-    const p = await preview('craftComponent', { componentId: 'alloy' });
-    assert.equal(p.allowed, true, p.reason);
-    await page.locator('[data-action="craftComponent"][data-component="alloy"]:not([data-lab-return]):visible').click();
-    exactTransaction(before, await state(), p.cost, p.components || {}, 'alloy');
-    assert.equal((await state()).components.alloy, 1);
+    await page.locator('.og-lab-ingredient[data-lab-component="alloy"]:visible').click();
+    // Opened from a recipe, the ingredient offers a single "Montar 2 · concluir ingrediente" for exactly what is missing.
+    assert.equal(await craftShown('alloy', before), 2);
+    assert.equal((await state()).components.alloy, 2);
     await snap('component-crafted');
-    await page.locator('[data-lab-back="previous"]:visible').click();
+    await labBack();
     assert.equal(await page.locator('[data-action="fabricate"][data-recipe="thermal-shield"]:visible').count(), 1);
-    assert.match(await page.locator('.og-lab-ingredient[data-ingredient="alloy"]').innerText(), /1\s*(?:\/|de)\s*2/);
+    assert.match(await page.locator('.og-lab-ingredient[data-ingredient="alloy"]').innerText(), /2\s*(?:\/|de)\s*2/);
   });
   await test('Handcrafted ingredients are consumed exactly by assembly and the module stays unequipped', async () => {
-    for (const id of ['alloy', 'prism', 'seal']) {
-      await page.locator(`[data-lab-component="${id}"]:visible`).click();
-      const before = await state(), p = await preview('craftComponent', { componentId: id });
-      assert.equal(p.allowed, true, p.reason);
-      await page.locator(`[data-action="craftComponent"][data-component="${id}"]:not([data-lab-return]):visible`).click();
-      exactTransaction(before, await state(), p.cost, p.components || {}, id);
-      await page.locator('[data-lab-back="previous"]:visible').click();
+    // Liga estrutural was completed by the previous step; craft the remaining ingredients.
+    for (const id of ['prism', 'seal']) {
+      await page.locator(`.og-lab-ingredient[data-lab-component="${id}"]:visible`).click();
+      assert.equal(await craftShown(id), 1);
+      await labBack();
     }
     const before = await state(), p = await preview('fabricate', { recipeId: 'thermal-shield' });
     assert.equal(p.allowed, true, p.reason);
@@ -189,32 +279,29 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     await boot('lab'); await laboratory();
     await page.locator('[data-lab-type="shield"]:visible').click();
     await page.locator('[data-lab-recipe="radiation-mesh"]:visible').click();
-    await page.locator('[data-lab-component="field-core"]:visible').click();
-    assert.equal(await page.locator('[data-action="craftComponent"][data-component="field-core"]:not([data-lab-return])').isDisabled(), true);
+    await page.locator('.og-lab-ingredient[data-lab-component="field-core"]:visible').click();
+    assert.equal(await page.locator('[data-action="craftComponent"][data-component="field-core"]').isDisabled(), true);
     for (const [id, count] of [['prism', 2], ['circuit', 1]]) {
-      await page.locator(`[data-lab-component="${id}"]:visible`).click();
-      for (let n = 0; n < count; n++) {
-        const before = await state(), p = await preview('craftComponent', { componentId: id });
-        assert.equal(p.allowed, true, p.reason);
-        await page.locator(`[data-action="craftComponent"][data-component="${id}"]:not([data-lab-return]):visible`).click();
-        exactTransaction(before, await state(), p.cost, p.components || {}, id);
-      }
-      await page.locator('[data-lab-back="previous"]:visible').click();
-      assert.equal(await page.locator('[data-action="craftComponent"][data-component="field-core"]:not([data-lab-return]):visible').count(), 1);
+      await page.locator(`.og-lab-ingredient[data-lab-component="${id}"]:visible`).click();
+      assert.equal(await craftShown(id), count, id + ': crafts exactly what the parent ingredient lacks');
+      await labBack();
+      assert.equal(await page.locator('[data-action="craftComponent"][data-component="field-core"]:visible').count(), 1);
     }
-    const before = await state(), p = await preview('craftComponent', { componentId: 'field-core' });
-    assert.equal(p.allowed, true, p.reason);
-    await page.locator('[data-action="craftComponent"][data-component="field-core"]:not([data-lab-return]):visible').click();
-    const after = await state(); exactTransaction(before, after, p.cost, p.components || {}, 'field-core');
+    const before = await state();
+    assert.equal(await craftShown('field-core'), 1);
+    const after = await state();
     assert.equal(after.components.prism, 0); assert.equal(after.components.circuit, 0); assert.equal(after.components['field-core'], 1);
+    assert.equal(after.components['field-core'], (before.components['field-core'] || 0) + 1);
     await snap('nested-field-core-crafted');
-    await page.locator('[data-lab-back="previous"]:visible').click();
+    await labBack();
     assert.equal(await page.locator('[data-action="fabricate"][data-recipe="radiation-mesh"]:visible').count(), 1);
     assert.match(await page.locator('.og-lab-ingredient[data-ingredient="field-core"]').innerText(), /1\s*(?:\/|de)\s*1/);
     assert.equal(await page.locator('[data-action="fabricate"][data-recipe="radiation-mesh"]').isDisabled(), true, 'The uncrafted seal is still required');
   });
   await test('Closing contextual details preserves physical module dragging and direct cargo interactions', async () => {
-    await boot(); await inspect('engine'); await closeSheet();
+    // Closing a module card now returns to the open ship; the draggable close-up is the view the game resumes into
+    // when it was left on a module, so reload to reach it.
+    await boot(); await inspect('engine'); await closeUp('engine');
     const before = await state();
     for (const expand of [true, false]) {
       await page.waitForTimeout(950);
@@ -227,7 +314,7 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
       await page.waitForFunction(expected => orbitApp.getView().shipDetail.expanded === expected, expand);
       assert.deepEqual(await state(), before);
     }
-    await inspect('cargo'); await closeSheet(); await page.waitForTimeout(950);
+    await inspect('cargo'); await closeUp('cargo'); await page.waitForTimeout(950);
     for (const resource of ['ore', 'crystals', 'oxygen']) {
       const part = await page.evaluate(() => orbitApp.getInspection());
       const item = part.contents.find(content => content.resource === resource);
@@ -237,36 +324,42 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
       assert.equal((await page.locator('.og-cargo-amount strong').innerText()).trim(), String((await state()).resources[resource]));
       await closeSheet();
     }
-    await page.locator('[data-cargo="ore"]:visible').first().click();
+    // The cargo shortcuts are on the Depósito card ("Módulo" opens it from the close-up).
+    await click('module-info'); await reveal('[data-cargo="ore"]'); await page.locator('[data-cargo="ore"]:visible').first().click();
     const resources = (await state()).resources, p = await preview('refuel');
     assert.equal(p.allowed, true, p.reason); await click('refuel');
     const after = (await state()).resources;
     for (const key of Object.keys(resources)) assert.equal(after[key], resources[key] - (p.cost[key] || 0) + (key === 'fuel' ? p.amount : 0), 'Cargo refuel cost: ' + key);
     await snap('physical-cargo-regression');
   });
-  await test('Crafting only missing pieces returns to the parent ingredient and supports a shortcut to the module recipe', async () => {
+  await test('Crafting only missing pieces keeps the parent ingredient and module recipe one step back', async () => {
     await boot('lab'); await laboratory();
     await page.locator('[data-lab-type="shield"]:visible').click();
     await page.locator('[data-lab-recipe="radiation-mesh"]:visible').click();
-    await page.locator('[data-lab-component="field-core"]:visible').click();
-    await page.locator('[data-lab-component="prism"]:visible').click();
-    const batch = page.locator('[data-action="craftComponent"][data-component="prism"][data-lab-return="true"]');
+    await page.locator('.og-lab-ingredient[data-lab-component="field-core"]:visible').click();
+    await page.locator('.og-lab-ingredient[data-lab-component="prism"]:visible').click();
+    const batch = page.locator('[data-action="craftComponent"][data-component="prism"]:visible');
     assert.equal(await batch.getAttribute('data-amount'), '2');
+    assert.match(await batch.innerText(), /Montar 2/);
     const before = await state(), p = await preview('craftComponent', { componentId: 'prism', amount: 2 });
     assert.equal(p.allowed, true, p.reason); await batch.click();
     const after = await state(); exactTransaction(before, after, p.cost, p.components || {}, 'prism', 2);
     assert.equal(after.components.prism, 2);
-    assert.equal(await page.locator('[data-action="craftComponent"][data-component="field-core"]:not([data-lab-return]):visible').count(), 1, 'Returns to immediate ingredient');
+    // The batch no longer jumps back by itself and the direct "recipe" shortcut is gone: the back control walks the
+    // same path (ingredient, then module recipe, then category) without losing the design being prepared.
+    await labBack();
+    assert.equal(await page.locator('[data-action="craftComponent"][data-component="field-core"]:visible').count(), 1, 'Back returns to the immediate ingredient');
     assert.match(await page.locator('.og-lab-ingredient[data-ingredient="prism"]').innerText(), /2\s*(?:\/|de)\s*2/);
     await snap('batch-components-returned');
-    await page.locator('[data-lab-target="radiation-mesh"]:visible').click();
+    await labBack();
     assert.equal(await page.locator('[data-action="fabricate"][data-recipe="radiation-mesh"]:visible').count(), 1);
-    await page.locator('[data-lab-back="previous"]:visible').click();
+    await labBack();
     assert.ok(await page.locator('[data-lab-recipe="radiation-mesh"]:visible').count(), 'Parent category remains reachable');
   });
   await test('An active expedition prevents equipment replacement and both crafting steps without spending anything', async () => {
     await boot();
-    for (const action of ['scan', 'dock', 'sites', 'explore']) await click(action);
+    // Scanning now opens the exploration points directly (there is no separate dock/sites step).
+    for (const action of ['scan', 'explore']) await click(action);
     const before = await state();
     const checks = await page.evaluate(() => {
       const s = orbitApp.getState(), E = OrbitEngine;
@@ -278,7 +371,7 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     });
     for (const check of checks) { assert.equal(check.preview.allowed, false); assert.match(check.preview.reason, /expedi|retorn|equipe/i); assert.equal(check.result.ok, false); assert.equal(check.unchanged, true, check.action); }
     assert.deepEqual(await state(), before);
-    const recovered = await completeTutorialExpedition(page);
+    const recovered = await completeAdventureExpedition();
     assert.ok(recovered); assert.equal((await state()).expedition, null); assert.equal((await state()).progress.explorations, 1);
     assert.ok((await state()).inventory.some(module => module.id === recovered.id));
     await snap('expedition-regression-extracted');
@@ -303,7 +396,7 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
       await page.setViewportSize({ width, height: 900 });
       await inspect('shield');
       const id = (await state()).inventory.find(module => module.recipeId === 'radiation-mesh').id;
-      await page.locator('#og-module-choice').selectOption(id);
+      await chooseCandidate(id);
       const footer = await page.locator('.og-system-confirm').boundingBox();
       const viewport = page.viewportSize();
       const gameBounds = await page.locator('#orbit-game').boundingBox();
@@ -313,12 +406,15 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
         if (name === 'recipe') { await page.locator('[data-lab-type="shield"]:visible').click(); await page.locator('[data-lab-recipe="thermal-shield"]:visible').click(); }
         const geometry = await page.evaluate(() => ({ width: innerWidth, doc: document.documentElement.scrollWidth, box: document.getElementById('orbit-game').clientWidth, game: document.getElementById('orbit-game').scrollWidth }));
         assert.ok(geometry.doc <= geometry.width && geometry.game <= geometry.box + 1, JSON.stringify({ name, width, geometry }));
-        const clipped = await page.getByRole('dialog').locator('button, select').evaluateAll(nodes => nodes.filter(node => { const r = node.getBoundingClientRect(), g = document.getElementById('orbit-game').getBoundingClientRect(); return r.left < g.left - 1 || r.right > g.right + 1; }).map(node => node.textContent));
+        // Only rendered controls count: a single-page panel keeps its pager arrows hidden (zero-size at x=0).
+        const clipped = await page.getByRole('dialog').locator('button, select').evaluateAll(nodes => nodes.filter(node => { const r = node.getBoundingClientRect(), g = document.getElementById('orbit-game').getBoundingClientRect(); return r.width > 0 && r.height > 0 && (r.left < g.left - 1 || r.right > g.right + 1); }).map(node => node.textContent));
         assert.deepEqual(clipped, [], `${name} at ${width}px`);
         await snap(`${name}-phone${width}`);
       }
     }
-    await page.keyboard.press('Escape'); assert.equal(await page.getByRole('dialog').count(), 0);
+    // Esc now steps back one place at a time (recipe, category, laboratory, workshop) until the game shows again.
+    for (let n = 0; n < 8 && await page.getByRole('dialog').count(); n++) await page.keyboard.press('Escape');
+    assert.equal(await page.getByRole('dialog').count(), 0);
   });
   await test('No browser runtime errors', async () => assert.deepEqual(errors, []));
   const report = { results, errors, passed: results.every(result => result.pass) };
