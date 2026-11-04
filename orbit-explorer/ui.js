@@ -31,6 +31,7 @@
   let fieldNotice='Toque em um setor vizinho para mover. O sinal antigo está ao norte.';
   let systemType='engine',selectedCandidateId='',salvageModuleId=null;
   let sheetPage=0,pendingFieldAction=null;
+  const pageMemory={};
   const history={past:[],future:[]};
   let restoringNavigation=false;
   let lab={page:'home',type:null,recipeId:null,componentId:null,returnRecipeId:null,history:[]};
@@ -105,7 +106,10 @@
       openSheet('workshop');return;
     }
     if(sheet==='salvage-review'&&parent.action==='stored-module'&&salvageModuleId)selectedCandidateId=salvageModuleId;
+    const page=pageMemory[parent.action]||0;
     openSheet(parent.action);
+    // Back lands on the page the card was opened from (the pager clamps it if the list got shorter).
+    if(page){sheetPage=page;renderSheet();}
   }
   function fitStage(){
     const stage=$('og-stage'),field=$('og-field');
@@ -361,7 +365,9 @@
     }
     $('og-map').innerHTML=nav.nodes.map(n=>`<button class="og-nav-node ${n.selected?'is-selected':''} ${n.blocked?'is-blocked':''}" ${mapLevel==='system'?`data-select="${esc(n.id)}"`:mapLevel==='galaxy'?`data-system="${esc(n.id)}"`:`data-destination="${esc(n.id)}"`} style="left:${n.x}%;top:${n.y}%" aria-label="${esc(n.name)}${n.current?', localização atual':''}${n.blocked?', exige preparo':''}" aria-pressed="${n.selected}"><span class="og-nav-hit" aria-hidden="true">${n.blocked?'<i>!</i>':''}</span><span class="og-nav-caption">${n.current?'AQUI':mapLevel!=='system'?esc(n.name):''}</span></button>`).join('');
     if(mapLevel==='galaxy')$('og-map').insertAdjacentHTML('beforeend',`<button class="og-station-node" data-action="station" aria-label="Traçar rota ao entreposto do sistema atual"><span class="og-nav-hit" aria-hidden="true"></span><span class="og-nav-caption">Entreposto local</span></button>`);
-    if(nav.wormhole)$('og-map').insertAdjacentHTML('beforeend','<button class="og-wormhole-node" data-action="campaign-gate" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>');
+    // The wormhole goes to the free corner farthest from the worlds, so its marker and label never cover a planet.
+    if(nav.wormhole){const spot=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46]].map(([x,y])=>({x,y,d:Math.min(...nav.nodes.map(n=>Math.hypot(n.x-x,(n.y-y)*1.4)))})).sort((a,b)=>b.d-a.d)[0];
+     $('og-map').insertAdjacentHTML('beforeend',`<button class="og-wormhole-node" data-action="campaign-gate" style="left:${spot.x}%;top:${spot.y}%" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>`);}
     $('og-context').innerHTML=content;
   }
   function renderExpedition(ex){
@@ -576,8 +582,10 @@
     if(name==='modules'&&!source&&tab==='ship')placeParents.modules={label:shipDetail.mode==='interior'?'Nave aberta':'Nave',action:shipDetail.mode==='interior'?'ship-overview':'world'};
     else if(entrances[name]){if(entrances[name].includes(source))placeParents[name]={label:labels[source],action:source};else if(!source)delete placeParents[name];}
     if(name==='modules'&&!['stored-module','system-module','salvage-review'].includes(source))moduleOrigin='inventory';
+    if(sheet&&sheet!==name)pageMemory[sheet]=sheetPage;
     sheetPage=0;if(!sheet)focusBeforeSheet=document.activeElement;sheet=name;sheetNotice='';$('og-toast').hidden=true;renderSheet();afterSheet(()=>$('og-sheet-backdrop').querySelector('button:not(:disabled)')?.focus({preventScroll:true}));}
-  function closeSheet(){sheet=null;syncExperience();sheetNotice='';const backdrop=$('og-sheet-backdrop');backdrop.hidden=true;backdrop.innerHTML='';Array.from(root.children).forEach(el=>{el.inert=false;});const restore=focusBeforeSheet?.isConnected&&root.contains(focusBeforeSheet)&&focusBeforeSheet.getClientRects().length?focusBeforeSheet:root.querySelector(`.og-tabs [data-tab="${tab}"]`);restore?.focus({preventScroll:true});}
+  function sameControl(el){if(!el?.dataset||!Object.keys(el.dataset).length)return null;const selector=el.tagName.toLowerCase()+Object.entries(el.dataset).map(([k,v])=>`[data-${k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())}="${CSS.escape(v)}"]`).join('');const match=root.querySelector(selector);return match&&match.getClientRects().length?match:null;}
+  function closeSheet(){sheet=null;for(const k in pageMemory)delete pageMemory[k];syncExperience();sheetNotice='';const backdrop=$('og-sheet-backdrop');backdrop.hidden=true;backdrop.innerHTML='';Array.from(root.children).forEach(el=>{el.inert=false;});const restore=focusBeforeSheet?.isConnected&&root.contains(focusBeforeSheet)&&focusBeforeSheet.getClientRects().length?focusBeforeSheet:sameControl(focusBeforeSheet)||root.querySelector(`.og-tabs [data-tab="${tab}"]`);restore?.focus({preventScroll:true});}
   function dismissSheet(){if(moduleOrigin==='ship'&&['system-module','stored-module'].includes(sheet))shipOverview();else closeSheet();}
   function toast(text,error){const el=$('og-toast');clearTimeout(toastTimer);el.textContent=text;el.classList.toggle('error',!!error);el.hidden=false;toastTimer=setTimeout(()=>el.hidden=true,4400);}
   function beep(action){window.OrbitAudio.fx(action);}

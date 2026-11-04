@@ -175,7 +175,9 @@ async function scenario(viewport, name, run) {
     }) => {
       await start();
       await click('.og-tabs [data-tab="ship"]');
-      await action('open-interior');
+      // The closed hull has no "open" button any more: tapping the painted ship opens it.
+      await click('#og-canvas');
+      await page.waitForFunction(() => orbitApp.getView().shipDetail.mode === 'interior');
       await click('[data-module-focus="cargo"]');
       await click('[data-cargo="ore"]');
       await expectSheet('cargo-content', 'cargo item opens its contents');

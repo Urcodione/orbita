@@ -31,12 +31,20 @@ fs.mkdirSync(out, { recursive: true });
   async function boot(mode = 'new') {
     await page.goto(gameURL);
     await page.waitForFunction(() => window.orbitApp && window.OrbitEngine?.discoveryCatalog && window.OrbitDiscoveryCatalog);
+    // A first visit opens the illustrated intro and the guided training; leave both before injecting the fixture.
+    if (await page.locator('[data-story-action="skip"]:visible').count()) await page.locator('[data-story-action="skip"]').click();
+    if (await page.locator('[data-guide-skip]:visible').count()) await page.locator('[data-guide-skip]').click();
     await page.evaluate(mode => {
       const E = OrbitEngine, s = E.create('qa-celestial-catalog');
       const run = (action, payload = {}) => {
         const result = E.dispatch(s, action, payload);
         if (!result.ok) throw new Error('Fixture ' + action + ': ' + result.message);
       };
+      // A new game starts in the guided Prisma training; these fixtures exercise the free campaign that follows it.
+      run('guideSkip');
+      // The campaign holds each warp until that chapter's module is built. These catalog fixtures defer the
+      // campaign to a far galaxy (a valid state) so ordinary routes stay open for archive coverage.
+      s.campaign.start = 64; s.campaign.target = null;
       if (mode !== 'new') run('scan');
       if (mode === 'two-known') {
         const start = s.location.planetId, other = s.galaxy.planets.find(p => p.systemId === E.currentSystem(s).id && p.id !== start);
@@ -121,6 +129,13 @@ fs.mkdirSync(out, { recursive: true });
     for (const planet of planets.filter(p => !p.scanned)) assert.ok(!text.includes(planet.name), 'Unanalyzed name leaked: ' + planet.name);
   };
 
+  // The atlas shows one world per card; a picker (data-atlas-select="recordIndex") chooses which world of the system is shown.
+  async function showWorld(systemId, planetId) {
+    const index = (await survey()).current.systems.find(system => system.id === systemId).planets.findIndex(p => p.id === planetId);
+    assert.ok(index >= 0, 'World listed in its system: ' + planetId);
+    await page.locator('[data-atlas-select="recordIndex"]:visible').selectOption(String(index)); await settle();
+  }
+
   await test('Catalog is reachable from the menu and map, with unknown worlds grouped without names', async () => {
     await boot(); const s = await state(), before = await survey();
     assert.equal(before.current.unknown, s.galaxy.planets.length);
@@ -128,17 +143,20 @@ fs.mkdirSync(out, { recursive: true });
     await click('menu'); await click('catalog');
     assert.equal((await view()).sheet, 'catalog');
     let text = await auditPages('Initial catalog');
-    assert.match(text, /desconhecidos/i); assert.match(text, /0%/); assertHiddenNames(text, s.galaxy.planets);
+    assert.match(text, /0\/\d+ descobertos/i); assert.match(text, /0%/); assertHiddenNames(text, s.galaxy.planets);
     for (const system of s.galaxy.systems) {
       assert.ok(text.includes(system.name), 'System card reachable: ' + system.name);
       await clickSelector(`[data-catalog-system="${system.id}"]`);
-      assertHiddenNames(await auditPages('Unknown system'), s.galaxy.planets);
+      const systemText = await auditPages('Unknown system');
+      assert.match(systemText, /Mundo desconhecido/); assertHiddenNames(systemText, s.galaxy.planets);
       await clickSelector('[data-catalog-page="systems"]');
     }
     await catalog(); assert.deepEqual(await state(), s, 'Browsing never mutates game progress');
     await snap('initial-catalog');
   });
 
+  // Back/forward used to be a linear history across places; navigation is now hierarchical (a route to the map closes
+  // the catalog and Back leads to the world, see final-navigation-test), so these checks cover the route itself.
   await test('A real orbital scan registers a named discovery without claiming site completion', async () => {
     await boot(); const before = await survey(), s = await state();
     await click('scan'); const after = await survey();
@@ -149,28 +167,26 @@ fs.mkdirSync(out, { recursive: true });
     const text = await auditPages('Discovered system');
     assert.ok(text.includes(s.galaxy.planets[0].name));
     assertHiddenNames(text, (await state()).galaxy.planets);
+    await showWorld(s.galaxy.systems[0].id, s.location.planetId);
+    const afterScan = await state();
     await clickSelector(`[data-catalog-planet="${s.location.planetId}"]`);
     assert.equal((await view()).tab, 'explore'); assert.equal((await view()).sheet, null);
-    const afterNavigation = await state();
-    await click('nav-back');
-    assert.equal((await view()).sheet, 'catalog');
-    assert.equal((await view()).catalogView.systemId, s.galaxy.systems[0].id);
-    assert.deepEqual(await state(), afterNavigation);
+    assert.deepEqual(await state(), afterScan, 'Opening the current world from the catalog changes nothing');
     await snap('discovered-world');
   });
 
-  await test('Catalog routes preserve resources and restore the exact system page with back and forward', async () => {
+  await test('Catalog routes preserve resources and open the selected world on the system map', async () => {
     await boot('two-known'); const s = await state(), other = s.galaxy.planets.find(p => p.scanned && p.id !== s.location.planetId);
     await catalog(); await clickSelector(`[data-catalog-system="${other.systemId}"]`);
+    await showWorld(other.systemId, other.id);
+    assert.ok((await page.getByRole('dialog').innerText()).includes(other.name), 'The picked world card is shown');
     await clickSelector(`[data-catalog-planet="${other.id}"]`);
     const routeView = await view();
     assert.equal(routeView.tab, 'galaxy'); assert.equal(routeView.sheet, null); assert.equal(routeView.selected, other.id);
+    assert.equal(routeView.mapLevel, 'system'); assert.equal(routeView.selectedSystem, other.systemId);
+    assert.ok((await page.locator('#og-context').innerText()).includes(other.name), 'Map context names the routed world');
     assert.deepEqual(await state(), s, 'Route selection does not travel or scan');
-    await click('nav-back'); const restored = await view();
-    assert.equal(restored.sheet, 'catalog'); assert.equal(restored.catalogView.page, 'system'); assert.equal(restored.catalogView.systemId, other.systemId);
-    assert.ok(await page.locator(`[data-catalog-planet="${other.id}"]:visible`).count(), 'Back restores the page containing the selected world');
-    await click('nav-forward'); assert.equal((await view()).selected, other.id); assert.equal((await view()).sheet, null);
-    await click('nav-back'); assert.equal((await view()).sheetPage, restored.sheetPage); assert.deepEqual((await view()).catalogView, restored.catalogView);
+    assert.equal(await page.evaluate(() => orbitApp.back()), true); assert.equal((await view()).tab, 'explore', 'Back from the map returns to the world');
     assert.deepEqual(await state(), s);
     await snap('catalog-route-back');
   });
