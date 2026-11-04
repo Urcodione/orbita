@@ -3,7 +3,31 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { completeTutorialExpedition } = require('./expedition-helpers.cjs');
+const { solveCounts } = require('./expedition-helpers.cjs');
+// Like expedition-helpers' completeTutorialExpedition, but adventure sites now require triangulating the signal at
+// both terrain beacons (rows 4 and 2 of the tutorial column) before the core circuit opens. Drives visible controls.
+async function completeTutorialExpedition(page) {
+  const act = action => page.locator(`[data-action="${action}"]:visible`).first().click();
+  const move = (x, y) => page.locator(`[data-expedition-x="${x}"][data-expedition-y="${y}"]:visible`).click();
+  const before = await page.evaluate(() => orbitApp.getState());
+  assert.ok(before.expedition?.firstExpedition, 'Helper only handles the first expedition');
+  assert.equal(before.expedition.x, 2); assert.equal(before.expedition.y, 5);
+  for (let y = 4; y >= 0; --y) { await move(2, y); if (y === 4 || y === 2) await act('expeditionBeacon'); }
+  assert.equal(await page.evaluate(() => orbitApp.getState().expedition.beacons.length), 2, 'Both beacons triangulated');
+  await move(3, 0); await act('expeditionInteract');
+  const puzzle = await page.evaluate(() => orbitApp.getState().expedition.puzzle);
+  const counts = solveCounts(puzzle.dials, puzzle.target);
+  for (let i = 0; i < 3; i++) for (let n = 0; n < counts[i]; n++) await page.locator(`[data-action="expeditionTune"][data-index="${i}"]:visible`).click();
+  await act('expeditionRecover');
+  const recovered = await page.evaluate(() => orbitApp.getState());
+  assert.ok(recovered.expedition.coreRecovered);
+  assert.deepEqual(recovered.inventory, before.inventory, 'Recovered gear is pending until extraction');
+  await move(2, 0); for (let y = 1; y <= 5; y++) await move(2, y);
+  await act('expeditionExtract');
+  const after = await page.evaluate(() => orbitApp.getState());
+  assert.equal(after.expedition, null);
+  assert.equal(after.progress.explorations, before.progress.explorations + 1);
+}
 const Legacy = require('../engine.js');
 const H = require('../expedition-test-helper.cjs');
 const out = path.join(__dirname, 'campaign-artifacts');
@@ -90,12 +114,17 @@ async function assertSavedSize(page) {
       await page.reload();
       await page.waitForFunction(() => window.orbitApp);
       assert.equal(await page.locator('.og-story-clip:visible').count(), 0, 'Skipped intro stays skipped after reload');
+      // A new game now also starts the guided Prisma training; skip it to reach the real campaign start.
+      await page.locator('[data-guide-skip]').click();
+      assert.equal(await page.evaluate(() => orbitApp.getState().guide.active), false, 'Guide skipped');
+      assert.equal(await page.evaluate(() => OrbitEngine.campaignView(orbitApp.getState()).introSeen), true, 'Skipping the guide keeps the intro seen');
 
       await page.locator('.og-tabs [data-tab=expedition]').click();
       await fits(page, 'mission tab ' + width);
       await click(page, '[data-action=campaign]');
       for (const section of ['mission', 'collection', 'gate']) {
-        await click(page, `[data-campaign-page=${section}]`);
+        await page.locator('[data-campaign-select]').selectOption(section);
+        assert.equal(await page.evaluate(() => orbitApp.getView().campaignPage), section);
         await fits(page, section + ' ' + width);
         await page.screenshot({ path: path.join(out, section + '-' + width + '.png') });
       }
@@ -109,7 +138,10 @@ async function assertSavedSize(page) {
       await click(page, '[data-action=close-sheet]');
 
       await page.locator('.og-tabs [data-tab=explore]').click();
-      for (const action of ['scan', 'dock', 'sites', 'explore']) await click(page, `[data-action=${action}]`);
+      // Scanning opens the descent sheet; descending (explore) anchors the ship.
+      await click(page, '[data-action=scan]');
+      assert.equal(await page.evaluate(() => orbitApp.getView().sheet), 'sites');
+      await click(page, '[data-action=explore][data-site="g0-p0-s0"]');
       const before = await page.evaluate(() => OrbitEngine.campaignView(orbitApp.getState()).active.sitesDone);
       assert.equal(before, 0, 'Starting a sortie gives no campaign credit');
       await completeTutorialExpedition(page);

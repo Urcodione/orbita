@@ -2,7 +2,7 @@ const {chromium}=require('./node_modules/playwright'),assert=require('node:asser
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});for(const width of [320,390]){const p=await b.newPage({viewport:{width,height:width===320?568:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('http://localhost:8765');await p.waitForFunction(()=>window.orbitApp);await p.locator('[data-story-action=skip]').click();await p.locator('[data-guide-skip]').click();
 async function click(selector){for(let i=0;i<30;i++){const el=p.locator(selector+':visible:not([inert] *)').first();if(await el.count()){await el.click();return}const next=p.locator('[data-sheet-page="1"]:visible:not(:disabled)');if(!await next.count())throw Error('Unreachable '+selector);await next.click()}throw Error('Paging limit')}
 await click('[data-action=menu]');await click('[data-action=workshop]');
-assert.equal(await p.locator('[data-action=components-menu] .og-purpose-art').count(),1);
+assert.equal(await p.locator('[data-action=components-menu] .og-semantic-art, [data-action=components-menu] .og-purpose-art').count(),1);assert.equal(await p.locator('[data-action=components-menu]').getAttribute('data-icon-key'),'craft');
 await click('[data-action=stock]');assert(!/\/\s*999/.test(await p.locator('.og-sheet').innerText()));
 await click('[data-action=campaign-relics]');await click('.og-place-exit');assert.equal(await p.evaluate(()=>orbitApp.getView().sheet),'stock');
 await click('[data-action=stock-components]');assert.equal(await p.locator('.og-component-art').count(),6);const shapes=await p.locator('.og-component-art').evaluateAll(es=>es.map(e=>e.dataset.purpose||e.innerHTML));assert.equal(new Set(shapes).size,6);
