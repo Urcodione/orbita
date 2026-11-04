@@ -5,8 +5,8 @@
  const sources=window.OrbitIllustrations||{};
  // The build embeds art as data: URLs. Copying those multi-MB strings into CSS variables and Image elements duplicated
  // them in memory and made the style system parse them on every recalculation. Each one is turned into a short blob:
- // URL the first time it is read (the in-conversation preview keeps data: URLs, since its host may not allow blob:).
- if(!window.OrbitArtDataUrls&&typeof URL!=='undefined'&&URL.createObjectURL&&typeof Blob!=='undefined')for(const key of Object.keys(sources)){
+ // URL the first time it is read.
+ if(typeof URL!=='undefined'&&URL.createObjectURL&&typeof Blob!=='undefined')for(const key of Object.keys(sources)){
   const data=sources[key];if(typeof data!=='string'||!data.startsWith('data:'))continue;let url='';
   Object.defineProperty(sources,key,{enumerable:true,configurable:true,get(){if(!url)try{const comma=data.indexOf(','),bin=atob(data.slice(comma+1)),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);url=URL.createObjectURL(new Blob([bytes],{type:data.slice(5,data.indexOf(';'))}));}catch{url=data;}return url;}});
  }
@@ -123,32 +123,24 @@
  OrbitScene.prototype.drawPaintedShip=function(cx,cy,scale,t,warp,travel,now,shipView,portrait){
   const hull=hullKeys(this.state.shipModel);
   if(!ready(hull.ship)||!ready(hull.interior)||!ready('modules'))return false;
-  const c=this.ctx,detail=this.state.shipDetail||{},selected=types.includes(detail.selectedModule)?detail.selectedModule:null;
-  const inspecting=shipView&&detail.mode==='module'&&!!selected,interior=shipView&&(detail.mode==='interior'||inspecting);
-  const drag=inspecting&&this.moduleDrag?.type===selected?this.moduleDrag:null,side=selected?(types.indexOf(selected)%2?1:-1):1;
-  const target={x:cx,y:cy,scale,yaw:this.yaw,pitch:this.pitch,open:interior?1:0,focus:inspecting?1:0,explode:drag?drag.pose:inspecting&&detail.expanded?1:0,fx:0,fy:0,fz:0};
-  if(drag)Object.assign(target,drag.cameraLock);
+  const c=this.ctx,interior=shipView&&this.state.shipDetail?.mode==='interior';
+  const target={x:cx,y:cy,scale,yaw:this.yaw,pitch:this.pitch,open:interior?1:0};
   if(!this.camera)this.camera={...target};
   const dt=clamp(now-(this.cameraTime||now-16),1,48),blend=this.reduced?1:1-Math.exp(-dt/125);this.cameraTime=now;
   for(const k of Object.keys(target))this.camera[k]=lerp(this.camera[k],target[k],blend);
-  const cam=this.camera;if(drag)cam.explode=drag.pose;
-  const layout=this.state.inspectionLayout,top=shipView?(inspecting?120:layout?.top||120):0,bottom=shipView?(inspecting?this.height-177:layout?.bottom||this.height-177):this.height;
+  const cam=this.camera;
+  const layout=this.state.inspectionLayout,top=shipView?layout?.top||120:0,bottom=shipView?layout?.bottom||this.height-177:this.height;
   // Interior zoom prioritizes the equipment rack; small screens crop the nose and exhaust instead of shrinking the sockets.
   const baseH=lerp(310*cam.scale,Math.max(360,310*cam.scale*1.16),cam.open),baseW=baseH*2/3;
   const tilt=clamp(cam.yaw-.18,-1,1)*.08,lean=clamp(cam.pitch-.2,-.15,.4)*.05;
   const local=type=>{const i=types.indexOf(type);return {x:baseW*([.421,.580][i%2]-.5),y:baseH*([.352,.446,.540,.639][Math.floor(i/2)]-.5)};};
-  const chosen=local(selected||'scanner'),desired=Math.min(137,this.width*.38,Math.max(65,(bottom-top)*.68));
-  const zoom=lerp(1,desired/(baseW*.16),cam.focus);
-  const anchor={x:cam.x,y:lerp(cam.y,(top+bottom)/2,cam.focus)};
-  const origin={x:anchor.x-chosen.x*zoom*cam.focus,y:anchor.y-chosen.y*zoom*cam.focus};
-  const point=(x,y)=>({x:origin.x+(x*Math.cos(tilt)-y*Math.sin(tilt))*zoom,y:origin.y+(x*Math.sin(tilt)+y*Math.cos(tilt))*(1+lean)*zoom});
+  const origin={x:cam.x,y:cam.y};
+  const point=(x,y)=>({x:origin.x+x*Math.cos(tilt)-y*Math.sin(tilt),y:origin.y+(x*Math.sin(tilt)+y*Math.cos(tilt))*(1+lean)});
   const mountPoint=type=>{const p=local(type);return point(p.x,p.y);};
-  const vector={x:side*Math.min(78,this.width*.21),y:12};
-  const pieceW=baseW*.16*zoom,pieceH=pieceW*.85;
+  const pieceW=baseW*.16,pieceH=pieceW*.85;
   c.save();if(shipView){c.beginPath();c.rect(0,top,this.width,Math.max(1,bottom-top));c.clip();}
   // A continuous fade opens the same illustrated hull; rotating never reverts to the old mesh.
-  c.save();c.translate(origin.x,origin.y);c.rotate(tilt);c.scale(zoom,zoom*(1+lean));
-  c.globalAlpha=1-cam.focus*.83;
+  c.save();c.translate(origin.x,origin.y);c.rotate(tilt);c.scale(1,1+lean);
   const rgb=(this.state.shipColor||'#f0a270').match(/\w\w/g).map(v=>parseInt(v,16)/255),hi=Math.max(...rgb),lo=Math.min(...rgb),delta=hi-lo;
   let hue=delta?(hi===rgb[0]?(rgb[1]-rgb[2])/delta:hi===rgb[1]?(rgb[2]-rgb[0])/delta+2:(rgb[0]-rgb[1])/delta+4)*60:0;
   const neon=['#a34dff','#31ffbb','#ff4795'].includes(this.state.shipColor);
@@ -157,11 +149,11 @@
   if(this.state.shipColor==='#f0a270')paint='none';
   else if(originalHues[this.state.shipColor]!==undefined){const h=originalHues[this.state.shipColor];paint=`hue-rotate(${h}deg) saturate(${h===12?.55:.85})`;}
   else paint=`hue-rotate(${hue-24}deg) saturate(${neon?1.7:.65}) brightness(${neon?1.08:1.04})`;
-  if(neon){paint='none';c.save();c.globalAlpha=1-cam.focus;premiumAura(c,baseW,baseH,this.reduced?2:t,this.state.shipColor);c.restore();}
+  if(neon){paint='none';c.save();premiumAura(c,baseW,baseH,this.reduced?2:t,this.state.shipColor);c.restore();}
   if(cam.open<.999){const hullAlpha=c.globalAlpha;c.globalAlpha*=1-cam.open;c.drawImage(neon?premiumHull(hull.ship,this.state.shipColor):tintedHull(hull.ship,paint),-baseW/2,-baseH/2,baseW,baseH);
    c.globalAlpha=hullAlpha;}
-  if(cam.open>.001){c.globalAlpha=(1-cam.focus*.83)*cam.open;c.drawImage(neon?premiumHull(hull.interior,this.state.shipColor):tintedHull(hull.interior,paint),-baseW/2,-baseH/2,baseW,baseH);}
-  if(neon){c.globalAlpha=(1-cam.focus*.83);premiumReflection(this,cam.open>.5?hull.interior:hull.ship,baseW,baseH,this.reduced?2:t,this.state.shipColor);}
+  if(cam.open>.001){c.globalAlpha=cam.open;c.drawImage(neon?premiumHull(hull.interior,this.state.shipColor):tintedHull(hull.interior,paint),-baseW/2,-baseH/2,baseW,baseH);}
+  if(neon){c.globalAlpha=1;premiumReflection(this,cam.open>.5?hull.interior:hull.ship,baseW,baseH,this.reduced?2:t,this.state.shipColor);}
   c.restore();
   const jets=1-cam.open,trail=this.state.shipTrail||'blue',special=['cosmic','aurora','solar'].includes(trail),colors=({blue:['#9deeff','#419eeacc','#516bf000'],orange:['#ffe0a3','#ff8c35cc','#ff542000'],cosmic:['#ead0ff','#a351ffcc','#6633ee00'],aurora:['#c6ffea','#34edb3cc','#22aacc00'],solar:['#ffe1f3','#ff55b0cc','#9a22ee00']})[trail]||['#9deeff','#419eeacc','#516bf000'];
   if(jets>.01){
@@ -187,18 +179,13 @@
    }c.restore();
   }
 
-  this.inspection=null;this.cargoHitFaces=[];const cargo=[],points=[];
-  for(const type of types){const installed=!!this.state.modules?.[type],socket=mountPoint(type),isSelected=type===selected;
-   const pose=isSelected?cam.explode:0,p={x:socket.x+vector.x*pose,y:socket.y+vector.y*pose};
-   if(cam.open>.001&&installed){c.save();c.globalAlpha=cam.open*(isSelected?1:1-cam.focus*.88);if(isSelected&&cam.focus>.5){c.strokeStyle='#9bdbd4aa';c.lineWidth=1;c.setLineDash([3,4]);c.strokeRect(socket.x-pieceW*.42,socket.y-pieceH*.42,pieceW*.84,pieceH*.84);c.setLineDash([]);if(pose>.05){c.beginPath();c.moveTo(socket.x,socket.y);c.lineTo(p.x,p.y);c.stroke();}}module(c,type,p.x,p.y,pieceW,pieceH,this.state.modules?.[type]);c.restore();}
-   if(inspecting&&isSelected){const bounds={x:p.x-pieceW/2,y:p.y-pieceH/2,width:pieceW,height:pieceH,w:pieceW,h:pieceH};
-    if(type==='cargo')for(const item of [{resource:'ore',label:'Minérios',x:-.20,y:.10},{resource:'crystals',label:'Cristais',x:-.04,y:-.22},{resource:'oxygen',label:'Oxigênio',x:.32,y:-.10}]){const x=p.x+item.x*pieceW,y=p.y+item.y*pieceH,w=pieceW*.27,h=pieceH*.42,b={x:x-w/2,y:y-h/2,width:w,height:h};cargo.push({resource:item.resource,label:item.label,x,y,bounds:b,visible:true});this.cargoHitFaces.push({resource:item.resource,points:[[b.x,b.y],[b.x+w,b.y],[b.x+w,b.y+h],[b.x,b.y+h]]});}
-    this.inspection={type,bounds,socket:{x:socket.x,y:socket.y,bounds:{x:socket.x-pieceW/2,y:socket.y-pieceH/2,width:pieceW,height:pieceH}},dragging:!!drag?.active,expanded:drag?drag.pose>=.5:!!detail.expanded,pose:cam.explode,expansionVector:vector,side,contents:cargo};
-   }
-   if(interior&&!inspecting&&cam.open>.7){const s=types.indexOf(type)%2?1:-1,edge=12+(layout?.labelWidth||88)/2;points.push({type,side:s,x:socket.x,y:socket.y,anchorX:socket.x,anchorY:socket.y,width:Math.max(44,pieceW*.85),height:Math.max(44,pieceH*.85),visible:true,attached:true,installed});}
+  const points=[];
+  for(const type of types){const installed=!!this.state.modules?.[type],socket=mountPoint(type);
+   if(cam.open>.001&&installed){c.save();c.globalAlpha=cam.open;module(c,type,socket.x,socket.y,pieceW,pieceH,this.state.modules?.[type]);c.restore();}
+   if(interior&&cam.open>.7){const s=types.indexOf(type)%2?1:-1;points.push({type,side:s,x:socket.x,y:socket.y,anchorX:socket.x,anchorY:socket.y,width:Math.max(44,pieceW*.85),height:Math.max(44,pieceH*.85),visible:true,attached:true,installed});}
   }
   c.restore();
 
-  this.shipHit={x:origin.x-baseW*zoom/2,y:origin.y-baseH*zoom/2,w:baseW*zoom,h:baseH*zoom};this.publishHotspots(points);this.publishCargoHotspots(cargo);return true;
+  this.shipHit={x:origin.x-baseW/2,y:origin.y-baseH/2,w:baseW,h:baseH};this.publishHotspots(points);return true;
  };
 })();

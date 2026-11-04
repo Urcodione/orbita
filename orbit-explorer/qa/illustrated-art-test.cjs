@@ -15,18 +15,10 @@ const assert=require('node:assert/strict');const fs=require('node:fs');const pat
   await page.waitForTimeout(400);assert.equal(await page.locator('#og-canvas').evaluate(c=>c.toDataURL()),art.frame,'Reduced motion keeps the illustration and weather stable');
   // The exterior has no "Abrir nave" button any more: tapping the rocket opens the hull.
   await page.locator('.og-tabs [data-tab=ship]').click();await page.locator('#og-canvas').click();await page.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');
-  // Tapping a module opens its card directly (the old "inspect-module" button is gone). The draggable close-up behind the
-  // card is shown when the game resumes in that view, so reload to reach it (the save keeps the selected module).
-  await page.locator('[data-module-focus=engine]:visible').first().click();await page.waitForFunction(()=>orbitApp.getView().sheet==='system-module'&&orbitApp.getView().shipDetail.selectedModule==='engine');
-  await page.reload();await page.waitForFunction(()=>window.orbitApp&&orbitApp.getView().sheet===null&&orbitApp.getInspection()?.type==='engine');await page.waitForTimeout(400);
+  // Tapping a module opens its card over the open ship; there is no close-up behind it.
   const resources=await page.evaluate(()=>JSON.stringify(orbitApp.getState().resources));
-  for(const extract of [true,false]){
-   const part=await page.evaluate(()=>orbitApp.getInspection()),box=await page.locator('#og-canvas').boundingBox();
-   const x=box.x+part.bounds.x+part.bounds.width/2,y=box.y+part.bounds.y+part.bounds.height/2;
-   const end=extract?{x:x+part.expansionVector.x*1.12,y:y+part.expansionVector.y*1.12}:{x:box.x+part.socket.x,y:box.y+part.socket.y};
-   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(end.x,end.y,{steps:14});await page.mouse.up();
-   await page.waitForFunction(expected=>orbitApp.getView().shipDetail.expanded===expected,extract);await page.waitForTimeout(100);
-  }
+  await page.locator('[data-module-focus=engine]:visible').first().click();await page.waitForFunction(()=>orbitApp.getView().sheet==='system-module'&&orbitApp.getView().systemType==='engine');
+  assert.equal(await page.evaluate(()=>orbitApp.getView().shipDetail.mode),'interior');await page.locator('[data-action=close-sheet]:visible').first().click();
   assert.equal(await page.evaluate(()=>JSON.stringify(orbitApp.getState().resources)),resources);
   await page.locator('.og-tabs [data-tab=explore]').click();
   await page.locator('[data-action=scan]').click();assert.equal(await page.evaluate(()=>orbitApp.getState().progress.scans),1);

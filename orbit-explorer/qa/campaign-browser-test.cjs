@@ -3,6 +3,7 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const Save = require('./save-slot.cjs');
 const { solveCounts } = require('./expedition-helpers.cjs');
 // Like expedition-helpers' completeTutorialExpedition, but adventure sites now require triangulating the signal at
 // both terrain beacons (rows 4 and 2 of the tutorial column) before the core circuit opens. Drives visible controls.
@@ -34,15 +35,6 @@ const out = path.join(__dirname, 'campaign-artifacts');
 const url = process.env.ORBIT_QA_URL || 'http://localhost:8765/?mobile=1&v=coro-do-limiar';
 fs.mkdirSync(out, { recursive: true });
 
-async function captureHost(page, privateContent) {
-  await page.addInitScript(snapshot => {
-    window.__campaignSnapshots = [];
-    window.openai = {
-      ...(snapshot ? { widgetState: { privateContent: snapshot } } : {}),
-      setWidgetState(value) { window.__campaignSnapshots.push(JSON.parse(JSON.stringify(value))); return Promise.resolve(); }
-    };
-  }, privateContent);
-}
 async function click(page, selector) {
   for (let count = 0; count < 20; count++) {
     const match = page.locator(selector + ':visible:not([inert] *)').first();
@@ -80,10 +72,10 @@ async function fits(page, label) {
   assert.deepEqual(layout.badControls, [], label + ' clipped controls');
 }
 async function assertSavedSize(page) {
-  const saved = await page.evaluate(() => window.__campaignSnapshots.at(-1));
-  assert.ok(saved, 'Interaction must save a host snapshot');
+  const saved = await Save.last(page);
+  assert.ok(saved, 'Interaction must save the journey');
   const bytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
-  assert.ok(bytes < 16384, 'Host snapshot exceeds 16 KiB: ' + bytes);
+  assert.ok(bytes < 16384, 'Save exceeds 16 KiB: ' + bytes);
   return bytes;
 }
 
@@ -95,7 +87,6 @@ async function assertSavedSize(page) {
       const context = await browser.newContext({ viewport: { width, height }, hasTouch: true, isMobile: true });
       const page = await context.newPage();
       page.on('pageerror', error => errors.push(error.message));
-      await captureHost(page);
       await page.goto(url);
       await page.waitForFunction(() => window.orbitApp && window.OrbitEngine?.campaignView);
       await page.locator('.og-story-clip:visible').waitFor();
@@ -164,7 +155,7 @@ async function assertSavedSize(page) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
-    await captureHost(page, { state: Legacy.snapshot(legacy), tab: 'expedition', selected: legacy.location.planetId });
+    await Save.seed(page, { state: Legacy.snapshot(legacy), tab: 'expedition', selected: legacy.location.planetId });
     await page.goto(url); await page.waitForFunction(() => window.orbitApp);
     const restored = await page.evaluate(() => orbitApp.getState());
     for (const key of ['ship', 'resources', 'equipped', 'inventory', 'progress', 'expedition']) assert.deepEqual(restored[key], legacy[key], 'Existing save retains ' + key);
@@ -175,7 +166,7 @@ async function assertSavedSize(page) {
     await context.close();
     assert.deepEqual(errors, []);
     fs.writeFileSync(path.join(out, 'browser-report.json'), JSON.stringify({ passed: true, checks, errors }, null, 2));
-    console.log('PASS campaign intro, skip/reload, mobile mission screens, locked recipes/gate, actual core extraction, host snapshot size and legacy expedition migration');
+    console.log('PASS campaign intro, skip/reload, mobile mission screens, locked recipes/gate, actual core extraction, save size and legacy expedition migration');
   } catch (error) {
     fs.writeFileSync(path.join(out, 'browser-report.json'), JSON.stringify({ passed: false, checks, errors, failure: error.message }, null, 2));
     throw error;

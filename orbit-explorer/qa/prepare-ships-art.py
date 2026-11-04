@@ -1,8 +1,8 @@
 """Derive the in-game ship paintings from the sources in assets/src/ships/.
 
 For each ship in assets/src/ships/naves.json: <id>.png (closed hull) and <id>-open.png (hull open on the 8 sockets),
-1024x1536 RGBA, become assets/ship-<id>.webp and assets/ship-<id>-open.webp at the Andorinha's display size (512x768),
-plus -inline versions for the compact preview (427x640). build.py embeds them as hull-<id> and open-<id>.
+1024x1536 RGBA, become assets/ship-<id>.webp and assets/ship-<id>-open.webp at the Andorinha's display size (512x768).
+build.py embeds them as hull-<id> and open-<id>.
 It also copies each ship's nozzle positions from naves.json into ships.js, where the game reads them for the flames.
 
 Run from orbit-explorer/:  python3 qa/prepare-ships-art.py
@@ -20,10 +20,9 @@ for ship in json.loads((src / 'naves.json').read_text(encoding='utf-8')):
     for suffix in ('', '-open'):
         image = Image.open(src / f"{ship['id']}{suffix}.png").convert('RGBA')
         assert image.size == (1024, 1536), (ship['id'], suffix, image.size)
-        for tag, size, quality in (('', (512, 768), 88), ('-inline', (427, 640), 82)):
-            path = assets / f"ship-{ship['id']}{suffix}{tag}.webp"
-            image.resize(size, LANCZOS).save(path, 'WEBP', quality=quality, method=6)
-            print(f'{path.name:36s} {path.stat().st_size // 1024} KB')
+        path = assets / f"ship-{ship['id']}{suffix}.webp"
+        image.resize((512, 768), LANCZOS).save(path, 'WEBP', quality=88, method=6)
+        print(f'{path.name:36s} {path.stat().st_size // 1024} KB')
 
 # Nozzles: [x %, y %, 1 for a main engine / 0 for a side one], written into the ship's entry in ships.js.
 code_path = base / 'ships.js'

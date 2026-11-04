@@ -5,7 +5,7 @@ const path=require('node:path'),root=path.resolve(__dirname,'..'),build=fs.readF
 const expectedArt=new Set([...build.match(/^art_files = \{([^}]*)\}/m)[1].matchAll(/'([^']+)':'[^']+'/g)].map(m=>m[1]));
 for(let i=0;i<4;i++)expectedArt.add('story'+i);for(let i=0;i<6;i++)expectedArt.add('room'+i);
 for(const [key,name] of [['landscapes','cine-landscapes'],['xenoTools','xeno-tools'],['xenoSpecimens','xeno-specimens']])if(fs.existsSync(path.join(root,'assets',name+'.webp')))expectedArt.add(key);
-for(const file of fs.readdirSync(path.join(root,'assets')).filter(f=>/^ship-.*\.webp$/.test(f)&&!f.endsWith('-inline.webp'))){const ship=file.slice(5,-5);expectedArt.add(ship.endsWith('-open')?'open-'+ship.slice(0,-5):'hull-'+ship);}
+for(const file of fs.readdirSync(path.join(root,'assets')).filter(f=>/^ship-.*\.webp$/.test(f))){const ship=file.slice(5,-5);expectedArt.add(ship.endsWith('-open')?'open-'+ship.slice(0,-5):'hull-'+ship);}
 assert(expectedArt.size>=30,'artwork list parsed from build.py');
 (async()=>{const browser=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 for(const [width,height] of [[320,568],[390,844]]){

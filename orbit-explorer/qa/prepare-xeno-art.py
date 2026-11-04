@@ -6,8 +6,8 @@ Sources (either form works, per set):
     (any square-ish size; the subject centered with transparent margins, see assets/BRIEFING-ARTE-CODEX.md)
 
 Outputs (in assets/, picked up automatically by build.py):
-  xeno-tools.webp 1024x1536 (2x3, 512 cells)      + xeno-tools-inline.webp (half size)
-  xeno-specimens.webp 1536x1536 (4x4, 384 cells)  + xeno-specimens-inline.webp
+  xeno-tools.webp 1024x1536 (2x3, 512 cells)
+  xeno-specimens.webp 1536x1536 (4x4, 384 cells)
 
 Run from orbit-explorer/:  python3 qa/prepare-xeno-art.py
 """
@@ -52,10 +52,9 @@ def build(name, cols, rows, cell, ids):
     else:
         print(f'{name}: no source yet')
         return
-    for suffix, image, quality in (('', sheet, 86), ('-inline', sheet.resize((sheet.width // 2, sheet.height // 2), LANCZOS), 82)):
-        path = assets / f'{name}{suffix}.webp'
-        image.save(path, 'WEBP', quality=quality, method=6)
-        print(f'{path.name:30s} {image.size[0]}x{image.size[1]} {path.stat().st_size // 1024} KB')
+    path = assets / f'{name}.webp'
+    sheet.save(path, 'WEBP', quality=86, method=6)
+    print(f'{path.name:30s} {sheet.size[0]}x{sheet.size[1]} {path.stat().st_size // 1024} KB')
 
 
 for set_name, spec in SETS.items():

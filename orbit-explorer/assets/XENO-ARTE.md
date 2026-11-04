@@ -7,7 +7,7 @@ O jogo já funciona sem esta arte: as ferramentas usam ilustrações vetoriais p
 - `xeno-tools.webp`: ferramentas, 2 colunas × 3 linhas, nesta ordem: garra, rede, casulo, laço, crio, térmico.
 - `xeno-specimens.webp`: exemplares, 4 colunas × 4 linhas, na ordem de `SPECIMENS` em `xenobiology.js`.
 
-Gere-as com a mesma ferramenta de imagens usada na família visual (`ARTE.md`), com a Andorinha e o `modules-atlas.png` como referência de materiais e luz. Converta para WebP (qualidade 86, alfa preservado) e, se quiser a prévia compacta, crie também `-inline.webp` com metade do tamanho.
+Gere-as com a mesma ferramenta de imagens usada na família visual (`ARTE.md`), com a Andorinha e o `modules-atlas.png` como referência de materiais e luz. Converta para WebP (qualidade 86, alfa preservado).
 
 ## Prompt: ferramentas de captura (`xeno-tools.png`, 1024×1536)
 

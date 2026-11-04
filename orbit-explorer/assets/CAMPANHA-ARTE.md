@@ -1,6 +1,6 @@
 # Artes de O Coro do Limiar
 
-Criadas com a ferramenta integrada de geração de imagens, em três chamadas. Originais preservados neste diretório; versões WebP integral e compacta geradas para o jogo local e a prévia. Não há imagens carregadas da rede durante a partida.
+Criadas com a ferramenta integrada de geração de imagens, em três chamadas. Originais preservados neste diretório; versões WebP geradas para o jogo. Não há imagens carregadas da rede durante a partida.
 
 - `campaign-atlas.png`: quatro cenas, em grade 2 × 2: Íris, partida da Andorinha, Olho de Íris, arca Aurora. A última cena pertence ao desfecho.
 - `cosmic-atlas.png`: oito módulos, em grade 4 × 2: motor, dobra, vida, escudo, scanner, coletor, depósito, sobrevivência.

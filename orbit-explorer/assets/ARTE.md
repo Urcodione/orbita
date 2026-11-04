@@ -12,7 +12,7 @@ Use case: stylized-concept. Asset type: final transparent sprite for a mobile sp
 
 ## Família visual completa — 17/10/2026
 
-Gerada com a ferramenta de imagens integrada, usando a Andorinha aprovada como referência de materiais e iluminação. Originais preservados no projeto; WebP de uso local e versões compactas para a prévia são apenas otimizações de entrega.
+Gerada com a ferramenta de imagens integrada, usando a Andorinha aprovada como referência de materiais e iluminação. Originais preservados no projeto; o WebP de uso no jogo é apenas uma otimização de entrega.
 
 - `andorinha-open.png`: casco aberto com oito encaixes vazios, duas colunas e quatro linhas.
 - `modules-atlas.png`: oito peças independentes, na ordem scanner, sobrevivência, coletor, depósito, oxigênio, escudo, motor e dobra.
@@ -44,7 +44,7 @@ Production sprite atlas for a premium painterly realistic-cartoon space game. EX
 
 ## Rotas cósmicas — 17/10/2026
 
-Asset: `phenomena-atlas.png`, `phenomena-atlas.webp` e `phenomena-atlas-inline.webp`. Gerado pela ferramenta integrada image_gen (fundo transparente solicitado), otimizado para o jogo. A arte existente de galáxias agora compõe a carta da galáxia atual; os fenômenos representam rotas de dobra, sem revelar mundos futuros.
+Assets: `phenomena-atlas.png` e `phenomena-atlas.webp`. Gerado pela ferramenta integrada image_gen (fundo transparente solicitado), otimizado para o jogo. A arte existente de galáxias agora compõe a carta da galáxia atual; os fenômenos representam rotas de dobra, sem revelar mundos futuros.
 
 Prompt final: Three isolated cosmic phenomena in equal columns: black hole with copper gold accretion disk and gravitational lensing; violet pink turquoise nebula with sculpted clouds and stars; turquoise spacetime fissure with dark interior and crystalline energy edges. Premium hand painted dimensional realistic cartoon, animated film concept art, luminous stardust, warm highlights and teal shadows. Transparent background, no planets, no spiral galaxies, no text or borders.
 
@@ -52,25 +52,25 @@ Revisão selecionada: exec-fae1739b-8054-43fb-a932-5cf30867d57d.png. Prompt adic
 
 ## Sistemas estelares ilustrados — 17/10/2026
 
-Arquivos: `stars-atlas.png`, `stars-atlas.webp`, `stars-atlas-inline.webp`. Ferramenta integrada image_gen, transparência solicitada. Quatro estrelas substituem as esferas simples no mapa: amarela com plasma e arcos solares, anã vermelha com manchas, gigante azul com filamentos e pulsar com jatos polares. Binárias combinam as estrelas individuais. Os planetas permanecem iguais.
+Arquivos: `stars-atlas.png`, `stars-atlas.webp`. Ferramenta integrada image_gen, transparência solicitada. Quatro estrelas substituem as esferas simples no mapa: amarela com plasma e arcos solares, anã vermelha com manchas, gigante azul com filamentos e pulsar com jatos polares. Binárias combinam as estrelas individuais. Os planetas permanecem iguais.
 
 Prompt: Game sprite atlas 1024x1024 transparent background. Exactly FOUR separate illustrated stars in strict 2x2 grid. Each fits entirely in 350x350 square centered in its 512x512 cell, generous clear transparent gutters, no overlap. Top left golden yellow sun with detailed turbulent granular plasma, solar flare loops and fiery corona. Top right deep crimson red dwarf with glowing orange fissures and dark swirling sunspots. Bottom left brilliant blue giant, sapphire surface, white hot electric filaments and cyan corona. Bottom right violet neutron pulsar, tiny brilliant white core with two long polar violet energy jets and a tilted magnetic ring. Premium hand-painted dimensional realistic cartoon game art, richly textured luminous celestial objects, animated film concept art. Strong distinct silhouettes readable at small size. No text, no frames, no planets, no background starfield. Transparent outside corona. Do not fill entire cell; leave clear gutters.
 
 ## Entrepostos e recursos — 17/10/2026
 
-Ferramenta: image_gen integrada. Arte original preservada em `commerce-atlas.png`; versões WebP normal e compacta em `commerce-atlas.webp` e `commerce-atlas-inline.webp`.
+Ferramenta: image_gen integrada. Arte original preservada em `commerce-atlas.png`; versão WebP em `commerce-atlas.webp`.
 
 Prompt final: Transparent game asset sheet, 2 columns by 3 rows, six isolated objects with wide transparent gutters, each centered strictly in its own cell. Top left: beautiful ivory copper teal alien orbital trading station, ring habitat with three docking arms and turquoise windows, isometric. Top right: rugged metallic iron ore chunks with copper veins. Middle left: luminous violet cyan crystal cluster. Middle right: elegant teal oxygen gas canister with transparent glass and swirling gas. Bottom left: amber liquid fuel canister. Bottom right: compact copper mechanical parts crate. Premium hand-painted dimensional realistic cartoon, detailed materials, warm upper left light, cool teal shadows, coherent space exploration game art, no text, no backgrounds or frames. Keep all six objects separate and fully within each cell.
 
 ## Ambientes internos — 17/10/2026
 
-Geração integrada image_gen. Original `rooms-atlas.png`; versões `rooms-atlas.webp` e `rooms-atlas-inline.webp`. Seis ambientes: oficina, máquinas, sensores, carga, escudo magnético e suporte ambiental. Sobreposições escurecidas preservam a leitura dos cartões.
+Geração integrada image_gen. Original `rooms-atlas.png`; versão `rooms-atlas.webp`. Seis ambientes: oficina, máquinas, sensores, carga, escudo magnético e suporte ambiental. Sobreposições escurecidas preservam a leitura dos cartões.
 
 Prompt final: Illustrated background atlas for a premium realistic-cartoon spaceship game. Strict 2 columns x 3 rows equal rectangular panels, no gutters, no text. Empty rooms, cohesive ivory ceramic, copper orange and teal materials, painterly animated-film lighting. Top left rocket workshop with workbenches and robotic assembly cradle; top right engine room with copper thruster, pipes and orange reactor; middle left technology room with radar, cyan sensor screens and holographic consoles; middle right cargo bay with mineral crates, violet crystals and gas tanks; bottom left shield chamber with magnetic rings and protective energy sphere; bottom right environmental support room with oxygen recycling, plants, air filters and thermal regulation, not a hospital. Perspective depth, detailed edges and calmer dark foreground for game cards. No UI, people or logos.
 
 ## Flora e fauna — 18/10/2026
 
-Ferramenta integrada image_gen. Assets: `biology-atlas.png`, `biology-atlas.webp`, `biology-atlas-inline.webp`.
+Ferramenta integrada image_gen. Assets: `biology-atlas.png`, `biology-atlas.webp`.
 
 Prompt: Transparent game sprite atlas with six isolated alien collectible specimens in strict 2 columns by 3 rows. Top left luminous emerald alien fern with curled leaves and turquoise spores. Top right ice orchid with crystalline pale blue petals. Middle left ember succulent with copper cactus and glowing orange flowers. Middle right friendly moss fox with leafy green fur, full body. Bottom left translucent violet ocean jellyfish with pearlescent bell. Bottom right floating cyan sky manta ray with golden markings. Premium hand-painted dimensional realistic cartoon consistent with the space exploration game, warm highlights, cool shadows, transparent background, no text or boxes.
 
@@ -79,7 +79,7 @@ Prompt: Transparent game sprite atlas with six isolated alien collectible specim
 
 Geração individual com a ferramenta de imagens do Codex (imagegen), em modo de geração com referências, uma pintura por item. Referências visuais: Andorinha, módulos, biologia comum e atlas cósmico. Mesma luz quente superior esquerda, sombras teal, marfim e cobre na engenharia. Os contornos dos exemplares foram conferidos em preto a 48 px.
 
-Os prompts finais, por ID, estão em [src/xeno-prompts.json](src/xeno-prompts.json); as fichas de direção em [BRIEFING-XENO-CODEX.md](BRIEFING-XENO-CODEX.md). Fontes PNG RGBA 1024 × 1024 em src/xeno-tools/ (6) e src/xeno-specimens/ (16). Gerados os atlas WebP e suas versões inline com qa/prepare-xeno-art.py.
+Os prompts finais, por ID, estão em [src/xeno-prompts.json](src/xeno-prompts.json); as fichas de direção em [BRIEFING-XENO-CODEX.md](BRIEFING-XENO-CODEX.md). Fontes PNG RGBA 1024 × 1024 em src/xeno-tools/ (6) e src/xeno-specimens/ (16). Gerados os atlas WebP com qa/prepare-xeno-art.py.
 
 
 ## 2026-11-01 — Frota de exploração

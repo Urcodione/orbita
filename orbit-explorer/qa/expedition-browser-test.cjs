@@ -2,6 +2,7 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const Save = require('./save-slot.cjs');
 const out = path.join(__dirname, 'expedition-artifacts');
 fs.mkdirSync(out, { recursive: true });
 const url = 'file://' + path.resolve(__dirname, '../index.html');
@@ -28,14 +29,12 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
   }
   async function fresh(seed = 'qa-expedition-route') {
     await page.goto(url); await page.waitForFunction(() => window.orbitApp && window.OrbitEngine?.expeditionView);
-    await page.evaluate(seed => {
+    await Save.load(page, await page.evaluate(seed => {
       // A new journey: the story intro has been seen and the guided first landing skipped, through the game's own actions.
       const s = OrbitEngine.create(seed);
       for (const action of ['campaignIntro', 'guideSkip']) if (!OrbitEngine.dispatch(s, action).ok) throw new Error(action);
-      window.__qaSaved = [];
-      window.openai = { setWidgetState: value => { window.__qaSaved.push(JSON.parse(JSON.stringify(value))); return Promise.resolve(); } };
-      window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { widgetState: { privateContent: { state: s, tab: 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior', selectedModule: null, expanded: false } } } } } }));
-    }, seed);
+      return { state: s, tab: 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior' } };
+    }, seed));
     // The page's own new game may already be playing its intro clip; the injected journey has seen it.
     if (await page.locator('[data-story-action="skip"]').count()) await page.locator('[data-story-action="skip"]').click();
     assert.equal(await page.locator('.og-story-clip').count(), 0); assert.equal((await state()).guide.active, false);
@@ -148,9 +147,9 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
     assert.equal(after.discovery.fragments.origin, false, 'An unextracted frequency must not advance the beacon');
     await snap('core-recovered');
   });
-  await test('Expedition position, puzzle, temporary cargo and fog persist across reload below the host limit', async () => {
+  await test('Expedition position, puzzle, temporary cargo and fog persist across reload within 16 KiB', async () => {
     const before = await state();
-    const saved = await page.evaluate(() => window.__qaSaved.at(-1));
+    const saved = await Save.last(page);
     const bytes = Buffer.byteLength(JSON.stringify(saved), 'utf8'); assert.ok(bytes < 16384, `Snapshot ${bytes} bytes`);
     fs.writeFileSync(path.join(out, 'save-size.json'), JSON.stringify({ bytes, limit: 16384 }, null, 2));
     await page.reload(); await page.waitForFunction(() => window.orbitApp); assert.deepEqual(await state(), before);
@@ -217,7 +216,7 @@ const fixture = JSON.parse(fs.readFileSync(path.join(out, 'v2-save-fixture.json'
   });
   await test('A real version-2 save preserves equipment and progress and retires the diary tab', async () => {
     const c = await browser.newContext({ viewport: { width: 390, height: 900 } }); const p = await c.newPage(); listen(p);
-    await p.addInitScript(snapshot => { window.openai = { widgetState: { privateContent: snapshot } }; }, fixture);
+    await Save.seed(p, fixture);
     await p.goto(url); await p.waitForFunction(() => window.orbitApp); const s = await p.evaluate(() => orbitApp.getState());
     assert.deepEqual(s.resources, fixture.state.resources); assert.deepEqual(s.equipped, fixture.state.equipped); assert.deepEqual(s.inventory, fixture.state.inventory);
     for (const [key, value] of Object.entries(fixture.state.progress)) assert.equal(s.progress[key], value, key);

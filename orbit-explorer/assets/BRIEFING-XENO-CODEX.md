@@ -60,7 +60,7 @@ Os `<id>` estão em cada item abaixo. Depois, rode a partir de `orbit-explorer/`
 python3 qa/prepare-xeno-art.py
 ```
 
-O script monta `assets/xeno-tools.webp` (2×3) e `assets/xeno-specimens.webp` (4×4), além das versões `-inline` para a prévia compacta, na ordem exata que o jogo espera. O `build.py` incorpora esses arquivos sozinho. Se preferir gerar o atlas inteiro de uma vez, salve como `assets/src/xeno-tools.png` (e equivalentes) na ordem da grade. O script aceita os dois formatos.
+O script monta `assets/xeno-tools.webp` (2×3) e `assets/xeno-specimens.webp` (4×4), na ordem exata que o jogo espera. O `build.py` incorpora esses arquivos sozinho. Se preferir gerar o atlas inteiro de uma vez, salve como `assets/src/xeno-tools.png` (e equivalentes) na ordem da grade. O script aceita os dois formatos.
 
 ### Enquadramento por item
 - Objeto **centralizado**, ocupando cerca de **70–75% do quadrado** (ferramentas) ou **75–80%** (animais e plantas), com margem transparente em volta.

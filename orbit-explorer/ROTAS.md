@@ -2,7 +2,7 @@
 
 ## Regra
 
-A seta superior volta ao local funcional indicado pelo rótulo; a legenda da seta mostra o nome desse local (Menu, Oficina, Receita…). O X fecha o painel e revela o jogo por trás; cartões abertos pela inspeção da nave voltam à nave aberta. Abas trocam explicitamente o local principal. Paginação muda somente o conteúdo do painel, sem mudar seu local.
+A seta superior volta ao local funcional indicado pelo rótulo; a legenda da seta mostra o nome desse local (Menu, Oficina, Receita…). O X fecha o painel e revela o jogo por trás; cartões abertos pela nave aberta voltam a ela. Abas trocam explicitamente o local principal. Paginação muda somente o conteúdo do painel, sem mudar seu local.
 
 ## Destinos após ações
 

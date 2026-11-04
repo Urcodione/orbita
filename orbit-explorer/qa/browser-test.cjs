@@ -24,7 +24,6 @@ async function sheetControl(selector) {
 async function openInterior() {
   if(await page.getByRole('dialog').count()) await sheetControl('[data-action="close-sheet"]');
   await tab('ship');const mode=()=>page.evaluate(()=>orbitApp.getView().shipDetail.mode);
-  if(await mode()==='module') await action('ship-back').click();
   if(await mode()==='exterior'){await page.locator('#og-canvas').click();await page.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');}
 }
 function solveRotors(dials,target){for(let a=0;a<4;a++)for(let b=0;b<4;b++)for(let c=0;c<4;c++){const counts=[a,b,c],next=dials.slice();for(let i=0;i<3;i++){next[i]=(next[i]+counts[i])%4;next[(i+1)%3]=(next[(i+1)%3]+counts[i])%4;}if(next.every((v,i)=>v===target[i]))return counts;}throw new Error('Rotor puzzle has no solution');}

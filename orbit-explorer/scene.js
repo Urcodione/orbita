@@ -361,53 +361,23 @@
       this.onVisibility = () => { if (!document.hidden && !this.dead && !this.paused && !this.raf) this.raf = requestAnimationFrame(this.tick); };
       this.onDown = e => {
         if (e.button && e.button !== 0) return;
-        const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
-        const info = this.inspection, b = info?.bounds;
-        const onPiece = b && x >= b.x - 7 && x <= b.x + b.width + 7 && y >= b.y - 7 && y <= b.y + b.height + 7;
         this.dragging = true;
-        this.pointer = { x: e.clientX, y: e.clientY, yaw: this.yaw, pitch: this.pitch, kind: onPiece ? 'module' : 'camera', moved: false };
-        if (onPiece && this.camera) {
-          const cameraLock = {};
-          ['x', 'y', 'scale', 'yaw', 'pitch', 'fx', 'fy', 'fz'].forEach(k => { cameraLock[k] = this.camera[k]; });
-          this.moduleDrag = { type: info.type, startPose: this.camera.explode, pose: this.camera.explode, vectorX: info.expansionVector.x, cameraLock, active: false };
-        }
+        this.pointer = { x: e.clientX, y: e.clientY, yaw: this.yaw, pitch: this.pitch, moved: false };
         canvas.setPointerCapture?.(e.pointerId); canvas.style.cursor = 'grabbing';
       };
       this.onMove = e => {
         if (!this.dragging || !this.pointer) return;
         const dx = e.clientX - this.pointer.x, dy = e.clientY - this.pointer.y;
         this.pointer.moved = this.pointer.moved || Math.hypot(dx, dy) > 7;
-        if (this.pointer.kind === 'module' && this.moduleDrag) {
-          if (this.pointer.moved) {
-            const drag = this.moduleDrag;
-            if (!drag.active) { drag.active = true; this.callbacks.onInteractionHint?.('Arraste a peça até o encaixe ou para fora dele.'); }
-            const vector = Math.abs(drag.vectorX) > 10 ? drag.vectorX : (this.ship.mounts[drag.type]?.side || 1) * 80;
-            drag.pose = clamp(drag.startPose + dx / vector, 0, 1.12);
-          }
-          return;
-        }
         this.yaw = this.pointer.yaw + dx * .007;
         this.pitch = clamp(this.pointer.pitch + dy * .003, .05, .65);if(this.reduced&&!this.paused)this.draw(performance.now());
       };
       this.onUp = e => {
-        const pointer = this.pointer, drag = this.moduleDrag;
-        this.dragging = false; this.pointer = null; this.moduleDrag = null; canvas.style.cursor = 'grab';
-        if (!pointer) return;
+        const pointer = this.pointer;
+        this.dragging = false; this.pointer = null; canvas.style.cursor = 'grab';
+        if (!pointer || pointer.moved) return;
         if (e.type === 'pointercancel' || e.type === 'lostpointercapture') return;
-        if (drag && pointer.moved) {
-          const expanded = drag.pose >= .5;
-          this.state.shipDetail = { ...this.state.shipDetail, expanded };
-          this.callbacks.onModulePose?.({ type: drag.type, expanded });
-          this.callbacks.onInteractionHint?.(expanded ? 'Peça fora do encaixe.' : 'Peça encaixada.');
-          return;
-        }
-        if (pointer.moved) return;
         const rect = canvas.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
-        if (drag?.type === 'cargo') {
-          const content = this.pickCargo(x, y);
-          if (content) { this.callbacks.onCargoSelect?.(content); return; }
-        }
-        if (drag) return;
         const point = this.hotspots.filter(p => p.visible).map(p => ({ p, distance: Math.min(Math.hypot(x - p.x, y - p.y), Math.hypot(x - p.anchorX, y - p.anchorY)) })).sort((a, b) => a.distance - b.distance)[0];
         if (point && point.distance < 26) this.callbacks.onSelectModule?.(point.p.type);
         else if ((!this.state.shipDetail || this.state.shipDetail.mode === 'exterior' || this.state.view === 'explore') && this.state.view !== 'galaxy' && this.shipHit && x >= this.shipHit.x && x <= this.shipHit.x + this.shipHit.w && y >= this.shipHit.y && y <= this.shipHit.y + this.shipHit.h) this.callbacks.onOpenShip?.();
@@ -450,9 +420,6 @@
     update(next = {}) {
       const oldKey = this.shipKey;
       this.state = { ...this.state, ...next }; this.mapRect = null;
-      if (this.moduleDrag && (this.state.shipDetail?.mode !== 'module' || this.state.shipDetail.selectedModule !== this.moduleDrag.type || !['ship', 'hangar'].includes(this.state.view))) {
-        this.moduleDrag = null; this.pointer = null; this.dragging = false;
-      }
       if (next.ship?.color && !next.shipColor) this.state.shipColor = next.ship.color;
       if (next.equipped && !next.modules) this.state.modules = next.equipped;
       // Only these resources affect the ship geometry; credits/fuel/data do not.
@@ -482,7 +449,7 @@
       if (this.dead || this.paused || document.hidden) return;
       // Idle scenes (slow drift, twinkling) run at ~30 fps; drags and short effects get every display frame.
       // On 90/120 Hz phones an uncapped loop redrew the whole canvas up to 120 times a second.
-      const busy = !this.light && (this.dragging || this.moduleDrag || Object.values(this.effects).some(start => now - start < 2400));
+      const busy = !this.light && (this.dragging || Object.values(this.effects).some(start => now - start < 2400));
       if (this.ctx&&(busy||!this.lastLightFrame||now-this.lastLightFrame>=29)){this.draw(now);this.lastLightFrame=now;}
       if(!this.reduced)this.raf = requestAnimationFrame(this.tick);
     }
@@ -554,13 +521,13 @@
         [105, 170, 240].forEach((r, i) => { c.strokeStyle = `rgba(99,164,170,${.10 - i * .018})`; c.lineWidth = 1; c.beginPath(); c.arc(0, 0, r * Math.min(w / 600, 1.4), 0, TAU); c.stroke(); }); c.restore();
       }
       const baseScale = portrait ? Math.min(w / 390, (h - 292) / 320) : Math.min(w / 610, h / 395);
-      const overview = shipView && this.state.shipDetail?.mode !== 'module' ? this.state.inspectionLayout : null;
+      const overview = shipView ? this.state.inspectionLayout : null;
       const scale = overview ? Math.min(w / 330, (overview.bottom - overview.top) / 310, w / 390 * this.zoom) : Math.max(.65, baseScale) * this.zoom * (shipView ? 1 : .83);
       const sx = w * (shipView ? .50 : (portrait ? .34 : .36)) - Math.sin(travel * Math.PI) * w * .035;
       const sy = overview ? (overview.top + overview.bottom) / 2 : portrait ? (shipView ? (120 + h - 177) / 2 : h * .50) : h * .54;
       const bob = this.reduced || this.dragging || shipView ? 0 : Math.sin(t * .75) * 2;
       if (!galaxy) this.drawShip(sx, sy + bob, scale, t, warp, travel, now, shipView, portrait);
-      else { this.shipHit = null; this.inspection = null; this.cargoHitFaces = []; this.publishHotspots([]); this.publishCargoHotspots([]); }
+      else { this.shipHit = null; this.publishHotspots([]); }
       if (!shipView) this.debris.forEach(d => { const dx = d.x * w, dy = d.y * h; if (dx < w * .2 || dy > h * .82) { c.fillStyle = 'rgba(81,112,128,.28)'; c.save(); c.translate(dx + Math.sin(t * .12 + d.phase) * 5, dy); c.rotate(d.phase + t * .015); c.fillRect(-d.size, -d.size * .5, d.size * 2, d.size); c.restore(); } });
       // A subtle vignette keeps labels legible without flattening the central art.
       c.drawImage(this.layer('vignette', (c, w, h) => { const vignette = c.createRadialGradient(w * .5, h * .48, Math.min(w, h) * .28, w * .5, h * .48, w * .75); vignette.addColorStop(0, 'rgba(2,9,15,0)'); vignette.addColorStop(1, 'rgba(2,9,15,.48)'); c.fillStyle = vignette; c.fillRect(0, 0, w, h); }), 0, 0, w, h);
@@ -768,32 +735,23 @@
     }
     drawShip(cx, cy, scale, t, warp, travel, now, shipView, portrait) {
       if(this.drawPaintedShip?.(cx,cy,scale,t,warp,travel,now,shipView,portrait))return;
-      const c = this.ctx, detail = this.state.shipDetail || {}, inspecting = shipView && detail.mode === 'module';
-      const interior = shipView && (detail.mode === 'interior' || inspecting);
-      const selected = this.ship.mounts[detail.selectedModule] ? detail.selectedModule : null;
-      const mount = selected ? this.ship.mounts[selected] : null;
-      const activeDrag = inspecting && this.moduleDrag?.type === selected ? this.moduleDrag : null;
-      const targetOpen = interior ? 1 : 0, targetExplode = activeDrag ? activeDrag.pose : inspecting && detail.expanded && mount ? 1 : 0;
-      const side = mount?.side || 1;
-      const focus = inspecting && mount ? [mount.p[0] + side * targetExplode * 40, mount.p[1] + targetExplode * 37, mount.p[2]] : [0, 0, 0];
-      const target = { x: cx, y: cy, scale: scale * (inspecting ? 2.7 : 1), yaw: interior ? clamp(this.yaw * .4, -.45, .45) : this.yaw, pitch: interior ? .15 + (this.pitch - .2) * .3 : this.pitch, open: targetOpen, focus: inspecting ? 1 : 0, explode: targetExplode, fx: focus[0], fy: focus[1], fz: focus[2] };
-      if (activeDrag) Object.assign(target, activeDrag.cameraLock);
+      const c = this.ctx, interior = shipView && this.state.shipDetail?.mode === 'interior';
+      const target = { x: cx, y: cy, scale, yaw: interior ? clamp(this.yaw * .4, -.45, .45) : this.yaw, pitch: interior ? .15 + (this.pitch - .2) * .3 : this.pitch, open: interior ? 1 : 0 };
       if (!this.camera) this.camera = { ...target };
       const dt = clamp(now - (this.cameraTime || now - 16), 1, 48), blend = this.reduced ? 1 : 1 - Math.exp(-dt / 130);
       this.cameraTime = now;
       Object.keys(target).forEach(k => this.camera[k] = lerp(this.camera[k], target[k], blend));
-      if (activeDrag) this.camera.explode = activeDrag.pose;
       const artBlend = 0;
       const cam = this.camera, co = Math.cos(cam.yaw), si = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch), sc = cam.scale;
       const project = p => {
-        const x = p[0] - cam.fx, y = p[1] - cam.fy, z = p[2] - cam.fz;
+        const [x, y, z] = p;
         return [cam.x + (x * co - y * si) * sc, cam.y + ((x * si + y * co) * sp - z * cp) * sc, (x * si + y * co) * cp + z * sp];
       };
       const installing = this.reduced ? 0 : this.progress('equip', now, 850);
       const displacement = type => {
-        const expanded = type === selected ? cam.explode : 0, install = type === this.equipType ? installing : 0;
+        const install = type === this.equipType ? installing : 0;
         const s = this.ship.mounts[type]?.side || 1;
-        return [s * (expanded * 40 + install * 27), expanded * 37 + install * 44, install * 5];
+        return [s * install * 27, install * 44, install * 5];
       };
       const transform = (p, f) => {
         let q = p;
@@ -807,7 +765,7 @@
       };
       c.save();
       if (portrait && shipView) {
-        const layout = !inspecting ? this.state.inspectionLayout : null;
+        const layout = this.state.inspectionLayout;
         c.beginPath(); c.rect(0, layout?.top ?? 120, this.width, layout ? layout.bottom - layout.top : Math.max(160, this.height - 287)); c.clip();
       }
       const trail=this.state.shipTrail||'blue',special=['cosmic','aurora','solar'].includes(trail),jetColors=({blue:['#bffdfa','#7ae3fb','#61a4f7'],orange:['#fff1cc','#ffb665','#f56b30'],cosmic:['#f2dcff','#bf7aff','#7238ee'],aurora:['#e0fff4','#58efb9','#159ba9'],solar:['#ffe8f4','#ff8acb','#c4359d']})[trail]||['#bffdfa','#7ae3fb','#61a4f7'];
@@ -815,7 +773,7 @@
         const p = project(jet.p), end = project(jet.end), strength = (1 + warp * 1.6 + travel)*(special?1.7:1);
         const len = Math.hypot(end[0] - p[0], end[1] - p[1]) * (this.reduced ? 1 : 1 + Math.sin(t * 7) * .035);
         const jetScale = sc * (jet.width || 1);
-        c.save(); c.globalAlpha = (1 - cam.open * .82) * (1 - cam.focus); c.translate(p[0], p[1]); c.rotate(Math.atan2(end[1] - p[1], end[0] - p[0]));
+        c.save(); c.globalAlpha = 1 - cam.open * .82; c.translate(p[0], p[1]); c.rotate(Math.atan2(end[1] - p[1], end[0] - p[0]));
         const plume = c.createLinearGradient(-4, 0, len * strength, 0); plume.addColorStop(0, jetColors[0]); plume.addColorStop(.14, jetColors[1]+'cc'); plume.addColorStop(.48, jetColors[2]+'55'); plume.addColorStop(1, jetColors[2]+'00');
         c.fillStyle = plume; c.beginPath(); c.moveTo(-3, -16 * jetScale); c.bezierCurveTo(len * .25, -11 * jetScale, len * .60 * strength, -5 * jetScale, len * strength, 0); c.bezierCurveTo(len * .60 * strength, 5 * jetScale, len * .25, 11 * jetScale, -3, 16 * jetScale); c.closePath(); c.fill(); c.restore();
       });
@@ -829,16 +787,11 @@
         const width = Math.max(...points.map(p => p[0])) - x, height = Math.max(...points.map(p => p[1])) - y;
         return { x, y, width, height, w: width, h: height };
       };
-      const selectedFaces = inspecting && mount ? drawn.filter(entry => entry.f.module === selected) : [];
-      const pieceBounds = boundsOf(selectedFaces.flatMap(entry => entry.points));
-      const socketBounds = boundsOf(selectedFaces.flatMap(entry => entry.f.v.map(project)));
-      this.cargoHitFaces = selected === 'cargo' && inspecting && cam.focus > .7 ? drawn.filter(entry => entry.f.module === 'cargo' && entry.f.resource).map(entry => ({ resource: entry.f.resource, points: entry.points })) : [];
       drawn.forEach(({ f, points }) => {
         let alpha = (f.alpha === undefined ? 1 : f.alpha) * (1 - artBlend);
         if (f.interior) alpha *= Math.min(1, cam.open * 2);
         if (f.fairing) alpha *= 1 - cam.open;
         if (f.shell) alpha *= 1 - cam.open * .16;
-        if (cam.focus > .01 && f.module !== selected && f.socket !== selected) alpha *= 1 - cam.focus * (f.module ? .77 : .88);
         if (alpha < .015) return;
         c.beginPath(); points.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath();
         let normal = f.normal;
@@ -849,7 +802,6 @@
         const intensity = f.emissive ? 1 : .40 + Math.max(0, light) * .70;
         let paint = f.c;
         if (f.hull && !f.shell) paint = mix(paint, [39, 61, 73], cam.open * .78);
-        if (f.module === selected) paint = mix(paint, [181, 224, 211], .06 * cam.focus);
         const warmth = f.emissive ? paint : mix(mix(paint,[39,86,112],Math.max(0,.50-light)*.35),[255,234,197],Math.max(0,light-.6)*.12);
         const shinePower=f.glass?14:32;
         const specular=f.smooth?Math.pow(Math.max(0,normal[0]*-.35+normal[1]*.86+normal[2]*.37),shinePower)* (f.glass?.55:.19):0;
@@ -866,7 +818,7 @@
       this.ship.glows.forEach(glow => {
         if (glow.interior && cam.open < .3) return;
         const p = project(transform(glow.p, glow));
-        const opacity = glow.interior ? cam.open * (cam.focus > .1 && glow.module !== selected ? .2 : 1) : 1 - cam.focus;
+        const opacity = glow.interior ? cam.open : 1;
         c.save(); c.globalAlpha = opacity * (1-artBlend); c.shadowBlur = 8 * sc; c.shadowColor = glow.color; c.fillStyle = glow.color; c.beginPath(); c.arc(p[0], p[1], Math.max(1, glow.size * sc * .6), 0, TAU); c.fill(); c.restore();
       });
       const hullKey=window.OrbitArt?.hullKeys?.(this.state.shipModel).ship||'ship',illustration=artBlend > .001 && window.OrbitArt?.ready(hullKey) ? window.OrbitArt.images[hullKey] : null;
@@ -878,44 +830,13 @@
         if(hue!==undefined)c.filter=`hue-rotate(${hue}deg) saturate(${hue===12?.55:.85})`;
         c.drawImage(illustration,-width/2,-height/2,width,height);c.restore();
       }
-      if (cam.open < .8 && !inspecting) {
+      if (cam.open < .8) {
         const p = project([0, 40, 15]); c.save(); c.globalAlpha = (1 - cam.open) * (1-artBlend); c.translate(p[0], p[1]); c.fillStyle = '#405765'; c.textAlign = 'center'; c.font = `700 ${Math.max(4, 4.8 * sc)}px monospace`; c.fillText('A N D O R I N H A', 0, 0); c.fillStyle = '#79908f'; c.fillRect(-8 * sc, 8 * sc, 16 * sc, 1.2 * sc); c.restore();
-      }
-      if (mount && cam.explode > .015) {
-        const off = displacement(selected); c.save(); c.strokeStyle = `rgba(158,230,207,${cam.explode * .7})`; c.lineWidth = 1; c.setLineDash([3, 5]);
-        [-1, 1].forEach(s => { const a = project([mount.socket[0] + s * 11, mount.socket[1], mount.socket[2] - 14]); const b = project([mount.p[0] + s * 11 + off[0], mount.p[1] + off[1], mount.p[2] - 14]); c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); }); c.setLineDash([]);
-        const socket = project(mount.socket); c.strokeStyle = 'rgba(169,228,209,.75)'; c.beginPath(); c.arc(socket[0], socket[1], 11 * sc, 0, TAU); c.stroke(); c.restore();
-      }
-      if (inspecting && mount && socketBounds && cam.focus > .7 && (cam.explode > .03 || activeDrag?.active)) {
-        const b = socketBounds, close = cam.explode < .24;
-        c.save(); c.fillStyle = close ? 'rgba(115,226,187,.11)' : 'rgba(104,176,188,.055)';
-        c.fillRect(b.x - 5, b.y - 5, b.width + 10, b.height + 10);
-        c.strokeStyle = close ? 'rgba(158,248,206,.95)' : 'rgba(144,214,209,.60)'; c.lineWidth = close ? 1.8 : 1; c.setLineDash([4, 4]);
-        c.strokeRect(b.x - 5, b.y - 5, b.width + 10, b.height + 10); c.setLineDash([]);
-        c.font = '600 10px system-ui, sans-serif'; c.textAlign = 'center'; c.fillStyle = close ? '#b6f6d7' : '#98c9c6'; c.fillText('Encaixar', b.x + b.width / 2, b.y - 13); c.restore();
-      }
-      const cargoContents = [];
-      this.inspection = null;
-      if (inspecting && mount && pieceBounds && cam.focus > .7) {
-        const socket = project(mount.socket), rest = project(mount.p), extended = project([mount.p[0] + mount.side * 40, mount.p[1] + 37, mount.p[2]]);
-        if (selected === 'cargo') {
-          const contents = [
-            { resource: 'ore', label: 'Minérios', p: [-8, 7.5, -7] },
-            { resource: 'crystals', label: 'Cristais', p: Number(this.state.resources?.crystals || 0) > 0 ? [-5, 1.5, 14] : [7, 7, -6] },
-            { resource: 'oxygen', label: 'Oxigênio', p: [9, 3.8, 10] }
-          ];
-          contents.forEach(item => {
-            const world = [mount.p[0] + item.p[0], 14 + item.p[1], mount.p[2] + item.p[2]], p = project(transform(world, { module: selected }));
-            const itemBounds = boundsOf(this.cargoHitFaces.filter(f => f.resource === item.resource).flatMap(f => f.points));
-            cargoContents.push({ resource: item.resource, label: item.label, x: p[0], y: p[1], bounds: itemBounds, visible: true });
-          });
-        }
-        this.inspection = { type: selected, bounds: pieceBounds, socket: { x: socket[0], y: socket[1], bounds: socketBounds }, dragging: !!activeDrag?.active, expanded: activeDrag ? activeDrag.pose >= .5 : !!detail.expanded, pose: cam.explode, expansionVector: { x: extended[0] - rest[0], y: extended[1] - rest[1] }, side: mount.side, contents: cargoContents };
       }
       const hullBounds=boundsOf(drawn.flatMap(entry=>entry.points));
       this.shipHit = hullBounds ? {x:hullBounds.x-12,y:hullBounds.y-12,w:hullBounds.width+24,h:hullBounds.height+24}:null;
       const points = [];
-      if (interior && cam.open > .7 && !inspecting && cam.focus < .10) {
+      if (interior && cam.open > .7) {
         const layout = this.state.inspectionLayout || { top: 120, bottom: this.height - 100, labelWidth: 88, labelHeight: 44 };
         Object.entries(this.ship.mounts).forEach(([type, m]) => {
           const p = project(transform(m.p, { module: type }));
@@ -930,16 +851,13 @@
           const first = clamp(middle - span / 2, layout.top + layout.labelHeight / 2, Math.max(layout.top + layout.labelHeight / 2, layout.bottom - layout.labelHeight / 2 - span));
           group.forEach((p, i) => { p.y = first + i * spacing; p.connectorX = p.x - side * (layout.labelWidth / 2 - 2); });
         }
-      } else if (inspecting && mount && cam.open > .7) {
-        const p = project(transform(mount.p, { module: selected }));
-        points.push({ type: selected, x: p[0], y: p[1], anchorX: p[0], anchorY: p[1], visible: true, attached: !detail.expanded, label: detail.expanded ? 'Encaixe revelado' : 'Módulo encaixado', installed: mount.installed, bounds: pieceBounds });
       }
       if (installing > 0 && this.equipType && this.ship.mounts[this.equipType]) {
         const p = project(transform(this.ship.mounts[this.equipType].p, { module: this.equipType })); c.save(); c.globalAlpha = installing * cam.open; c.strokeStyle = '#adf1d8'; c.lineWidth = 1.5; c.beginPath(); c.arc(p[0], p[1], 18 * sc + (1 - installing) * 18, 0, TAU); c.stroke(); c.restore();
       }
       c.restore();
       // Labels and connectors share geometry outside the model's clipping region.
-      if (interior && !inspecting) {
+      if (interior) {
         c.save(); c.globalAlpha = cam.open; c.strokeStyle = 'rgba(152,207,194,.45)'; c.lineWidth = 1;
         for (const p of points) {
           c.beginPath(); c.moveTo(p.connectorX, p.y); c.lineTo(p.anchorX, p.anchorY); c.stroke();
@@ -948,32 +866,11 @@
         c.restore();
       }
       this.publishHotspots(points);
-      this.publishCargoHotspots(cargoContents);
     }
     publishHotspots(points) {
       this.hotspots = points;
       const key = points.map(p => `${p.type}:${Math.round(p.x * 4)}:${Math.round(p.y * 4)}:${p.side}:${p.visible}:${p.attached}`).join('|');
       if (key !== this.hotspotKey) { this.hotspotKey = key; this.callbacks.onHotspots?.(this.getHotspots()); }
-    }
-    publishCargoHotspots(points) {
-      const key = points.map(p => `${p.resource}:${Math.round(p.x * 4)}:${Math.round(p.y * 4)}`).join('|');
-      if (key !== this.cargoHotspotKey) { this.cargoHotspotKey = key; this.callbacks.onCargoHotspots?.(points.map(p => ({ ...p, bounds: p.bounds ? { ...p.bounds } : null }))); }
-    }
-    pickCargo(x, y) {
-      for (let i = (this.cargoHitFaces || []).length - 1; i >= 0; i--) {
-        const face = this.cargoHitFaces[i], points = face.points; let inside = false;
-        for (let a = 0, b = points.length - 1; a < points.length; b = a++) {
-          const p = points[a], q = points[b];
-          if ((p[1] > y) !== (q[1] > y) && x < (q[0] - p[0]) * (y - p[1]) / (q[1] - p[1]) + p[0]) inside = !inside;
-        }
-        if (inside) return face.resource;
-      }
-      return null;
-    }
-    getInspection() {
-      if (!this.inspection) return null;
-      const i = this.inspection;
-      return { ...i, bounds: { ...i.bounds }, socket: { ...i.socket, bounds: i.socket.bounds ? { ...i.socket.bounds } : null }, expansionVector: { ...i.expansionVector }, contents: i.contents.map(p => ({ ...p, bounds: p.bounds ? { ...p.bounds } : null })) };
     }
     getHotspots() { return (this.hotspots || []).map(p => ({ ...p })); }
     destroy() {

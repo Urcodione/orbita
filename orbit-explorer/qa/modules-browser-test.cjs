@@ -4,6 +4,7 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const Save = require('./save-slot.cjs');
 const { solveCounts } = require('./expedition-helpers.cjs');
 const out = path.join(__dirname, 'modules-artifacts');
 fs.mkdirSync(out, { recursive: true });
@@ -33,7 +34,7 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     await page.waitForFunction(() => window.orbitApp && window.OrbitEngine?.componentRecipes);
     // A new game opens with the story intro: skip it before loading the fixture.
     if (await page.locator('[data-story-action=skip]').count()) await page.locator('[data-story-action=skip]').click();
-    await page.evaluate(mode => {
+    await Save.load(page, await page.evaluate(mode => {
       const E = OrbitEngine, s = E.create('qa-module-workbench-' + mode);
       // A fresh game starts in the guided Prisma training; leave it the way "Pular tutorial" does.
       const skipped = E.dispatch(s, 'guideSkip'); if (!skipped.ok) throw new Error(skipped.message);
@@ -52,10 +53,8 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
         if (!result.ok) throw new Error(result.message);
       }
       if (!E.validate(s)) throw new Error('Invalid QA fixture');
-      window.__qaSaved = [];
-      window.openai = { setWidgetState: value => { window.__qaSaved.push(JSON.parse(JSON.stringify(value))); return Promise.resolve(); } };
-      window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { widgetState: { privateContent: { state: s, tab: 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior', selectedModule: null, expanded: false } } } } } }));
-    }, mode);
+      return { state: s, tab: 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior' } };
+    }, mode));
     await page.waitForFunction(() => !orbitApp.getState().guide?.active);
   }
   // The exterior no longer has an "Abrir nave" button: tapping the rocket drawing opens the hull.
@@ -64,7 +63,6 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
   }
   async function inspect(type) {
     await closeSheet(); await tab('ship');
-    if ((await view()).shipDetail.mode === 'module') await click('ship-back');
     await openHull();
     await page.locator(`[data-module-focus="${type}"]:visible`).first().click();
   }
@@ -96,10 +94,6 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     assert.equal(p.allowed, true, p.reason); await button.click();
     exactTransaction(before, await state(), p.cost, p.components || {}, id, amount);
     return amount;
-  }
-  async function closeUp(type) {
-    assert.equal((await view()).shipDetail.selectedModule, type);
-    await page.reload(); await page.waitForFunction(type => window.orbitApp?.getInspection && orbitApp.getView().sheet === null && orbitApp.getInspection()?.type === type, type);
   }
   // Outside the guided training an expedition is an adventure: two terrain beacons must be activated before the core
   // circuit opens. The shared tutorial helper only knows the training path, so drive the visible field controls here:
@@ -138,7 +132,6 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
   }
   async function laboratory() {
     await closeSheet(); await tab('ship');
-    if ((await view()).shipDetail.mode === 'module') await click('ship-back');
     await openHull(); await click('workshop'); await click('fabricator');
   }
   function exactTransaction(before, after, cost, components = {}, componentOutput, outputAmount = 1) {
@@ -147,7 +140,6 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
   }
   async function inventory() {
     await closeSheet(); await tab('ship');
-    if ((await view()).shipDetail.mode === 'module') await click('ship-back');
     await click('modules');
     if (await page.locator('[data-inventory="inventory"]:visible').count()) await page.locator('[data-inventory="inventory"]:visible').click();
   }
@@ -198,14 +190,14 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     assert.ok(capsAfter.heat < capsBefore.heat); assert.ok(capsAfter.radiation > capsBefore.radiation);
     await snap('shield-installed');
   });
-  await test('Favorite protection blocks recycling and persists with a host save smaller than 16KiB', async () => {
+  await test('Favorite protection blocks recycling and persists with a save smaller than 16 KiB', async () => {
     await storedCard(thermalId);
     await cardControl(`[data-action="favoriteModule"][data-module="${thermalId}"]`);
     assert.equal((await state()).inventory.find(module => module.id === thermalId).favorite, true);
     const p = await preview('salvage', { moduleId: thermalId }); assert.equal(p.allowed, false); assert.match(p.reason, /favorito|protegid/i);
     const before = await state();
-    const stored = await page.evaluate(() => window.__qaSaved.at(-1)); assert.ok(stored);
-    const bytes = Buffer.byteLength(JSON.stringify(stored), 'utf8'); assert.ok(bytes < 16384, 'Host snapshot: ' + bytes);
+    const stored = await Save.last(page); assert.ok(stored);
+    const bytes = Buffer.byteLength(JSON.stringify(stored), 'utf8'); assert.ok(bytes < 16384, 'Save: ' + bytes);
     fs.writeFileSync(path.join(out, 'save-size.json'), JSON.stringify({ bytes, limit: 16384 }, null, 2));
     await page.reload(); await page.waitForFunction(() => window.orbitApp); assert.deepEqual(await state(), before);
     assert.equal((await state()).inventory.find(module => module.id === thermalId).favorite, true);
@@ -298,34 +290,19 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
     assert.match(await page.locator('.og-lab-ingredient[data-ingredient="field-core"]').innerText(), /1\s*(?:\/|de)\s*1/);
     assert.equal(await page.locator('[data-action="fabricate"][data-recipe="radiation-mesh"]').isDisabled(), true, 'The uncrafted seal is still required');
   });
-  await test('Closing contextual details preserves physical module dragging and direct cargo interactions', async () => {
-    // Closing a module card now returns to the open ship; the draggable close-up is the view the game resumes into
-    // when it was left on a module, so reload to reach it.
-    await boot(); await inspect('engine'); await closeUp('engine');
-    const before = await state();
-    for (const expand of [true, false]) {
-      await page.waitForTimeout(950);
-      const part = await page.evaluate(() => orbitApp.getInspection());
-      assert.ok(part?.bounds, 'Engine geometry is available');
-      const canvas = await page.locator('#og-canvas').boundingBox();
-      const start = { x: canvas.x + part.bounds.x + part.bounds.width / 2, y: canvas.y + part.bounds.y + part.bounds.height / 2 };
-      const end = expand ? { x: start.x + part.expansionVector.x * 1.12, y: start.y + part.expansionVector.y * 1.12 } : { x: canvas.x + part.socket.x, y: canvas.y + part.socket.y };
-      await page.mouse.move(start.x, start.y); await page.mouse.down(); await page.mouse.move(end.x, end.y, { steps: 14 }); await page.mouse.up();
-      await page.waitForFunction(expected => orbitApp.getView().shipDetail.expanded === expected, expand);
-      assert.deepEqual(await state(), before);
-    }
-    await inspect('cargo'); await closeUp('cargo'); await page.waitForTimeout(950);
+  await test('Module and cargo cards open over the open ship and the Depósito card runs its services', async () => {
+    await boot(); const before = await state(); await inspect('engine');
+    assert.equal((await view()).sheet, 'system-module'); assert.equal((await view()).systemType, 'engine'); assert.equal((await view()).shipDetail.mode, 'interior');
+    await closeSheet(); assert.equal((await view()).shipDetail.mode, 'interior'); assert.deepEqual(await state(), before);
+    await inspect('cargo');
     for (const resource of ['ore', 'crystals', 'oxygen']) {
-      const part = await page.evaluate(() => orbitApp.getInspection());
-      const item = part.contents.find(content => content.resource === resource);
-      assert.ok(item, 'Physical cargo target: ' + resource);
-      await page.locator('#og-canvas').click({ position: { x: item.x, y: item.y } });
+      if ((await view()).sheet !== 'system-module') await inspect('cargo');
+      await reveal(`[data-cargo="${resource}"]`); await page.locator(`[data-cargo="${resource}"]:visible`).first().click();
       assert.equal((await view()).sheet, 'cargo-content');
       assert.equal((await page.locator('.og-cargo-amount strong').innerText()).trim(), String((await state()).resources[resource]));
       await closeSheet();
     }
-    // The cargo shortcuts are on the Depósito card ("Módulo" opens it from the close-up).
-    await click('module-info'); await reveal('[data-cargo="ore"]'); await page.locator('[data-cargo="ore"]:visible').first().click();
+    await inspect('cargo'); await reveal('[data-cargo="ore"]'); await page.locator('[data-cargo="ore"]:visible').first().click();
     const resources = (await state()).resources, p = await preview('refuel');
     assert.equal(p.allowed, true, p.reason); await click('refuel');
     const after = (await state()).resources;
@@ -378,7 +355,7 @@ const legacy = JSON.parse(fs.readFileSync(path.join(out, 'v2-before-modular-lab.
   });
   await test('A genuine previous save gains an empty component stock while preserving its ship and exploration', async () => {
     const p = await context.newPage(); p.on('pageerror', error => errors.push(error.message));
-    await p.addInitScript(snapshot => { window.openai = { widgetState: { privateContent: snapshot } }; }, legacy);
+    await Save.seed(p, legacy);
     await p.goto(gameURL); await p.waitForFunction(() => window.orbitApp);
     const after = await p.evaluate(() => orbitApp.getState());
     assert.deepEqual(after.resources, legacy.state.resources);

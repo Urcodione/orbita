@@ -4,6 +4,7 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const Save = require('./save-slot.cjs');
 const out = path.join(__dirname, 'navigation-artifacts');
 fs.mkdirSync(out, { recursive: true });
 const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
@@ -29,7 +30,7 @@ const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
     // A first visit opens the illustrated intro and the guided training; leave both before injecting the fixture.
     if (await page.locator('[data-story-action="skip"]:visible').count()) await page.locator('[data-story-action="skip"]').click();
     if (await page.locator('[data-guide-skip]:visible').count()) await page.locator('[data-guide-skip]').click();
-    await page.evaluate(mode => {
+    await Save.load(page, await page.evaluate(mode => {
       const E = OrbitEngine, s = E.create('qa-fixed-screen-navigation');
       const dispatch = (action, payload = {}) => { const result = E.dispatch(s, action, payload); if (!result.ok) throw new Error(action + ': ' + result.message); return result; };
       // New games start in the guided Prisma training; these fixtures cover the free game that follows it.
@@ -64,8 +65,8 @@ const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
       }
       if (E.storageView(s).excess) throw new Error('QA fixture overloads the depot');
       if (!E.validate(s)) throw new Error('Invalid QA fixture');
-      window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { widgetState: { privateContent: { state: E.snapshot(s), tab: mode.startsWith('field') ? 'expedition' : 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior', selectedModule: null, expanded: false } } } } } }));
-    }, mode);
+      return { state: E.snapshot(s), tab: mode.startsWith('field') ? 'expedition' : 'explore', selected: s.location.planetId, shipDetail: { mode: 'exterior' } };
+    }, mode));
     await settle();
   }
   async function clickSelector(selector) {
@@ -88,10 +89,10 @@ const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
   async function tab(name) { await close(); await clickSelector(`.og-tabs [data-tab="${name}"]`); }
   // The closed hull has no "open" button any more: tapping the painted ship opens it.
   async function openInterior() { await clickSelector('#og-canvas'); await page.waitForFunction(() => orbitApp.getView().shipDetail.mode === 'interior'); }
-  async function inspect(type) { await tab('ship'); if ((await view()).shipDetail.mode === 'module') await click('ship-back'); if ((await view()).shipDetail.mode === 'exterior') await openInterior(); await page.locator(`[data-module-focus="${type}"]:visible`).first().waitFor(); await clickSelector(`[data-module-focus="${type}"]`); }
+  async function inspect(type) { await tab('ship'); if ((await view()).shipDetail.mode === 'exterior') await openInterior(); await page.locator(`[data-module-focus="${type}"]:visible`).first().waitFor(); await clickSelector(`[data-module-focus="${type}"]`); }
   // The module card now chooses stored candidates with a carousel (module-slide), which opens the candidate's card.
   async function slideTo(moduleId) { for (let i = 0; i < 12 && (await view()).selectedCandidateId !== moduleId; i++) await clickSelector('[data-action="module-slide"][data-step="1"]'); assert.equal((await view()).selectedCandidateId, moduleId, 'Carousel reaches the candidate'); }
-  async function lab() { await tab('ship'); if ((await view()).shipDetail.mode !== 'interior') { if ((await view()).shipDetail.mode === 'module') await click('ship-back'); else await openInterior(); } await click('workshop'); await click('fabricator'); }
+  async function lab() { await tab('ship'); if ((await view()).shipDetail.mode !== 'interior') await openInterior(); await click('workshop'); await click('fabricator'); }
 
   async function geometry(label) {
     const diagnostics = await page.evaluate(() => {
@@ -182,7 +183,7 @@ const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
       else await clickSelector(exit==='back'?'.og-place-exit[data-action="nav-back"]':'[data-action="close-sheet"]');
       await page.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior'&&!orbitApp.getView().sheet);
       await page.waitForFunction(()=>[...document.querySelectorAll('.og-module-hotspot')].filter(b=>getComputedStyle(b).visibility==='visible').length===8);
-      assert.equal((await view()).shipDetail.selectedModule,null);
+      assert.deepEqual((await view()).shipDetail,{mode:'interior'});
       assert.deepEqual(await state(),before,'Returning never installs a candidate or spends resources');
       await clickSelector('[data-module-focus="life"]');
       assert.equal((await view()).systemType,'life');
@@ -261,8 +262,9 @@ const gameURL = 'file://' + path.resolve(__dirname, '../index.html');
       await geometry('Ship interior '+width+'×'+height); await snap(`ship-interior-${width}x${height}`);
       for (const type of ['scanner','survival','arm','cargo','life','shield','engine','warp']) {
         await clickSelector(`[data-module-focus="${type}"]`);
-        assert.equal((await view()).shipDetail.selectedModule,type);
+        assert.equal((await view()).systemType,type);
         assert.equal((await view()).sheet,'system-module');
+        assert.equal((await view()).shipDetail.mode,'interior','no close-up behind the card');
         await click('nav-back');
         assert.equal((await view()).shipDetail.mode,'interior');
         await page.waitForFunction(() => window.qaShipPoints?.length === 8);

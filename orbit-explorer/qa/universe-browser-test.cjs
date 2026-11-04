@@ -1,6 +1,7 @@
 const {chromium}=require('./node_modules/playwright');
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
+const Save = require('./save-slot.cjs');
 const out=path.join(__dirname,'universe-artifacts');fs.mkdirSync(out,{recursive:true});
 const url='file://'+path.resolve(__dirname,'../index.html');
 const fixture=JSON.parse(fs.readFileSync(path.join(out,'v1-save-fixture.json'),'utf8'));
@@ -37,7 +38,7 @@ const fixture=JSON.parse(fs.readFileSync(path.join(out,'v1-save-fixture.json'),'
  async function selectPlanet(id){await closeSheet();await tab('galaxy');const p=(await state()).galaxy.planets.find(x=>x.id===id);await level('galaxy');await pickNode(`[data-system="${p.systemId}"]`);await level('system');await pickNode(`[data-select="${id}"]`);}
  async function inspectEnvironment(id){await selectPlanet(id);await click('environment');return page.getByRole('dialog').innerText();}
  // The closed hull has no "open" button any more: tapping the painted ship opens it.
- async function openInterior(){await closeSheet();await tab('ship');if((await view()).shipDetail.mode==='module')await click('ship-back');if((await view()).shipDetail.mode==='exterior'){await page.locator('#og-canvas').click();await page.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');}}
+ async function openInterior(){await closeSheet();await tab('ship');if((await view()).shipDetail.mode==='exterior'){await page.locator('#og-canvas').click();await page.waitForFunction(()=>orbitApp.getView().shipDetail.mode==='interior');}}
  async function openFabricator(){await openInterior();await click('workshop');await click('fabricator');}
  // Installing goes through the module card: the slot's carousel reaches the stored candidate, then Compare → Install.
  async function equipShield(id){await openInterior();await page.locator('[data-module-focus="shield"]:visible').click();await beat();
@@ -61,7 +62,7 @@ const fixture=JSON.parse(fs.readFileSync(path.join(out,'v1-save-fixture.json'),'
  await page.goto(url);await page.waitForFunction(()=>window.orbitApp&&window.OrbitEngine?.assess);
  // A new game opens on the illustrated intro and the guided Prisma training; leave both, then inject the free-game fixture.
  await page.locator('[data-story-action=skip]').click();await page.locator('[data-guide-skip]').click();
- await page.evaluate(()=>{const s=OrbitEngine.create('qa-hostile-universe');const skipped=OrbitEngine.dispatch(s,'guideSkip');if(!skipped.ok)throw Error(skipped.message);window.__qaSaved=[];window.openai={setWidgetState:value=>{window.__qaSaved.push(JSON.parse(JSON.stringify(value)));return Promise.resolve();}};window.dispatchEvent(new CustomEvent('openai:set_globals',{detail:{globals:{widgetState:{privateContent:{state:s,tab:'explore',selected:s.location.planetId,shipDetail:{mode:'exterior',selectedModule:null,expanded:false}}}}}}));});
+ await Save.load(page,await page.evaluate(()=>{const s=OrbitEngine.create('qa-hostile-universe');const skipped=OrbitEngine.dispatch(s,'guideSkip');if(!skipped.ok)throw Error(skipped.message);return {state:s,tab:'explore',selected:s.location.planetId,shipDetail:{mode:'exterior'}};}));
  let initial,volcanic,gas,ocean,oldShield,thermal,resourcesBeforeInspection;
  await test('System, galaxy and universe maps present distinct hierarchical destinations',async()=>{
   initial=await state();assert.equal(initial.version,2);assert.ok(initial.galaxy.planets.length>=12);assert.ok(initial.galaxy.systems.length>=3);
@@ -128,18 +129,15 @@ const fixture=JSON.parse(fs.readFileSync(path.join(out,'v1-save-fixture.json'),'
   const before=(await state()).resources;await equipShield(oldShield.id);assert.equal(await page.evaluate(()=>OrbitEngine.preview(orbitApp.getState(),'dock').allowed),false);
   await tab('explore');await assertLandingBlocked();await equipShield(thermal.id);assert.equal(await page.evaluate(()=>OrbitEngine.preview(orbitApp.getState(),'dock').allowed),true);assert.deepEqual((await state()).resources,before);
  });
- // Removed: "The existing physical rocket inspection and drag-to-socket loop remain available". Tapping a module now opens
- // its full-screen card (the stage is inert underneath, orbitApp.getInspection() is null) and the inspect/expand
- // buttons are no longer rendered, so the in-scene drag inspection is not reachable from the interface.
  await test('All three maps and environmental panels fit 320, 390 and 736px widths',async()=>{
   for(const width of [320,390,736]){await page.setViewportSize({width,height:950});await closeSheet();await tab('galaxy');for(const name of ['system','galaxy','universe']){await level(name);await settle();const geometry=await page.evaluate(()=>({width:innerWidth,doc:document.documentElement.scrollWidth,box:document.getElementById('orbit-game').clientWidth,game:document.getElementById('orbit-game').scrollWidth}));assert.ok(geometry.doc<=geometry.width,JSON.stringify({width,name,geometry}));assert.ok(geometry.game<=geometry.box,JSON.stringify({width,name,geometry}));const clipped=await page.locator('#og-map button:visible').evaluateAll(es=>es.filter(e=>{const r=e.getBoundingClientRect(),g=document.getElementById('orbit-game').getBoundingClientRect();return r.left<g.left||r.right>g.right||r.top<g.top||r.bottom>g.bottom;}).map(e=>e.textContent));assert.deepEqual(clipped,[],`Nodes clipped: ${name} at ${width}px`);}await inspectEnvironment(gas.id);const controls=await page.getByRole('dialog').locator('button').evaluateAll(es=>es.filter(e=>{const r=e.getBoundingClientRect();return r.left<0||r.right>innerWidth;}).map(e=>e.textContent));assert.deepEqual(controls,[]);await closeSheet();if(width===320)await snap('universe-phone320');}
  });
  await test('The hosted save stays below 16KiB and preserves crafted equipment on reload',async()=>{
-  const saved=await page.evaluate(()=>window.__qaSaved.at(-1));assert.ok(saved);const bytes=Buffer.byteLength(JSON.stringify(saved),'utf8');assert.ok(bytes<16384,`Host snapshot ${bytes} bytes`);const before=await state();await page.reload();await page.waitForFunction(()=>window.orbitApp);assert.deepEqual(await state(),before);assert.equal((await state()).equipped.shield.id,thermal.id);
+  const saved=await Save.last(page);assert.ok(saved);const bytes=Buffer.byteLength(JSON.stringify(saved),'utf8');assert.ok(bytes<16384,`Save ${bytes} bytes`);const before=await state();await page.reload();await page.waitForFunction(()=>window.orbitApp);assert.deepEqual(await state(),before);assert.equal((await state()).equipped.shield.id,thermal.id);
   fs.writeFileSync(path.join(out,'save-size.json'),JSON.stringify({bytes,limit:16384},null,2));
  });
  await test('A real version-1 save migrates while retaining ship, modules, resources and explored progress',async()=>{
-  const c=await browser.newContext({viewport:{width:390,height:900}}),p=await c.newPage();listen(p);await p.addInitScript(snapshot=>{window.openai={widgetState:{privateContent:snapshot}};},fixture);await p.goto(url);await p.waitForFunction(()=>window.orbitApp);const s=await p.evaluate(()=>orbitApp.getState());assert.equal(s.version,2);assert.equal(s.ship.name,fixture.state.ship.name);assert.deepEqual(s.resources,fixture.state.resources);for(const [key,value]of Object.entries(fixture.state.progress))assert.equal(s.progress[key],value,`Migrated progress ${key}`);assert.deepEqual(Object.fromEntries(Object.entries(s.equipped).map(([k,m])=>[k,m.id])),Object.fromEntries(Object.entries(fixture.state.equipped).map(([k,m])=>[k,m.id])));assert.ok(s.galaxy.systems.length>=3);assert.equal(s.galaxy.planets.find(x=>x.id===fixture.state.location.planetId).sites.filter(x=>x.explored).length,1);await p.screenshot({path:path.join(out,'migrated-v1.png'),fullPage:true});await c.close();
+  const c=await browser.newContext({viewport:{width:390,height:900}}),p=await c.newPage();listen(p);await Save.seed(p,fixture);await p.goto(url);await p.waitForFunction(()=>window.orbitApp);const s=await p.evaluate(()=>orbitApp.getState());assert.equal(s.version,2);assert.equal(s.ship.name,fixture.state.ship.name);assert.deepEqual(s.resources,fixture.state.resources);for(const [key,value]of Object.entries(fixture.state.progress))assert.equal(s.progress[key],value,`Migrated progress ${key}`);assert.deepEqual(Object.fromEntries(Object.entries(s.equipped).map(([k,m])=>[k,m.id])),Object.fromEntries(Object.entries(fixture.state.equipped).map(([k,m])=>[k,m.id])));assert.ok(s.galaxy.systems.length>=3);assert.equal(s.galaxy.planets.find(x=>x.id===fixture.state.location.planetId).sites.filter(x=>x.explored).length,1);await p.screenshot({path:path.join(out,'migrated-v1.png'),fullPage:true});await c.close();
  });
  await test('Planet nodes own their tap targets on every map width',async()=>assert.deepEqual(coveredNodes,[],'Another map control covers a planet node: '+coveredNodes.join(' | ')));
  await test('No browser runtime errors',async()=>assert.deepEqual(errors,[]));

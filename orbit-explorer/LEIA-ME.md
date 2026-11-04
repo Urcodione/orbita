@@ -17,11 +17,11 @@ Abra **index.html** no Chrome, Edge ou Firefox. O arquivo é independente, funci
 
 Arraste a nave para mudar sua inclinação. Use a roda do mouse para aproximar. Toque nos indicadores superiores para ver os recursos. O menu no canto superior abre a ajuda e o som. Os botões funcionam com teclado; as teclas 1 a 4 alternam as áreas do jogo quando o foco está dentro dele. O som é opcional.
 
-O casco abre para revelar os oito sistemas. O motor tem seu acoplador na base, o scanner fica perto da cabine e o depósito contém caixas de minérios e tanques de gases. Cada módulo tem uma forma própria. A seta superior e a tecla **Esc** retornam da peça ao interior, do interior ao exterior e do exterior à exploração. As aproximações, a abertura do casco e o afastamento das peças têm transições suaves; a preferência do sistema por movimento reduzido é respeitada.
+O casco abre para revelar os oito sistemas. O motor tem seu acoplador na base, o scanner fica perto da cabine e o depósito contém caixas de minérios e tanques de gases. Cada módulo tem uma forma própria. Tocar num módulo abre o cartão dele por cima da nave aberta. A seta superior e a tecla **Esc** retornam do interior ao exterior e do exterior à exploração. A abertura do casco tem transição suave; a preferência do sistema por movimento reduzido é respeitada.
 
 O cartão de cada módulo mostra sua função, atributos e condição de instalado ou guardado. As setas laterais alternam peças compatíveis. Motor, dobra, suporte de vida e escudo oferecem abastecimento, refino, reposição de ar e reparo do casco, com custo e saldo visíveis. Escolher uma alternativa permite comparar antes de confirmar; cancelar não muda equipamentos nem recursos.
 
-Na visão aproximada, você também pode **arrastar a própria peça para fora** e devolvê-la ao encaixe. Arrastar o fundo continua girando a nave. No **Depósito**, toque diretamente nas caixas, nos cristais ou no tanque para consultar o estoque. Os botões de conteúdo oferecem a mesma navegação por teclado. Cada painel permite usar seus recursos na oficina: abastecer, reparar, refinar células ou repor ar, sempre mostrando o custo antes da ação.
+No cartão do **Depósito**, os botões de minérios, cristais e oxigênio abrem o estoque. Cada painel permite usar seus recursos na oficina: abastecer, reparar, refinar células ou repor ar, sempre mostrando o custo antes da ação.
 
 ## O que está funcionando
 
@@ -43,15 +43,15 @@ Na visão aproximada, você também pode **arrastar a própria peça para fora**
 - Circuitos com rotores acoplados, carga temporária, extração parcial e evacuação. É possível voltar só com recursos e retornar ao local para recuperar o núcleo; recursos já extraídos não reaparecem.
 - Farol Horizonte: recuperar os sinais Origem, Brasa e Maré em ambientes distintos libera um Núcleo do Cartógrafo épico, que precisa ser instalado pelo jogador.
 - Oficina, reciclagem e resgate de emergência. A aba Diário foi substituída pela Expedição jogável.
-- Progresso salvo no navegador quando o armazenamento está disponível. A prévia na conversa usa a persistência oferecida pelo aplicativo.
+- Progresso salvo no navegador (ou no celular, no APK) quando o armazenamento está disponível.
 
-A seta superior indica o local de retorno: nave aberta, módulos, receita, estoque ou mercado, conforme a origem do cartão. **Esc** e o botão Voltar do Android seguem essa mesma organização. O **×** fecha o painel; na inspeção, revela a nave aberta. **Anterior/Próxima**, nos painéis longos, troca apenas a página do conteúdo. As ações secundárias têm superfície de botão e resposta ao toque.
+A seta superior indica o local de retorno: nave aberta, módulos, receita, estoque ou mercado, conforme a origem do cartão. **Esc** e o botão Voltar do Android seguem essa mesma organização. O **×** fecha o painel; num cartão aberto pela nave, revela a nave aberta. **Anterior/Próxima**, nos painéis longos, troca apenas a página do conteúdo. As ações secundárias têm superfície de botão e resposta ao toque.
 
 As decisões são por turno: deixar a aba aberta não gasta recursos. Oxigênio é gratuito quando a nave está ancorada em um planeta respirável; fora dele, a oficina converte 1 Samambaia-lume em até 12 de oxigênio, ou você compra oxigênio no entreposto. O resgate preserva seus módulos e cobra parte dos recursos.
 
 Análises orbitais continuam possíveis sem o equipamento exigido pela superfície. Entrar em um sistema hostil também exige proteção contra a estrela. Nos gigantes gasosos, a nave opera com sondas atmosféricas; nos mundos líquidos, com módulos de submersão. Os requisitos são limites mínimos: tempestades e locais profundos ainda podem danificar o casco. Não há consumo quando uma ação é bloqueada. Trocar uma peça altera imediatamente os ambientes acessíveis, inclusive se você já estiver operando no planeta; retornar à órbita permanece disponível.
 
-O progresso da versão anterior é migrado, preservando nave, equipamentos, recursos e descobertas. A prévia salva uma versão compacta do universo e reconstrói os dados procedurais ao abrir.
+O progresso da versão anterior é migrado, preservando nave, equipamentos, recursos e descobertas. O salvamento guarda uma versão compacta do universo e reconstrói os dados procedurais ao abrir.
 
 ## Catálogo e descobertas
 
@@ -151,7 +151,7 @@ O jogo está separado em regras (`engine.js`), cena da nave (`scene.js`, `illust
 
 A ilustração está em `assets/andorinha-illustrated.png`; o build incorpora a versão WebP otimizada no próprio jogo, que continua funcionando sem internet. A origem e o prompt estão em `assets/ARTE.md`.
 
-As verificações das regras estão em `engine.test.cjs`, `engine-universe.test.cjs`, `expedition.test.cjs`, `modules.test.cjs`, `energy-return.test.cjs` e `catalog.test.cjs`; as verificações de navegador estão em `qa/illustrated-art-test.cjs`, `qa/catalog-browser-test.cjs`, `qa/navigation-browser-test.cjs`, `qa/modules-browser-test.cjs`, `qa/expedition-browser-test.cjs`, `qa/universe-browser-test.cjs`, `qa/rocket-game-test.cjs`, `qa/module-manipulation-test.cjs` e `qa/mobile-inline-test.cjs`.
+As verificações das regras estão em `engine.test.cjs`, `engine-universe.test.cjs`, `expedition.test.cjs`, `modules.test.cjs`, `energy-return.test.cjs` e `catalog.test.cjs`; as verificações de navegador estão em `qa/illustrated-art-test.cjs`, `qa/catalog-browser-test.cjs`, `qa/navigation-browser-test.cjs`, `qa/modules-browser-test.cjs`, `qa/expedition-browser-test.cjs`, `qa/universe-browser-test.cjs`, `qa/rocket-game-test.cjs`, e `qa/ship-cards-test.cjs`. Os testes de navegador carregam a jornada pelo próprio slot de salvamento do jogo (`qa/save-slot.cjs`).
 
 A primeira versão com painel de desktop foi preservada em `desktop.html` e seus arquivos de interface em `desktop-source/`. A versão atual é `index.html`.
 
@@ -202,8 +202,6 @@ A meta é uma primeira campanha de aproximadamente cinco a sete horas, sem esper
 ## Revisão e Android 0.2.2
 
 O pacote de teste está em `android/dist/orbita-0.2.2.apk`; instalação e atualização estão descritas em `android/LEIA-ME.md`. O resumo do check final está em `qa/CHECK-GLOBAL-0.2.2.md` e os destinos de navegação em `ROTAS.md`.
-
-Para gerar a prévia compacta, use Node.js com Terser disponível, instale as dependências locais com `npm ci --prefix qa --ignore-scripts` e use `python3 build.py --preview CAMINHO_ABSOLUTO`. A compactação conserva os bytes de todas as imagens e seus perfis de cor; o APK usa as artes completas.
 
 ## Jornada e custo das saídas — 0.2.3
 

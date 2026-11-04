@@ -35,23 +35,6 @@ fs.mkdirSync(out, { recursive: true });
   }
   // The exterior no longer has an "Abrir nave" button: tapping the rocket drawing opens the hull.
   const openHull = async (p = page) => { await p.locator('#og-canvas').click(); await p.waitForFunction(() => window.orbitApp.getView().shipDetail?.mode === 'interior'); };
-  // Tapping a module now opens its card at once and closing the card returns to the open ship. The close-up where the
-  // piece itself can be dragged out of its socket is the view the game resumes into when left on a module: reload.
-  const closeUp = async (type, p = page) => {
-    await p.locator(`[data-module-focus="${type}"]:visible`).first().click();
-    await p.waitForFunction(type => orbitApp.getView().sheet === 'system-module' && orbitApp.getView().shipDetail.selectedModule === type, type);
-    await p.reload(); await p.waitForFunction(type => window.orbitApp?.getInspection && orbitApp.getView().sheet === null && orbitApp.getInspection()?.type === type, type);
-    await p.waitForTimeout(850);
-  };
-  // The old "toggle-module" button is gone; the piece is pulled out (or pushed back) by dragging it.
-  async function dragModule(extract, p = page) {
-    const part = await p.evaluate(() => orbitApp.getInspection()); assert.ok(part?.bounds, 'Module geometry is available');
-    const canvas = await p.locator('#og-canvas').boundingBox();
-    const start = { x: canvas.x + part.bounds.x + part.bounds.width / 2, y: canvas.y + part.bounds.y + part.bounds.height / 2 };
-    const end = extract ? { x: start.x + part.expansionVector.x * 1.12, y: start.y + part.expansionVector.y * 1.12 } : { x: canvas.x + part.socket.x, y: canvas.y + part.socket.y };
-    await p.mouse.move(start.x, start.y); await p.mouse.down(); await p.mouse.move(end.x, end.y, { steps: 14 }); await p.mouse.up();
-    await p.waitForFunction(expected => orbitApp.getView().shipDetail.expanded === expected, extract); await p.waitForTimeout(400);
-  }
   // Outside the guided training an expedition is an adventure: two terrain beacons must be activated before the core
   // circuit opens (the shared helper only knows the training path). Drive the visible field controls.
   async function completeAdventureExpedition() {
@@ -104,22 +87,19 @@ fs.mkdirSync(out, { recursive: true });
     assert.deepEqual(types, Object.keys((await state()).equipped).sort());
     await screenshot('rocket-interior');
   });
-  await test('Engine can be selected, expanded to show its socket, and returned', async () => {
-    await closeUp('engine'); await mode('module');
-    assert.equal((await view()).shipDetail.selectedModule, 'engine');
-    const before = (await view()).shipDetail.expanded; assert.equal(before, false);
-    await dragModule(true);
-    assert.equal((await view()).shipDetail.expanded, !before);
-    await screenshot('engine-socket');
-    await dragModule(false);
-    await click('ship-back'); await mode('interior');
+  await test('Tapping the engine opens its card over the open ship, with no close-up', async () => {
+    const resources = (await state()).resources;
+    await focusModule('engine'); await mode('interior');
+    assert.equal((await view()).sheet, 'system-module'); assert.equal((await view()).systemType, 'engine');
+    await screenshot('engine-card');
+    await click('close-sheet'); await mode('interior'); assert.deepEqual((await state()).resources, resources);
   });
   await test('Scanner replacement only offers compatible modules and swaps the actual equipment', async () => {
     const before = await state();
     oldScanner = before.equipped.scanner;
     newScanner = before.inventory.find(m => m.type === 'scanner' && m.power > oldScanner.power);
     assert.ok(newScanner, 'Initial inventory should contain a stronger scanner');
-    await focusModule('scanner'); await mode('module');
+    await focusModule('scanner'); await mode('interior');
     assert.equal(await page.getByRole('dialog').count(), 1);
     // The scanner card's carousel replaced the replacement list: slide through every stored part it offers.
     const offered = [];
@@ -143,8 +123,8 @@ fs.mkdirSync(out, { recursive: true });
   });
   await test('Cargo and all eight physical compartments can be inspected without using resources', async () => {
     for (const type of Object.keys((await state()).equipped)) {
-      await focusModule(type); await mode('module');
-      assert.equal((await view()).shipDetail.selectedModule, type);
+      await focusModule(type); await mode('interior');
+      assert.equal((await view()).systemType, type);
       // The compartment's card opens directly over the ship.
       assert.equal((await view()).sheet, 'system-module');
       assert.ok((await page.getByRole('dialog').innerText()).includes((await state()).equipped[type].name));
@@ -153,8 +133,8 @@ fs.mkdirSync(out, { recursive: true });
     }
     assert.deepEqual((await state()).resources, inspectionResources);
   });
-  await test('Back and Escape step through module, interior, exterior, and main exploration', async () => {
-    await focusModule('life'); await mode('module');
+  await test('Back and Escape step through the module card, interior, exterior, and main exploration', async () => {
+    await focusModule('life'); await mode('interior');
     await page.keyboard.press('Escape'); await mode('interior');
     await click('ship-back'); await mode('exterior');
     await click('ship-back');
@@ -195,18 +175,20 @@ fs.mkdirSync(out, { recursive: true });
     assert.equal(await page.evaluate(() => document.getElementById('orbit-game').contains(document.activeElement)), true);
     await click('ship-back');
   });
-  await test('Interior and module controls fit widths 320, 390, 736, and 1024', async () => {
+  await test('Interior controls and the module card fit widths 320, 390, 736, and 1024', async () => {
     for (const width of [320, 390, 736, 1024]) {
       await page.setViewportSize({ width, height: 950 });
       await tab('ship'); if ((await view()).shipDetail.mode === 'exterior') await openHull(); await settle();
-      await closeUp('engine'); await dragModule(true); await settle();
       const sizes = await page.evaluate(() => ({ doc: document.documentElement.scrollWidth, width: innerWidth, game: document.getElementById('orbit-game').scrollWidth, box: document.getElementById('orbit-game').clientWidth }));
       assert.ok(sizes.doc <= sizes.width, JSON.stringify({ width, sizes }));
       assert.ok(sizes.game <= sizes.box, JSON.stringify({ width, sizes }));
       const clipped = await page.locator('#og-context button:visible, [data-action="ship-back"]:visible').evaluateAll(es => es.filter(e => { const r = e.getBoundingClientRect(); const g = document.getElementById('orbit-game').getBoundingClientRect(); return r.left < g.left || r.right > g.right || r.top < g.top || r.bottom > g.bottom; }).map(e => e.textContent));
       assert.deepEqual(clipped, [], `Clipped controls at ${width}px`);
+      await focusModule('engine'); await page.waitForFunction(() => orbitApp.getView().sheet === 'system-module');
+      const card = await page.locator('.og-sheet:visible').evaluate(e => { const r = e.getBoundingClientRect(), g = document.getElementById('orbit-game').getBoundingClientRect(); return r.left >= g.left - 1 && r.right <= g.right + 1; });
+      assert.ok(card, `Module card fits at ${width}px`);
       if (width === 320) await screenshot('engine-mobile320');
-      await dragModule(false); await click('ship-back'); await click('ship-back');
+      await click('close-sheet'); await click('ship-back');
     }
   });
   await test('Equipment and game progress survive reload', async () => {
@@ -222,9 +204,9 @@ fs.mkdirSync(out, { recursive: true });
     assert.equal(await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
     await p.locator('.og-tabs [data-tab="ship"]').click();
     await openHull(p);
-    await closeUp('engine', p); await dragModule(true, p);
-    assert.equal(await p.evaluate(() => orbitApp.getView().shipDetail.expanded), true);
-    await p.locator('#og-ship-back').click();
+    await p.locator('[data-module-focus="engine"]:visible').first().click();
+    await p.waitForFunction(() => orbitApp.getView().sheet === 'system-module' && orbitApp.getView().systemType === 'engine');
+    await p.keyboard.press('Escape');
     assert.equal(await p.evaluate(() => orbitApp.getView().shipDetail.mode), 'interior');
     await reduced.close();
   });

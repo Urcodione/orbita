@@ -10,7 +10,7 @@ Na instalação limpa, a campanha começa zerada, com uma introdução ilustrada
 
 ## Empacotamento
 
-O APK contém somente o jogo offline completo e o invólucro Android. Não inclui fixtures de teste, partidas salvas ou referências ao servidor localhost. Não solicita permissões de internet, arquivos, câmera ou localização. Backup Android desativado. Arte completa incluída, sem a compactação adicional da versão inline.
+O APK contém somente o jogo offline completo e o invólucro Android. Não inclui fixtures de teste, partidas salvas ou referências ao servidor localhost. Não solicita permissões de internet, arquivos, câmera ou localização. Backup Android desativado. Arte completa incluída.
 
 O botão Voltar do Android acompanha o retorno de cada tela do jogo: de um cartão para sua origem, da inspeção para a nave aberta e das áreas principais para a exploração. Na tela principal, pede confirmação para sair. Durante a introdução e o tutorial, use os controles da cena e a opção de pular. A área do jogo reserva espaço para recortes da tela e barras do sistema quando estão visíveis.
 

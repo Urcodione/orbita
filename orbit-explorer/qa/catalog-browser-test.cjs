@@ -3,6 +3,7 @@ const { chromium } = require('./node_modules/playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const Save = require('./save-slot.cjs');
 
 const out = path.join(__dirname, 'catalog-artifacts');
 const gameURL = process.env.QA_URL || 'file://' + path.resolve(__dirname, '../index.html');
@@ -34,7 +35,7 @@ fs.mkdirSync(out, { recursive: true });
     // A first visit opens the illustrated intro and the guided training; leave both before injecting the fixture.
     if (await page.locator('[data-story-action="skip"]:visible').count()) await page.locator('[data-story-action="skip"]').click();
     if (await page.locator('[data-guide-skip]:visible').count()) await page.locator('[data-guide-skip]').click();
-    await page.evaluate(mode => {
+    await Save.load(page, await page.evaluate(mode => {
       const E = OrbitEngine, s = E.create('qa-celestial-catalog');
       const run = (action, payload = {}) => {
         const result = E.dispatch(s, action, payload);
@@ -58,14 +59,12 @@ fs.mkdirSync(out, { recursive: true });
       }
       s.resources.warpFuel = E.stats(s).maxWarpFuel;
       if (!E.validate(s)) throw new Error('Invalid discovery fixture');
-      window.__qaCatalogSaves = [];
-      window.openai = { setWidgetState(value) { window.__qaCatalogSaves.push(JSON.parse(JSON.stringify(value))); return Promise.resolve(); } };
-      window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { widgetState: { privateContent: {
+      return {
         state: E.snapshot(s), tab: 'explore', selected: s.location.planetId,
-        shipDetail: { mode: 'exterior', selectedModule: null, expanded: false },
+        shipDetail: { mode: 'exterior' },
         mapLevel: 'system', catalogView: { page: 'systems', systemId: null }
-      } } } } }));
-    }, mode);
+      };
+    }, mode));
     await settle();
   }
   async function clickSelector(selector) {
@@ -252,16 +251,16 @@ fs.mkdirSync(out, { recursive: true });
     await snap('arrived-and-archived');
   });
 
-  await test('Host save and reload retain names, catalog counts and archived discoveries within 16 KiB', async () => {
+  await test('Save and reload retain names, catalog counts and archived discoveries within 16 KiB', async () => {
     await boot('archived'); await catalog(); await clickSelector('[data-catalog-page="galaxies"]');
     const before = await state(), beforeSurvey = await survey();
-    const saved = await page.evaluate(() => window.__qaCatalogSaves.at(-1));
-    assert.ok(saved?.privateContent?.state, 'Host received snapshot');
+    const saved = await Save.last(page);
+    assert.ok(saved?.privateContent?.state, 'Game saved the journey');
     const bytes = Buffer.byteLength(JSON.stringify(saved), 'utf8');
-    assert.ok(bytes < 16384, 'Host snapshot is ' + bytes + ' bytes');
+    assert.ok(bytes < 16384, 'Save is ' + bytes + ' bytes');
     const fresh = await browser.newPage({ viewport: { width: 390, height: 844 } }); listen(fresh);
     try {
-      await fresh.addInitScript(snapshot => { window.openai = { widgetState: snapshot, setWidgetState() { return Promise.resolve(); } }; }, saved);
+      await Save.seed(fresh, saved);
       await fresh.goto(gameURL); await fresh.waitForFunction(() => window.orbitApp && window.OrbitEngine?.discoveryCatalog);
       assert.deepEqual(await fresh.evaluate(() => orbitApp.getState()), before);
       assert.deepEqual(await fresh.evaluate(() => OrbitEngine.discoveryCatalog(orbitApp.getState())), beforeSurvey);

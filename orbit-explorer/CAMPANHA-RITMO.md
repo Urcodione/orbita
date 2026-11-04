@@ -54,7 +54,7 @@ Registrar em testes de jogo o tempo de cada capítulo, tentativas abandonadas, m
 - Itens e módulos de missão sem venda ou desmontagem; módulos com atributos úteis e contribuição dimensional visível.
 - Travessia bloqueada com um módulo ausente, mesmo que todos os outros sejam poderosos.
 - Partidas existentes preservam recursos, nave, módulos, descobertas e expedição em andamento.
-- Snapshot completo da campanha abaixo de 16 KiB, incluindo navegação, para salvar também na visualização inline.
+- Snapshot completo da campanha abaixo de 16 KiB, incluindo navegação.
 
 O teste automatizado confirma regras e navegação. A duração de cinco horas continua sendo uma hipótese até uma partida humana completa ser cronometrada.
 
