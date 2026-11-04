@@ -104,6 +104,15 @@ O primeiro local oferece uma rota de aprendizado. Nos demais, o núcleo e os cam
 
 **Arte.** Ferramentas e exemplares são pinturas dedicadas (`assets/xeno-tools.webp` e `assets/xeno-specimens.webp`), montadas a partir de `assets/src/` por `qa/prepare-xeno-art.py`. O briefing de cada item está em `assets/BRIEFING-XENO-CODEX.md`.
 
+## Direção e conquistas
+
+- **Mapa:** o planeta do próximo sinal da campanha tem um anel âmbar ("Sinal do Coro"), e o sistema dele também, na vista da galáxia. Planetas com exemplar único têm um ponto violeta ("Sinal vivo"). O entreposto avisa quando o viajante está lá.
+- **Marcos da missão:** cada um dos 5 marcos do capítulo aparece num aviso curto. Quando vem de uma extração, aparece dentro do recibo "Carga entregue", junto com o trecho da história que a extração destravou.
+- **Fim de capítulo:** ao construir a tecnologia do Coro, um cartão comemora o capítulo concluído (N de 8) e diz qual é o próximo passo.
+- **Atributos da nave:** ficam na nave aberta, não mais sobre a nave em movimento.
+
+Medido com o bot de campanha: o jogador vê algum progresso (núcleo, módulo, marco, capítulo ou nave) a cada ~30 ações; a pausa mais longa costuma ficar abaixo de 120 ações.
+
 ## Naves e hangar
 
 Além da Andorinha, existem 9 naves prontas. Elas não são vendidas em loja: em cada galáxia, um **viajante** pode esperar no entreposto com uma nave sorteada (75% de chance por galáxia, com preferência pelas naves do povo daquela galáxia). A primeira atracagem depois do tutorial sempre o encontra. Ele fica no entreposto até você comprar ou partir para outra galáxia; atracar de novo não sorteia outra nave.

@@ -191,6 +191,14 @@
 #orbit-game .og-sheet-content .og-context-links{flex-wrap:wrap}
 @media(max-width:350px){#orbit-game .og-candidate-heading{align-items:flex-start}#orbit-game .og-candidate-heading .og-favorite{font-size:11px}#orbit-game .og-system-installed h3,#orbit-game .og-candidate-heading h3{font-size:15px}#orbit-game .og-sheet[data-sheet=system-module]{max-height:88%}}
 
+/* Map direction: next campaign signal (amber pulse) and worlds with a unique exemplar (violet). */
+#orbit-game .og-nav-node.is-signal .og-nav-hit::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:2px solid #ffbf6b;box-shadow:0 0 12px #ffb04f99;animation:og-signal-pulse 2.2s ease-in-out infinite}
+#orbit-game .og-nav-node.is-signal .og-nav-caption{color:#ffd29a;font-weight:600}
+#orbit-game .og-nav-node.is-living .og-nav-hit::before{content:'';position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:#b38cff;box-shadow:0 0 8px #a46cff}
+#orbit-game .og-nav-node.is-living:not(.is-signal) .og-nav-caption{color:#d9c6ff}
+@keyframes og-signal-pulse{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.08);opacity:1}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-nav-node.is-signal .og-nav-hit::after{animation:none}}
+
 /* Bancada em páginas curtas: estoque e fabricação permanecem à vista. */
 #orbit-game .og-lab,#orbit-game .og-lab-fixed,#orbit-game .og-lab-footer{display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--og-text)}
 #orbit-game .og-lab{min-height:0;overflow:visible}
@@ -1387,6 +1395,10 @@
 
 #orbit-game .og-back-control .og-place-caption{max-width:84px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #orbit-game .og-ship-stats{position:absolute;left:8px;right:8px;top:64px;display:flex;justify-content:space-between;pointer-events:none;z-index:2}
+#orbit-game .og-ship-stats.is-compact{flex-direction:column;align-items:flex-end;gap:6px}
+#orbit-game .og-ship-stats .og-stats-toggle{pointer-events:auto;min-height:36px;padding:6px 12px;border-radius:999px;background:#06121cd9;border:1px solid #7fb6c466;color:#dff3f3;font-size:12px}
+#orbit-game .og-ship-stats .og-stats-columns{display:flex;flex-direction:row;gap:6px;pointer-events:none}
+#orbit-game .og-ship-stats.is-open dl{background:#06121ce6}
 #orbit-game .og-ship-stats dl{margin:0;display:grid;gap:4px;width:86px;padding:6px 8px;border-radius:12px;background:#06121c8c;border:1px solid #7fb6c426}
 #orbit-game .og-ship-stats div{display:flex;flex-direction:column;line-height:1.15}
 #orbit-game .og-ship-stats dt{font-size:9px;color:#9dbccb;letter-spacing:.2px}
@@ -1414,6 +1426,27 @@
 #orbit-game .og-delivery-story{display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:12px;background:linear-gradient(110deg,#2c2148,#142d3b);border:1px solid #8f78c8}
 #orbit-game .og-delivery-story small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#d8c6ff}
 #orbit-game .og-delivery-story p{margin:0;font-size:13px;line-height:1.4;color:#f1ecff}
+
+/* Achievements: mission milestone banner and end-of-chapter card. */
+#orbit-game .og-achievement.is-marco{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:220px;max-width:calc(100% - 32px);padding:8px 16px;border-radius:14px;background:linear-gradient(110deg,#3b2a14f2,#2c2148f2);border:1px solid #ffbf6b;box-shadow:0 8px 24px #0009,0 0 18px #ffb04f44;pointer-events:none;animation:og-achievement-in .35s ease-out}
+#orbit-game .og-achievement.is-marco small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ffd29a}
+#orbit-game .og-achievement.is-marco strong{font-size:15px;color:#fff6e6;text-align:center}
+#orbit-game .og-achievement.is-leaving{opacity:0;transition:opacity .4s}
+#orbit-game .og-achievement.is-chapter{position:absolute;inset:0;z-index:90;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 50% 40%,#2c2148e6,#05090ff2);animation:og-achievement-in .45s ease-out}
+#orbit-game .og-achievement-card{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:320px;text-align:center;color:#f3ecff}
+#orbit-game .og-achievement-art{width:132px;height:132px;display:grid;place-items:center;filter:drop-shadow(0 0 18px #b38cff88)}
+#orbit-game .og-achievement-art>*{width:100%;height:100%}
+#orbit-game .og-achievement-card small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#ffd29a}
+#orbit-game .og-achievement-card strong{font-size:24px;line-height:1.15}
+#orbit-game .og-achievement-card p{margin:0;font-size:14px;line-height:1.4;color:#dcd2f5}
+#orbit-game .og-achievement-card .og-achievement-next{color:#9fe8d8}
+#orbit-game .og-achievement-card .og-button{margin-top:8px;min-width:180px}
+#orbit-game .og-delivery-marco{display:flex;flex-direction:column;gap:2px;margin:0;padding:8px 11px;border-radius:12px;background:linear-gradient(110deg,#3b2a14,#16323d);border:1px solid #ffbf6b88}
+#orbit-game .og-delivery-marco small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ffd29a}
+#orbit-game .og-delivery-marco strong{font-size:14px;color:#fff6e6}
+@keyframes og-achievement-in{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+#orbit-game .og-achievement.is-marco{animation-name:og-achievement-in}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-achievement{animation:none}}
 
 #orbit-game .og-xeno-art{display:block;width:56px;height:56px;flex:none;background-image:var(--og-biology-art);background-size:200% 300%;background-position:var(--art-x) var(--art-y);background-repeat:no-repeat;filter:hue-rotate(var(--hue)) drop-shadow(0 0 6px #b7f5e566)}
 #orbit-game .og-xeno-art.is-large{width:120px;height:120px}
@@ -6517,8 +6550,9 @@ root.OrbitExtractionUI={render(state,reward={}){
  const fragment=reward.fragment?`<article class="og-delivery-item is-signal">${root.OrbitControlIcons.art('beacon')}<b>${E.beaconView(state).count}/3</b><span>Farol · ${esc(({origin:'Origem',ember:'Brasa',tide:'Maré'})[reward.fragment])}</span></article>`:'';
  const note=reward.story?.consequence||reward.campaignProgress||'';
  // When the extraction moves the campaign, its story beat (Aurora's first signal, transmissions, a preserved relic) is shown too.
+ const marco=reward.marco?`<p class="og-delivery-marco"><small>Marco da missão · ${reward.marco.count}/5</small><strong>${esc(reward.marco.label)}</strong></p>`:'';
  const story=reward.story?.advanced&&reward.story.message?`<article class="og-delivery-story"><small>${esc(reward.story.title)}</small><p>${esc(reward.story.message)}</p></article>`:'';
- return {singleCard:true,title:'Carga entregue',html:`<section class="og-delivery ${items.length+(fragment?1:0)>6?'is-full':''}" aria-label="Resultado da extração"><div class="og-delivery-stamp">${root.OrbitControlIcons.art('extract')}<div><strong>Extração concluída</strong><small>Itens já guardados na nave</small></div></div>${story}${module}${unique}<div class="og-delivery-grid" style="--delivery-count:${items.length+(fragment?1:0)}">${items.map(([k,v],i)=>`<article class="og-delivery-item" style="--arrival:${i}" aria-label="${esc(E.materials[k]?.name||names[k])}: mais ${v}">${figure(k)}<b>+${v}</b><span>${esc(E.materials[k]?.name||names[k])}</span></article>`).join('')}${fragment}</div>${!items.length&&!m&&!unique&&!fragment?'<p class="og-delivery-empty">Veículo recolhido com segurança. Nenhuma carga nesta saída.</p>':''}${note?`<p class="og-delivery-progress">${esc(note)}</p>`:''}</section>`,footer:`<button class="og-delivery-done" data-action="close-sheet" data-icon-intent="base" aria-label="Concluir entrega e voltar ao planeta"><span class="og-control-symbol">${root.OrbitControlIcons.art('base')}</span><small class="og-control-caption">Concluir</small></button>`};
+ return {singleCard:true,title:'Carga entregue',html:`<section class="og-delivery ${items.length+(fragment?1:0)>6?'is-full':''}" aria-label="Resultado da extração"><div class="og-delivery-stamp">${root.OrbitControlIcons.art('extract')}<div><strong>Extração concluída</strong><small>Itens já guardados na nave</small></div></div>${marco}${story}${module}${unique}<div class="og-delivery-grid" style="--delivery-count:${items.length+(fragment?1:0)}">${items.map(([k,v],i)=>`<article class="og-delivery-item" style="--arrival:${i}" aria-label="${esc(E.materials[k]?.name||names[k])}: mais ${v}">${figure(k)}<b>+${v}</b><span>${esc(E.materials[k]?.name||names[k])}</span></article>`).join('')}${fragment}</div>${!items.length&&!m&&!unique&&!fragment?'<p class="og-delivery-empty">Veículo recolhido com segurança. Nenhuma carga nesta saída.</p>':''}${note?`<p class="og-delivery-progress">${esc(note)}</p>`:''}</section>`,footer:`<button class="og-delivery-done" data-action="close-sheet" data-icon-intent="base" aria-label="Concluir entrega e voltar ao planeta"><span class="og-control-symbol">${root.OrbitControlIcons.art('base')}</span><small class="og-control-caption">Concluir</small></button>`};
 }};
 })(window);
 
@@ -7123,11 +7157,17 @@ root.OrbitFeedback={show(container,result,action,state){
     const unit=Math.abs(diff)===1?({setores:'setor','espaços':'espaço'}[after.unit]||after.unit):after.unit;
     return {text:sign+String(Math.abs(diff)).replace('.',',')+' '+unit,good};
   }
+  // The flying ship stays clean; the attributes live on the open ship. Where the open hull leaves room beside it they
+  // flank the ship below the heading; on small screens a button opens them over the ship.
+  let statsOpen=false;
   function renderShipStats(){
     const panel=$('og-ship-stats');if(!panel)return;
-    const show=tab==='ship'&&shipDetail.mode==='exterior'&&!state.expedition&&E.shipMetrics;panel.hidden=!show;if(!show)return;
+    const show=tab==='ship'&&shipDetail.mode==='interior'&&!state.expedition&&E.shipMetrics;panel.hidden=!show;if(!show){statsOpen=false;return;}
     const metrics=Object.fromEntries(E.shipMetrics(state).map(m=>[m.key,m])),fresh=Date.now()<statHighlightUntil;
-    panel.innerHTML=statColumns.map(column=>`<dl>${column.map(([key,label])=>{const m=metrics[key];if(!m)return '';const mark=fresh&&statHighlight[key];return `<div class="${mark?(mark==='good'?'is-up':'is-down'):''}"><dt>${label}</dt><dd>${esc(metricValueText(m))}</dd></div>`;}).join('')}</dl>`).join('');
+    const roomy=root.clientWidth>=360&&root.clientHeight>=700,columns=statColumns.map(column=>`<dl>${column.map(([key,label])=>{const m=metrics[key];if(!m)return '';const mark=fresh&&statHighlight[key];return `<div class="${mark?(mark==='good'?'is-up':'is-down'):''}"><dt>${label}</dt><dd>${esc(metricValueText(m))}</dd></div>`;}).join('')}</dl>`).join('');
+    panel.classList.toggle('is-compact',!roomy);panel.classList.toggle('is-open',!roomy&&(statsOpen||fresh));
+    panel.innerHTML=roomy?columns:`<button class="og-stats-toggle" data-action="ship-stats" aria-expanded="${statsOpen||fresh}">Atributos ${statsOpen||fresh?'▴':'▾'}</button>${statsOpen||fresh?`<div class="og-stats-columns">${columns}</div>`:''}`;
+    requestAnimationFrame(()=>{if(panel.hidden||!panel.offsetParent)return;const heading=$('og-heading').getBoundingClientRect(),parent=panel.offsetParent.getBoundingClientRect();panel.style.top=Math.max(8,Math.round(heading.bottom-parent.top+6))+'px';});
   }
   let deltaTimer=0;
   function showShipDelta(before,after){
@@ -7248,8 +7288,14 @@ root.OrbitFeedback={show(container,result,action,state){
       $('og-heading').innerHTML=`<div class="og-eyebrow">Fronteira de dobra</div><h1>Rotas de dobra.</h1><p>${state.resources.warpFuel} células a bordo · escolha seu destino</p>`;
       content=d?`<span class="og-route-label">${({verdant:'Nebulosa',forge:'Buraco negro',abyss:'Fenda luminosa'})[d.kind]||'Fenda luminosa'} · ${d.warpCost} células</span><h2>${esc(d.name)}</h2><p class="og-travel-budget">Dobra ${d.warpCost} / ${state.resources.warpFuel} células · O₂ 5 / ${num(state.resources.oxygen)}</p>${!jump.allowed?`<p class="og-route-blocked">${esc(jump.reason)}</p>`:'<p>Rota disponível · mundos revelados na chegada.</p>'}<button class="og-button primary" data-action="warp-menu">Viajar · revisar salto</button>`:'';
     }
-    $('og-map').innerHTML=nav.nodes.map(n=>`<button class="og-nav-node ${n.selected?'is-selected':''} ${n.blocked?'is-blocked':''}" ${mapLevel==='system'?`data-select="${esc(n.id)}"`:mapLevel==='galaxy'?`data-system="${esc(n.id)}"`:`data-destination="${esc(n.id)}"`} style="left:${n.x}%;top:${n.y}%" aria-label="${esc(n.name)}${n.current?', localização atual':''}${n.blocked?', exige preparo':''}" aria-pressed="${n.selected}"><span class="og-nav-hit" aria-hidden="true">${n.blocked?'<i>!</i>':''}</span><span class="og-nav-caption">${n.current?'AQUI':mapLevel!=='system'?esc(n.name):''}</span></button>`).join('');
-    if(mapLevel==='galaxy')$('og-map').insertAdjacentHTML('beforeend',`<button class="og-station-node" data-action="station" aria-label="Traçar rota ao entreposto do sistema atual"><span class="og-nav-hit" aria-hidden="true"></span><span class="og-nav-caption">Entreposto local</span></button>`);
+    // Direction on the map: the next signal of the campaign (and its system in the galaxy view), worlds hiding a unique
+    // exemplar, and the station when the merchant waits there.
+    const lead=!state.guide?.active&&state.campaign?.introSeen&&E.campaignLead?E.campaignLead(state):null,leadPlanet=lead?.planetId&&state.galaxy.planets.find(q=>q.id===lead.planetId);
+    const signalOf=n=>mapLevel==='system'?n.id===leadPlanet?.id:mapLevel==='galaxy'&&n.id===leadPlanet?.systemId;
+    const living=new Set(!state.guide?.active&&E.xenoView?E.xenoView(state).specimens.filter(x=>x.hint&&!x.captured&&!x.pending).map(x=>x.hint.planetId):[]),livingOf=n=>mapLevel==='system'&&living.has(n.id);
+    const caption=n=>n.current?'AQUI':signalOf(n)?(mapLevel==='system'?'Sinal do Coro':esc(n.name)+' · sinal'):livingOf(n)?'Sinal vivo':mapLevel!=='system'?esc(n.name):'';
+    $('og-map').innerHTML=nav.nodes.map(n=>`<button class="og-nav-node ${n.selected?'is-selected':''} ${n.blocked?'is-blocked':''} ${signalOf(n)?'is-signal':''} ${livingOf(n)?'is-living':''}" ${mapLevel==='system'?`data-select="${esc(n.id)}"`:mapLevel==='galaxy'?`data-system="${esc(n.id)}"`:`data-destination="${esc(n.id)}"`} style="left:${n.x}%;top:${n.y}%" aria-label="${esc(n.name)}${n.current?', localização atual':''}${signalOf(n)?', próximo sinal da missão':''}${livingOf(n)?', sinal de exemplar único':''}${n.blocked?', exige preparo':''}" aria-pressed="${n.selected}"><span class="og-nav-hit" aria-hidden="true">${n.blocked?'<i>!</i>':''}</span><span class="og-nav-caption">${caption(n)}</span></button>`).join('');
+    if(mapLevel==='galaxy')$('og-map').insertAdjacentHTML('beforeend',`<button class="og-station-node" data-action="station" aria-label="Traçar rota ao entreposto do sistema atual"><span class="og-nav-hit" aria-hidden="true"></span><span class="og-nav-caption">${state.fleet?.offer&&state.fleet.offer.stay===state.fleet.rolled?'Entreposto · viajante':'Entreposto local'}</span></button>`);
     // The wormhole goes to the free corner farthest from the worlds, so its marker and label never cover a planet.
     if(nav.wormhole){const spot=[[82,67],[18,67],[82,24],[18,24],[50,86],[86,46],[14,46]].map(([x,y])=>({x,y,d:Math.min(...nav.nodes.map(n=>Math.hypot(n.x-x,(n.y-y)*1.4)))})).sort((a,b)=>b.d-a.d)[0];
      $('og-map').insertAdjacentHTML('beforeend',`<button class="og-wormhole-node" data-action="campaign-gate" style="left:${spot.x}%;top:${spot.y}%" aria-label="Examinar o buraco de minhoca Olho de Íris"><span>Olho de Íris</span></button>`);}
@@ -7472,6 +7518,20 @@ root.OrbitFeedback={show(container,result,action,state){
   function sameControl(el){if(!el?.dataset||!Object.keys(el.dataset).length)return null;const selector=el.tagName.toLowerCase()+Object.entries(el.dataset).map(([k,v])=>`[data-${k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())}="${CSS.escape(v)}"]`).join('');const match=root.querySelector(selector);return match&&match.getClientRects().length?match:null;}
   function closeSheet(){sheet=null;for(const k in pageMemory)delete pageMemory[k];syncExperience();sheetNotice='';const backdrop=$('og-sheet-backdrop');backdrop.hidden=true;backdrop.innerHTML='';Array.from(root.children).forEach(el=>{el.inert=false;});const restore=focusBeforeSheet?.isConnected&&root.contains(focusBeforeSheet)&&focusBeforeSheet.getClientRects().length?focusBeforeSheet:sameControl(focusBeforeSheet)||root.querySelector(`.og-tabs [data-tab="${tab}"]`);restore?.focus({preventScroll:true});}
   function dismissSheet(){if(moduleOrigin==='ship'&&['system-module','stored-module'].includes(sheet))shipOverview();else closeSheet();}
+  // Achievements: a small banner for a mission milestone; a card that waits for the player at the end of a chapter.
+  let achievementTimer=0;
+  function achievement({kind,small,title,text='',next='',module=null}){
+    root.querySelector('.og-achievement.is-marco')?.remove();clearTimeout(achievementTimer);
+    const el=document.createElement('section');el.className='og-achievement is-'+kind;
+    if(kind==='chapter'){
+     el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label',small);
+     el.innerHTML=`<div class="og-achievement-card"><div class="og-achievement-art">${module&&window.OrbitArt?.icon?window.OrbitArt.icon(module.type,'',module):''}</div><small>${esc(small)}</small><strong>${esc(title)}</strong><p>${esc(text)}</p>${next?`<p class="og-achievement-next">Próximo: ${esc(next)}</p>`:''}<button class="og-button primary" data-achievement-close>Continuar</button></div>`;
+     root.append(el);const close=el.querySelector('[data-achievement-close]');close.addEventListener('click',event=>{event.stopPropagation();el.remove();});el.addEventListener('keydown',event=>{if(event.key==='Escape'||event.key==='Enter'){event.preventDefault();event.stopPropagation();el.remove();}});close.focus({preventScroll:true});beep('campaignClaim');
+    }else{
+     el.setAttribute('role','status');el.innerHTML=`<small>${esc(small)}</small><strong>${esc(title)}</strong>`;root.append(el);
+     achievementTimer=setTimeout(()=>{el.classList.add('is-leaving');setTimeout(()=>el.remove(),400);},3600);
+    }
+  }
   function toast(text,error){const el=$('og-toast');clearTimeout(toastTimer);el.textContent=text;el.classList.toggle('error',!!error);el.hidden=false;toastTimer=setTimeout(()=>el.hidden=true,4400);}
   function beep(action){window.OrbitAudio.fx(action);}
   function craftFeedback(quantity,anchor,message){
@@ -7487,6 +7547,7 @@ root.OrbitFeedback={show(container,result,action,state){
     const craftAnchor=action==='craftComponent'?root.querySelector('[data-action="craftComponent"]')?.getBoundingClientRect():null;
     const craftBefore=action==='craftComponent'?(state.components?.[payload.componentId]||0):0;
     const beforeCampaign=E.campaignView?.(state),wasGuided=!!state.guide?.active;
+    const marcosBefore=E.campaignMilestones&&!state.guide?.active?E.campaignMilestones(state).filter(m=>m.done).map(m=>m.label):[],chapterBefore=state.campaign?.chapter;
     const oldSheet=sheet,wasInField=!!state.expedition,installedType=action==='equip'?state.inventory.find(m=>m.id===payload.moduleId)?.type:null,metricsBefore=(installedType||['runeEngrave','runeRemove','fleetSwitch'].includes(action))&&E.shipMetrics?E.shipMetrics(state):null,result=E.dispatch(state,action,payload);
     if(!result.ok){if(sheet){sheetNotice=result.message;renderSheet();}else toast(result.message,true);beep('error');return result;}
     const fieldAction=action.startsWith('expedition'),fieldEnded=wasInField&&!state.expedition;
@@ -7494,6 +7555,9 @@ root.OrbitFeedback={show(container,result,action,state){
     if(action==='craftComponent')window.OrbitWorkshop.afterCraft?.(state,lab,payload);
     if(action==='stabilizeSite')sheetNotice='';
     if(action==='explore'){delete root.dataset.effect;closeSheet();tab='expedition';fieldNotice='Toque em um setor vizinho para pilotar. Preserve energia para a volta.';}
+    // Mission milestones reached by this action: inside the delivery receipt for an extraction, a short banner otherwise.
+    const marcos=result.ok&&E.campaignMilestones&&state.campaign?.chapter===chapterBefore?E.campaignMilestones(state).filter(m=>m.done):[],newMarco=marcos.find(m=>!marcosBefore.includes(m.label));
+    if(newMarco&&action==='expeditionExtract'&&result.reward)result.reward.marco={label:newMarco.label,count:marcos.length};
     if(fieldAction){fieldNotice=result.message;clearTimeout(toastTimer);$('og-toast').hidden=true;}
     if(fieldEnded){closeSheet();tab='explore';}
     if(['travel','warp','rescue','campaignReturnHome','guideSkip','guideFinish'].includes(action)){closeSheet();tab='explore';selected=state.location.planetId;selectedSystem=currentSystem().id;mapLevel='system';environmentSite=null;}
@@ -7535,6 +7599,10 @@ root.OrbitFeedback={show(container,result,action,state){
     if(action==='craftComponent')craftFeedback((state.components?.[payload.componentId]||0)-craftBefore,craftAnchor,result.message);
     if(action==='explore')$('og-field-cells').querySelector('button:not(:disabled):not([data-field-hint])')?.focus({preventScroll:true});
     if(action==='equip'&&wasGuided&&!state.guide?.active)toast('Treinamento concluído! Use Mapa para viajar, Nave para gerenciar peças e Missão para seguir o Coro.');
+    if(newMarco&&action!=='expeditionExtract')achievement({kind:'marco',small:'Marco da missão · '+marcos.length+'/5',title:newMarco.label});
+    // A chapter ends when its Coro technology is built: one of the eight big moments of the campaign.
+    if(result.ok&&result.reward?.module?.origin==='campaign'&&state.campaign?.chapter>chapterBefore){const v=E.campaignView(state),lead=E.campaignLead(state);
+     achievement({kind:'chapter',small:'Capítulo '+(beforeCampaign?.chapter||chapterBefore)+' de 8 concluído',title:result.reward.module.name,text:'Tecnologia do Coro '+v.completed+'/8. Instale-a para somar 12,5% de resistência dimensional.',next:lead?.title,module:result.reward.module});}
     return result;
   }
   function handleClick(event){
@@ -7604,6 +7672,7 @@ root.OrbitFeedback={show(container,result,action,state){
     if(action==='save-accept'){if(pendingImport){save();window.OrbitSaves.checkpoint();if(applySnapshot(pendingImport)){pendingImport=null;history.past=[];history.future=[];closeSheet();save();render();toast('Jornada restaurada.');}}return;}
     if(action==='sound'){sound=!window.OrbitAudio.prefs.sound;window.OrbitAudio.set('sound',sound);beep('toggle');renderSheet();return;}
     if(action==='confirm-reset'){closeSheet();state=E.create();tab='explore';selected=state.location.planetId;shipDetail={mode:'exterior',selectedModule:null,expanded:false};mapLevel='system';selectedSystem=currentSystem().id;selectedDestination=null;environmentSite=null;reward=null;save();render();toast('Sua nova expedição está pronta.');window.OrbitCampaignUI?.playClip(root,()=>{E.dispatch(state,'campaignIntro');save();render();});return;}
+    if(action==='ship-stats'){statsOpen=!statsOpen;renderShipStats();return;}
     if(action==='fleetSwitch'){act(action,{shipId:control.dataset.ship});return;}
     // A bought ship goes straight to the hangar, reached as from the station (the merchant has left).
     if(action==='fleetBuy'){const id=control.dataset.ship;act(action,{shipId:id});if(state.fleet?.owned.includes(id)&&sheet==='fleet-trader'){const notice=sheetNotice;sheet='station';openSheet('fleet');sheetNotice=notice;renderSheet();}return;}
@@ -7623,7 +7692,7 @@ root.OrbitFeedback={show(container,result,action,state){
   function navigateBack(){
     // By design, Back is consumed during the introduction and the guided training (use the scene controls or Skip).
     if(window.OrbitXenoCinema?.isPlaying())return true;
-    if(root.querySelector('.og-story-clip')||state.guide?.active)return true;
+    {const card=root.querySelector('.og-achievement.is-chapter');if(card){card.remove();return true;}}if(root.querySelector('.og-story-clip')||state.guide?.active)return true;
     if(sheet){stepNavigation();save();return true;}
     if(tab==='ship'){shipBack();return true;}
     if(tab!=='explore'&&!state.expedition){tab='explore';render();save();return true;}

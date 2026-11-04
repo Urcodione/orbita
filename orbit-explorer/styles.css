@@ -178,3 +178,11 @@
 #orbit-game .og-sheet-footer .og-button{min-height:44px}
 #orbit-game .og-sheet-content .og-context-links{flex-wrap:wrap}
 @media(max-width:350px){#orbit-game .og-candidate-heading{align-items:flex-start}#orbit-game .og-candidate-heading .og-favorite{font-size:11px}#orbit-game .og-system-installed h3,#orbit-game .og-candidate-heading h3{font-size:15px}#orbit-game .og-sheet[data-sheet=system-module]{max-height:88%}}
+
+/* Map direction: next campaign signal (amber pulse) and worlds with a unique exemplar (violet). */
+#orbit-game .og-nav-node.is-signal .og-nav-hit::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:2px solid #ffbf6b;box-shadow:0 0 12px #ffb04f99;animation:og-signal-pulse 2.2s ease-in-out infinite}
+#orbit-game .og-nav-node.is-signal .og-nav-caption{color:#ffd29a;font-weight:600}
+#orbit-game .og-nav-node.is-living .og-nav-hit::before{content:'';position:absolute;right:-2px;top:-2px;width:12px;height:12px;border-radius:50%;background:#b38cff;box-shadow:0 0 8px #a46cff}
+#orbit-game .og-nav-node.is-living:not(.is-signal) .og-nav-caption{color:#d9c6ff}
+@keyframes og-signal-pulse{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.08);opacity:1}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-nav-node.is-signal .og-nav-hit::after{animation:none}}
