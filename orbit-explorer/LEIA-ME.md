@@ -110,6 +110,7 @@ O primeiro local oferece uma rota de aprendizado. Nos demais, o núcleo e os cam
 - **Marcos da missão:** cada um dos 5 marcos do capítulo aparece num aviso curto. Quando vem de uma extração, aparece dentro do recibo "Carga entregue", junto com o trecho da história que a extração destravou.
 - **Fim de capítulo:** ao construir a tecnologia do Coro, um cartão comemora o capítulo concluído (N de 8) e diz qual é o próximo passo.
 - **Atributos da nave:** ficam na nave aberta, não mais sobre a nave em movimento.
+- **Registro do explorador** (Catálogo → Registro): os números da jornada (ações, galáxias, mundos, locais, cargas, coleções, únicos, runas, naves, módulos), quantas ações cada capítulo do Coro levou e 17 conquistas com barra de progresso. Cada conquista nova aparece num aviso curto, a menos que um marco ou o cartão de capítulo já esteja falando. O jogo guarda só a ação em que cada capítulo e cada conquista aconteceram (`explorer-record.js`, testado em `explorer-record.test.cjs`). Partidas anteriores ganham o registro com o que já tinham feito, marcado como "antes do registro".
 
 Medido com o bot de campanha: o jogador vê algum progresso (núcleo, módulo, marco, capítulo ou nave) a cada ~30 ações; a pausa mais longa costuma ficar abaixo de 120 ações.
 

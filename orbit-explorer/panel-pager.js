@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   // Pages preserve the real controls and split content at semantic boundaries.
-  const containers = '.og-lab,.og-module-list,.og-comparison,.og-facts,.og-system-metrics,.og-system-operations,.og-requirements,.og-instructions,.og-lab-fit-rows,.og-catalog-list,.og-xeno-collection,.og-fleet-list,.og-xeno-modules,.og-xeno-hints,.og-xeno-runes,.og-xeno-tools';
+  const containers = '.og-lab,.og-module-list,.og-comparison,.og-facts,.og-system-metrics,.og-system-operations,.og-requirements,.og-instructions,.og-lab-fit-rows,.og-catalog-list,.og-xeno-collection,.og-fleet-list,.og-xeno-modules,.og-xeno-hints,.og-xeno-runes,.og-xeno-tools,.og-record-list,.og-record-stats';
   function wrapLike(parent, child) {
     const wrapper = parent.cloneNode(false);
     wrapper.removeAttribute('id');

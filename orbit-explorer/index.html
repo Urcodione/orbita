@@ -453,7 +453,7 @@
 @media(max-height:680px){#orbit-game .og-collection-slot{min-height:105px}}
 
 /* Atlas: one subject per screen, no automatic page slicing. */
-#orbit-game .og-atlas-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+#orbit-game .og-atlas-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
 #orbit-game .og-atlas-tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#102a3a;border:1px solid #405e72;border-radius:12px;min-height:64px;font-size:11px}
 #orbit-game .og-atlas-tabs button[aria-pressed=true]{border-color:#9cddd9;background:#234450}
 #orbit-game .og-atlas-tabs canvas,#orbit-game .og-atlas-tabs .og-trade-art{width:44px;height:36px}
@@ -483,6 +483,30 @@
 #orbit-game .og-atlas-tile .og-silhouette{height:48px}
 #orbit-game .og-sheet[data-sheet=catalog] .og-sheet-content{overflow:hidden}
 @media(max-height:650px){#orbit-game .og-atlas-detail{gap:6px;padding:7px}#orbit-game .og-atlas-detail>canvas{height:75px;width:108px}#orbit-game .og-atlas-detail>.og-trade-art{width:50px;height:50px}#orbit-game .og-atlas-tile{height:97px}}
+/* Explorer's record (Catálogo → Registro). */
+#orbit-game .og-record-list{display:flex;flex-direction:column;gap:6px}
+#orbit-game .og-record-title{margin:8px 0 2px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#f0b57e}
+#orbit-game .og-record-stats{display:flex;flex-direction:column;gap:4px}
+#orbit-game .og-record-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+#orbit-game .og-record-pair div{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:6px 9px;border-radius:9px;background:#0d2231;border:1px solid #23404f;min-width:0}
+#orbit-game .og-record-pair strong{font-size:15px;color:#f3fbfa;line-height:1.1;white-space:nowrap}
+#orbit-game .og-record-pair small{font-size:11px;line-height:1.2;color:#a9c6cf;min-width:0}
+#orbit-game .og-record-row{display:grid;grid-template-columns:1fr auto;gap:0 8px;padding:7px 10px;border-radius:10px;background:#0d2231;border:1px solid #23404f}
+#orbit-game .og-record-row strong{color:#f3fbfa;font-size:14px}
+#orbit-game .og-record-row span{color:#9fe8d8;font-size:13px;text-align:right}
+#orbit-game .og-record-row small{grid-column:1/-1;font-size:11px;color:#a9c6cf}
+#orbit-game .og-record-empty{font-size:12px;color:#a9c6cf;margin:0}
+#orbit-game .og-record-achievement{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:12px;background:#0b1c28;border:1px solid #1f3644;color:#a9c6cf}
+#orbit-game .og-record-achievement b{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid #3a5868;font-size:12px}
+#orbit-game .og-record-achievement span{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+#orbit-game .og-record-achievement strong{font-size:14px;color:#c8dde4}
+#orbit-game .og-record-achievement small{font-size:12px;line-height:1.3}
+#orbit-game .og-record-achievement progress{width:100%;height:6px;margin-top:3px;accent-color:#5fe0d6}
+#orbit-game .og-record-achievement.is-earned{background:linear-gradient(90deg,#3b2a14cc,#16323dcc);border-color:#f0a35e88}
+#orbit-game .og-record-achievement.is-earned b{background:#f0b57e;border-color:#f0b57e;color:#2a1a08}
+#orbit-game .og-record-achievement.is-earned strong{color:#ffe1bd}
+#orbit-game .og-record-when{color:#f0c79a}
+#orbit-game .og-record-list section{display:flex;flex-direction:column;gap:6px}
 
 #orbit-game .og-painted-module{display:inline-block;flex:none;width:44px;height:44px;background-image:var(--og-module-art);background-size:200% 400%;background-repeat:no-repeat;vertical-align:middle}
 #orbit-game .og-module-code.og-painted-module{font-size:0;background-color:#102630}
@@ -5422,10 +5446,21 @@ const categoryOf=(id,g)=>g.category||({ore:'Minerais',crystals:'Minerais',fuel:'
 const art=(kind,id='')=>`<canvas class="og-atlas-art" width="160" height="130" data-atlas-kind="${kind}" data-atlas-id="${esc(id)}" aria-hidden="true"></canvas>`;
 const meter=r=>`<div class="og-atlas-progress"><strong>${r.percent||0}%</strong><progress value="${r.percent||0}" max="100"></progress><small>${r.completedSites}/${r.totalSites} locais</small></div>`;
 function selector(list,index,field,label){return `<label class="og-atlas-picker">${label}<select data-atlas-select="${field}">${list.map((x,i)=>`<option value="${i}" ${i===index?'selected':''}>${esc(x.name||'Mundo desconhecido')}</option>`).join('')}</select></label>`;}
+const num=n=>Number(n).toLocaleString('pt-BR');
+// Explorer's record (explorer-record.js): the journey in numbers, actions per campaign chapter, achievements.
+function record(state){
+ const r=E.explorerRecord(state),m=r.metrics;
+ const stats=[['Ações',num(m.actions)],['Galáxias visitadas',m.galaxies],['Mundos catalogados',m.worlds],['Mundos completos',m.worldsDone],['Locais explorados',m.sites],['Pousos',m.landings],['Cargas extraídas',m.extractions],['Evacuações',m.evacuations],['Saltos de dobra',m.warps],['Coleções',m.materials+'/'+m.materialsTotal],['Únicos',m.uniques+'/'+m.uniquesTotal],['Runas gravadas',m.runes],['Naves no hangar',m.ships+'/'+m.shipsTotal],['Módulos instalados',m.modules]];
+ const chapters=r.chapters.length?r.chapters.map(c=>`<div class="og-record-row"><strong>${c.chapter===8?'Travessia':'Capítulo '+(c.chapter+1)}</strong><span>${num(c.actions)} ${c.actions===1?'ação':'ações'}</span><small>concluído na ação ${num(c.turn)}</small></div>`).join(''):'<p class="og-record-empty">Cada capítulo do Coro concluído aparece aqui, com quantas ações levou.</p>';
+ const achievements=r.achievements.map(a=>`<div class="og-record-achievement ${a.earned?'is-earned':''}"><b aria-hidden="true">${a.earned?'✦':''}</b><span><strong>${esc(a.title)}</strong><small>${esc(a.text)}</small>${a.earned?`<small class="og-record-when">${a.turn===null?'Conquistada antes do registro':'Conquistada na ação '+num(a.turn)}</small>`:`<progress value="${a.value}" max="${a.goal}" aria-label="${a.value} de ${a.goal}"></progress>`}</span></div>`);
+ return `<div class="og-record-list"><section><h3 class="og-record-title">A jornada</h3><div class="og-record-stats">${stats.filter((_,i)=>i%2===0).map((_,i)=>`<div class="og-record-pair">${stats.slice(i*2,i*2+2).map(([label,value])=>`<div><small>${label}</small><strong>${value}</strong></div>`).join('')}</div>`).join('')}</div></section>`+
+  // A heading travels with what follows it, so a page never ends on a lone title.
+  `<section><h3 class="og-record-title">Capítulos</h3>${chapters}</section><section><h3 class="og-record-title">Conquistas · ${r.earned}/${r.total}</h3>${achievements[0]}</section>${achievements.slice(1).join('')}</div>`;
+}
 function render(state,v={}){
 const survey=E.discoveryCatalog(state),g=survey.current;
-const tab=v.page==='galaxies'?'galaxies':v.page?.startsWith('materials')?'materials':'systems';
-const tabs=`<div class="og-atlas-tabs">${[['systems','Mundos','world'],['galaxies','Galáxias','galaxy'],['materials','Coleções','specimen']].map(([id,label,kind])=>`<button data-catalog-page="${id}" aria-pressed="${tab===id}">${kind==='specimen'?window.OrbitCommerce.art('lumenfern'):art(kind)}<span>${label}</span></button>`).join('')}</div>`;
+const tab=v.page==='galaxies'?'galaxies':v.page==='record'?'record':v.page?.startsWith('materials')?'materials':'systems';
+const tabs=`<div class="og-atlas-tabs">${[['systems','Mundos','world'],['galaxies','Galáxias','galaxy'],['materials','Coleções','specimen'],['record','Registro','record']].map(([id,label,kind])=>`<button data-catalog-page="${id}" aria-pressed="${tab===id}">${kind==='specimen'?window.OrbitCommerce.art('lumenfern'):kind==='record'?window.OrbitCommerce.art('data'):art(kind)}<span>${label}</span></button>`).join('')}</div>`;
 const base={singleCard:true,title:'Catálogo estelar',header:tabs};
 if(tab==='materials'){
  const category=v.page.split('-')[1];
@@ -5441,6 +5476,7 @@ if(tab==='materials'){
  return {...base,title:m.name,html:`<article class="og-atlas-detail">${window.OrbitCommerce.art(id)}<strong>${esc(m.name)}</strong><small>${esc(m.rarity||'Descoberto')} · ${state.resources[id]||0} a bordo</small><p>${esc(m.description||'Recurso utilizado na nave e negociado nos entrepostos.')}</p><p>Referência comercial: ${m.base} Lumes/un.</p>${sources.length?`<label class="og-atlas-picker">Fontes analisadas<select data-atlas-source>${sources.map(p=>`<option value="${esc(p.id)}" ${p.id===v.sourceId?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label><button class="og-atlas-route" data-catalog-planet="${esc(sources.find(p=>p.id===v.sourceId)?.id||sources[0].id)}">${window.OrbitArt.icon('warp')}<small>Ver no mapa</small></button>`:'<p>Nenhuma fonte analisada nesta galáxia.</p>'}</article>`};}
  return {...base,title:category,html:`<div class="og-atlas-grid">${entries.map(([id,m])=>E.materialKnown(state,id)?`<button class="og-atlas-tile" data-catalog-material="${id}">${window.OrbitCommerce.art(id)}<strong>${esc(m.name)}</strong><small>${esc(m.rarity||'Descoberto')}</small></button>`:`<article class="og-atlas-tile is-unknown" aria-label="Item não descoberto"><div class="og-silhouette">${window.OrbitCommerce.art(id)}<b>?</b></div><strong>Não descoberto</strong><small>Explore para revelar</small></article>`).join('')}</div>`};
 }
+if(tab==='record')return {...base,singleCard:false,title:'Registro do explorador',html:record(state)};
 if(tab==='galaxies'){
  const records=[g,...survey.archives],i=Math.max(0,Math.min(records.length-1,v.recordIndex||0)),record=records[i];
  return {...base,html:selector(records,i,'recordIndex','Galáxias visitadas')+`<article class="og-atlas-detail">${art('galaxy',record.kind)}<strong>${esc(record.name)}</strong><small>${i===0?'Local atual':'Viagem registrada'} · ${record.discovered}/${record.totalPlanets} mundos</small>${meter(record)}<p>Outras galáxias permanecem um mistério até sua chegada.</p>${survey.earlier?.totalGalaxies?`<small>${survey.earlier.totalGalaxies} viagens anteriores preservadas no total.</small>`:''}</article>`};
@@ -5459,7 +5495,7 @@ window.OrbitDiscoveryCatalog={render,paint};
 (function () {
   'use strict';
   // Pages preserve the real controls and split content at semantic boundaries.
-  const containers = '.og-lab,.og-module-list,.og-comparison,.og-facts,.og-system-metrics,.og-system-operations,.og-requirements,.og-instructions,.og-lab-fit-rows,.og-catalog-list,.og-xeno-collection,.og-fleet-list,.og-xeno-modules,.og-xeno-hints,.og-xeno-runes,.og-xeno-tools';
+  const containers = '.og-lab,.og-module-list,.og-comparison,.og-facts,.og-system-metrics,.og-system-operations,.og-requirements,.og-instructions,.og-lab-fit-rows,.og-catalog-list,.og-xeno-collection,.og-fleet-list,.og-xeno-modules,.og-xeno-hints,.og-xeno-runes,.og-xeno-tools,.og-record-list,.og-record-stats';
   function wrapLike(parent, child) {
     const wrapper = parent.cloneNode(false);
     wrapper.removeAttribute('id');
@@ -6332,6 +6368,86 @@ function valid(s){
 E.validate=s=>base.validate(s)&&valid(s);
 E.create=(...args)=>{const s=base.create(...args);s.fleet=fresh();return s;};
 E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===undefined)s.fleet=fresh();return valid(s)&&base.validate(s)?s:null;};
+})(typeof window==='object'?window:globalThis);
+
+(function(root){
+'use strict';
+// Explorer's record: the journey in numbers, how many actions each campaign chapter took, and achievements derived
+// from what the game already counts. Only two things are stored (s.journal): the action at which each chapter closed
+// and the action at which each achievement was earned. Everything else is read from the journey itself.
+const E=root.OrbitEngine;if(!E||E.explorerRecord)return;
+const base={create:E.create,dispatch:E.dispatch,validate:E.validate,restore:E.restore};
+function metrics(s){
+ const t=E.discoveryCatalog(s).totals,mats=Object.keys(E.materials||{}),x=s.xeno||{captured:[]},p=s.progress||{},d=s.discovery||{};
+ const modules=[...Object.values(s.equipped||{}),...(s.inventory||[])];
+ return {
+  galaxies:s.visitedGalaxies||1,worlds:t.discovered,worldsDone:t.completed,sites:t.completedSites,
+  landings:p.landings||0,warps:p.warps||0,modules:p.modulesEquipped||0,extractions:d.extractions||0,evacuations:d.evacuations||0,
+  materials:mats.filter(id=>E.materialKnown(s,id)).length,materialsTotal:mats.length,
+  uniques:x.captured.length,uniquesTotal:E.xenoView?E.xenoView(s).total:16,runes:modules.filter(m=>m.rune).length,
+  ships:s.fleet?.owned.length||1,shipsTotal:E.fleetCatalog?.SHIPS.length||1,
+  chapter:s.campaign?.chapter||0,finished:s.campaign?.finished?1:0,actions:s.turn||0};
+}
+// [id, title, what it asks, metric, goal]. A goal written as a metric name reads the total from that metric.
+const ACHIEVEMENTS=[
+ ['first-landing','Primeiro pouso','Pousar num planeta','landings',1],
+ ['dust','Pés na poeira','Concluir 10 locais de exploração','sites',10],
+ ['pathfinder','Desbravador','Concluir 40 locais de exploração','sites',40],
+ ['whole-world','Mundo por inteiro','Concluir todos os locais de um planeta','worldsDone',1],
+ ['cartographer','Cartógrafo','Catalogar 25 mundos','worlds',25],
+ ['beyond','Além do Véu','Chegar a uma segunda galáxia','galaxies',2],
+ ['wanderer','Andarilho das galáxias','Visitar 8 galáxias','galaxies',8],
+ ['full-hold','Porão cheio','Extrair a carga de 10 expedições','extractions',10],
+ ['naturalist','Naturalista','Descobrir todos os recursos e espécies das coleções','materials','materialsTotal'],
+ ['first-unique','Primeiro exemplar','Capturar um exemplar único','uniques',1],
+ ['keeper','Guardião dos únicos','Capturar todos os exemplares únicos','uniques','uniquesTotal'],
+ ['engraver','Gravador de runas','Gravar uma runa num módulo','runes',1],
+ ['second-ship','Segunda nave','Ter duas naves no hangar','ships',2],
+ ['fleet','Frota completa','Ter todas as naves no hangar','ships','shipsTotal'],
+ ['mechanic','Mecânico de bordo','Instalar 15 módulos','modules',15],
+ ['halfway','Meio caminho','Concluir quatro capítulos do Coro','chapter',4],
+ ['eight-voices','Oito vozes','Atravessar o Olho de Íris e restaurar Aurora','finished',1]
+].map(([id,title,text,metric,goal])=>({id,title,text,metric,goal}));
+const BY=Object.fromEntries(ACHIEVEMENTS.map(a=>[a.id,a]));
+const goalOf=(a,m)=>typeof a.goal==='string'?m[a.goal]:a.goal;
+const earnedNow=m=>ACHIEVEMENTS.filter(a=>m[a.metric]>=goalOf(a,m)).map(a=>a.id);
+// A journey that predates the record (or a state the tutorial just replaced) keeps what it already achieved, with the
+// moment unknown (null), and starts counting chapters from here.
+function fresh(s,turn=null){const earned={};for(const id of earnedNow(metrics(s)))earned[id]=turn;return {v:1,chapters:[],earned};}
+function ensure(s){if(!s.journal)s.journal=fresh(s);return s.journal;}
+function update(s,before){
+ const j=ensure(s),c=s.campaign,news=[];
+ if(c){for(let ch=before??c.chapter;ch<c.chapter;ch++)if(!j.chapters.some(r=>r.chapter===ch))j.chapters.push({chapter:ch,turn:s.turn});
+  if(c.finished&&c.chapter===8&&!j.chapters.some(r=>r.chapter===8))j.chapters.push({chapter:8,turn:s.turn});}
+ for(const id of earnedNow(metrics(s)))if(!Object.hasOwn(j.earned,id)){j.earned[id]=s.turn;news.push(id);}
+ return news;
+}
+E.dispatch=(s,a,p)=>{
+ const before=s.campaign?.chapter;ensure(s);
+ const result=base.dispatch(s,a,p);
+ // The tutorial replaces the whole state when skipped or finished: that new journey starts its own record.
+ if(!s.journal){s.journal=fresh(s,s.turn);return result;}
+ if(result?.ok){const news=update(s,before);if(news.length)result.achievements=news.map(id=>({id,title:BY[id].title,text:BY[id].text}));}
+ return result;
+};
+E.explorerRecord=s=>{
+ const j=ensure(s),m=metrics(s);
+ let previous=0;
+ const chapters=[...j.chapters].sort((a,b)=>a.chapter-b.chapter).map(r=>{const row={chapter:r.chapter,turn:r.turn,actions:r.turn-previous};previous=r.turn;return row;});
+ const achievements=ACHIEVEMENTS.map(a=>{const goal=goalOf(a,m),earned=Object.hasOwn(j.earned,a.id);return {id:a.id,title:a.title,text:a.text,goal,value:Math.min(goal,m[a.metric]),earned,turn:earned?j.earned[a.id]:null};});
+ return {metrics:m,chapters,achievements,earned:achievements.filter(a=>a.earned).length,total:ACHIEVEMENTS.length};
+};
+E.explorerAchievements=ACHIEVEMENTS;
+function valid(s){
+ const j=s.journal;if(j===undefined)return true;
+ if(!j||j.v!==1||!Array.isArray(j.chapters)||j.chapters.length>9||!j.earned||typeof j.earned!=='object'||Array.isArray(j.earned))return false;
+ const turn=v=>Number.isSafeInteger(v)&&v>=0&&v<=s.turn;
+ if(!j.chapters.every((r,i)=>r&&Number.isInteger(r.chapter)&&r.chapter>=0&&r.chapter<=8&&turn(r.turn)&&(i===0||r.chapter>j.chapters[i-1].chapter)))return false;
+ return Object.entries(j.earned).every(([id,v])=>Object.hasOwn(BY,id)&&(v===null||turn(v)));
+}
+E.validate=s=>base.validate(s)&&valid(s);
+E.create=(...args)=>{const s=base.create(...args);s.journal=fresh(s,0);return s;};
+E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.journal===undefined)s.journal=fresh(s);return valid(s)?s:null;};
 })(typeof window==='object'?window:globalThis);
 
 (function(root){
@@ -7479,6 +7595,9 @@ root.OrbitFeedback={show(container,result,action,state){
     // A chapter ends when its Coro technology is built: one of the eight big moments of the campaign.
     if(result.ok&&result.reward?.module?.origin==='campaign'&&state.campaign?.chapter>chapterBefore){const v=E.campaignView(state),lead=E.campaignLead(state);
      achievement({kind:'chapter',small:'Capítulo '+(beforeCampaign?.chapter||chapterBefore)+' de 8 concluído',title:result.reward.module.name,text:'Tecnologia do Coro '+v.completed+'/8. Instale-a para somar 12,5% de resistência dimensional.',next:lead?.title,module:result.reward.module});}
+    // An explorer's record achievement: a short banner, unless a mission milestone or a chapter card already speaks.
+    const conquest=result.achievements?.[0];
+    if(conquest&&!state.guide?.active&&!(newMarco&&action!=='expeditionExtract')&&!root.querySelector('.og-achievement.is-chapter')){const r=E.explorerRecord(state);achievement({kind:'marco',small:'Conquista · '+r.earned+'/'+r.total,title:conquest.title});}
     return result;
   }
   function handleClick(event){
