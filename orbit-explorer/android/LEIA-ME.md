@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.1
+# Órbita para Android — versão 0.3.2
 
-Pacotes da versão 0.3.1 gerados e assinados em `dist/orbita-0.3.1.apk` e `dist/orbita-0.3.1.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.2 gerados e assinados em `dist/orbita-0.3.2.apk` e `dist/orbita-0.3.2.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -116,3 +116,15 @@ python3 android/build-apk.py --bundle
 - Estação reorganizada para celular de 320 px e retorno dos postos para o planeta.
 
 `versionCode` 13, `versionName` 0.3.1. Partidas anteriores recebem o registro das civilizações ao carregar. Instalações limpas iniciam pela introdução.
+
+
+## Alterações 0.3.2
+
+- Aural exige restauração do viveiro e extração de duas espécies de flora.
+- Veyra exige reparo do farol e extração após ativar as duas balizas em dois locais perigosos.
+- Thar exige três biomas analisados, calibração do observatório e núcleos extraídos em dois sistemas.
+- Os postos oferecem uma troca única por povo. Orquídea de geada libera Arca de Sementes, Ferronita libera Âncora dos Viajantes e Medusa de vidro libera Prisma de Ecos.
+- As receitas recebidas são fabricadas na oficina. Cartões mostram recursos, componentes e bloqueios antes de confirmar.
+- Etapas de aliança já concluídas são preservadas. As novas atividades passam a contar após iniciar a aliança, e os objetivos de extração exigem retorno com sucesso.
+
+`versionCode` 14, `versionName` 0.3.2.

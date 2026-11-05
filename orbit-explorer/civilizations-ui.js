@@ -29,6 +29,7 @@
       "/100</small></span></button>"
     );
   }
+  let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
     const v = E.civilizationView(s);
@@ -36,17 +37,31 @@
       const costs = {
         Donate: { credits: 100 },
         Deliver: { [v.material]: 2 },
-        Ship: { credits: E.fleetCatalog.SHIPS.find((ship) => ship.id === v.ship).price },
-        Mission: [{ ore: 6, crystals: 2 }, { data: 30 }, { [v.material]: 3, data: 50 }][v.step] || {},
+        Ship: {
+          credits: E.fleetCatalog.SHIPS.find((ship) => ship.id === v.ship)
+            .price,
+        },
+        Restore: v.operation.cost,
+        Exchange: { [v.operation.material]: v.operation.amount },
+        Mission:
+          [
+            { ore: 6, crystals: 2 },
+            { data: 30 },
+            { [v.material]: 3, data: 50 },
+          ][v.step] || {},
       };
       const q = v.actions[action],
         required = costs[action] || {},
-        cost = Object.entries(required)
+        cost = Object.entries({
+          ...required,
+          ...(action === "Restore" ? v.operation.components : {}),
+        })
           .map(
             ([k, n]) =>
               n +
               " " +
               (E.materials[k]?.name ||
+                E.componentRecipes.find((r) => r.id === k)?.name ||
                 { credits: "Lumes", data: "dados" }[k] ||
                 k),
           )
@@ -68,6 +83,8 @@
           Ship: "Comprar nave",
           Paint: "Aplicar pintura",
           Visit: "Ouvir testemunho",
+          Restore: "Restaurar",
+          Exchange: "Trocar pela receita",
         }[action] +
         "</button>" +
         (!q.allowed ? "<small>" + esc(q.reason) + "</small>" : "") +
@@ -84,19 +101,91 @@
       '/100 de reputação</small><progress value="' +
       v.rep +
       '" max="100"></progress></div></div>';
-    if (name === "alien-post")
+    if (name === "alien-post") {
+      const tabs =
+        '<div class="og-post-tabs" role="group" aria-label="Atividades do posto">' +
+        [
+          ["Visit", "Contato"],
+          ["Restore", "Instalação"],
+          ["Exchange", "Troca"],
+        ]
+          .map(
+            ([id, label]) =>
+              '<button data-civ-tab="' +
+              id +
+              '" aria-pressed="' +
+              (postTab === id) +
+              '">' +
+              label +
+              "</button>",
+          )
+          .join("") +
+        "</div>";
+      const labels = {
+        Visit: "Uma voz preservada",
+        Restore: v.operation.title,
+        Exchange: v.exchangeRecipe.name,
+      };
+      const detail = {
+        Visit: v.visited ? v.witness : v.line,
+        Restore: v.activity.restored
+          ? v.operation.repair
+          : "Use componentes da oficina para recuperar esta instalação. Conta para a aliança.",
+        Exchange:
+          "Troca única. Receba uma receita permanente para fabricar na oficina.",
+      };
+      const quote = v.actions[postTab];
+      const costs = Object.entries(quote.cost || {})
+        .map(
+          ([id, n]) =>
+            "<span>" +
+            root.OrbitCommerce.art(id) +
+            "<b>" +
+            (s.resources[id] || 0) +
+            " / " +
+            n +
+            "</b><small>" +
+            esc(E.materials[id]?.name || id) +
+            "</small></span>",
+        )
+        .join("");
+      const parts = Object.entries(quote.components || {})
+        .map(
+          ([id, n]) =>
+            "<span>" +
+            root.OrbitCommerce.symbol(id) +
+            "<b>" +
+            (s.components[id] || 0) +
+            " / " +
+            n +
+            "</b><small>" +
+            esc(E.componentRecipes.find((r) => r.id === id).name) +
+            "</small></span>",
+        )
+        .join("");
       return {
         title: "Posto alienígena",
         singleCard: true,
-        header,
+        header: header + tabs,
         html:
           '<img class="og-post-landscape" src="' +
           root.OrbitIllustrations["alien-post"] +
           '" alt="Posto sob o céu de um mundo distante"><p>' +
-          esc(v.line) +
-          "</p>" +
-          button("Visit", "Uma voz preservada"),
+          esc(detail[postTab]) +
+          '</p><div class="og-post-costs">' +
+          costs +
+          parts +
+          "</div>" +
+          (postTab === "Exchange"
+            ? '<div class="og-post-recipe">' +
+              root.OrbitArt.icon(v.exchangeRecipe.type) +
+              "<small>" +
+              esc(v.exchangeRecipe.description) +
+              "</small></div>"
+            : "") +
+          button(postTab, labels[postTab]),
       };
+    }
     return {
       title: v.name,
       header,
@@ -106,12 +195,11 @@
         "</p><strong>Aliança · " +
         v.step +
         "/3</strong><p>" +
-        [
-          "Restaurar as instalações · entregar 6 minério e 2 cristais.",
-          "Ouvir o posto em " + esc(v.planet.name) + " e levar seu testemunho.",
-          "Conectar a memória do posto ao Coro.",
-          "Aliança concluída. Este povo faz parte da sua jornada.",
-        ][v.step] +
+        esc(v.objective.text) +
+        " · " +
+        Math.min(v.objective.done, v.objective.total) +
+        "/" +
+        v.objective.total +
         "</p>" +
         (v.step < 3 ? button("Mission", esc(v.missions[v.step])) : "") +
         "</article>" +
@@ -142,5 +230,12 @@
           "</small></span></button>"
       : "";
   }
-  root.OrbitCivilizationsUI = { entry, sheet, post };
+  root.OrbitCivilizationsUI = {
+    entry,
+    sheet,
+    post,
+    select(tab) {
+      if (["Visit", "Restore", "Exchange"].includes(tab)) postTab = tab;
+    },
+  };
 })(window);

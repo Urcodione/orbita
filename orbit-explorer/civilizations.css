@@ -184,3 +184,14 @@
   width: 88px;
   height: 88px;
 }
+
+#orbit-game .og-post-tabs{display:flex;gap:6px;padding:6px 0}
+#orbit-game .og-post-tabs button{flex:1;padding:8px 4px;border-radius:10px;background:#183440;color:#d6e6e3;min-height:40px;font-size:12px}
+#orbit-game .og-post-tabs [aria-pressed="true"]{background:#375b65;box-shadow:inset 0 -2px #deb776}
+#orbit-game .og-post-costs{display:flex;justify-content:center;gap:12px}
+#orbit-game .og-post-costs>span{display:grid;justify-items:center;max-width:90px;font-size:11px}
+#orbit-game .og-post-costs .og-trade-art,#orbit-game .og-post-costs .og-purpose-art{width:32px;height:32px}
+#orbit-game .og-post-recipe{display:flex;align-items:center;gap:8px;margin:5px 0}
+#orbit-game .og-post-recipe>span{width:44px;height:44px;flex:none}
+#orbit-game .og-post-recipe small{font-size:11px}
+@media(max-height:620px){#orbit-game [data-sheet="alien-post"] .og-post-landscape{height:40px}#orbit-game [data-sheet="alien-post"] .og-civ-offer{gap:4px;padding:5px}#orbit-game [data-sheet="alien-post"] .og-civ-offer>small:first-of-type{display:none}}

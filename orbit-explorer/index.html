@@ -1820,6 +1820,17 @@
   height: 88px;
 }
 
+#orbit-game .og-post-tabs{display:flex;gap:6px;padding:6px 0}
+#orbit-game .og-post-tabs button{flex:1;padding:8px 4px;border-radius:10px;background:#183440;color:#d6e6e3;min-height:40px;font-size:12px}
+#orbit-game .og-post-tabs [aria-pressed="true"]{background:#375b65;box-shadow:inset 0 -2px #deb776}
+#orbit-game .og-post-costs{display:flex;justify-content:center;gap:12px}
+#orbit-game .og-post-costs>span{display:grid;justify-items:center;max-width:90px;font-size:11px}
+#orbit-game .og-post-costs .og-trade-art,#orbit-game .og-post-costs .og-purpose-art{width:32px;height:32px}
+#orbit-game .og-post-recipe{display:flex;align-items:center;gap:8px;margin:5px 0}
+#orbit-game .og-post-recipe>span{width:44px;height:44px;flex:none}
+#orbit-game .og-post-recipe small{font-size:11px}
+@media(max-height:620px){#orbit-game [data-sheet="alien-post"] .og-post-landscape{height:40px}#orbit-game [data-sheet="alien-post"] .og-civ-offer{gap:4px;padding:5px}#orbit-game [data-sheet="alien-post"] .og-civ-offer>small:first-of-type{display:none}}
+
 #orbit-game{background:#10223b url("data:image/webp;base64,UklGRtwGAABXRUJQVlA4WAoAAAAgAAAAPwAAXwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDgg7gQAAHAWAJ0BKkAAYAA+mTyXSCWjIiExWdugsBMJaAC9UBhGTJjtndnD6wqtwBt02+gbz9Pr+iEYC4jZrXHy5dJkznvQBIUtKUs7kOtmUD/GMqA5VsD+XPw7LWnupco4Jmsud/SomReFlD+0Cm6qupyqcObDH0h3r82mtO7W7rj403SY/mevjjY0jwvlS5zl+I2AGnPBe7ZDztpWXEzaKAqHWUlOIx5X+ks2IuVYwjvWNReiA2FhdEi41poMvpYAAP75Kmtx6fDmXFiChC8AXnL3HqYMAlETEKsptMCgAb/YUrhiTMle2nEaqlXHUOKzLxaj/tbaj5EVnCoiZsLWMZ4qvC7GKxzEJaCfa6u8CVHLzTqAw6THTkZO61Nw7JePXVqAELecjPEVH8i1XTB2JoFoBBzzbpOb9KOZaNHcD9T1+rGTWEdyp0WRDnfPNvh+gzD9i/EfeTfjFcmHprJcJIozfrhP1ZSIakcg9GwS1oc1oCI08IF3M386F5CBXkbHZQfSPp9L2FdX6x4bIzezB0tWiDRYkWJOE6xjIGyczikDGCIdqLvcG7eJVIuDqI7AZam3qBwHa3/Xs49Cn75xVCIDYzjNLuycGoOv8kNzMwYiIjq4M0nUrag3j8zxBvPLc78aydrm970MWVlXYjAFS2ghEEMi8LODafKws4+cBEFiLyC6danSA6YYGPY65E4WdBboCoX1yvx5TCYdI+4aw6JaCriEMoa4hzeT+hg1PIy3RDDiE0Y3z1CJMOD4sTc9o/C+rRyVpibmVOhwL2EVpO6LJlrcAh2kgii5Ml8uWiR1bTUEohsGt7nXkikm8iol6cGmzzoe2PSRAJuxdAzhOnwd9PYXOPQraq5QiF0X4OF3vT0FH7htZP/hz6lGAg3OegNzYctY8sp2cQ7oU1s8soEmKo9qT/5hry7hgqFcYRis1uJIhGBVqUceHf05wYI26k0RNMQplcWuM0JKsHUOIUNN7aKGWZABZn1FQyEtB9VAJbDoDkMnyYMCplG5cx+GcGhHQSopG4o66yjaAmOQqQi8cvRCr2wo5l4zl/VJl0J2UIqzJ0FvVFtDHpVM+wYoGRSN69dfIISYT++44PZDMD6f7WW6wNye/cwaCPsO5zbu5rLnvljLUcPZwze9YMeKEOZcefgEYLbO+aG9SrCxg/dpSeW6jrQ8xUeN+SKraFBL+C66yWX2kDRe9nRWDW09Q3MslzvpoINw9UGI9c5gHTHTMsiKbeixWQ/87y2i3HH3bzd5ONSRpm5v1b8wfkAwyp/JecZcHL8tDgN93t0NV3u2h+6pSMWsHDO2ZdhVGma2A24DW/ZhWo8Ih/NzDG9M9AMmt0efc/RvD29XzAtPUguOdhd2The87IZHp22rhBbkCPwJnJyTIoBtLr8Ea5RV5DS53Z4DEfgOYR+JkqwTZPfEUThClO70QSb2HstA+pncUKwrjoIBbailYCUF3cTrXuUCZzXE5Rk1we0IzaXAqWk17Dz/a3GjtinSqLpW7kiW8a9em+ctpMxOpVELzjHfmGBuc29QbzR3U8EUPBaN60IlxERZiM4TiGPF04lib4coL0l+X0w12R8aI2lHnoj3l4kPah1t+SQaGhw399wdr3zKAIh/4zTxZKXRgUqvg7HtPb9iDLs6Aa7npyyxTEDUStwg9H5OyatFQi+H8W4qVAAA") center/cover no-repeat}
 </style>
 <div class="og-emulator viz-dotted-background">
@@ -6898,6 +6909,356 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
   };
 })(typeof window === "object" ? window : globalThis);
 
+(function (root) {
+  "use strict";
+  const E = root.OrbitEngine;
+  const base = {
+    create: E.create,
+    restore: E.restore,
+    validate: E.validate,
+    preview: E.preview,
+    dispatch: E.dispatch,
+    view: E.civilizationView,
+  };
+  const definitions = [
+    {
+      title: "Restaurar o viveiro",
+      components: { seal: 1 },
+      cost: { lumenfern: 2 },
+      material: "cryorchid",
+      amount: 1,
+      recipe: "aural-seedbank",
+      repair: "Viveiro restaurado. As sementes voltaram a respirar.",
+    },
+    {
+      title: "Reparar o farol",
+      components: { alloy: 2, circuit: 1 },
+      cost: {},
+      material: "ferronita",
+      amount: 3,
+      recipe: "veyra-beacon",
+      repair: "Farol restaurado. Os viajantes voltaram a receber seu sinal.",
+    },
+    {
+      title: "Calibrar o observatório",
+      components: { prism: 1, circuit: 1 },
+      cost: {},
+      material: "glassjelly",
+      amount: 1,
+      recipe: "thar-echo",
+      repair: "Observatório calibrado. Os ecos distantes podem ser comparados.",
+    },
+  ];
+  E.recipes.push(
+    {
+      id: "aural-seedbank",
+      name: "Arca de Sementes",
+      type: "life",
+      rarity: "rare",
+      power: 1.72,
+      specialty: "Biosfera conservadora",
+      description:
+        "Reserva biológica de ar para viagens longas. Prioriza autonomia.",
+      components: { seal: 2, battery: 1 },
+      cost: { credits: 45, data: 25 },
+      capabilities: { toxicity: 40 },
+      effects: { maxOxygen: 24, oxygenEfficiency: 0.25 },
+    },
+    {
+      id: "veyra-beacon",
+      name: "Âncora dos Viajantes",
+      type: "survival",
+      rarity: "rare",
+      power: 1.72,
+      specialty: "Travessias de tempestade",
+      description:
+        "Amortecedores e balizas protegem o rover em terreno hostil.",
+      components: { alloy: 2, circuit: 2 },
+      cost: { credits: 50, data: 30 },
+      capabilities: { heat: 350, cold: 120, radiation: 90 },
+      effects: { expeditionIntegrity: 3, hazardProtection: 1 },
+    },
+    {
+      id: "thar-echo",
+      name: "Prisma de Ecos",
+      type: "scanner",
+      rarity: "rare",
+      power: 1.72,
+      specialty: "Leitura de sinais distantes",
+      description:
+        "Óptica derivada da medusa de vidro para localizar sinais com maior alcance.",
+      components: { prism: 2, circuit: 2 },
+      cost: { credits: 55, data: 35 },
+      capabilities: {},
+      effects: { scanRadius: 1, scanBonus: 0.18 },
+    },
+  );
+  const fresh = () => ({
+    restored: false,
+    exchanged: false,
+    flora: [],
+    beacons: [],
+    biomes: [],
+    systems: [],
+  });
+  const index = (s) => (s.campaign?.atHome ? 0 : s.galaxyIndex) % 3;
+  const activity = (p) => p.activity || fresh();
+  function ensure(s) {
+    for (const p of s.civilizations.people) p.activity ||= fresh();
+    return s;
+  }
+  function valid(s) {
+    return (
+      !s.civilizations ||
+      s.civilizations.people.every((p) => {
+        const a = p.activity;
+        if (a === undefined) return true;
+        if (
+          !a ||
+          typeof a.restored !== "boolean" ||
+          typeof a.exchanged !== "boolean"
+        )
+          return false;
+        const unique = (key, max, check) =>
+          Array.isArray(a[key]) &&
+          a[key].length <= max &&
+          new Set(a[key]).size === a[key].length &&
+          a[key].every(check);
+        const location = (id, suffix) =>
+          typeof id === "string" &&
+          new RegExp("^g\\d+-" + suffix + "\\d+$").test(id) &&
+          Number(id.slice(1).split("-")[0]) <= s.galaxyIndex;
+        return (
+          unique("flora", 3, (id) => E.materials[id]?.category === "Flora") &&
+          unique("biomes", 3, (id) => Object.hasOwn(E.biomes, id)) &&
+          unique(
+            "beacons",
+            2,
+            (id) =>
+              typeof id === "string" &&
+              /^g\d+-p\d+-s\d+$/.test(id) &&
+              Number(id.slice(1).split("-")[0]) <= s.galaxyIndex,
+          ) &&
+          unique("systems", 2, (id) => location(id, "sys"))
+        );
+      })
+    );
+  }
+  const hazardous = (planet) =>
+    planet.weather >= 30 ||
+    planet.radiation >= 60 ||
+    Math.abs(planet.temperature) >= 100;
+  function objective(s) {
+    const p = s.civilizations.people[index(s)],
+      a = activity(p),
+      f = index(s);
+    if (p.step === 0)
+      return {
+        text: "Entregue materiais no entreposto para iniciar a aliança. As atividades de campo passam a contar após esta etapa.",
+        done: 0,
+        total: 1,
+      };
+    if (p.step === 3)
+      return {
+        text: "Aliança concluída. Seu reconhecimento e as etapas anteriores estão preservados.",
+        done: 3,
+        total: 3,
+      };
+    if (p.step === 1) {
+      const extra = f === 2 ? a.biomes.length : 0;
+      return {
+        text:
+          f === 2
+            ? "Analise três biomas diferentes e calibre o observatório no posto."
+            : "Visite o posto no primeiro mundo da galáxia e " +
+              (f === 0 ? "restaure seu viveiro." : "repare seu farol."),
+        done: Number(a.restored) + extra,
+        total: f === 2 ? 4 : 1,
+      };
+    }
+    return [
+      {
+        text: "Colete e extraia duas espécies de flora diferentes após iniciar a aliança. Compras não contam como coleta.",
+        done: a.flora.length,
+        total: 2,
+      },
+      {
+        text: "Ative as duas balizas e extraia de dois locais distintos com clima ≥30, radiação ≥60 ou temperatura além de ±100 °C.",
+        done: a.beacons.length,
+        total: 2,
+      },
+      {
+        text: "Recupere um núcleo e extraia em dois sistemas diferentes após iniciar a aliança.",
+        done: a.systems.length,
+        total: 2,
+      },
+    ][f];
+  }
+  function quote(s, action, payload = {}) {
+    const p = s.civilizations.people[index(s)],
+      a = activity(p),
+      d = definitions[index(s)];
+    const deny = (reason) => ({
+      allowed: false,
+      reason,
+      cost: {},
+      components: {},
+    });
+    if (action === "fabricate") {
+      const owner = definitions.findIndex((d) => d.recipe === payload.recipeId);
+      if (owner >= 0 && !activity(s.civilizations.people[owner]).exchanged)
+        return deny(
+          "Obtenha esta receita na troca especial do posto de " +
+            E.civilizationCatalog[owner].name +
+            ".",
+        );
+      return null;
+    }
+    if (action === "civMission") {
+      const goal = objective(s);
+      if (p.step > 0 && p.step < 3 && goal.done < goal.total)
+        return deny(
+          goal.text + " Progresso " + goal.done + "/" + goal.total + ".",
+        );
+      return null;
+    }
+    if (!["civRestore", "civExchange"].includes(action)) return null;
+    const cost = action === "civRestore" ? d.cost : { [d.material]: d.amount };
+    const components = action === "civRestore" ? d.components : {};
+    const result = { allowed: true, reason: "", cost, components };
+    const block = (reason) => ({ ...result, allowed: false, reason });
+    if (
+      s.guide?.active ||
+      s.expedition ||
+      s.location.stationId ||
+      s.location.mode !== "docked" ||
+      E.currentPlanet(s)?.id !== s.galaxy.planets[0].id ||
+      !E.currentPlanet(s).scanned
+    )
+      return block(
+        "Desça ao primeiro mundo analisado desta galáxia para acessar o posto.",
+      );
+    if (!p.visits.includes(E.currentPlanet(s).id))
+      return block("Ouça primeiro o testemunho deste posto.");
+    if (action === "civRestore" && (p.step === 0 || a.restored))
+      return block(
+        a.restored
+          ? "Instalação restaurada."
+          : "Inicie a aliança no entreposto antes de restaurar a instalação.",
+      );
+    if (action === "civExchange" && a.exchanged)
+      return block("Receita já recebida. Troca única por civilização.");
+    for (const [id, n] of Object.entries(cost))
+      if ((s.resources[id] || 0) < n)
+        return block(
+          "Faltam " +
+            (n - (s.resources[id] || 0)) +
+            " " +
+            E.materials[id].name +
+            ".",
+        );
+    for (const [id, n] of Object.entries(components))
+      if ((s.components[id] || 0) < n)
+        return block(
+          "Faltam " +
+            (n - (s.components[id] || 0)) +
+            " " +
+            E.componentRecipes.find((r) => r.id === id).name +
+            ".",
+        );
+    return result;
+  }
+  E.preview = (s, a, p) => quote(s, a, p) || base.preview(s, a, p);
+  function add(list, id, max) {
+    if (list.length < max && !list.includes(id)) list.push(id);
+  }
+  E.dispatch = (s, action, payload = {}) => {
+    const q = quote(s, action, payload);
+    if (q && !q.allowed) return { ok: false, message: q.reason };
+    if (["civRestore", "civExchange"].includes(action)) {
+      const n = ensure(JSON.parse(JSON.stringify(s))),
+        a = n.civilizations.people[index(n)].activity,
+        d = definitions[index(n)];
+      for (const [id, cost] of Object.entries(q.cost)) n.resources[id] -= cost;
+      for (const [id, cost] of Object.entries(q.components))
+        n.components[id] -= cost;
+      if (action === "civRestore") a.restored = true;
+      else a.exchanged = true;
+      n.turn++;
+      if (!E.validate(n))
+        return {
+          ok: false,
+          message: "Não foi possível preservar esta operação.",
+        };
+      E.commit(s, n);
+      return {
+        ok: true,
+        event: action,
+        cost: q.cost,
+        reward: {},
+        message:
+          action === "civRestore"
+            ? d.repair
+            : "Receita " +
+              E.recipes.find((r) => r.id === d.recipe).name +
+              " recebida. Disponível na oficina.",
+      };
+    }
+    const person = s.civilizations.people[index(s)],
+      started = person.step >= 1 && !s.guide?.active;
+    const expedition = s.expedition,
+      planet = E.currentPlanet(s),
+      f = index(s);
+    const observation = expedition
+      ? {
+          core: expedition.coreRecovered,
+          beacons: expedition.beacons?.length || 0,
+          site: expedition.siteId,
+        }
+      : null;
+    const result = base.dispatch(s, action, payload);
+    if (!result.ok) return result;
+    ensure(s);
+    if (started) {
+      const a = s.civilizations.people[f].activity;
+      if (action === "scan" && f === 2) add(a.biomes, planet.biome, 3);
+      if (action === "expeditionExtract" && observation) {
+        if (f === 0)
+          for (const [id, amount] of Object.entries(result.reward || {}))
+            if (amount > 0 && E.materials[id]?.category === "Flora")
+              add(a.flora, id, 2);
+        if (f === 1 && observation.beacons === 2 && hazardous(planet))
+          add(a.beacons, observation.site, 2);
+        if (f === 2 && observation.core) add(a.systems, planet.systemId, 2);
+      }
+    }
+    return result;
+  };
+  E.civilizationView = (s) => {
+    const view = base.view(s),
+      d = definitions[view.index],
+      a = activity(s.civilizations.people[view.index]);
+    return {
+      ...view,
+      objective: objective(s),
+      activity: a,
+      operation: d,
+      exchangeRecipe: E.recipes.find((r) => r.id === d.recipe),
+      actions: {
+        ...view.actions,
+        Restore: E.preview(s, "civRestore"),
+        Exchange: E.preview(s, "civExchange"),
+      },
+    };
+  };
+  E.validate = (s) => base.validate(s) && valid(s);
+  E.create = (...args) => ensure(base.create(...args));
+  E.restore = (data) => {
+    const s = base.restore(data);
+    return s && valid(s) ? ensure(s) : null;
+  };
+})(typeof window === "object" ? window : globalThis);
+
 (function(root){
 'use strict';
 // Explorer's record: the journey in numbers, how many actions each campaign chapter took, and achievements derived
@@ -7435,6 +7796,7 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
       "/100</small></span></button>"
     );
   }
+  let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
     const v = E.civilizationView(s);
@@ -7442,17 +7804,31 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
       const costs = {
         Donate: { credits: 100 },
         Deliver: { [v.material]: 2 },
-        Ship: { credits: E.fleetCatalog.SHIPS.find((ship) => ship.id === v.ship).price },
-        Mission: [{ ore: 6, crystals: 2 }, { data: 30 }, { [v.material]: 3, data: 50 }][v.step] || {},
+        Ship: {
+          credits: E.fleetCatalog.SHIPS.find((ship) => ship.id === v.ship)
+            .price,
+        },
+        Restore: v.operation.cost,
+        Exchange: { [v.operation.material]: v.operation.amount },
+        Mission:
+          [
+            { ore: 6, crystals: 2 },
+            { data: 30 },
+            { [v.material]: 3, data: 50 },
+          ][v.step] || {},
       };
       const q = v.actions[action],
         required = costs[action] || {},
-        cost = Object.entries(required)
+        cost = Object.entries({
+          ...required,
+          ...(action === "Restore" ? v.operation.components : {}),
+        })
           .map(
             ([k, n]) =>
               n +
               " " +
               (E.materials[k]?.name ||
+                E.componentRecipes.find((r) => r.id === k)?.name ||
                 { credits: "Lumes", data: "dados" }[k] ||
                 k),
           )
@@ -7474,6 +7850,8 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
           Ship: "Comprar nave",
           Paint: "Aplicar pintura",
           Visit: "Ouvir testemunho",
+          Restore: "Restaurar",
+          Exchange: "Trocar pela receita",
         }[action] +
         "</button>" +
         (!q.allowed ? "<small>" + esc(q.reason) + "</small>" : "") +
@@ -7490,19 +7868,91 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
       '/100 de reputação</small><progress value="' +
       v.rep +
       '" max="100"></progress></div></div>';
-    if (name === "alien-post")
+    if (name === "alien-post") {
+      const tabs =
+        '<div class="og-post-tabs" role="group" aria-label="Atividades do posto">' +
+        [
+          ["Visit", "Contato"],
+          ["Restore", "Instalação"],
+          ["Exchange", "Troca"],
+        ]
+          .map(
+            ([id, label]) =>
+              '<button data-civ-tab="' +
+              id +
+              '" aria-pressed="' +
+              (postTab === id) +
+              '">' +
+              label +
+              "</button>",
+          )
+          .join("") +
+        "</div>";
+      const labels = {
+        Visit: "Uma voz preservada",
+        Restore: v.operation.title,
+        Exchange: v.exchangeRecipe.name,
+      };
+      const detail = {
+        Visit: v.visited ? v.witness : v.line,
+        Restore: v.activity.restored
+          ? v.operation.repair
+          : "Use componentes da oficina para recuperar esta instalação. Conta para a aliança.",
+        Exchange:
+          "Troca única. Receba uma receita permanente para fabricar na oficina.",
+      };
+      const quote = v.actions[postTab];
+      const costs = Object.entries(quote.cost || {})
+        .map(
+          ([id, n]) =>
+            "<span>" +
+            root.OrbitCommerce.art(id) +
+            "<b>" +
+            (s.resources[id] || 0) +
+            " / " +
+            n +
+            "</b><small>" +
+            esc(E.materials[id]?.name || id) +
+            "</small></span>",
+        )
+        .join("");
+      const parts = Object.entries(quote.components || {})
+        .map(
+          ([id, n]) =>
+            "<span>" +
+            root.OrbitCommerce.symbol(id) +
+            "<b>" +
+            (s.components[id] || 0) +
+            " / " +
+            n +
+            "</b><small>" +
+            esc(E.componentRecipes.find((r) => r.id === id).name) +
+            "</small></span>",
+        )
+        .join("");
       return {
         title: "Posto alienígena",
         singleCard: true,
-        header,
+        header: header + tabs,
         html:
           '<img class="og-post-landscape" src="' +
           root.OrbitIllustrations["alien-post"] +
           '" alt="Posto sob o céu de um mundo distante"><p>' +
-          esc(v.line) +
-          "</p>" +
-          button("Visit", "Uma voz preservada"),
+          esc(detail[postTab]) +
+          '</p><div class="og-post-costs">' +
+          costs +
+          parts +
+          "</div>" +
+          (postTab === "Exchange"
+            ? '<div class="og-post-recipe">' +
+              root.OrbitArt.icon(v.exchangeRecipe.type) +
+              "<small>" +
+              esc(v.exchangeRecipe.description) +
+              "</small></div>"
+            : "") +
+          button(postTab, labels[postTab]),
       };
+    }
     return {
       title: v.name,
       header,
@@ -7512,12 +7962,11 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
         "</p><strong>Aliança · " +
         v.step +
         "/3</strong><p>" +
-        [
-          "Restaurar as instalações · entregar 6 minério e 2 cristais.",
-          "Ouvir o posto em " + esc(v.planet.name) + " e levar seu testemunho.",
-          "Conectar a memória do posto ao Coro.",
-          "Aliança concluída. Este povo faz parte da sua jornada.",
-        ][v.step] +
+        esc(v.objective.text) +
+        " · " +
+        Math.min(v.objective.done, v.objective.total) +
+        "/" +
+        v.objective.total +
         "</p>" +
         (v.step < 3 ? button("Mission", esc(v.missions[v.step])) : "") +
         "</article>" +
@@ -7548,7 +7997,14 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
           "</small></span></button>"
       : "";
   }
-  root.OrbitCivilizationsUI = { entry, sheet, post };
+  root.OrbitCivilizationsUI = {
+    entry,
+    sheet,
+    post,
+    select(tab) {
+      if (["Visit", "Restore", "Exchange"].includes(tab)) postTab = tab;
+    },
+  };
 })(window);
 
 (function (root) {
@@ -8414,6 +8870,7 @@ root.OrbitFeedback={show(container,result,action,state){
   function handleClick(event){
     if(event.target===$('og-sheet-backdrop')){dismissSheet();return;}
     const control=event.target.closest('button');if(!control||!root.contains(control)||control.disabled)return;
+    if(control.dataset.civTab){window.OrbitCivilizationsUI.select(control.dataset.civTab);sheetNotice='';renderSheet();return;}
     if(control.dataset.campaignPage){campaignPage=control.dataset.campaignPage;sheetPage=0;sheetNotice='';renderSheet();return;}
     if(control.dataset.resourceStep){const ids=E.market(state).rows.map(g=>g.id),i=ids.indexOf(commerceView.resource);commerceView.resource=ids[(i+Number(control.dataset.resourceStep)+ids.length)%ids.length];commerceView.quantity=1;commerceView.side='buy';sheetPage=0;renderSheet();return;}
     if(control.dataset.tradeSide){commerceView.side=control.dataset.tradeSide;renderSheet();return;}
