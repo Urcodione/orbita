@@ -80,7 +80,7 @@
     if(['stored-module','system-module'].includes(sheet)&&moduleOrigin==='ship')return {label:'Nave aberta',action:'ship-overview'};
     if(sheet==='system-module'&&moduleOrigin==='inventory'&&!selectedCandidateId)return {label:'Módulos',action:'modules'};
     if(sheet==='fabricator'){const prev=lab.history?.at(-1);return {label:lab.page==='component'?(prev?.page==='component'?'Peça principal':lab.returnRecipeId?'Receita':prev?.page==='components'?'Componentes':'Bancada'):lab.page==='recipe'?'Categoria':lab.page==='type'?'Categorias':'Oficina',action:'lab-parent'};}
-    const places={fleet:['Nave aberta','ship-overview'],'fleet-trader':['Estação','station'],xeno:['Menu','menu'],'xeno-specimen':['Laboratório','xeno'],'xeno-rune':['Laboratório','xeno'],'xeno-tools':['Estação','station'],'station-route':['Mapa','world'],settings:['Menu','menu'],saves:['Menu','menu'],'save-review':['Partida segura','saves'],contracts:['Estação','station'],'overdrive-menu':['Retorno à nave','expedition-return-menu'],'stock-components':['Estoque','stock'],station:['Mapa','world'],market:['Estação','station'],'market-item':['Mercado','market'],stock:['Nave','world'],modules:['Estoque','stock'],'stored-module':['Módulos','modules'],'salvage-review':['Cartão','stored-module'],workshop:['Nave','world'],maintenance:['Oficina','workshop'],fabricated:['Módulos','modules'],'system-module':[selectedCandidateId?'Cartão':'Nave aberta',selectedCandidateId?'stored-module':'ship-overview'],'cargo-content':['Estoque','stock']};
+    const places={civilizations:['Estação','station'],'alien-post':['Planeta','world'],fleet:['Nave aberta','ship-overview'],'fleet-trader':['Estação','station'],xeno:['Menu','menu'],'xeno-specimen':['Laboratório','xeno'],'xeno-rune':['Laboratório','xeno'],'xeno-tools':['Estação','station'],'station-route':['Mapa','world'],settings:['Menu','menu'],saves:['Menu','menu'],'save-review':['Partida segura','saves'],contracts:['Estação','station'],'overdrive-menu':['Retorno à nave','expedition-return-menu'],'stock-components':['Estoque','stock'],station:['Mapa','world'],market:['Estação','station'],'market-item':['Mercado','market'],stock:['Nave','world'],modules:['Estoque','stock'],'stored-module':['Módulos','modules'],'salvage-review':['Cartão','stored-module'],workshop:['Nave','world'],maintenance:['Oficina','workshop'],fabricated:['Módulos','modules'],'system-module':[selectedCandidateId?'Cartão':'Nave aberta',selectedCandidateId?'stored-module':'ship-overview'],'cargo-content':['Estoque','stock']};
     const [label,action]=places[sheet]||['Jogo','world'];return {label,action};
   }
   function updateHistoryButtons(){}
@@ -165,6 +165,7 @@
     $('og-resources').innerHTML=ex?`<div id="og-field-energy" class="og-field-energy ${ex.returnBlocked?'is-danger':ex.returnMargin<=3?'is-warning':''}" aria-label="Reserva da expedição"><div><span>${window.OrbitJourney.glyph('reserve')}ENERGIA</span><strong>${ex.reserve}<small> / ${ex.maxReserve}</small></strong></div><div><span>${window.OrbitJourney.glyph('return')}VOLTA</span><strong>${ex.returnReserve??'—'}</strong></div><div><span>${window.OrbitJourney.glyph('free')}LIVRE</span><strong>${ex.returnMargin??'—'}</strong></div></div>`:resource('hull','Casco',r.hull,s.maxHull,'var(--og-green)')+resource('oxygen','Oxigênio',r.oxygen,s.maxOxygen,'var(--og-blue)')+resource('fuel','Combustível',r.fuel,s.maxFuel,'var(--og-orange)');
     root.querySelectorAll('.og-tabs button').forEach(b=>{b.classList.toggle('is-active',b.dataset.tab===tab);b.setAttribute('aria-pressed',String(b.dataset.tab===tab));});
     window.OrbitFleetUI?.apply(state);
+    if(window.OrbitIllustrations?.civilizations)root.style.setProperty('--og-civil-art','url('+window.OrbitIllustrations.civilizations+')');
     scene.update({planet:p,shipModel:state.fleet?.active||'andorinha',shipColor:state.ship.color,shipTrail:state.ship.trail||'blue',modules:state.equipped,resources:state.resources,shipDetail:tab==='ship'?shipDetail:{mode:'exterior'},mode:state.location.mode,view:tab==='ship'?'ship':tab==='galaxy'?'galaxy':'explore',viewport:'mobile',navigation:tab==='galaxy'?navigationData():null});
     $('og-map').hidden=tab!=='galaxy';$('og-field').hidden=!ex;$('og-beacon').hidden=tab!=='expedition'||!!ex;$('og-context').hidden=false;$('og-heading').hidden=false;root.querySelector('.og-camera-control').hidden=tab==='galaxy'||tab==='expedition';
     fieldScene?.update({planet:here(),view:ex});
@@ -198,7 +199,7 @@
     else if(remaining)content=`${riskBadge(a)}<h2>${p.medium==='gas'?'Sinais entre as tempestades.':p.medium==='liquid'?'Abaixo da superfície.':'A escotilha está aberta.'}</h2><p>${remaining} pontos com descobertas restantes · ${p.sites.filter(x=>x.explored).length}/${p.sites.length} tecnologias extraídas</p><button class="og-button primary" data-action="sites">Iniciar uma expedição</button><div class="og-context-links"><button class="og-link" data-action="environment">Ver condições</button><button class="og-link" data-action="launch">Voltar à órbita ↑</button></div>`;
     else content=`<h2>Fronteira catalogada.</h2><p>Os locais foram explorados. Há outros sistemas para descobrir.</p>${button('launch','Voltar às estrelas',{primary:true})}<button class="og-link" data-action="planet-info">Ver análise do planeta</button>`;
     $('og-heading').insertAdjacentHTML('beforeend',window.OrbitJourney.tracker(state));
-    $('og-context').innerHTML=(state.location.stationId||state.expedition?'':signal)+content;
+    $('og-context').innerHTML=(state.location.stationId||state.expedition?'':signal)+content+(docked?window.OrbitCivilizationsUI?.post(state)||'':'');
   }
   function renderShip(){
     const d=shipDetail;
@@ -416,6 +417,7 @@
   }
   function sheetBody(){
     const xeno=window.OrbitXenoUI?.sheet(sheet,state);if(xeno)return xeno;
+    const civ=window.OrbitCivilizationsUI?.sheet(sheet,state);if(civ)return civ;
     const fleet=window.OrbitFleetUI?.sheet(sheet,state);if(fleet)return fleet;
     const extra=window.OrbitVoyageUI.sheet(sheet,state,pendingImport);if(extra)return extra;
     const p=here(),r=state.resources,s=E.stats(state);
@@ -580,7 +582,7 @@
     if(hadFocus){const candidates=[...backdrop.querySelectorAll('button,input,select')].filter(el=>el.getClientRects().length);const previous=focusKey&&candidates.find(el=>focusKey.id?el.id===focusKey.id:Object.keys(focusKey).length&&Object.entries(focusKey).every(([key,value])=>el.dataset[key]===value));(previous&&!previous.disabled?previous:backdrop.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});}
   }
   function openSheet(name){
-    if(['station','market','contracts'].includes(name)&&!state.location.stationId)name='station-route';
+    if(['station','market','contracts','civilizations'].includes(name)&&!state.location.stationId)name='station-route';
     const source=sheet,labels={fleet:'Hangar','fleet-trader':'Viajante',journey:'Objetivo',stock:'Estoque',station:'Estação',workshop:'Oficina',menu:'Menu',status:'Condição da nave',market:'Mercado',modules:'Módulos',fabricator:'Receita',journey:'Objetivo','planet-info':'Análise do planeta',sites:'Pontos de exploração'};
     const entrances={fleet:['station','fleet-trader'],'fleet-trader':['station'],campaign:['journey','stock','menu'],'reset-menu':['menu'],stock:['station','workshop','menu'],workshop:['station','menu','status'],modules:['stock','workshop','station','menu','fabricator'],market:['station'], 'market-item':['stock','market'],catalog:['menu'],help:['menu'],environment:['planet-info','sites'],sites:['planet-info'],'rescue-menu':['workshop'],customize:['menu']};
     if(name==='planet-info')delete placeParents['planet-info'];
@@ -642,13 +644,14 @@
     const installReturn=installedType&&!wasGuided?(moduleOrigin==='inventory'?'modules':moduleOrigin==='fabricated'&&fabricatedParent==='campaign'?'campaign':moduleOrigin==='fabricated'?'fabricator':null):null;
     if(installedType&&moduleOrigin!=='workshop'&&!installReturn){tab='ship';shipDetail={mode:'interior'};scene.resetCamera();}
     if(['scan','dock','travel','warp'].includes(action)){scene.effect(action);root.dataset.effect=action;$('og-effect').textContent=({scan:'Sinais identificados',dock:here().medium==='gas'?'Sonda atmosférica ativa':here().medium==='liquid'?'Submersão iniciada':'Ancoragem concluída',travel:'Traçando rota',warp:'Dobra espacial'})[action];clearTimeout(effectTimer);effectTimer=setTimeout(()=>delete root.dataset.effect,1300);}
-    if(sheet)sheetNotice=['expeditionTune','expeditionTask','craftComponent','paint','trail','rename'].includes(action)?'':result.message;
+    if(sheet)sheetNotice=action.startsWith('civ')||['stationDock','expeditionTune','expeditionTask','craftComponent','paint','trail','rename'].includes(action)?'':result.message;
     beep(action);save();render();
     if(metricsBefore&&result.ok)showShipDelta(metricsBefore,E.shipMetrics(state));
     // Each exemplar has its own capture cinematic; it cannot be skipped (taps, keys and Back wait for it).
     if(result.ok&&action==='xenoCapture'&&state.xeno?.pending){if(window.OrbitXenoCinema)window.OrbitXenoCinema.play(root,state.xeno.pending);else window.OrbitXenoUI?.captured(root,state.xeno.pending);}
     if(result.ok&&result.reward?.specimen)window.OrbitXenoUI?.arrived(root,result.reward.specimen);
     window.OrbitFeedback?.show(root,result,action,state);
+    if(result.cinema&&!result.marco&&!result.reward?.specimen)afterSheet(()=>window.OrbitArrivalCinema?.show(root,result.cinema.kind,state,result.cinema.seen));
     if(installedType){scene.effect('equip',installedType);const equipped=state.equipped[installedType],resistance=E.campaignView(state).resistance;toast(equipped.name+' instalado.'+(equipped.mission?' Resistência dimensional: '+resistance+'%.':''));}
     if(installedType&&moduleOrigin==='workshop')openSheet('fabricator');
     else if(installReturn){const parent=placeParents[installReturn];openSheet(installReturn);if(parent)placeParents[installReturn]=parent;updateHistoryButtons();renderSheet();}
@@ -670,6 +673,7 @@
     else if(action==='fabricate'||action==='campaignCraft'||action==='claimBeacon'){fabricatedParent=action==='claimBeacon'?'campaign':'fabricator';reward=result.reward;if(reward?.module){moduleOrigin=action==='fabricate'?'workshop':'fabricated';systemType=reward.module.type;selectedCandidateId=reward.module.id;sheetNotice='';openSheet('system-module');}else openSheet('fabricated');}
     else if(fieldAction&&!sheet){if(action==='expeditionScan')fieldScene?.effect('scan');$('og-field-cells').querySelector('button:not(:disabled):not([data-field-hint])')?.focus({preventScroll:true});}
     else if(!sheet&&action!=='paint'&&action!=='rename'&&action!=='explore')toast(result.message);
+    if(action.startsWith('civ'))toast(result.message);
     if(action==='craftComponent')craftFeedback((state.components?.[payload.componentId]||0)-craftBefore,craftAnchor,result.message);
     if(action==='explore')$('og-field-cells').querySelector('button:not(:disabled):not([data-field-hint])')?.focus({preventScroll:true});
     if(action==='equip'&&wasGuided&&!state.guide?.active)toast('Treinamento concluído! Use Mapa para viajar, Nave para gerenciar peças e Missão para seguir o Coro.');
@@ -735,7 +739,7 @@
     if(action==='system-lab'){lab={page:'type',type:control.dataset.type,history:[{page:'home'}]};openSheet('fabricator');return;}
     if(action==='fabricator'){lab={page:'home',history:[]};openSheet('fabricator');return;}
     if(action==='rescue-menu'&&!preview('rescue').allowed)return;
-    if(['overdrive-menu','menu','help','xeno','xeno-tools','fleet','fleet-trader','planet-info','sites','modules','customize','workshop','status','warp-menu','rescue-menu','reset-menu','settings','saves','contracts','route-info','expedition-cargo','expedition-abort-menu'].includes(action)){openSheet(action);return;}
+    if(['civilizations','alien-post','overdrive-menu','menu','help','xeno','xeno-tools','fleet','fleet-trader','planet-info','sites','modules','customize','workshop','status','warp-menu','rescue-menu','reset-menu','settings','saves','contracts','route-info','expedition-cargo','expedition-abort-menu'].includes(action)){openSheet(action);return;}
     if(action==='close-sheet'){dismissSheet();return;}
     if(action==='open-interior'){showShip('interior');return;}
     if(action==='ship-back'){shipBack();return;}
@@ -766,6 +770,7 @@
   function onSubmit(event){if(event.target.id==='og-name-form'){event.preventDefault();act('rename',{name:$('og-name').value.trim()});}}
   function navigateBack(){
     // By design, Back is consumed during the introduction and the guided training (use the scene controls or Skip).
+    if(root.querySelector('.og-arrival')){window.OrbitArrivalCinema.close();return true;}
     if(window.OrbitXenoCinema?.isPlaying())return true;
     {const card=root.querySelector('.og-achievement.is-chapter');if(card){card.remove();return true;}}if(root.querySelector('.og-story-clip')||state.guide?.active)return true;
     if(sheet){stepNavigation();save();return true;}

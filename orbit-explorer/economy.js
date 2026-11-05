@@ -45,7 +45,7 @@ function market(state,now=Date.now()){
   const cap=id==='oxygen'?stats.maxOxygen:id==='fuel'?stats.maxFuel:999;
   return {id,name:g.name,abundance,stock,target,buy,sell,resell:!['fuel','oxygen'].includes(id),demandRemaining:Math.max(0,demand-sold),owned:state.resources[id]||0,cap,label:abundance>=.4?'Oferta abundante':abundance>=.2?'Oferta equilibrada':'Recurso escasso'};
  }).filter(g=>known(state,g.id));
- return {systemId:system.id,systemName:system.name,name:'Entreposto '+system.name,people:['Consórcio Aural','Nômades Veyra','Liga Thar'][state.galaxyIndex%3],cycle,refreshSeconds:Math.ceil(((cycle+1)*interval-now)/1000),buyingBudget:Math.max(0,400-(saved?.cycle===cycle?(saved.spent||0):0)),rows};
+ return {systemId:system.id,systemName:system.name,name:'Entreposto '+system.name,people:['Consórcio Aural','Nômades Veyra','Liga Thar'][(state.campaign?.atHome?0:state.galaxyIndex)%3],cycle,refreshSeconds:Math.ceil(((cycle+1)*interval-now)/1000),buyingBudget:Math.max(0,400-(saved?.cycle===cycle?(saved.spent||0):0)),rows};
 }
 function quote(state,payload={},now=Date.now()){
  const m=market(state,now),g=m.rows.find(g=>g.id===payload.resource),quantity=Number(payload.quantity),side=payload.side;

@@ -36,7 +36,7 @@ function sheet(name,s){if(name==='fleet-trader')return trader(s);if(name==='flee
 function stationRow(s){
  if(s.guide?.active)return '';const v=E.fleetView(s),o=v.offer;
  return `<div class="og-fleet-row">`+(o?`<button class="og-fleet-merchant" data-action="fleet-trader">${picture(o.id,'is-thumb')}<span><small>Viajante no entreposto</small><strong>${esc(o.name)} à venda</strong><small>${esc(o.role)} · ${fmt(o.price)} Lumes</small></span></button>`:'')+
-  `<button class="og-link og-fleet-hangar" data-action="fleet">Hangar · ${v.ships.length} ${v.ships.length===1?'nave':'naves'}</button></div>`;
+  `</div>`;
 }
 // Small ship pictures in buttons and cards follow the active ship.
 let shown='';

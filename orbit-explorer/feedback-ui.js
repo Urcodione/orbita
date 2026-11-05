@@ -34,6 +34,6 @@ root.OrbitFeedback={show(container,result,action,state){
  if(!result?.ok)return;
  // The extraction summary already lists every reward; floating numbers would only repeat it.
  if(action!=='expeditionExtract')float(container,chips(result,action),!!state.expedition&&action==='expeditionCollect');
- if(action==='expeditionExtract')for(const [id,amount]of Object.entries(result.reward||{}))if(E.materials?.[id]?.bio!==undefined&&amount>0&&!seenSet().has(id)){markSeen(id);const wait=container.querySelector('.og-xeno-scene')?4300:0;setTimeout(()=>speciesCard(container,id,amount),wait);break;}
+ if(action==='expeditionExtract')for(const [id,amount]of Object.entries(result.reward||{}))if(E.materials?.[id]?.bio!==undefined&&amount>0&&!seenSet().has(id)){markSeen(id);const wait=result.cinema?(result.cinema.seen?1500:4300):container.querySelector('.og-xeno-scene')?4300:0;setTimeout(()=>speciesCard(container,id,amount),wait);break;}
 }};
 })(window);

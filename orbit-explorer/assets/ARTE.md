@@ -85,3 +85,14 @@ Os prompts finais, por ID, estão em [src/xeno-prompts.json](src/xeno-prompts.js
 ## 2026-11-01 — Frota de exploração
 
 Nove pares de cascos fechados e abertos em PNG RGBA 1024 × 1536. Geração individual com imagegen, seguida de edição de cada casco com referência e registro dos encaixes na guia. Referências: Andorinha fechada e aberta, atlas de módulos e atlas cósmico. Prompts em [src/ships/prompts.json](src/ships/prompts.json) e coordenadas dos bocais em [src/ships/naves.json](src/ships/naves.json).
+
+
+## Civilizações e chegadas — 04/11/2026
+
+Original em `src/civilizations/atlas.png`, gerado com a ferramenta de imagens. Atlas 1536 × 1024, três colunas e duas linhas. Primeira linha com Iara (Aural, botânica âmbar), Khar (Veyra, engenheiro cobre) e Seli (Thar, arquivista azul). Segunda linha com baía orbital, colheita em bosque luminoso e posto alienígena.
+
+Direção de arte empregada
+
+Premium painterly animated-film science-fiction adventure. Warm ivory ceramic, copper fittings, deep teal glass, rich dimensional materials and luminous atmospheric light. Three distinct alien ambassadors, orbital docking bay with empty central approach, luminous botanical collection scene and a welcoming alien planetary outpost. Wonder and contemplative adventure, no military aesthetic, no horror, no flat vector, no typography or watermark. Six equal square panels in a three-column, two-row atlas.
+
+`civilizations-atlas.webp` preserva o atlas. `arrival-dock.webp`, `arrival-harvest.webp` e `alien-post.webp` são recortes quadrados de 512 px, comprimidos em WebP com qualidade 86. As cenas usam recorte proporcional ao visor. Colheitas em outros biomas reutilizam os respectivos ambientes do atlas `cine-landscapes` e a figura do recurso do catálogo.

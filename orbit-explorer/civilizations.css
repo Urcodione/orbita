@@ -1,0 +1,186 @@
+#orbit-game .og-civ-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 1px solid #52665f;
+  border-radius: 14px;
+  background: #18333bd9;
+  color: #f6edda;
+  text-align: left;
+  padding: 8px;
+}
+#orbit-game .og-civ-entry small,
+#orbit-game .og-civ-header small,
+#orbit-game .og-civ-offer small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+}
+#orbit-game .og-civ-portrait {
+  display: block;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background-image: var(--og-civil-art);
+  background-size: 300% 200%;
+}
+#orbit-game .og-civ-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+#orbit-game .og-civ-header progress {
+  display: block;
+  width: 100%;
+  accent-color: #d4ad67;
+}
+#orbit-game .og-civ-cards {
+  display: grid;
+  gap: 12px;
+}
+#orbit-game .og-civ-cards > article,
+#orbit-game .og-civ-offer {
+  padding: 12px;
+  background: #152f3ce8;
+  border: 1px solid #486373;
+  border-radius: 14px;
+}
+#orbit-game .og-civ-offer {
+  display: grid;
+  gap: 8px;
+}
+#orbit-game .og-arrival {
+  position: absolute;
+  inset: 0;
+  z-index: 110;
+  overflow: hidden;
+  background: #081624;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 26px;
+  gap: 16px;
+}
+#orbit-game .og-arrival-scene {
+  position: absolute;
+  inset: 0;
+  background-image: var(--og-civil-art);
+  background-size: cover;
+  background-position: center;
+  animation: og-arrival-pan 5s ease-out both;
+}
+#orbit-game .og-arrival.harvest .og-arrival-scene {
+  background-position: 38% center;
+}
+#orbit-game .og-arrival img {
+  position: absolute;
+  width: 45%;
+  top: 19%;
+  animation: og-arrival-ship 4s ease-out both;
+}
+#orbit-game .og-arrival p,
+#orbit-game .og-arrival button {
+  position: relative;
+  z-index: 2;
+  background: #102532ec;
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+}
+#orbit-game .og-arrival-sample {
+  position: absolute;
+  inset: 30% 33%;
+  border: 2px solid #92ffe1;
+  border-radius: 40%;
+  box-shadow: 0 0 36px #77ead8;
+  animation: og-arrival-pan 3s ease;
+}
+@keyframes og-arrival-ship {
+  from {
+    transform: translateY(-65%) scale(0.18);
+  }
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes og-arrival-pan {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #orbit-game .og-arrival * {
+    animation: none !important;
+  }
+}
+
+#orbit-game .og-station-destinations .og-civ-entry {
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  padding: 4px;
+  min-width: 0;
+}
+#orbit-game .og-station-destinations .og-civ-portrait {
+  width: 44px;
+  height: 44px;
+}
+#orbit-game .og-station-destinations .og-civ-entry > span:last-child {
+  font-size: 10px;
+  font-weight: 700;
+}
+#orbit-game .og-station-destinations .og-civ-entry small {
+  font-size: 9px;
+}
+#orbit-game .og-post-landscape {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+#orbit-game [data-sheet="alien-post"] .og-civ-offer {
+  padding: 8px;
+}
+#orbit-game [data-sheet="alien-post"] p {
+  font-size: 12px;
+  margin: 6px 0;
+}
+@media (max-height: 620px) {
+  #orbit-game .og-post-landscape {
+    height: 70px;
+  }
+  #orbit-game [data-sheet="station"] .og-trade-tile {
+    min-height: 80px;
+  }
+  #orbit-game [data-sheet="station"] .og-sheet-footer .og-note {
+    margin: 3px;
+  }
+}
+
+#orbit-game .og-arrival-landscape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+#orbit-game .og-arrival-sample {
+  inset: auto;
+  top: 35%;
+  width: 110px;
+  height: 140px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(110deg, #c4fff344, #102531aa);
+  border-radius: 40px 40px 22px 22px;
+}
+#orbit-game .og-arrival-sample .og-trade-art {
+  width: 88px;
+  height: 88px;
+}

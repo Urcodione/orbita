@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.0
+# Órbita para Android — versão 0.3.1
 
-Último APK gerado: `dist/orbita-0.2.8.apk` (a 0.2.9 foi gerada fora deste repositório). A 0.3.0 está pronta no código e no `index.html`: o APK de teste e o AAB da Google Play são gerados no computador que tem as chaves (veja "Gerar o APK de teste e o AAB 0.3.0"). A publicação na Play está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.1 gerados e assinados em `dist/orbita-0.3.1.apk` e `dist/orbita-0.3.1.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -104,3 +104,15 @@ python3 android/build-apk.py
 ```bash
 python3 android/build-apk.py --bundle
 ```
+
+
+## Alterações 0.3.1
+
+- Registro do explorador integrado, com conquistas e duração dos capítulos.
+- Relações com Aural, Veyra e Thar, três etapas de aliança por povo, encomendas, contribuições e postos planetários.
+- Receitas próprias em 40 de reputação, pintura em 60 e compra garantida de uma nave da frota em 80. As naves continuam com seus preços normais.
+- Cenas pintadas de atracagem e colheita, com opção de continuar, repetição curta e movimento reduzido.
+- A primeira receita do Coro entrega duas células de dobra. A célula adicional poupa 24 minérios e 3 cristais da conversão na abertura da próxima rota.
+- Estação reorganizada para celular de 320 px e retorno dos postos para o planeta.
+
+`versionCode` 13, `versionName` 0.3.1. Partidas anteriores recebem o registro das civilizações ao carregar. Instalações limpas iniciam pela introdução.
