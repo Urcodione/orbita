@@ -50,7 +50,7 @@ const assert = require("node:assert/strict");
     await p.locator("[data-civ-tab=Restore]").click();
     await fit("restore");
     await p.locator("[data-action=civRestore]").click();
-    assert(await p.locator("[data-action=civRestore]").isDisabled());
+    assert(await p.locator("[data-action=civPlant]").isVisible());
     await fit("restored");
     await p.locator("[data-civ-tab=Exchange]").click();
     await fit("trade");

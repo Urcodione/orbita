@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.2
+# Órbita para Android — versão 0.3.3
 
-Pacotes da versão 0.3.2 gerados e assinados em `dist/orbita-0.3.2.apk` e `dist/orbita-0.3.2.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.3 gerados e assinados em `dist/orbita-0.3.3.apk` e `dist/orbita-0.3.3.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -128,3 +128,7 @@ python3 android/build-apk.py --bundle
 - Etapas de aliança já concluídas são preservadas. As novas atividades passam a contar após iniciar a aliança, e os objetivos de extração exigem retorno com sucesso.
 
 `versionCode` 14, `versionName` 0.3.2.
+
+## Alterações 0.3.3
+
+Viveiro Aural ilustrado antes e depois da restauração. Um canteiro custa 12 Lumes e 2 minérios e rende 3 samambaias-lume após duas extrações com coleta em locais distintos. Evacuações e repetições não aceleram o crescimento. Colheitas aguardam espaço no depósito. Partidas anteriores recebem o cultivo sem perder progresso.

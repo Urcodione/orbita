@@ -29,6 +29,107 @@
       "/100</small></span></button>"
     );
   }
+  function gardenPanel(s, v, header) {
+    const g = E.auralGardenView(s);
+    const action = !g.unlocked
+      ? "civRestore"
+      : g.planted
+        ? "civHarvest"
+        : "civPlant";
+    const q = !g.unlocked ? v.actions.Restore : g.planted ? g.harvest : g.plant;
+    const title = !g.unlocked
+      ? "Viveiro adormecido"
+      : g.ready
+        ? "Colheita pronta"
+        : g.planted
+          ? "Cultivo em crescimento"
+          : "Viveiro restaurado";
+    const description = !g.unlocked
+      ? "Recupere a irrigação para liberar seu canteiro."
+      : g.planted
+        ? "Extraia com coleta em dois locais diferentes."
+        : "Um canteiro por vez. Rendimento de 3 samambaias-lume.";
+    const costs = [
+      ...Object.entries(q.cost || {}).map(([id, n]) => ({
+        id,
+        n,
+        owned: s.resources[id] || 0,
+        name: E.materials[id]?.name || "Lumes",
+      })),
+      ...Object.entries(q.components || {}).map(([id, n]) => ({
+        id,
+        n,
+        owned: s.components[id] || 0,
+        name: E.componentRecipes.find((r) => r.id === id).name,
+      })),
+    ];
+    const costHtml = costs
+      .map(
+        (c) =>
+          "<span><b>−" +
+          c.n +
+          " " +
+          esc(c.name) +
+          "</b><small>Estoque: " +
+          c.owned +
+          "</small></span>",
+      )
+      .join("");
+    const caption = !g.unlocked
+      ? "Restaurar viveiro"
+      : g.planted
+        ? "Colher 3 plantas"
+        : "Preparar cultivo";
+    return {
+      title: "Viveiro Aural",
+      singleCard: true,
+      header,
+      html:
+        '<article class="og-garden-card ' +
+        (g.unlocked ? "is-alive" : "") +
+        '"><figure><img src="' +
+        root.OrbitIllustrations[
+          g.unlocked ? "aural-restored" : "aural-dormant"
+        ] +
+        '" alt="' +
+        title +
+        '">' +
+        (g.unlocked
+          ? '<i class="og-garden-pollen" aria-hidden="true"></i>'
+          : "") +
+        "<figcaption>" +
+        title +
+        "</figcaption></figure><p>" +
+        description +
+        "</p>" +
+        (g.planted
+          ? '<div class="og-garden-progress"><progress value="' +
+            g.progress +
+            '" max="2"></progress><b>' +
+            g.progress +
+            "/2 extrações</b></div>"
+          : "") +
+        '<div class="og-garden-costs">' +
+        costHtml +
+        "</div><small>" +
+        (g.unlocked
+          ? "Colhidas: " +
+            g.harvests * 3 +
+            " plantas · manutenção transforma cada planta em até 12 O₂."
+          : "Recompensa: cultivo de plantas para oxigênio.") +
+        '</small><button class="og-button" data-action="' +
+        action +
+        '" ' +
+        (q.allowed ? "" : "disabled") +
+        ">" +
+        caption +
+        "</button>" +
+        (!q.allowed
+          ? '<small role="status">' + esc(q.reason) + "</small>"
+          : "") +
+        "</article>",
+    };
+  }
   let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
@@ -106,7 +207,7 @@
         '<div class="og-post-tabs" role="group" aria-label="Atividades do posto">' +
         [
           ["Visit", "Contato"],
-          ["Restore", "Instalação"],
+          ["Restore", v.index === 0 ? "Viveiro" : "Instalação"],
           ["Exchange", "Troca"],
         ]
           .map(
@@ -121,6 +222,8 @@
           )
           .join("") +
         "</div>";
+      if (v.index === 0 && postTab === "Restore")
+        return gardenPanel(s, v, header + tabs);
       const labels = {
         Visit: "Uma voz preservada",
         Restore: v.operation.title,
@@ -169,7 +272,13 @@
         header: header + tabs,
         html:
           '<img class="og-post-landscape" src="' +
-          root.OrbitIllustrations["alien-post"] +
+          root.OrbitIllustrations[
+            v.index === 0
+              ? v.activity.restored
+                ? "aural-restored"
+                : "aural-dormant"
+              : "alien-post"
+          ] +
           '" alt="Posto sob o céu de um mundo distante"><p>' +
           esc(detail[postTab]) +
           '</p><div class="og-post-costs">' +
@@ -222,11 +331,20 @@
   }
   function post(s) {
     const v = E.civilizationView(s);
+    const g = v.index === 0 ? E.auralGardenView(s) : null;
     return v.post
       ? '<button class="og-civ-entry" data-action="alien-post">' +
           portrait(v.index) +
           "<span>Posto alienígena<small>" +
-          (v.visited ? "Testemunho registrado" : "Ouvir este povo") +
+          (g?.ready
+            ? "Colheita pronta"
+            : g?.planted
+              ? "Viveiro · " + g.progress + "/2"
+              : g?.unlocked
+                ? "Viveiro disponível"
+                : v.visited
+                  ? "Testemunho registrado"
+                  : "Ouvir este povo") +
           "</small></span></button>"
       : "";
   }

@@ -195,3 +195,17 @@
 #orbit-game .og-post-recipe>span{width:44px;height:44px;flex:none}
 #orbit-game .og-post-recipe small{font-size:11px}
 @media(max-height:620px){#orbit-game [data-sheet="alien-post"] .og-post-landscape{height:40px}#orbit-game [data-sheet="alien-post"] .og-civ-offer{gap:4px;padding:5px}#orbit-game [data-sheet="alien-post"] .og-civ-offer>small:first-of-type{display:none}}
+
+#orbit-game .og-garden-card{height:100%;display:flex;flex-direction:column;gap:6px;min-height:0}
+#orbit-game .og-garden-card figure{flex:1;min-height:65px;max-height:270px;position:relative;overflow:hidden;margin:0;border-radius:14px;background:#183a38}
+#orbit-game .og-garden-card img{width:100%;height:100%;object-fit:cover;object-position:center 65%}
+#orbit-game .og-garden-card figcaption{position:absolute;bottom:0;left:0;right:0;padding:14px 8px 5px;background:linear-gradient(transparent,#09242def);font-size:14px;color:#fff}
+#orbit-game .og-garden-card p,#orbit-game .og-garden-card small{font-size:11px;line-height:1.35;flex-shrink:0}
+#orbit-game .og-garden-costs{display:flex;gap:16px;justify-content:center;font-size:12px}
+#orbit-game .og-garden-costs span{display:grid;text-align:center}
+#orbit-game .og-garden-progress{display:flex;align-items:center;gap:8px;font-size:11px}
+#orbit-game .og-garden-progress progress{min-width:0;flex:1;accent-color:#70dda4}
+#orbit-game .og-garden-card button{min-height:42px;flex-shrink:0}
+#orbit-game .og-garden-pollen{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 24% 65%,#fff0ae 0 1px,transparent 3px),radial-gradient(circle at 66% 72%,#94ffe2 0 1px,transparent 3px),radial-gradient(circle at 78% 45%,#fff0ae 0 1px,transparent 3px);animation:og-garden-drift 9s ease-in-out infinite alternate}
+@keyframes og-garden-drift{to{transform:translateY(-16px);opacity:.3}}
+@media(prefers-reduced-motion:reduce){#orbit-game .og-garden-pollen{animation:none}}
