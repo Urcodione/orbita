@@ -247,6 +247,7 @@
   }
   let deltaTimer=0;
   function showShipDelta(before,after){
+    if(state.guide?.active)return;
     const old=Object.fromEntries(before.map(m=>[m.key,m])),changes=after.map(m=>({m,d:old[m.key]&&(typeof m.value==='boolean'?(m.value!==old[m.key].value?metricDelta(old[m.key],m):null):metricDelta(old[m.key],m))})).filter(x=>x.d);
     statHighlight=Object.fromEntries(changes.map(({m,d})=>[m.key,d.good?'good':'bad']));statHighlightUntil=Date.now()+6000;
     const el=$('og-delta');clearTimeout(deltaTimer);
@@ -608,10 +609,10 @@
      achievementTimer=setTimeout(()=>{el.classList.add('is-leaving');setTimeout(()=>el.remove(),400);},3600);
     }
   }
-  function toast(text,error){const el=$('og-toast');clearTimeout(toastTimer);el.textContent=text;el.classList.toggle('error',!!error);el.hidden=false;toastTimer=setTimeout(()=>el.hidden=true,4400);}
+  function toast(text,error){if(state.guide?.active){if(error)root.dispatchEvent(new CustomEvent('orbit-guide-feedback',{detail:{text}}));return;}const el=$('og-toast');clearTimeout(toastTimer);el.textContent=text;el.classList.toggle('error',!!error);el.hidden=false;toastTimer=setTimeout(()=>el.hidden=true,4400);}
   function beep(action){window.OrbitAudio.fx(action);}
   function craftFeedback(quantity,anchor,message){
-    if(!anchor)return;
+    if(state.guide?.active||!anchor)return;
     root.querySelectorAll('.og-craft-feedback').forEach(el=>el.remove());
     const box=root.getBoundingClientRect(),el=document.createElement('div');
     el.className='og-craft-feedback';el.setAttribute('role','status');el.setAttribute('aria-label',message);
@@ -625,7 +626,7 @@
     const beforeCampaign=E.campaignView?.(state),wasGuided=!!state.guide?.active;
     const marcosBefore=E.campaignMilestones&&!state.guide?.active?E.campaignMilestones(state).filter(m=>m.done).map(m=>m.label):[],chapterBefore=state.campaign?.chapter;
     const oldSheet=sheet,wasInField=!!state.expedition,installedType=action==='equip'?state.inventory.find(m=>m.id===payload.moduleId)?.type:null,metricsBefore=(installedType||['runeEngrave','runeRemove','fleetSwitch'].includes(action))&&E.shipMetrics?E.shipMetrics(state):null,result=E.dispatch(state,action,payload);
-    if(!result.ok){if(sheet){sheetNotice=result.message;renderSheet();}else toast(result.message,true);beep('error');return result;}
+    if(!result.ok){if(state.guide?.active){toast(result.message,true);}else if(sheet){sheetNotice=result.message;renderSheet();}else toast(result.message,true);beep('error');return result;}
     const fieldAction=action.startsWith('expedition'),fieldEnded=wasInField&&!state.expedition;
     if(action==='discardCargo'){const parent=parentPlace();openSheet(parent.action);}
     if(action==='craftComponent')window.OrbitWorkshop.afterCraft?.(state,lab,payload);

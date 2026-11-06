@@ -24,6 +24,7 @@ let seen=null;
 function seenSet(){if(seen)return seen;try{seen=new Set(JSON.parse(localStorage.getItem('orbita-species-seen')||'[]'));}catch{seen=new Set();}return seen;}
 function markSeen(id){seenSet().add(id);try{localStorage.setItem('orbita-species-seen',JSON.stringify([...seen]));}catch{}}
 function speciesCard(container,id,amount){
+ if(container.dataset.training||container.querySelector('.og-story-clip'))return;
  const m=E.materials?.[id];if(!m||m.bio===undefined)return;
  container.querySelector('.og-species-card')?.remove();
  const el=document.createElement('div');el.className='og-species-card';el.setAttribute('role','status');
@@ -32,6 +33,7 @@ function speciesCard(container,id,amount){
 }
 root.OrbitFeedback={show(container,result,action,state){
  if(!result?.ok)return;
+ if(state.guide?.active){const list=chips(result,action).filter(c=>c.good);const text=action==='craftComponent'?'Componente fabricado e guardado.':list.slice(0,2).map(c=>c.text).join(' · ');if(text)container.dispatchEvent(new CustomEvent('orbit-guide-feedback',{detail:{text}}));return;}
  // The extraction summary already lists every reward; floating numbers would only repeat it.
  if(action!=='expeditionExtract')float(container,chips(result,action),!!state.expedition&&action==='expeditionCollect');
  if(action==='expeditionExtract')for(const [id,amount]of Object.entries(result.reward||{}))if(E.materials?.[id]?.bio!==undefined&&amount>0&&!seenSet().has(id)){markSeen(id);const wait=result.cinema?(result.cinema.seen?1500:4300):container.querySelector('.og-xeno-scene')?4300:0;setTimeout(()=>speciesCard(container,id,amount),wait);break;}

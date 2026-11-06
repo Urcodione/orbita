@@ -6,7 +6,7 @@ const names={engine:'Motor',warp:'Dobra',life:'Suporte de vida',shield:'Escudo',
 const intro=[
  ['A última primavera','Em Íris, nossa casa, as florestas pararam de florescer. O ar perde vida a cada estação. Deixamos o planeta para buscar uma forma de fazê-lo respirar outra vez.'],
  ['Uma voz além do impossível','A arca Aurora desapareceu há gerações. Agora sua voz atravessa o Olho de Íris: “A vida não se reconstrói sozinha. Encontrem o Coro.”'],
- ['Oito vozes, uma travessia','Explore galáxias e preserve vidas únicas. Cada descoberta ensina uma tecnologia à Andorinha. Reúna os oito módulos do Coro e volte ao Olho de Íris: juntos, eles sustentam a travessia. Aurora espera.']
+ ['Oito vozes, uma travessia','Você não estará só: Aural preserva a vida, Veyra conhece as rotas e Thar guarda memórias. Explore, negocie e restaure seus postos. Siga as missões do Coro para criar oito módulos e voltar ao Olho de Íris. Juntos, eles permitem alcançar Aurora.']
 ];
 const ending=[['Além do Olho','As oito vozes se alinham. Por um instante, a Andorinha é luz. Do outro lado, a arca Aurora ainda guarda um jardim vivo.'],['O Coro despertou','As amostras preservadas ensinam Aurora a recriar ciclos inteiros: solo, água, ar e vida. Não era uma cura escondida. Era uma aliança esperando por você.'],['Uma nova primavera','O primeiro sinal enviado a Íris não é uma mensagem. É o som de chuva caindo sobre folhas novas. A viagem de volta começa com esperança.'],['As estrelas continuam abertas','Você concluiu O Coro do Limiar. Sua nave, coleções e tecnologias continuam aqui. Há muitos mundos esperando por um nome no seu catálogo.']];
 const view=s=>E.campaignView?.(s);

@@ -24,3 +24,7 @@
 #orbit-game .og-descent-launch .og-button:disabled{opacity:.6}
 @media(max-height:650px){#orbit-game #og-guide p{font-size:11px;margin:4px 0}#orbit-game #og-guide strong{font-size:12px}#orbit-game #og-guide button{min-height:30px;padding:4px 8px}}
 #orbit-game #og-guide[data-position=bottom]{top:auto;bottom:70px;border-top:1px solid #baacf4;border-bottom:0}
+
+/* The guide owns feedback while training; no competing popup layer. */
+#orbit-game[data-training="prisma"] :is(#og-toast,#og-delta,.og-reward-float,.og-species-card,.og-craft-feedback,.og-achievement){display:none!important}
+#orbit-game #og-guide .og-guide-feedback{display:block;color:#c2f3c9;border-left:2px solid #8edeb1;padding-left:6px;margin:3px 0}
