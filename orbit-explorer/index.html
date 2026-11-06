@@ -1845,6 +1845,23 @@
 @keyframes og-garden-drift{to{transform:translateY(-16px);opacity:.3}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-garden-pollen{animation:none}}
 
+#orbit-game .og-service-card{height:100%;min-height:0;display:flex;flex-direction:column;gap:6px}
+#orbit-game .og-service-scene{width:100%;min-height:35px;max-height:180px;flex:1;object-fit:cover;border-radius:14px}
+#orbit-game .og-service-card small{font-size:11px;line-height:1.25}
+#orbit-game .og-service-selector{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#orbit-game .og-service-selector b{text-align:center;font-size:13px}
+#orbit-game .og-service-selector small{display:block}
+#orbit-game .og-service-selector button{width:40px;height:40px;border:1px solid #7ca4b8;border-radius:50%;background:#193444;color:#daf5ff;font-size:24px}
+#orbit-game .og-service-offer{display:flex;align-items:center;gap:7px;padding:5px;background:#16323eee;border:1px solid #527483;border-radius:12px;font-size:12px}
+#orbit-game .og-service-offer>span{width:32px;height:32px;flex-shrink:0}
+#orbit-game .og-service-offer>div{flex:1;min-width:0}
+#orbit-game .og-service-offer small{display:block}
+#orbit-game .og-service-offer .og-button{min-height:40px;padding:5px 8px;font-size:11px;width:auto}
+#orbit-game .og-service-report{display:grid;gap:8px;background:#102e3a;padding:12px;border-radius:12px;font-size:12px}
+#orbit-game .og-service-reason{color:#ffd3a6}
+#orbit-game .og-post-tabs{flex-wrap:nowrap}
+#orbit-game .og-post-tabs button{min-width:0;padding:7px 5px;font-size:11px}
+
 #orbit-game{background:#10223b url("data:image/webp;base64,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") center/cover no-repeat}
 </style>
 <div class="og-emulator viz-dotted-background">
@@ -7453,6 +7470,170 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
   };
 })(typeof window === "object" ? window : globalThis);
 
+(function (root) {
+  "use strict";
+  const E = root.OrbitEngine,
+    base = {
+      create: E.create,
+      restore: E.restore,
+      validate: E.validate,
+      preview: E.preview,
+      dispatch: E.dispatch,
+    };
+  const fresh = () => ({ reports: [], jobs: {} });
+  const ensure = (s) => {
+    s.civilizations.services ||= fresh();
+    return s;
+  };
+  const state = (s) => s.civilizations.services || fresh();
+  const faction = (s) => (s.campaign?.atHome ? 0 : s.galaxyIndex) % 3;
+  const valid = (s) => {
+    const v = s.civilizations?.services;
+    if (v === undefined) return true;
+    return (
+      !!v &&
+      Array.isArray(v.reports) &&
+      v.reports.length <= 1000 &&
+      new Set(v.reports).size === v.reports.length &&
+      v.reports.every(
+        (id) =>
+          typeof id === "string" &&
+          /^g\d+-p\d+$/.test(id) &&
+          Number(id.slice(1).split("-")[0]) <= s.galaxyIndex,
+      ) &&
+      !!v.jobs &&
+      typeof v.jobs === "object" &&
+      !Array.isArray(v.jobs) &&
+      Object.entries(v.jobs).every(
+        ([k, n]) =>
+          /^(0|[1-9]\d*)$/.test(k) &&
+          Number(k) <= s.galaxyIndex &&
+          Number.isInteger(n) &&
+          n >= 0 &&
+          n <= 3,
+      )
+    );
+  };
+  function quote(s, a, p = {}) {
+    if (!["civSurvey", "civReclaim"].includes(a)) return null;
+    const survey = a === "civSurvey",
+      cost = survey ? { credits: 12, data: 6 } : { credits: 12 },
+      components = survey ? {} : { alloy: 1 },
+      v = state(s);
+    const q = { allowed: true, reason: "", cost, components },
+      deny = (reason) => ({ ...q, allowed: false, reason });
+    if (
+      s.guide?.active ||
+      s.expedition ||
+      s.location.stationId ||
+      s.location.mode !== "docked" ||
+      faction(s) !== (survey ? 1 : 2) ||
+      E.currentPlanet(s).id !== s.galaxy.planets[0].id ||
+      !E.currentPlanet(s).scanned
+    )
+      return deny("Visite o posto deste povo na superfície.");
+    if (!s.civilizations.people[survey ? 1 : 2].activity.restored)
+      return deny("Restaure primeiro a instalação deste posto.");
+    if (survey) {
+      if (!s.galaxy.planets.some((x) => x.id === p.planetId))
+        return deny("Selecione um mundo desta galáxia.");
+      if (v.reports.includes(p.planetId))
+        return deny("Leitura já registrada. Consulte o relatório abaixo.");
+      if (v.reports.length >= 1000)
+        return deny("Arquivo de leituras completo.");
+    } else {
+      if (!["prism", "circuit", "seal"].includes(p.componentId))
+        return deny("Escolha prisma, circuito ou selo.");
+      if ((v.jobs[s.galaxyIndex] || 0) >= 3)
+        return deny(
+          "Três recuperações utilizadas nesta galáxia. Procure outro posto Thar em uma nova galáxia.",
+        );
+      if ((s.components[p.componentId] || 0) >= 999)
+        return deny("Limite de estoque deste componente atingido.");
+      if (
+        E.storageView(s).used -
+          E.componentVolume("alloy") +
+          E.componentVolume(p.componentId) >
+        E.storageView(s).capacity
+      )
+        return deny("Libere espaço no depósito antes de recuperar.");
+    }
+    for (const [id, n] of Object.entries(cost))
+      if ((s.resources[id] || 0) < n)
+        return deny(
+          "Faltam " +
+            (n - (s.resources[id] || 0)) +
+            " " +
+            (id === "credits" ? "Lumes" : "dados") +
+            ".",
+        );
+    if (!survey && (s.components.alloy || 0) < 1)
+      return deny(
+        "Precisa de 1 liga estrutural. Desmonte módulos comuns na oficina ou fabrique uma liga.",
+      );
+    return q;
+  }
+  E.preview = (s, a, p) => quote(s, a, p) || base.preview(s, a, p);
+  E.dispatch = (s, a, p = {}) => {
+    const q = quote(s, a, p);
+    if (!q) return base.dispatch(s, a, p);
+    if (!q.allowed) return { ok: false, message: q.reason };
+    const n = ensure(JSON.parse(JSON.stringify(s))),
+      v = state(n);
+    for (const [id, x] of Object.entries(q.cost)) n.resources[id] -= x;
+    if (a === "civSurvey") v.reports.push(p.planetId);
+    else {
+      n.components.alloy--;
+      n.components[p.componentId] = (n.components[p.componentId] || 0) + 1;
+      v.jobs[s.galaxyIndex] = (v.jobs[s.galaxyIndex] || 0) + 1;
+    }
+    n.turn++;
+    if (!E.validate(n))
+      return {
+        ok: false,
+        message: "Operação não concluída. Nenhum recurso consumido.",
+      };
+    E.commit(s, n);
+    return {
+      ok: true,
+      event: a,
+      cost: q.cost,
+      reward: {},
+      message:
+        a === "civSurvey"
+          ? "Leitura registrada. A análise local continua necessária para pousar."
+          : "Componente recuperado e guardado no depósito.",
+    };
+  };
+  E.civilizationServiceView = (s) => ({
+    reports: state(s).reports,
+    remaining: 3 - (state(s).jobs[s.galaxyIndex] || 0),
+  });
+  E.civilizationReport = (s, id) => {
+    if (!state(s).reports.includes(id)) return null;
+    const p = s.galaxy.planets.find((x) => x.id === id);
+    if (!p) return null;
+    return {
+      name: p.name,
+      biome: p.biomeName,
+      temperature: p.temperature,
+      radiation: p.radiation,
+      weather: p.weather,
+      signal: p.anomaly,
+      resource:
+        Object.values(E.materials)
+          .filter((m) => m.biomes?.includes(p.biome))
+          .sort((a, b) => (b.base || 0) - (a.base || 0))[0]?.name || null,
+    };
+  };
+  E.validate = (s) => base.validate(s) && valid(s);
+  E.create = (...args) => ensure(base.create(...args));
+  E.restore = (data) => {
+    const s = base.restore(data);
+    return s && valid(s) ? ensure(s) : null;
+  };
+})(typeof window === "object" ? window : globalThis);
+
 (function(root){
 'use strict';
 // Explorer's record: the journey in numbers, how many actions each campaign chapter took, and achievements derived
@@ -8091,6 +8272,123 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
         "</article>",
     };
   }
+  let servicePlanet = 0;
+  function servicePanel(s, v, header) {
+    const survey = v.index === 1,
+      view = E.civilizationServiceView(s);
+    const planets = s.galaxy.planets;
+    servicePlanet = Math.min(servicePlanet, planets.length - 1);
+    const p = planets[servicePlanet],
+      report = E.civilizationReport(s, p.id);
+    const reasons = new Set();
+    const offer = (action, label, payload, art) => {
+      const q = E.preview(s, action, payload);
+      const showReason = !q.allowed && !reasons.has(q.reason);
+      reasons.add(q.reason);
+      return (
+        '<div class="og-service-offer">' +
+        art +
+        "<div><b>" +
+        esc(label) +
+        "</b><small>" +
+        (action === "civSurvey" ? "12 Lumes + 6 dados" : "1 liga + 12 Lumes") +
+        '</small></div><button class="og-button" data-action="' +
+        action +
+        '" ' +
+        (payload.planetId
+          ? 'data-planet="' + payload.planetId + '"'
+          : 'data-component="' + payload.componentId + '"') +
+        " " +
+        (q.allowed ? "" : "disabled") +
+        ' aria-label="' +
+        esc(label) +
+        '">' +
+        (survey ? "Ler" : "Recuperar") +
+        "</button></div>" +
+        (showReason
+          ? '<small class="og-service-reason">' + esc(q.reason) + "</small>"
+          : "")
+      );
+    };
+    return {
+      title: survey ? "Observatório Veyra" : "Recuperadora Thar",
+      singleCard: true,
+      header,
+      html:
+        '<article class="og-service-card"><img class="og-service-scene" src="' +
+        root.OrbitIllustrations[survey ? "room4" : "room0"] +
+        '" alt="' +
+        (survey ? "Sala de leitura de sinais" : "Bancada de recuperação") +
+        '"><small>' +
+        (survey
+          ? "O farol compara sinais antes da sua viagem."
+          : "O posto recupera componentes de ligas. Restam " +
+            view.remaining +
+            "/3 nesta galáxia.") +
+        "</small>" +
+        (!v.activity.restored
+          ? "<p>Restaure a instalação na aba Instalação para liberar este serviço.</p>"
+          : survey
+            ? '<div class="og-service-selector"><button data-service-step="-1" aria-label="Mundo anterior" ' +
+              (servicePlanet === 0 ? "disabled" : "") +
+              ">‹</button><b>" +
+              esc(p.name) +
+              "<small>" +
+              (servicePlanet + 1) +
+              "/" +
+              planets.length +
+              '</small></b><button data-service-step="1" aria-label="Próximo mundo" ' +
+              (servicePlanet === planets.length - 1 ? "disabled" : "") +
+              ">›</button></div>" +
+              (report
+                ? '<div class="og-service-report"><b>' +
+                  esc(report.biome) +
+                  "</b><span>" +
+                  report.temperature +
+                  " °C · radiação " +
+                  report.radiation +
+                  " · clima " +
+                  report.weather +
+                  "/100</span><small>" +
+                  esc(report.signal) +
+                  "</small>" +
+                  (report.resource
+                    ? "<small>Possível ocorrência: " +
+                      esc(report.resource) +
+                      ". Confirme em campo.</small>"
+                    : "") +
+                  "<small>Leitura remota permanente. Não substitui análise e equipamentos.</small></div>"
+                : offer(
+                    "civSurvey",
+                    "Ler este mundo",
+                    { planetId: p.id },
+                    root.OrbitArt.icon("scanner"),
+                  )) +
+              "<small>Estoque: " +
+              s.resources.credits +
+              " Lumes · " +
+              s.resources.data +
+              " dados</small>"
+            : "<small>Estoque: " +
+              (s.components.alloy || 0) +
+              " ligas · " +
+              s.resources.credits +
+              " Lumes</small>" +
+              ["prism", "circuit", "seal"]
+                .map((id) =>
+                  offer(
+                    "civReclaim",
+                    E.componentRecipes.find((x) => x.id === id).name +
+                      " · " +
+                      (s.components[id] || 0),
+                    { componentId: id },
+                    root.OrbitCommerce.symbol(id),
+                  ),
+                )
+                .join("")) +
+        "</article>",
+    };
+  }
   let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
@@ -8170,6 +8468,9 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
           ["Visit", "Contato"],
           ["Restore", v.index === 0 ? "Viveiro" : "Instalação"],
           ["Exchange", "Troca"],
+          ...(v.index
+            ? [["Service", v.index === 1 ? "Leituras" : "Recuperar"]]
+            : []),
         ]
           .map(
             ([id, label]) =>
@@ -8183,6 +8484,9 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
           )
           .join("") +
         "</div>";
+      if (postTab === "Service" && v.index)
+        return servicePanel(s, v, header + tabs);
+      if (v.index === 0 && postTab === "Service") postTab = "Restore";
       if (v.index === 0 && postTab === "Restore")
         return gardenPanel(s, v, header + tabs);
       const labels = {
@@ -8311,10 +8615,14 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
   }
   root.OrbitCivilizationsUI = {
     entry,
+    shiftService(n) {
+      servicePlanet = Math.max(0, servicePlanet + n);
+    },
     sheet,
     post,
     select(tab) {
-      if (["Visit", "Restore", "Exchange"].includes(tab)) postTab = tab;
+      if (["Visit", "Restore", "Exchange", "Service"].includes(tab))
+        postTab = tab;
     },
   };
 })(window);
@@ -9182,6 +9490,7 @@ root.OrbitFeedback={show(container,result,action,state){
   function handleClick(event){
     if(event.target===$('og-sheet-backdrop')){dismissSheet();return;}
     const control=event.target.closest('button');if(!control||!root.contains(control)||control.disabled)return;
+    if(control.dataset.serviceStep){window.OrbitCivilizationsUI.shiftService(Number(control.dataset.serviceStep));renderSheet();return;}
     if(control.dataset.civTab){window.OrbitCivilizationsUI.select(control.dataset.civTab);sheetNotice='';renderSheet();return;}
     if(control.dataset.campaignPage){campaignPage=control.dataset.campaignPage;sheetPage=0;sheetNotice='';renderSheet();return;}
     if(control.dataset.resourceStep){const ids=E.market(state).rows.map(g=>g.id),i=ids.indexOf(commerceView.resource);commerceView.resource=ids[(i+Number(control.dataset.resourceStep)+ids.length)%ids.length];commerceView.quantity=1;commerceView.side='buy';sheetPage=0;renderSheet();return;}

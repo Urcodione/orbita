@@ -130,6 +130,123 @@
         "</article>",
     };
   }
+  let servicePlanet = 0;
+  function servicePanel(s, v, header) {
+    const survey = v.index === 1,
+      view = E.civilizationServiceView(s);
+    const planets = s.galaxy.planets;
+    servicePlanet = Math.min(servicePlanet, planets.length - 1);
+    const p = planets[servicePlanet],
+      report = E.civilizationReport(s, p.id);
+    const reasons = new Set();
+    const offer = (action, label, payload, art) => {
+      const q = E.preview(s, action, payload);
+      const showReason = !q.allowed && !reasons.has(q.reason);
+      reasons.add(q.reason);
+      return (
+        '<div class="og-service-offer">' +
+        art +
+        "<div><b>" +
+        esc(label) +
+        "</b><small>" +
+        (action === "civSurvey" ? "12 Lumes + 6 dados" : "1 liga + 12 Lumes") +
+        '</small></div><button class="og-button" data-action="' +
+        action +
+        '" ' +
+        (payload.planetId
+          ? 'data-planet="' + payload.planetId + '"'
+          : 'data-component="' + payload.componentId + '"') +
+        " " +
+        (q.allowed ? "" : "disabled") +
+        ' aria-label="' +
+        esc(label) +
+        '">' +
+        (survey ? "Ler" : "Recuperar") +
+        "</button></div>" +
+        (showReason
+          ? '<small class="og-service-reason">' + esc(q.reason) + "</small>"
+          : "")
+      );
+    };
+    return {
+      title: survey ? "Observatório Veyra" : "Recuperadora Thar",
+      singleCard: true,
+      header,
+      html:
+        '<article class="og-service-card"><img class="og-service-scene" src="' +
+        root.OrbitIllustrations[survey ? "room4" : "room0"] +
+        '" alt="' +
+        (survey ? "Sala de leitura de sinais" : "Bancada de recuperação") +
+        '"><small>' +
+        (survey
+          ? "O farol compara sinais antes da sua viagem."
+          : "O posto recupera componentes de ligas. Restam " +
+            view.remaining +
+            "/3 nesta galáxia.") +
+        "</small>" +
+        (!v.activity.restored
+          ? "<p>Restaure a instalação na aba Instalação para liberar este serviço.</p>"
+          : survey
+            ? '<div class="og-service-selector"><button data-service-step="-1" aria-label="Mundo anterior" ' +
+              (servicePlanet === 0 ? "disabled" : "") +
+              ">‹</button><b>" +
+              esc(p.name) +
+              "<small>" +
+              (servicePlanet + 1) +
+              "/" +
+              planets.length +
+              '</small></b><button data-service-step="1" aria-label="Próximo mundo" ' +
+              (servicePlanet === planets.length - 1 ? "disabled" : "") +
+              ">›</button></div>" +
+              (report
+                ? '<div class="og-service-report"><b>' +
+                  esc(report.biome) +
+                  "</b><span>" +
+                  report.temperature +
+                  " °C · radiação " +
+                  report.radiation +
+                  " · clima " +
+                  report.weather +
+                  "/100</span><small>" +
+                  esc(report.signal) +
+                  "</small>" +
+                  (report.resource
+                    ? "<small>Possível ocorrência: " +
+                      esc(report.resource) +
+                      ". Confirme em campo.</small>"
+                    : "") +
+                  "<small>Leitura remota permanente. Não substitui análise e equipamentos.</small></div>"
+                : offer(
+                    "civSurvey",
+                    "Ler este mundo",
+                    { planetId: p.id },
+                    root.OrbitArt.icon("scanner"),
+                  )) +
+              "<small>Estoque: " +
+              s.resources.credits +
+              " Lumes · " +
+              s.resources.data +
+              " dados</small>"
+            : "<small>Estoque: " +
+              (s.components.alloy || 0) +
+              " ligas · " +
+              s.resources.credits +
+              " Lumes</small>" +
+              ["prism", "circuit", "seal"]
+                .map((id) =>
+                  offer(
+                    "civReclaim",
+                    E.componentRecipes.find((x) => x.id === id).name +
+                      " · " +
+                      (s.components[id] || 0),
+                    { componentId: id },
+                    root.OrbitCommerce.symbol(id),
+                  ),
+                )
+                .join("")) +
+        "</article>",
+    };
+  }
   let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
@@ -209,6 +326,9 @@
           ["Visit", "Contato"],
           ["Restore", v.index === 0 ? "Viveiro" : "Instalação"],
           ["Exchange", "Troca"],
+          ...(v.index
+            ? [["Service", v.index === 1 ? "Leituras" : "Recuperar"]]
+            : []),
         ]
           .map(
             ([id, label]) =>
@@ -222,6 +342,9 @@
           )
           .join("") +
         "</div>";
+      if (postTab === "Service" && v.index)
+        return servicePanel(s, v, header + tabs);
+      if (v.index === 0 && postTab === "Service") postTab = "Restore";
       if (v.index === 0 && postTab === "Restore")
         return gardenPanel(s, v, header + tabs);
       const labels = {
@@ -350,10 +473,14 @@
   }
   root.OrbitCivilizationsUI = {
     entry,
+    shiftService(n) {
+      servicePlanet = Math.max(0, servicePlanet + n);
+    },
     sheet,
     post,
     select(tab) {
-      if (["Visit", "Restore", "Exchange"].includes(tab)) postTab = tab;
+      if (["Visit", "Restore", "Exchange", "Service"].includes(tab))
+        postTab = tab;
     },
   };
 })(window);
