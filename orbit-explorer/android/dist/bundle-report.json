@@ -1,15 +1,15 @@
 {
-  "aab": "orbita-0.3.3.aab",
-  "bytes": 9116180,
-  "sha256": "0ba45a5930f5865bb8878d868849eaf0df9f53ff9533594ad03c89452e611037",
+  "aab": "orbita-0.3.4.aab",
+  "bytes": 9120405,
+  "sha256": "044beb47536389fabf977880c524d49128cb64c850a3cf8fb0339a77022a970c",
   "uploadCertificateSha256": "E4:16:3A:F2:5C:B5:86:0C:5B:21:E4:D5:9B:E1:35:A1:46:9D:35:23:1E:74:45:47:D0:2A:B5:88:36:F9:DA:52",
   "assets": [
     "base/assets/index.html"
   ],
   "minAndroid": "8.0",
   "targetApi": 36,
-  "version": "0.3.3",
-  "versionCode": 15,
+  "version": "0.3.4",
+  "versionCode": 16,
   "bundledSave": false,
   "networkPermission": false
 }

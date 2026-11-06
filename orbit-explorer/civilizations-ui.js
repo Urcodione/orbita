@@ -247,6 +247,8 @@
         "</article>",
     };
   }
+  let allianceTab = "Jornada",
+    rewardIndex = 0;
   let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
@@ -418,40 +420,135 @@
           button(postTab, labels[postTab]),
       };
     }
-    return {
-      title: v.name,
-      header,
-      html:
-        '<div class="og-civ-cards"><article><p>' +
-        esc(v.line) +
-        "</p><strong>Aliança · " +
-        v.step +
-        "/3</strong><p>" +
-        esc(v.objective.text) +
+    const tabs =
+      '<div class="og-post-tabs" aria-label="Aliança">' +
+      ["Jornada", "Recompensas", "Apoio"]
+        .map(
+          (t) =>
+            '<button data-alliance-tab="' +
+            t +
+            '" aria-pressed="' +
+            (allianceTab === t) +
+            '">' +
+            t +
+            "</button>",
+        )
+        .join("") +
+      "</div>";
+    const next = v.nextUnlock;
+    const progress =
+      '<div class="og-alliance-next"><small>' +
+      (next
+        ? "Próximo · " + esc(next.label)
+        : "Todos os benefícios de reputação liberados") +
+      '</small><progress value="' +
+      v.rep +
+      '" max="' +
+      (next ? next.at : 100) +
+      '"></progress><b>' +
+      (next ? next.at - v.rep + " pontos restantes" : "100% dos desbloqueios") +
+      "</b></div>";
+    let body = "";
+    if (allianceTab === "Jornada")
+      body =
+        '<div class="og-alliance-story"><small>O Coro · ' +
+        esc(v.name) +
+        "</small><p>" +
+        esc(v.story) +
+        '</p></div><div class="og-alliance-goal"><b>' +
+        (v.step < 3 ? esc(v.missions[v.step]) : "Aliança concluída") +
         " · " +
+        v.step +
+        "/3</b><p>" +
+        esc(v.objective.text) +
+        '</p><progress value="' +
+        Math.min(v.objective.done, v.objective.total) +
+        '" max="' +
+        v.objective.total +
+        '"></progress><small>' +
         Math.min(v.objective.done, v.objective.total) +
         "/" +
         v.objective.total +
-        "</p>" +
-        (v.step < 3 ? button("Mission", esc(v.missions[v.step])) : "") +
-        "</article>" +
-        button("Deliver", "Encomenda · 2 " + E.materials[v.material].name) +
-        button("Donate", "Apoio aos postos") +
-        "<article><strong>40 · Receita exclusiva</strong><p>" +
-        esc(E.recipes.find((r) => r.id === v.recipe).name) +
-        "</p><small>" +
-        (v.rep >= 40
-          ? "Disponível na oficina."
-          : "Ganhe reputação para liberar na oficina.") +
-        "</small></article>" +
-        button("Paint", "60 · Pintura de aliança") +
+        " · " +
+        (v.step < 3
+          ? "Concluir etapa: +20 reputação"
+          : "Serviços do posto permanecem disponíveis") +
+        "</small></div>" +
+        (v.step < 3 ? button("Mission", "Entrega no entreposto") : "");
+    else if (allianceTab === "Apoio")
+      body =
+        "<small>Encomendas: +15 reputação · apoio: +10. Cada opção tem limite de cinco contribuições.</small>" +
         button(
-          "Ship",
-          "80 · " + E.fleetCatalog.SHIPS.find((x) => x.id === v.ship).name,
+          "Deliver",
+          "2 " +
+            E.materials[v.material].name +
+            " · estoque " +
+            (s.resources[v.material] || 0),
         ) +
-        "</div>",
+        button("Donate", "Apoiar · saldo " + s.resources.credits + " Lumes");
+    else {
+      const ship = E.fleetCatalog.SHIPS.find((x) => x.id === v.ship),
+        recipe = E.recipes.find((r) => r.id === v.recipe);
+      const labels = ["Receita", "Pintura", "Nave"];
+      body =
+        '<div class="og-post-tabs">' +
+        labels
+          .map(
+            (t, i) =>
+              '<button data-alliance-reward="' +
+              i +
+              '" aria-pressed="' +
+              (rewardIndex === i) +
+              '">' +
+              t +
+              "</button>",
+          )
+          .join("") +
+        '</div><div class="og-alliance-reward">' +
+        root.OrbitArt.icon(
+          rewardIndex === 0
+            ? recipe.type
+            : rewardIndex === 1
+              ? "shield"
+              : "engine",
+        ) +
+        "<b>" +
+        esc(
+          rewardIndex === 0
+            ? recipe.name
+            : rewardIndex === 1
+              ? "Cores de " + v.name
+              : ship.name,
+        ) +
+        "</b><small>Requer " +
+        [40, 60, 80][rewardIndex] +
+        " de reputação</small></div>" +
+        (rewardIndex === 0
+          ? "<p>" +
+            esc(recipe.description) +
+            "</p><small>" +
+            (v.rep >= 40
+              ? "Receita liberada na oficina. A fabricação consome ingredientes."
+              : "A receita será liberada automaticamente ao atingir 40.") +
+            "</small>"
+          : rewardIndex === 1
+            ? button("Paint", "Pintura de aliança")
+            : button(
+                "Ship",
+                "Desbloqueio permite comprar · saldo " +
+                  s.resources.credits +
+                  " Lumes",
+              ));
+    }
+    return {
+      title: v.name,
+      singleCard: true,
+      header: header + tabs,
+      html:
+        '<article class="og-alliance-panel">' + progress + body + "</article>",
     };
   }
+
   function post(s) {
     const v = E.civilizationView(s);
     const g = v.index === 0 ? E.auralGardenView(s) : null;
@@ -473,6 +570,12 @@
   }
   root.OrbitCivilizationsUI = {
     entry,
+    selectAlliance(tab) {
+      if (["Jornada", "Recompensas", "Apoio"].includes(tab)) allianceTab = tab;
+    },
+    selectReward(i) {
+      if (Number.isInteger(i) && i >= 0 && i < 3) rewardIndex = i;
+    },
     shiftService(n) {
       servicePlanet = Math.max(0, servicePlanet + n);
     },

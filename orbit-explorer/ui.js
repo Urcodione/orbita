@@ -689,6 +689,8 @@
   function handleClick(event){
     if(event.target===$('og-sheet-backdrop')){dismissSheet();return;}
     const control=event.target.closest('button');if(!control||!root.contains(control)||control.disabled)return;
+    if(control.dataset.allianceTab){window.OrbitCivilizationsUI.selectAlliance(control.dataset.allianceTab);renderSheet();return;}
+    if(control.dataset.allianceReward!==undefined){window.OrbitCivilizationsUI.selectReward(Number(control.dataset.allianceReward));renderSheet();return;}
     if(control.dataset.serviceStep){window.OrbitCivilizationsUI.shiftService(Number(control.dataset.serviceStep));renderSheet();return;}
     if(control.dataset.civTab){window.OrbitCivilizationsUI.select(control.dataset.civTab);sheetNotice='';renderSheet();return;}
     if(control.dataset.campaignPage){campaignPage=control.dataset.campaignPage;sheetPage=0;sheetNotice='';renderSheet();return;}

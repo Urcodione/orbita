@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.3
+# Órbita para Android — versão 0.3.4
 
-Pacotes da versão 0.3.3 gerados e assinados em `dist/orbita-0.3.3.apk` e `dist/orbita-0.3.3.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.4 gerados e assinados em `dist/orbita-0.3.4.apk` e `dist/orbita-0.3.4.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -132,3 +132,7 @@ python3 android/build-apk.py --bundle
 ## Alterações 0.3.3
 
 Viveiro Aural ilustrado antes e depois da restauração. Um canteiro custa 12 Lumes e 2 minérios e rende 3 samambaias-lume após duas extrações com coleta em locais distintos. Evacuações e repetições não aceleram o crescimento. Colheitas aguardam espaço no depósito. Partidas anteriores recebem o cultivo sem perder progresso.
+
+## Alterações 0.3.4
+
+Inclui leituras Veyra e recuperação de componentes Thar. Alianças reorganizadas em Jornada, Recompensas e Apoio, com próximo desbloqueio e pontos restantes. Etapas existentes receberam consequências narrativas específicas ligadas à Aurora e ao Coro, sem reiniciar progresso. Desbloqueio de nave é acesso à compra, não entrega gratuita.

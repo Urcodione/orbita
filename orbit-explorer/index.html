@@ -1862,6 +1862,20 @@
 #orbit-game .og-post-tabs{flex-wrap:nowrap}
 #orbit-game .og-post-tabs button{min-width:0;padding:7px 5px;font-size:11px}
 
+#orbit-game .og-alliance-panel{height:100%;display:flex;flex-direction:column;gap:8px;min-height:0;font-size:12px}
+#orbit-game .og-alliance-panel p{margin:4px 0;font-size:12px;line-height:1.4}
+#orbit-game .og-alliance-panel small{font-size:11px;line-height:1.3}
+#orbit-game .og-alliance-next{display:grid;gap:4px;padding:8px;border-radius:12px;background:#173c48}
+#orbit-game .og-alliance-next progress,#orbit-game .og-alliance-goal progress{width:100%;height:6px;accent-color:#76d7cf}
+#orbit-game .og-alliance-next b{font-size:11px;color:#b2e8de}
+#orbit-game .og-alliance-story{padding:8px;border-left:2px solid #e2b46c;background:#172d3c}
+#orbit-game .og-alliance-goal{display:grid;gap:3px}
+#orbit-game .og-alliance-reward{flex:1;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+#orbit-game .og-alliance-reward>span{width:70px;height:70px}
+#orbit-game .og-alliance-panel .og-civ-offer{padding:6px;gap:4px}
+#orbit-game .og-alliance-panel .og-button{min-height:40px;font-size:12px}
+@media(max-height:620px){#orbit-game .og-alliance-panel{gap:5px}#orbit-game .og-alliance-panel p{font-size:11px}#orbit-game .og-alliance-story{padding:5px}}
+
 #orbit-game{background:#10223b url("data:image/webp;base64,UklGRtwGAABXRUJQVlA4WAoAAAAgAAAAPwAAXwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDgg7gQAAHAWAJ0BKkAAYAA+mTyXSCWjIiExWdugsBMJaAC9UBhGTJjtndnD6wqtwBt02+gbz9Pr+iEYC4jZrXHy5dJkznvQBIUtKUs7kOtmUD/GMqA5VsD+XPw7LWnupco4Jmsud/SomReFlD+0Cm6qupyqcObDH0h3r82mtO7W7rj403SY/mevjjY0jwvlS5zl+I2AGnPBe7ZDztpWXEzaKAqHWUlOIx5X+ks2IuVYwjvWNReiA2FhdEi41poMvpYAAP75Kmtx6fDmXFiChC8AXnL3HqYMAlETEKsptMCgAb/YUrhiTMle2nEaqlXHUOKzLxaj/tbaj5EVnCoiZsLWMZ4qvC7GKxzEJaCfa6u8CVHLzTqAw6THTkZO61Nw7JePXVqAELecjPEVH8i1XTB2JoFoBBzzbpOb9KOZaNHcD9T1+rGTWEdyp0WRDnfPNvh+gzD9i/EfeTfjFcmHprJcJIozfrhP1ZSIakcg9GwS1oc1oCI08IF3M386F5CBXkbHZQfSPp9L2FdX6x4bIzezB0tWiDRYkWJOE6xjIGyczikDGCIdqLvcG7eJVIuDqI7AZam3qBwHa3/Xs49Cn75xVCIDYzjNLuycGoOv8kNzMwYiIjq4M0nUrag3j8zxBvPLc78aydrm970MWVlXYjAFS2ghEEMi8LODafKws4+cBEFiLyC6danSA6YYGPY65E4WdBboCoX1yvx5TCYdI+4aw6JaCriEMoa4hzeT+hg1PIy3RDDiE0Y3z1CJMOD4sTc9o/C+rRyVpibmVOhwL2EVpO6LJlrcAh2kgii5Ml8uWiR1bTUEohsGt7nXkikm8iol6cGmzzoe2PSRAJuxdAzhOnwd9PYXOPQraq5QiF0X4OF3vT0FH7htZP/hz6lGAg3OegNzYctY8sp2cQ7oU1s8soEmKo9qT/5hry7hgqFcYRis1uJIhGBVqUceHf05wYI26k0RNMQplcWuM0JKsHUOIUNN7aKGWZABZn1FQyEtB9VAJbDoDkMnyYMCplG5cx+GcGhHQSopG4o66yjaAmOQqQi8cvRCr2wo5l4zl/VJl0J2UIqzJ0FvVFtDHpVM+wYoGRSN69dfIISYT++44PZDMD6f7WW6wNye/cwaCPsO5zbu5rLnvljLUcPZwze9YMeKEOZcefgEYLbO+aG9SrCxg/dpSeW6jrQ8xUeN+SKraFBL+C66yWX2kDRe9nRWDW09Q3MslzvpoINw9UGI9c5gHTHTMsiKbeixWQ/87y2i3HH3bzd5ONSRpm5v1b8wfkAwyp/JecZcHL8tDgN93t0NV3u2h+6pSMWsHDO2ZdhVGma2A24DW/ZhWo8Ih/NzDG9M9AMmt0efc/RvD29XzAtPUguOdhd2The87IZHp22rhBbkCPwJnJyTIoBtLr8Ea5RV5DS53Z4DEfgOYR+JkqwTZPfEUThClO70QSb2HstA+pncUKwrjoIBbailYCUF3cTrXuUCZzXE5Rk1we0IzaXAqWk17Dz/a3GjtinSqLpW7kiW8a9em+ctpMxOpVELzjHfmGBuc29QbzR3U8EUPBaN60IlxERZiM4TiGPF04lib4coL0l+X0w12R8aI2lHnoj3l4kPah1t+SQaGhw399wdr3zKAIh/4zTxZKXRgUqvg7HtPb9iDLs6Aa7npyyxTEDUStwg9H5OyatFQi+H8W4qVAAA") center/cover no-repeat}
 </style>
 <div class="og-emulator viz-dotted-background">
@@ -6659,6 +6673,23 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
       line: "Guardamos sinais de mundos que ninguém mais lembra. Precisamos de olhos e de testemunhas.",
     },
   ];
+  const stories = [
+    [
+      "Iara entrega coordenadas de um viveiro sem irrigação. As sementes da Aurora ainda dormem ali; leve peças ao posto para fazê-las respirar.",
+      "O viveiro desperta. Iara reconhece nas folhas o mesmo pulso do Coro: a Aurora deixou vida, além de mensagens. Reúna flora de dois ambientes para comparar esse sinal.",
+      "As duas espécies respondem ao mesmo pulso. Iara preserva uma cópia viva do testemunho da Aurora. Sua aliança protege essa memória; o viveiro continua produzindo ar para sua jornada.",
+    ],
+    [
+      "Khar aponta um farol apagado na antiga rota da Aurora. Restaure-o: as leituras dos viajantes ajudarão a escolher seus próximos destinos.",
+      "O farol volta a ouvir. Entre os sinais surge a escolta perdida da Aurora. Ative balizas e extraia de dois locais hostis para reconstruir a passagem dos viajantes.",
+      "As balizas ligam os fragmentos da rota. Khar confirma: a Aurora atravessou a tempestade seguindo o Coro. Os Veyra passam a guardar esse caminho para quem vier depois.",
+    ],
+    [
+      "Seli precisa comparar sinais de três biomas e recalibrar o observatório. Os registros da Aurora estão misturados às vozes de mundos esquecidos.",
+      "O observatório separa as primeiras vozes. A bancada recuperadora volta ao serviço. Recupere núcleos em dois sistemas para descobrir se as memórias sobreviveram à distância.",
+      "Os núcleos preservam a mesma assinatura em sistemas distintos. Seli conclui que o Coro transporta memórias, não apenas mensagens. O arquivo Thar agora guarda o testemunho da sua viagem.",
+    ],
+  ];
   const recipes = [
     {
       id: "aural-life",
@@ -6878,11 +6909,7 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
     if (a === "civDeliver") person.deliveries++;
     if (a === "civMission") {
       person.step++;
-      message = [
-        "Os viveiros, oficinas e observatórios voltam a funcionar. O povo pede notícias do posto distante.",
-        def.witness,
-        "A aliança está formada. Sua nave agora carrega a memória deste povo.",
-      ][person.step - 1];
+      message = stories[i][person.step - 1];
     }
     if (a === "civVisit") {
       person.visits.push(E.currentPlanet(n).id);
@@ -6915,6 +6942,21 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
       rep,
       step: p.step,
       planet,
+      story: p.step ? stories[i][p.step - 1] : def.line,
+      nextUnlock:
+        [
+          {
+            at: 40,
+            label: "Receita " + E.recipes.find((r) => r.id === def.recipe).name,
+          },
+          { at: 60, label: "Pintura de aliança" },
+          {
+            at: 80,
+            label:
+              "Acesso à compra da " +
+              E.fleetCatalog.SHIPS.find((x) => x.id === def.ship).name,
+          },
+        ].find((x) => x.at > rep) || null,
       post: outpost(s),
       visited: planet && p.visits.includes(planet.id),
       actions: Object.fromEntries(
@@ -8389,6 +8431,8 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
         "</article>",
     };
   }
+  let allianceTab = "Jornada",
+    rewardIndex = 0;
   let postTab = "Visit";
   function sheet(name, s) {
     if (name !== "civilizations" && name !== "alien-post") return null;
@@ -8560,40 +8604,135 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
           button(postTab, labels[postTab]),
       };
     }
-    return {
-      title: v.name,
-      header,
-      html:
-        '<div class="og-civ-cards"><article><p>' +
-        esc(v.line) +
-        "</p><strong>Aliança · " +
-        v.step +
-        "/3</strong><p>" +
-        esc(v.objective.text) +
+    const tabs =
+      '<div class="og-post-tabs" aria-label="Aliança">' +
+      ["Jornada", "Recompensas", "Apoio"]
+        .map(
+          (t) =>
+            '<button data-alliance-tab="' +
+            t +
+            '" aria-pressed="' +
+            (allianceTab === t) +
+            '">' +
+            t +
+            "</button>",
+        )
+        .join("") +
+      "</div>";
+    const next = v.nextUnlock;
+    const progress =
+      '<div class="og-alliance-next"><small>' +
+      (next
+        ? "Próximo · " + esc(next.label)
+        : "Todos os benefícios de reputação liberados") +
+      '</small><progress value="' +
+      v.rep +
+      '" max="' +
+      (next ? next.at : 100) +
+      '"></progress><b>' +
+      (next ? next.at - v.rep + " pontos restantes" : "100% dos desbloqueios") +
+      "</b></div>";
+    let body = "";
+    if (allianceTab === "Jornada")
+      body =
+        '<div class="og-alliance-story"><small>O Coro · ' +
+        esc(v.name) +
+        "</small><p>" +
+        esc(v.story) +
+        '</p></div><div class="og-alliance-goal"><b>' +
+        (v.step < 3 ? esc(v.missions[v.step]) : "Aliança concluída") +
         " · " +
+        v.step +
+        "/3</b><p>" +
+        esc(v.objective.text) +
+        '</p><progress value="' +
+        Math.min(v.objective.done, v.objective.total) +
+        '" max="' +
+        v.objective.total +
+        '"></progress><small>' +
         Math.min(v.objective.done, v.objective.total) +
         "/" +
         v.objective.total +
-        "</p>" +
-        (v.step < 3 ? button("Mission", esc(v.missions[v.step])) : "") +
-        "</article>" +
-        button("Deliver", "Encomenda · 2 " + E.materials[v.material].name) +
-        button("Donate", "Apoio aos postos") +
-        "<article><strong>40 · Receita exclusiva</strong><p>" +
-        esc(E.recipes.find((r) => r.id === v.recipe).name) +
-        "</p><small>" +
-        (v.rep >= 40
-          ? "Disponível na oficina."
-          : "Ganhe reputação para liberar na oficina.") +
-        "</small></article>" +
-        button("Paint", "60 · Pintura de aliança") +
+        " · " +
+        (v.step < 3
+          ? "Concluir etapa: +20 reputação"
+          : "Serviços do posto permanecem disponíveis") +
+        "</small></div>" +
+        (v.step < 3 ? button("Mission", "Entrega no entreposto") : "");
+    else if (allianceTab === "Apoio")
+      body =
+        "<small>Encomendas: +15 reputação · apoio: +10. Cada opção tem limite de cinco contribuições.</small>" +
         button(
-          "Ship",
-          "80 · " + E.fleetCatalog.SHIPS.find((x) => x.id === v.ship).name,
+          "Deliver",
+          "2 " +
+            E.materials[v.material].name +
+            " · estoque " +
+            (s.resources[v.material] || 0),
         ) +
-        "</div>",
+        button("Donate", "Apoiar · saldo " + s.resources.credits + " Lumes");
+    else {
+      const ship = E.fleetCatalog.SHIPS.find((x) => x.id === v.ship),
+        recipe = E.recipes.find((r) => r.id === v.recipe);
+      const labels = ["Receita", "Pintura", "Nave"];
+      body =
+        '<div class="og-post-tabs">' +
+        labels
+          .map(
+            (t, i) =>
+              '<button data-alliance-reward="' +
+              i +
+              '" aria-pressed="' +
+              (rewardIndex === i) +
+              '">' +
+              t +
+              "</button>",
+          )
+          .join("") +
+        '</div><div class="og-alliance-reward">' +
+        root.OrbitArt.icon(
+          rewardIndex === 0
+            ? recipe.type
+            : rewardIndex === 1
+              ? "shield"
+              : "engine",
+        ) +
+        "<b>" +
+        esc(
+          rewardIndex === 0
+            ? recipe.name
+            : rewardIndex === 1
+              ? "Cores de " + v.name
+              : ship.name,
+        ) +
+        "</b><small>Requer " +
+        [40, 60, 80][rewardIndex] +
+        " de reputação</small></div>" +
+        (rewardIndex === 0
+          ? "<p>" +
+            esc(recipe.description) +
+            "</p><small>" +
+            (v.rep >= 40
+              ? "Receita liberada na oficina. A fabricação consome ingredientes."
+              : "A receita será liberada automaticamente ao atingir 40.") +
+            "</small>"
+          : rewardIndex === 1
+            ? button("Paint", "Pintura de aliança")
+            : button(
+                "Ship",
+                "Desbloqueio permite comprar · saldo " +
+                  s.resources.credits +
+                  " Lumes",
+              ));
+    }
+    return {
+      title: v.name,
+      singleCard: true,
+      header: header + tabs,
+      html:
+        '<article class="og-alliance-panel">' + progress + body + "</article>",
     };
   }
+
   function post(s) {
     const v = E.civilizationView(s);
     const g = v.index === 0 ? E.auralGardenView(s) : null;
@@ -8615,6 +8754,12 @@ root.OrbitFleetUI={sheet,stationRow,apply,picture,planetHint};
   }
   root.OrbitCivilizationsUI = {
     entry,
+    selectAlliance(tab) {
+      if (["Jornada", "Recompensas", "Apoio"].includes(tab)) allianceTab = tab;
+    },
+    selectReward(i) {
+      if (Number.isInteger(i) && i >= 0 && i < 3) rewardIndex = i;
+    },
     shiftService(n) {
       servicePlanet = Math.max(0, servicePlanet + n);
     },
@@ -9490,6 +9635,8 @@ root.OrbitFeedback={show(container,result,action,state){
   function handleClick(event){
     if(event.target===$('og-sheet-backdrop')){dismissSheet();return;}
     const control=event.target.closest('button');if(!control||!root.contains(control)||control.disabled)return;
+    if(control.dataset.allianceTab){window.OrbitCivilizationsUI.selectAlliance(control.dataset.allianceTab);renderSheet();return;}
+    if(control.dataset.allianceReward!==undefined){window.OrbitCivilizationsUI.selectReward(Number(control.dataset.allianceReward));renderSheet();return;}
     if(control.dataset.serviceStep){window.OrbitCivilizationsUI.shiftService(Number(control.dataset.serviceStep));renderSheet();return;}
     if(control.dataset.civTab){window.OrbitCivilizationsUI.select(control.dataset.civTab);sheetNotice='';renderSheet();return;}
     if(control.dataset.campaignPage){campaignPage=control.dataset.campaignPage;sheetPage=0;sheetNotice='';renderSheet();return;}

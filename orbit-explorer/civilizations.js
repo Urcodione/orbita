@@ -58,6 +58,23 @@
       line: "Guardamos sinais de mundos que ninguém mais lembra. Precisamos de olhos e de testemunhas.",
     },
   ];
+  const stories = [
+    [
+      "Iara entrega coordenadas de um viveiro sem irrigação. As sementes da Aurora ainda dormem ali; leve peças ao posto para fazê-las respirar.",
+      "O viveiro desperta. Iara reconhece nas folhas o mesmo pulso do Coro: a Aurora deixou vida, além de mensagens. Reúna flora de dois ambientes para comparar esse sinal.",
+      "As duas espécies respondem ao mesmo pulso. Iara preserva uma cópia viva do testemunho da Aurora. Sua aliança protege essa memória; o viveiro continua produzindo ar para sua jornada.",
+    ],
+    [
+      "Khar aponta um farol apagado na antiga rota da Aurora. Restaure-o: as leituras dos viajantes ajudarão a escolher seus próximos destinos.",
+      "O farol volta a ouvir. Entre os sinais surge a escolta perdida da Aurora. Ative balizas e extraia de dois locais hostis para reconstruir a passagem dos viajantes.",
+      "As balizas ligam os fragmentos da rota. Khar confirma: a Aurora atravessou a tempestade seguindo o Coro. Os Veyra passam a guardar esse caminho para quem vier depois.",
+    ],
+    [
+      "Seli precisa comparar sinais de três biomas e recalibrar o observatório. Os registros da Aurora estão misturados às vozes de mundos esquecidos.",
+      "O observatório separa as primeiras vozes. A bancada recuperadora volta ao serviço. Recupere núcleos em dois sistemas para descobrir se as memórias sobreviveram à distância.",
+      "Os núcleos preservam a mesma assinatura em sistemas distintos. Seli conclui que o Coro transporta memórias, não apenas mensagens. O arquivo Thar agora guarda o testemunho da sua viagem.",
+    ],
+  ];
   const recipes = [
     {
       id: "aural-life",
@@ -277,11 +294,7 @@
     if (a === "civDeliver") person.deliveries++;
     if (a === "civMission") {
       person.step++;
-      message = [
-        "Os viveiros, oficinas e observatórios voltam a funcionar. O povo pede notícias do posto distante.",
-        def.witness,
-        "A aliança está formada. Sua nave agora carrega a memória deste povo.",
-      ][person.step - 1];
+      message = stories[i][person.step - 1];
     }
     if (a === "civVisit") {
       person.visits.push(E.currentPlanet(n).id);
@@ -314,6 +327,21 @@
       rep,
       step: p.step,
       planet,
+      story: p.step ? stories[i][p.step - 1] : def.line,
+      nextUnlock:
+        [
+          {
+            at: 40,
+            label: "Receita " + E.recipes.find((r) => r.id === def.recipe).name,
+          },
+          { at: 60, label: "Pintura de aliança" },
+          {
+            at: 80,
+            label:
+              "Acesso à compra da " +
+              E.fleetCatalog.SHIPS.find((x) => x.id === def.ship).name,
+          },
+        ].find((x) => x.at > rep) || null,
       post: outpost(s),
       visited: planet && p.visits.includes(planet.id),
       actions: Object.fromEntries(
