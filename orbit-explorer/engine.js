@@ -726,6 +726,7 @@
       case 'expeditionCollect':
         if (!['ore', 'data', 'crystal'].includes(current.kind) || expedition.collected.includes(expedition.y * 6 + expedition.x)) return reject('Não há uma reserva de recursos para coletar neste setor.');
         if (expedition.load >= expedition.capacity) return reject('Compartimento da expedição cheio. Extraia a carga antes de coletar mais.');
+        {const resource=api.collectionResource?.(state,current);if(resource&&api.materials?.[resource]?.category&&(state.resources[resource]||0)+(expedition.pending[resource]||0)>=999)return reject('Estoque máximo deste recurso atingido.');}
         info.intensive=data.intensive===true;
         cost.reserve = stats(state).collectionCost+(info.intensive?3:0);
         if(info.intensive)cost.integrity=1;
@@ -859,7 +860,7 @@
       const adjacent = Math.abs(tile.x - expedition.x) + Math.abs(tile.y - expedition.y) === 1;
       const move = adjacent ? preview(state, 'expeditionMove', { x: tile.x, y: tile.y }) : null;
       return {
-        x: tile.x, y: tile.y, kind: visible ? tile.kind : 'unknown', visible,
+        x: tile.x, y: tile.y, kind: visible ? tile.kind : 'unknown', visible, resourceId: visible && ['ore','crystal','data'].includes(tile.kind) ? api.collectionResource?.(state,tile) : null,
         visited: expedition.visited.includes(index), collected: visible && (expedition.beacons?.includes(index) || expedition.collected.includes(index) || tile.kind === 'core' && expedition.coreRecovered),
         current: expedition.x === tile.x && expedition.y === tile.y, adjacent,
         traversalCost: visible && tile.kind !== 'wall' ? movementCost(state,tile) : null,
@@ -1211,10 +1212,12 @@
         const bonus = stats(next).collectionBonus;
         const research = tile.kind === 'data' ? 1 + stats(next).scanBonus : 1;
         // Round the normal yield first so an intensive collect is the advertised +50% (it ranged from +40% to +100%).
-        const normal = Math.round((tile.kind === 'ore' ? 8 : tile.kind === 'data' ? 10 : 2) * bonus * research * expedition.rewardMultiplier);
-        const amount = info.intensive ? Math.round(normal * 1.5) : normal;
-        const key = tile.kind === 'crystal' ? 'crystals' : tile.kind;
-        expedition.pending[key] += amount;
+        const material = api.collectionResource?.(next,tile), native = material && !['ore','crystals','data'].includes(material);
+        const normal = native ? (api.materials[material].rarity === 'Rara' ? 1 : 2) : Math.round((tile.kind === 'ore' ? 8 : tile.kind === 'data' ? 10 : 2) * bonus * research * expedition.rewardMultiplier);
+        const yieldAmount = info.intensive ? Math.round(normal * 1.5) : normal;
+        const amount = native ? Math.min(yieldAmount,999-(next.resources[material]||0)-(expedition.pending[material]||0)) : yieldAmount;
+        const key = material || (tile.kind === 'crystal' ? 'crystals' : tile.kind);
+        expedition.pending[key] = (expedition.pending[key] || 0) + amount;
         expedition.pending.credits += Math.round(5 * expedition.rewardMultiplier);
         // Reported for on-screen feedback only; the amounts stay in the expedition cargo until extraction.
         reward[key] = amount; reward.credits = Math.round(5 * expedition.rewardMultiplier);
@@ -1269,7 +1272,7 @@
       case 'expeditionExtract': {
         const expedition = next.expedition;
         Object.assign(reward, expedition.pending);
-        for (const key of ['ore', 'crystals', 'data', 'credits']) res[key] += reward[key];
+        for (const [key, amount] of Object.entries(expedition.pending)) if (['ore','crystals','data','credits'].includes(key) || api.materials?.[key]) res[key] = (res[key] || 0) + amount;
         if (reward.module) next.inventory.push(reward.module);
         if (reward.fragment) next.discovery.fragments[reward.fragment] = true;
         if (expedition.coreRecovered) {
@@ -1458,6 +1461,7 @@
     if (!expedition.collected.every(index => ['ore', 'data', 'crystal'].includes(board[index].kind)) || !expedition.harvested.every(index => expedition.collected.includes(index))) return false;
     const pending = expedition.pending;
     if (!pending || !['ore', 'crystals', 'data', 'credits'].every(key => Number.isInteger(pending[key]) && pending[key] >= 0 && pending[key] <= 1000)) return false;
+    if (Object.entries(pending).some(([key,amount]) => !['module','fragment','ore','crystals','data','credits'].includes(key) && (!api.materials?.[key] || !Number.isInteger(amount) || amount < 0 || amount > 999))) return false;
     if (pending.module !== undefined && (!validModule(pending.module) || !expedition.coreRecovered)) return false;
     if (pending.fragment !== undefined && (pending.fragment !== fragmentForBiome(planet.biome) || !expedition.coreRecovered)) return false;
     if (expedition.coreRecovered && pending.fragment !== fragmentForBiome(planet.biome)) return false;

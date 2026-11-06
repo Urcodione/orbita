@@ -199,6 +199,8 @@
 @keyframes og-signal-pulse{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.08);opacity:1}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-nav-node.is-signal .og-nav-hit::after{animation:none}}
 
+#orbit-game .og-field-native{position:absolute;inset:8%;display:grid;place-items:center;background:#173039;border-radius:50%;pointer-events:none}#orbit-game .og-field-native>span{width:100%;height:100%}
+
 /* Bancada em páginas curtas: estoque e fabricação permanecem à vista. */
 #orbit-game .og-lab,#orbit-game .og-lab-fixed,#orbit-game .og-lab-footer{display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--og-text)}
 #orbit-game .og-lab{min-height:0;overflow:visible}
@@ -2657,6 +2659,7 @@ window.OrbitIllustrations={"aural-dormant": "data:image/webp;base64,UklGRozMAgBX
       case 'expeditionCollect':
         if (!['ore', 'data', 'crystal'].includes(current.kind) || expedition.collected.includes(expedition.y * 6 + expedition.x)) return reject('Não há uma reserva de recursos para coletar neste setor.');
         if (expedition.load >= expedition.capacity) return reject('Compartimento da expedição cheio. Extraia a carga antes de coletar mais.');
+        {const resource=api.collectionResource?.(state,current);if(resource&&api.materials?.[resource]?.category&&(state.resources[resource]||0)+(expedition.pending[resource]||0)>=999)return reject('Estoque máximo deste recurso atingido.');}
         info.intensive=data.intensive===true;
         cost.reserve = stats(state).collectionCost+(info.intensive?3:0);
         if(info.intensive)cost.integrity=1;
@@ -2790,7 +2793,7 @@ window.OrbitIllustrations={"aural-dormant": "data:image/webp;base64,UklGRozMAgBX
       const adjacent = Math.abs(tile.x - expedition.x) + Math.abs(tile.y - expedition.y) === 1;
       const move = adjacent ? preview(state, 'expeditionMove', { x: tile.x, y: tile.y }) : null;
       return {
-        x: tile.x, y: tile.y, kind: visible ? tile.kind : 'unknown', visible,
+        x: tile.x, y: tile.y, kind: visible ? tile.kind : 'unknown', visible, resourceId: visible && ['ore','crystal','data'].includes(tile.kind) ? api.collectionResource?.(state,tile) : null,
         visited: expedition.visited.includes(index), collected: visible && (expedition.beacons?.includes(index) || expedition.collected.includes(index) || tile.kind === 'core' && expedition.coreRecovered),
         current: expedition.x === tile.x && expedition.y === tile.y, adjacent,
         traversalCost: visible && tile.kind !== 'wall' ? movementCost(state,tile) : null,
@@ -3142,10 +3145,12 @@ window.OrbitIllustrations={"aural-dormant": "data:image/webp;base64,UklGRozMAgBX
         const bonus = stats(next).collectionBonus;
         const research = tile.kind === 'data' ? 1 + stats(next).scanBonus : 1;
         // Round the normal yield first so an intensive collect is the advertised +50% (it ranged from +40% to +100%).
-        const normal = Math.round((tile.kind === 'ore' ? 8 : tile.kind === 'data' ? 10 : 2) * bonus * research * expedition.rewardMultiplier);
-        const amount = info.intensive ? Math.round(normal * 1.5) : normal;
-        const key = tile.kind === 'crystal' ? 'crystals' : tile.kind;
-        expedition.pending[key] += amount;
+        const material = api.collectionResource?.(next,tile), native = material && !['ore','crystals','data'].includes(material);
+        const normal = native ? (api.materials[material].rarity === 'Rara' ? 1 : 2) : Math.round((tile.kind === 'ore' ? 8 : tile.kind === 'data' ? 10 : 2) * bonus * research * expedition.rewardMultiplier);
+        const yieldAmount = info.intensive ? Math.round(normal * 1.5) : normal;
+        const amount = native ? Math.min(yieldAmount,999-(next.resources[material]||0)-(expedition.pending[material]||0)) : yieldAmount;
+        const key = material || (tile.kind === 'crystal' ? 'crystals' : tile.kind);
+        expedition.pending[key] = (expedition.pending[key] || 0) + amount;
         expedition.pending.credits += Math.round(5 * expedition.rewardMultiplier);
         // Reported for on-screen feedback only; the amounts stay in the expedition cargo until extraction.
         reward[key] = amount; reward.credits = Math.round(5 * expedition.rewardMultiplier);
@@ -3200,7 +3205,7 @@ window.OrbitIllustrations={"aural-dormant": "data:image/webp;base64,UklGRozMAgBX
       case 'expeditionExtract': {
         const expedition = next.expedition;
         Object.assign(reward, expedition.pending);
-        for (const key of ['ore', 'crystals', 'data', 'credits']) res[key] += reward[key];
+        for (const [key, amount] of Object.entries(expedition.pending)) if (['ore','crystals','data','credits'].includes(key) || api.materials?.[key]) res[key] = (res[key] || 0) + amount;
         if (reward.module) next.inventory.push(reward.module);
         if (reward.fragment) next.discovery.fragments[reward.fragment] = true;
         if (expedition.coreRecovered) {
@@ -3389,6 +3394,7 @@ window.OrbitIllustrations={"aural-dormant": "data:image/webp;base64,UklGRozMAgBX
     if (!expedition.collected.every(index => ['ore', 'data', 'crystal'].includes(board[index].kind)) || !expedition.harvested.every(index => expedition.collected.includes(index))) return false;
     const pending = expedition.pending;
     if (!pending || !['ore', 'crystals', 'data', 'credits'].every(key => Number.isInteger(pending[key]) && pending[key] >= 0 && pending[key] <= 1000)) return false;
+    if (Object.entries(pending).some(([key,amount]) => !['module','fragment','ore','crystals','data','credits'].includes(key) && (!api.materials?.[key] || !Number.isInteger(amount) || amount < 0 || amount > 999))) return false;
     if (pending.module !== undefined && (!validModule(pending.module) || !expedition.coreRecovered)) return false;
     if (pending.fragment !== undefined && (pending.fragment !== fragmentForBiome(planet.biome) || !expedition.coreRecovered)) return false;
     if (expedition.coreRecovered && pending.fragment !== fragmentForBiome(planet.biome)) return false;
@@ -3624,6 +3630,17 @@ function occurs(planet,id){const g=goods[id];if(!g.biomes.includes(planet.biome)
 const specialty=Object.keys(goods).filter(id=>goods[id].category);
 function deposits(planet){return specialty.filter(id=>occurs(planet,id));}
 function known(state,id){return !specialty.includes(id)||state.materialDiscoveries?.includes(id)||(state.resources[id]||0)>0||state.galaxy.planets.some(p=>p.scanned&&deposits(p).includes(id));}
+// Native cargo belongs to a specific visible deposit, never to extraction itself.
+E.collectionResource=(state,tile)=>{
+ const normal=tile.kind==='crystal'?'crystals':tile.kind;
+ if(state.guide?.active||!state.expedition)return normal;
+ const board=E.expeditionBoard(state.expedition),ore=board.filter(c=>c.kind==='ore');
+ const native=tile.kind==='data'?0:tile.kind==='ore'&&ore[1]?.x===tile.x&&ore[1]?.y===tile.y?1:-1;
+ if(native<0)return normal;
+ const local=deposits(E.currentPlanet(state));if(!local.length)return normal;
+ const site=Number(state.expedition.siteId.split('-s')[1])||0;
+ return local[(site+native)%local.length];
+};
 E.materials=goods;E.deposits=deposits;E.materialKnown=known;
 const interval=600000;
 function market(state,now=Date.now()){
@@ -3668,11 +3685,11 @@ E.market=market;E.tradeQuote=quote;
 E.preview=(state,action,payload)=>action==='trade'?quote(state,payload):basePreview(state,action,payload);
 E.dispatch=(state,action,payload)=>{
  if(action!=='trade'){
-  const registered=specialty.filter(id=>known(state,id)),planet=E.currentPlanet(state),samples=action==='expeditionExtract'?Math.min(3,state.expedition?.harvested?.length||0):0;
+  const registered=specialty.filter(id=>known(state,id)),planet=E.currentPlanet(state);
   const result=baseDispatch(state,action,payload);
   if(result.ok){
    if(action==='scan')state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...deposits(planet)])];
-   if(action==='expeditionExtract'&&samples){for(const id of deposits(planet)){const amount=Math.min(goods[id].rarity==='Rara'?1:goods[id].rarity==='Exótica'?Math.min(2,samples):samples,999-(state.resources[id]||0));state.resources[id]=(state.resources[id]||0)+amount;result.reward[id]=amount;result.message+=' +'+amount+' '+goods[id].name+'.';}state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...deposits(planet)])];}
+
    if(action==='warp'){state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...registered])];delete state.commerce;}
   }
   return result;
@@ -5896,9 +5913,9 @@ function trainingBlocked(s,a,p){const g=s.guide;if(g?.v!==2||!g.active)return ''
 
 const fresh=()=>({v:2,active:true,started:false,extracted:false,moduleId:null,region:0,visited:[],installed:false,oxygenMade:false,fuelMade:false,crafted:null,loan:false,completed:false});
 const valid=g=>g&&[1,2].includes(g.v)&&['active','started','extracted'].every(k=>typeof g[k]==='boolean')&&(g.moduleId===null||typeof g.moduleId==='string')&&(g.v===1||Number.isInteger(g.region)&&g.region>=0&&g.region<4&&Array.isArray(g.visited)&&g.visited.length<=4&&new Set(g.visited).size===g.visited.length&&g.visited.every(i=>Number.isInteger(i)&&i>=0&&i<4)&&['installed','oxygenMade','fuelMade','loan','completed'].every(k=>typeof g[k]==='boolean')&&(g.crafted===null||typeof g.crafted==='string'));
-E.create=(...args)=>{const s=base.create(...args);s.guide=fresh();trainingWorld(s);return s;};
+E.create=(...args)=>{const s=base.create(...args);s.guide=fresh();s.resources.lumenfern=1;trainingWorld(s);return s;};
 E.snapshot=s=>({...base.snapshot(s),guide:s.guide||{...fresh(),active:false}});
-E.restore=s=>{const state=base.restore(s);if(!state)return null;const guide=state.guide;if(guide!==undefined&&!valid(guide))return null;state.guide=guide?{...guide}:{...fresh(),active:state.galaxyIndex===0&&!state.progress.scans&&!state.progress.explorations};trainingWorld(state);return state;};
+E.restore=s=>{const state=base.restore(s);if(!state)return null;const guide=state.guide;if(guide!==undefined&&!valid(guide))return null;state.guide=guide?{...guide}:{...fresh(),active:state.galaxyIndex===0&&!state.progress.scans&&!state.progress.explorations};if(state.guide.v===2&&state.guide.active&&!state.guide.oxygenMade&&!state.resources.lumenfern)state.resources.lumenfern=1;trainingWorld(state);return state;};
 function blocked(s,a,p){if(s.guide?.v===2)return trainingBlocked(s,a,p);if(!s.guide?.active)return '';if(['stationDock','warp','travel','launch','salvage','expeditionSalvage','expeditionAbort','rescue'].includes(a))return 'Conclua a primeira saída ou toque em Pular tutorial para explorar livremente.';if(a==='explore'&&p?.siteId&&p.siteId!=='g0-p0-s0')return 'O treinamento acontece no primeiro local deste mundo.';if(a==='expeditionExtract'&&(!s.expedition?.coreRecovered||!s.expedition?.pending.module||!s.expedition?.harvested.includes(25)||!s.expedition?.harvested.includes(10)))return 'Antes de extrair, recupere o módulo, o minério e os cristais indicados. Você pode pular o tutorial a qualquer momento.';return '';}
 E.preview=(s,a,p)=>{if(['guideStart','guideSkip','guideRegion','guideLoan','guideFinish'].includes(a))return {allowed:!!s.guide?.active,reason:'',cost:{}};const reason=blocked(s,a,p);return reason?{allowed:false,reason,cost:{}}:base.preview(s,a,p);};
 E.dispatch=(s,a,p={})=>{if(s.guide?.v===2&&s.guide.active){const g=s.guide;if(a==='guideSkip'||a==='guideFinish'){if(a==='guideFinish'&&(!g.crafted||g.visited.length!==4))return {ok:false,message:'Conclua as quatro regiões.'};graduate(s,a==='guideSkip');return {ok:true,message:a==='guideSkip'?'Treinamento encerrado. Bem-vindo a Auralis.':'Prisma concluído! Seu abrigo foi guardado na nave.',reward:{}};}if(a==='guideRegion'){if(s.expedition||!g.visited.includes(g.region)||g.region===3||!g.oxygenMade||!g.fuelMade||!g.crafted)return {ok:false,message:'Conclua a preparação antes de avançar.'};g.region++;g.loan=false;return {ok:true,message:'Novo horizonte de Prisma desbloqueado.',reward:{}};}if(a==='guideLoan'){if(g.region<2||g.loan)return {ok:false,message:'Nenhum empréstimo disponível.'};Object.assign(s.equipped.shield.capabilities||(s.equipped.shield.capabilities={}),{heat:450,radiation:150,pressure:65});if(g.region===3)Object.assign(s.equipped.arm.capabilities||(s.equipped.arm.capabilities={}),{gas:true,pressure:65});g.loan=true;return {ok:true,message:'Kit de simulação emprestado. Será devolvido ao sair de Prisma.',reward:{}};}}if(a==='guideStart'||a==='guideSkip'){if(!s.guide?.active)return {ok:false,message:'Orientação já encerrada.'};if(a==='guideStart')s.guide.started=true;else s.guide.active=false;return {ok:true,message:a==='guideSkip'?'Exploração livre. Consulte Como jogar quando precisar. A caçada começou: 16 seres únicos vivem nas galáxias; o ponto violeta no topo avisa quando um deles está no setor.':'Vamos conhecer o scanner orbital.',reward:{}};}const reason=blocked(s,a,p);if(reason)return {ok:false,message:reason};const result=base.dispatch(s,a,p);if(result.ok&&s.guide?.active){if(a==='expeditionExtract'){s.guide.extracted=true;if(result.reward.module)s.guide.moduleId=result.reward.module.id;if(s.guide.v===2&&!s.guide.visited.includes(s.guide.region)){s.guide.visited.push(s.guide.region);if(s.guide.region===0){s.resources.data+=24;s.resources.ore+=9;result.message+=' Kit didático: 24 pesquisa e 9 minério para a oficina.';}}}if(a==='equip'&&p.moduleId===s.guide.moduleId){if(s.guide.v===2)s.guide.installed=true;else s.guide.active=false;}if(s.guide.v===2){if(a==='refillOxygen')s.guide.oxygenMade=true;if(a==='refuel')s.guide.fuelMade=true;if(a==='fabricate'&&p.recipeId==='cryo-suit'){s.guide.crafted=result.reward.module.id;s.guide.moduleId=result.reward.module.id;s.guide.installed=false;}}}return result;};
@@ -5910,7 +5927,7 @@ function mount(container,app){
   const close=['Continue o treinamento','Feche o cartão para seguir a próxima etapa.','[data-action="close-sheet"]'];
   if(g.region===0&&g.installed){
    if(!g.oxygenMade||!g.fuelMade){const a=!g.oxygenMade?'refillOxygen':'refuel',oxygen=a==='refillOxygen';
-    if(v.sheet==='maintenance'){if(!visible(`[data-action="${a}"]`))return ['Abastecimento de bordo','Escolha o serviço indicado. A receita mostra consumo, estoque e resultado.',`[data-maintenance="${a}"]`];return [oxygen?'Plantas viram oxigênio':'Minério vira combustível',oxygen?'A Samambaia-lume veio da coleta. Uma unidade produz até 12 O₂; em mundos respiráveis, a atmosfera também ajuda.':'3 minérios rendem até 12 de combustível. Cada viagem e descida consome reservas: veja quanto sobra antes de partir.',`[data-action="${a}"]`];}
+    if(v.sheet==='maintenance'){if(!visible(`[data-action="${a}"]`))return ['Abastecimento de bordo','Escolha o serviço indicado. A receita mostra consumo, estoque e resultado.',`[data-maintenance="${a}"]`];return [oxygen?'Plantas viram oxigênio':'Minério vira combustível',oxygen?'O kit didático já traz 1 Samambaia-lume para esta aula; ela não veio da extração. Uma unidade produz até 12 O₂; em mundos respiráveis, a atmosfera também ajuda.':'3 minérios rendem até 12 de combustível. Cada viagem e descida consome reservas: veja quanto sobra antes de partir.',`[data-action="${a}"]`];}
     if(v.sheet==='workshop')return ['Manutenção','Aqui você produz oxigênio e combustível, repara o casco e refina células de dobra.','[data-action="maintenance"]'];
     if(v.sheet)return close;if(v.tab!=='ship')return ['Oficina de bordo','Vamos usar os recursos que você trouxe.','.og-tabs [data-tab="ship"]'];if(v.shipDetail.mode==='exterior')return ['Entre na nave','Toque na nave para abrir os compartimentos.','#og-canvas'];return ['Oficina de bordo','Oficina: manutenção repõe reservas; componentes viram módulos. Tudo ocupa espaço no depósito.','[data-action="workshop"]'];
    }
@@ -9364,7 +9381,7 @@ root.OrbitFeedback={show(container,result,action,state){
     const vehicle=p.medium==='gas'?'Sonda atmosférica':p.medium==='liquid'?'Explorador submersível':'Veículo de superfície';
     $('og-heading').innerHTML=`<div class="og-eyebrow">${esc(p.name)} · ${vehicle}</div><h1>${esc(ex.siteName)}</h1><p>${ex.beacons&&!ex.coreSecured?'Balizas '+ex.beacons.done+'/2 · triangule a tecnologia':ex.coreSecured?'Retorno de coleta · recupere os depósitos restantes':ex.coreRecovered?'Núcleo a bordo · volte à extração':'Sinal antigo ao norte · encontre uma rota'}</p>`;
     $('og-field-cells').style.setProperty('--grid-size',ex.width);
-    $('og-field-cells').innerHTML=ex.cells.map(c=>`<button data-expedition-x="${c.x}" data-expedition-y="${c.y}" data-kind="${esc(c.collected?'empty':c.kind)}" class="og-field-cell ${c.current?'is-current':''}" ${c.specimen?'data-specimen="'+esc(c.specimen)+'"':''} ${!c.visible&&!c.moveAllowed?'disabled':''} ${!c.moveAllowed&&c.visible?`data-field-hint="${esc(c.kind==='wall'?'Obstáculo do terreno: não pode ser coletado. Contorne pela trilha.':c.current&&['ore','crystal','data'].includes(c.kind)&&!c.collected?'Você está sobre o depósito. Use Coletar abaixo do mapa.':c.current?'Posição atual do veículo.':c.adjacent?c.reason:'Aproxime-se pelos quadros vizinhos da trilha.') }"`:''} aria-label="${esc((terrainNames[c.kind]||'Terreno')+', coluna '+(c.x+1)+', linha '+(c.y+1)+(c.current?', posição atual':c.moveAllowed?', mover: '+costText(c.moveCost):c.reason?', '+c.reason:''))}"><span class="og-sr-only">${c.current?'Você está aqui':terrainNames[c.kind]||'Terreno'}${c.specimen?', exemplar único':''}</span>${c.specimen?window.OrbitXenoUI?.cellArt(c.specimen)||'':''}</button>`).join('');
+    $('og-field-cells').innerHTML=ex.cells.map(c=>`<button data-expedition-x="${c.x}" data-expedition-y="${c.y}" data-kind="${esc(c.collected?'empty':c.kind)}" class="og-field-cell ${c.current?'is-current':''}" ${c.specimen?'data-specimen="'+esc(c.specimen)+'"':''} ${!c.visible&&!c.moveAllowed?'disabled':''} ${!c.moveAllowed&&c.visible?`data-field-hint="${esc(c.kind==='wall'?'Obstáculo do terreno: não pode ser coletado. Contorne pela trilha.':c.current&&['ore','crystal','data'].includes(c.kind)&&!c.collected?'Você está sobre o depósito. Use Coletar abaixo do mapa.':c.current?'Posição atual do veículo.':c.adjacent?c.reason:'Aproxime-se pelos quadros vizinhos da trilha.') }"`:''} aria-label="${esc((E.materials[c.resourceId]?.name||terrainNames[c.kind]||'Terreno')+', coluna '+(c.x+1)+', linha '+(c.y+1)+(c.current?', posição atual':c.moveAllowed?', mover: '+costText(c.moveCost):c.reason?', '+c.reason:''))}"><span class="og-sr-only">${c.current?'Você está aqui':terrainNames[c.kind]||'Terreno'}${c.specimen?', exemplar único':''}</span>${c.resourceId&&E.materials[c.resourceId]?.category&&!c.collected?'<span class="og-field-native">'+window.OrbitCommerce.art(c.resourceId)+'</span>':''}${c.specimen?window.OrbitXenoUI?.cellArt(c.specimen)||'':''}</button>`).join('');
     const warning=ex.returnRisk;
     $('og-field-caption').classList.toggle('is-warning',warning);
     root.dataset.fieldWeather=ex.weather?.active?'storm':ex.weather?.warning?'warning':'calm';
@@ -9374,7 +9391,7 @@ root.OrbitFeedback={show(container,result,action,state){
     else if(on?.kind==='beacon'&&preview('expeditionBeacon').allowed)action=button('expeditionBeacon','Ativar baliza',{primary:true,cost:true});
     else if(ex.atBase&&ex.turns>0)action=button('expeditionExtract','Extrair carga',{primary:true});
     else if(on?.kind==='core'&&!ex.coreRecovered)action=button('expeditionInteract','Abrir circuito do núcleo',{primary:true});
-    else if(['ore','data','crystal'].includes(on?.kind)&&!on.collected)action=button('expeditionCollect','Recolher '+({ore:'minério',data:'pesquisa',crystal:'cristais'}[on.kind])+(!ex.coreSecured&&!ex.coreRecovered&&ex.load+4>ex.capacity?' · o núcleo não caberá depois':''),{primary:true,cost:true})+(!state.guide?.active?button('expeditionCollect','Extração intensiva: +50% de material, +3 energia e −1 integridade',{payload:{intensive:true},attrs:'data-intensive="true" data-caption="Intensiva +50%"',cost:true}):'');
+    else if(['ore','data','crystal'].includes(on?.kind)&&!on.collected)action=button('expeditionCollect','Recolher '+(E.materials[on.resourceId]?.name||{ore:'minério',data:'pesquisa',crystal:'cristais'}[on.kind])+(!ex.coreSecured&&!ex.coreRecovered&&ex.load+4>ex.capacity?' · o núcleo não caberá depois':''),{primary:true,cost:true,attrs:on.resourceId&&E.materials[on.resourceId]?.category?'data-caption="'+esc(E.materials[on.resourceId].name)+'"':''})+(!state.guide?.active?button('expeditionCollect','Extração intensiva: +50% de material, +3 energia e −1 integridade',{payload:{intensive:true},attrs:'data-intensive="true" data-caption="Intensiva +50%"',cost:true}):'');
     const contextAction=ex.atBase&&ex.turns>0?'expeditionExtract':on?.kind==='core'&&!ex.coreRecovered?'expeditionInteract':['ore','data','crystal'].includes(on?.kind)&&!on.collected?'expeditionCollect':null;
     const contextPreview=contextAction?preview(contextAction):null;
     const operation=E.siteOperation(state);
@@ -9436,7 +9453,7 @@ root.OrbitFeedback={show(container,result,action,state){
       const ex=E.expeditionView(state);
       if(!ex)return {title:'Carga entregue',html:'<p>Os recursos extraídos já estão na nave.</p><button class="og-button primary" data-action="close-sheet">Continuar</button>'};
       const m=ex.pending.module;
-      return {title:'Ainda precisa voltar.',html:`<p>Esta carga está no veículo. Leve-a ao ponto de extração para guardá-la na nave. Se ficar sem energia fora da base, a evacuação será sua saída e a carga ficará para trás.</p><div class="og-facts">${fact('Energia',ex.reserve+' / '+ex.maxReserve)}${fact('Volta à extração',ex.returnReserve+' energia')}${fact('Integridade do veículo',ex.integrity+' / '+ex.maxIntegrity)}${fact('Carga ocupada',ex.load+' / '+ex.capacity)}${Object.entries(ex.pending).filter(([k,v])=>['ore','crystals','credits','data'].includes(k)&&v>0).map(([k,v])=>fact(costNames[k],v)).join('')}</div>${m?`<article class="og-module" style="--rarity:${rarity(m).color}"><h3>${esc(m.name)}</h3><span class="og-rarity">${rarity(m).name} · ${power(m.power)}×</span><p>${esc(m.description)}</p>${button('expeditionSalvage','Reciclar peça em minério')}</article>`:''}${ex.pending.fragment?'<p class="og-capability">Frequência antiga recuperada. Extraia para registrá-la no Farol Horizonte.</p>':''}<button class="og-button primary" data-action="close-sheet">Voltar ao terreno</button>`};
+      return {title:'Ainda precisa voltar.',html:`<p>Esta carga está no veículo. Leve-a ao ponto de extração para guardá-la na nave. Se ficar sem energia fora da base, a evacuação será sua saída e a carga ficará para trás.</p><div class="og-facts">${fact('Energia',ex.reserve+' / '+ex.maxReserve)}${fact('Volta à extração',ex.returnReserve+' energia')}${fact('Integridade do veículo',ex.integrity+' / '+ex.maxIntegrity)}${fact('Carga ocupada',ex.load+' / '+ex.capacity)}${Object.entries(ex.pending).filter(([k,v])=>(['ore','crystals','credits','data'].includes(k)||E.materials[k])&&v>0).map(([k,v])=>fact(costNames[k],v)).join('')}</div>${m?`<article class="og-module" style="--rarity:${rarity(m).color}"><h3>${esc(m.name)}</h3><span class="og-rarity">${rarity(m).name} · ${power(m.power)}×</span><p>${esc(m.description)}</p>${button('expeditionSalvage','Reciclar peça em minério')}</article>`:''}${ex.pending.fragment?'<p class="og-capability">Frequência antiga recuperada. Extraia para registrá-la no Farol Horizonte.</p>':''}<button class="og-button primary" data-action="close-sheet">Voltar ao terreno</button>`};
     }
     if(sheet==='expedition-abort-menu'){
       const ex=E.expeditionView(state),pending=ex?.pending||{},items=Object.entries(pending).filter(([k,v])=>typeof v==='number'&&v>0&&costNames[k]);

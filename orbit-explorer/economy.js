@@ -30,6 +30,17 @@ function occurs(planet,id){const g=goods[id];if(!g.biomes.includes(planet.biome)
 const specialty=Object.keys(goods).filter(id=>goods[id].category);
 function deposits(planet){return specialty.filter(id=>occurs(planet,id));}
 function known(state,id){return !specialty.includes(id)||state.materialDiscoveries?.includes(id)||(state.resources[id]||0)>0||state.galaxy.planets.some(p=>p.scanned&&deposits(p).includes(id));}
+// Native cargo belongs to a specific visible deposit, never to extraction itself.
+E.collectionResource=(state,tile)=>{
+ const normal=tile.kind==='crystal'?'crystals':tile.kind;
+ if(state.guide?.active||!state.expedition)return normal;
+ const board=E.expeditionBoard(state.expedition),ore=board.filter(c=>c.kind==='ore');
+ const native=tile.kind==='data'?0:tile.kind==='ore'&&ore[1]?.x===tile.x&&ore[1]?.y===tile.y?1:-1;
+ if(native<0)return normal;
+ const local=deposits(E.currentPlanet(state));if(!local.length)return normal;
+ const site=Number(state.expedition.siteId.split('-s')[1])||0;
+ return local[(site+native)%local.length];
+};
 E.materials=goods;E.deposits=deposits;E.materialKnown=known;
 const interval=600000;
 function market(state,now=Date.now()){
@@ -74,11 +85,11 @@ E.market=market;E.tradeQuote=quote;
 E.preview=(state,action,payload)=>action==='trade'?quote(state,payload):basePreview(state,action,payload);
 E.dispatch=(state,action,payload)=>{
  if(action!=='trade'){
-  const registered=specialty.filter(id=>known(state,id)),planet=E.currentPlanet(state),samples=action==='expeditionExtract'?Math.min(3,state.expedition?.harvested?.length||0):0;
+  const registered=specialty.filter(id=>known(state,id)),planet=E.currentPlanet(state);
   const result=baseDispatch(state,action,payload);
   if(result.ok){
    if(action==='scan')state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...deposits(planet)])];
-   if(action==='expeditionExtract'&&samples){for(const id of deposits(planet)){const amount=Math.min(goods[id].rarity==='Rara'?1:goods[id].rarity==='Exótica'?Math.min(2,samples):samples,999-(state.resources[id]||0));state.resources[id]=(state.resources[id]||0)+amount;result.reward[id]=amount;result.message+=' +'+amount+' '+goods[id].name+'.';}state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...deposits(planet)])];}
+
    if(action==='warp'){state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...registered])];delete state.commerce;}
   }
   return result;

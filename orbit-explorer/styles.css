@@ -186,3 +186,5 @@
 #orbit-game .og-nav-node.is-living:not(.is-signal) .og-nav-caption{color:#d9c6ff}
 @keyframes og-signal-pulse{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.08);opacity:1}}
 @media(prefers-reduced-motion:reduce){#orbit-game .og-nav-node.is-signal .og-nav-hit::after{animation:none}}
+
+#orbit-game .og-field-native{position:absolute;inset:8%;display:grid;place-items:center;background:#173039;border-radius:50%;pointer-events:none}#orbit-game .og-field-native>span{width:100%;height:100%}

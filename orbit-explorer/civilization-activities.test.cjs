@@ -131,7 +131,7 @@ for (let f = 0; f < 3; f++) {
     if (f === 0) {
       const c = H.revealedBoard(s).find(
         (c) =>
-          ["ore", "crystals"].includes(c.kind) && !c.collected && H.route(s, c),
+          E.materials[c.resourceId]?.category === "Flora" && !c.collected && H.route(s, c),
       );
       assert(c);
       H.walk(s, c);
