@@ -1,13 +1,13 @@
 {
-  "apk": "orbita-0.3.4.apk",
+  "apk": "orbita-0.3.5.apk",
   "bytes": 9122332,
-  "sha256": "0915ce0c1c6f20dd7b0b47a36c33905746ab1d403f564162b9e722ab9c03cac8",
+  "sha256": "3e12fc5fbbf616b4178caf1ee5a7a47e69368f26ed7b96761b109f19374513fb",
   "assets": [
     "assets/index.html"
   ],
   "minAndroid": "8.0",
   "targetApi": 36,
-  "version": "0.3.4",
+  "version": "0.3.5",
   "bundledSave": false,
   "networkPermission": false
 }

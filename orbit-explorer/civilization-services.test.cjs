@@ -80,3 +80,8 @@ H.rejectUnchanged(poor, "civReclaim", { componentId: "prism" });
 console.log(
   "PASS services: location, costs, duplicate reading, scan preservation, yields, limit, capacity, insufficient resources, migration and invalid saves",
 );
+
+const scanned = fixture(1);
+H.rejectUnchanged(scanned, "civSurvey", {
+  planetId: scanned.location.planetId,
+});

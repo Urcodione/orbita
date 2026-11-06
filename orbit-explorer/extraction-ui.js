@@ -9,7 +9,7 @@ root.OrbitExtractionUI={render(state,reward={}){
  const module=m?`<article class="og-delivery-special" style="--delivery-color:${E.rarities[m.rarity]?.color||'#b5c9d1'}">${root.OrbitArt.icon(m.type,'',m)}<div><small>MÓDULO · ${esc(E.rarities[m.rarity]?.name||'Recuperado')}</small><strong>${esc(m.name)}</strong><span>Guardado no estoque de módulos</span></div></article>`:'';
  const unique=reward.storyItem?`<article class="og-delivery-special is-unique">${root.OrbitCampaignUI.icon(reward.storyItem)}<div><small>DESCOBERTA ÚNICA</small><strong>${esc(reward.storyItem.name)}</strong><span>Preservada · item de missão</span></div></article>`:'';
  const fragment=reward.fragment?`<article class="og-delivery-item is-signal">${root.OrbitControlIcons.art('beacon')}<b>${E.beaconView(state).count}/3</b><span>Farol · ${esc(({origin:'Origem',ember:'Brasa',tide:'Maré'})[reward.fragment])}</span></article>`:'';
- const note=[reward.story?.consequence||reward.campaignProgress||'',reward.gardenProgress?'Viveiro '+reward.gardenProgress+'/2':''].filter(Boolean).join(' · ');
+ const note=[reward.story?.consequence||reward.campaignProgress||'',reward.gardenProgress?'Viveiro '+reward.gardenProgress+'/2':'',reward.allianceProgress?reward.allianceProgress.name+' '+reward.allianceProgress.done+'/'+reward.allianceProgress.total:''].filter(Boolean).join(' · ');
  // When the extraction moves the campaign, its story beat (Aurora's first signal, transmissions, a preserved relic) is shown too.
  // The stamp carries the extraction's meaning: the mission milestone it reached and the story beat it unlocked, when
  // there is one; otherwise the plain confirmation. One block, so the receipt still fits a small phone without scrolling.

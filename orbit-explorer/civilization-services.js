@@ -65,6 +65,10 @@
     if (survey) {
       if (!s.galaxy.planets.some((x) => x.id === p.planetId))
         return deny("Selecione um mundo desta galáxia.");
+      if (s.galaxy.planets.find((x) => x.id === p.planetId)?.scanned)
+        return deny(
+          "Mundo já analisado. Os dados estão disponíveis na análise do planeta; não é necessário pagar uma leitura.",
+        );
       if (v.reports.includes(p.planetId))
         return deny("Leitura já registrada. Consulte o relatório abaixo.");
       if (v.reports.length >= 1000)

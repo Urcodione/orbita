@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.4
+# Órbita para Android — versão 0.3.5
 
-Pacotes da versão 0.3.4 gerados e assinados em `dist/orbita-0.3.4.apk` e `dist/orbita-0.3.4.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.5 gerados e assinados em `dist/orbita-0.3.5.apk` e `dist/orbita-0.3.5.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -136,3 +136,7 @@ Viveiro Aural ilustrado antes e depois da restauração. Um canteiro custa 12 Lu
 ## Alterações 0.3.4
 
 Inclui leituras Veyra e recuperação de componentes Thar. Alianças reorganizadas em Jornada, Recompensas e Apoio, com próximo desbloqueio e pontos restantes. Etapas existentes receberam consequências narrativas específicas ligadas à Aurora e ao Coro, sem reiniciar progresso. Desbloqueio de nave é acesso à compra, não entrega gratuita.
+
+## Alterações 0.3.5
+
+Resumo da extração informa avanço das alianças. Veyra não cobra por leituras de mundos já analisados. Auditoria de regras, navegação, tutorial e salvamento; nenhuma nova mecânica ou conteúdo.

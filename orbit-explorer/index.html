@@ -7279,6 +7279,8 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
     }
     const person = s.civilizations.people[index(s)],
       started = person.step >= 1 && !s.guide?.active;
+    const progressKey = ["flora", "beacons", "systems"][index(s)];
+    const priorCount = started ? activity(person)[progressKey].length : 0;
     const expedition = s.expedition,
       planet = E.currentPlanet(s),
       f = index(s);
@@ -7303,6 +7305,17 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
         if (f === 1 && observation.beacons === 2 && hazardous(planet))
           add(a.beacons, observation.site, 2);
         if (f === 2 && observation.core) add(a.systems, planet.systemId, 2);
+      }
+    }
+    if (started && person.step < 3 && action === "expeditionExtract") {
+      const done = activity(s.civilizations.people[f])[progressKey].length;
+      if (done > priorCount) {
+        result.reward ||= {};
+        result.reward.allianceProgress = {
+          name: ["Aural", "Veyra", "Thar"][f],
+          done: Math.min(done, 2),
+          total: 2,
+        };
       }
     }
     return result;
@@ -7579,6 +7592,10 @@ E.restore=saved=>{const s=base.restore(saved);if(!s)return null;if(s.fleet===und
     if (survey) {
       if (!s.galaxy.planets.some((x) => x.id === p.planetId))
         return deny("Selecione um mundo desta galáxia.");
+      if (s.galaxy.planets.find((x) => x.id === p.planetId)?.scanned)
+        return deny(
+          "Mundo já analisado. Os dados estão disponíveis na análise do planeta; não é necessário pagar uma leitura.",
+        );
       if (v.reports.includes(p.planetId))
         return deny("Leitura já registrada. Consulte o relatório abaixo.");
       if (v.reports.length >= 1000)
@@ -7851,7 +7868,7 @@ root.OrbitExtractionUI={render(state,reward={}){
  const module=m?`<article class="og-delivery-special" style="--delivery-color:${E.rarities[m.rarity]?.color||'#b5c9d1'}">${root.OrbitArt.icon(m.type,'',m)}<div><small>MÓDULO · ${esc(E.rarities[m.rarity]?.name||'Recuperado')}</small><strong>${esc(m.name)}</strong><span>Guardado no estoque de módulos</span></div></article>`:'';
  const unique=reward.storyItem?`<article class="og-delivery-special is-unique">${root.OrbitCampaignUI.icon(reward.storyItem)}<div><small>DESCOBERTA ÚNICA</small><strong>${esc(reward.storyItem.name)}</strong><span>Preservada · item de missão</span></div></article>`:'';
  const fragment=reward.fragment?`<article class="og-delivery-item is-signal">${root.OrbitControlIcons.art('beacon')}<b>${E.beaconView(state).count}/3</b><span>Farol · ${esc(({origin:'Origem',ember:'Brasa',tide:'Maré'})[reward.fragment])}</span></article>`:'';
- const note=[reward.story?.consequence||reward.campaignProgress||'',reward.gardenProgress?'Viveiro '+reward.gardenProgress+'/2':''].filter(Boolean).join(' · ');
+ const note=[reward.story?.consequence||reward.campaignProgress||'',reward.gardenProgress?'Viveiro '+reward.gardenProgress+'/2':'',reward.allianceProgress?reward.allianceProgress.name+' '+reward.allianceProgress.done+'/'+reward.allianceProgress.total:''].filter(Boolean).join(' · ');
  // When the extraction moves the campaign, its story beat (Aurora's first signal, transmissions, a preserved relic) is shown too.
  // The stamp carries the extraction's meaning: the mission milestone it reached and the story beat it unlocked, when
  // there is one; otherwise the plain confirmation. One block, so the receipt still fits a small phone without scrolling.

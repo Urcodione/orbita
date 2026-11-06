@@ -295,6 +295,8 @@
     }
     const person = s.civilizations.people[index(s)],
       started = person.step >= 1 && !s.guide?.active;
+    const progressKey = ["flora", "beacons", "systems"][index(s)];
+    const priorCount = started ? activity(person)[progressKey].length : 0;
     const expedition = s.expedition,
       planet = E.currentPlanet(s),
       f = index(s);
@@ -319,6 +321,17 @@
         if (f === 1 && observation.beacons === 2 && hazardous(planet))
           add(a.beacons, observation.site, 2);
         if (f === 2 && observation.core) add(a.systems, planet.systemId, 2);
+      }
+    }
+    if (started && person.step < 3 && action === "expeditionExtract") {
+      const done = activity(s.civilizations.people[f])[progressKey].length;
+      if (done > priorCount) {
+        result.reward ||= {};
+        result.reward.allianceProgress = {
+          name: ["Aural", "Veyra", "Thar"][f],
+          done: Math.min(done, 2),
+          total: 2,
+        };
       }
     }
     return result;

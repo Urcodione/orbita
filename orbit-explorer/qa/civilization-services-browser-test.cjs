@@ -60,6 +60,8 @@ const { chromium } = require("./node_modules/playwright"),
       }
       await fit();
       if (faction === 1) {
+        assert(await p.locator("[data-action=civSurvey]").isDisabled());
+        await p.locator('[data-service-step="1"]').click();
         await p.locator("[data-action=civSurvey]").click();
         assert(await p.locator(".og-service-report").isVisible());
         await fit();

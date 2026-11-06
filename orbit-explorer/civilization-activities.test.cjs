@@ -137,7 +137,12 @@ for (let f = 0; f < 3; f++) {
       H.walk(s, c);
       H.checkedAct(s, "expeditionCollect");
     }
-    H.finish(s, fieldAct);
+    const result = H.finish(s, fieldAct);
+    assert(
+      result.reward.allianceProgress,
+      "extraction must report alliance progress",
+    );
+    assert.equal(result.reward.allianceProgress.total, 2);
   }
   if (f === 0) {
     extract(s.galaxy.planets.find((p) => p.biome === "forest"));
