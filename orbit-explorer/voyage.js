@@ -6,14 +6,16 @@ function contracts(s){
  const system=E.currentSystem(s),local=s.galaxy.planets.filter(p=>p.systemId===system.id),biomes=new Set(s.galaxy.planets.map(p=>p.biome));
  const available=(id,p)=>E.materials[id].category?E.deposits(p).includes(id):['ore','crystals'].includes(id);
  const all=Object.entries(E.materials).filter(([id])=>!['fuel','oxygen'].includes(id));
- // Preserve completed slots and valid existing orders; replace only impossible unpaid requests.
+ // Generate offers independently of delivery history; completed legacy names are restored only for display.
  let legacy=all.filter(([id,m])=>m.biomes?.some(b=>biomes.has(b))&&!m.biomes.some(b=>local.some(p=>p.biome===b)));
  if(legacy.length<2)legacy=all.filter(([id,m])=>m.biomes?.some(b=>biomes.has(b)));
  const viable=all.filter(([id])=>s.galaxy.planets.some(p=>available(id,p))),imports=viable.filter(([id])=>!local.some(p=>available(id,p))),pool=imports.length>=2?imports:viable;
- const start=hash(system.id)%legacy.length,chosen=[0,1].map(i=>legacy[(start+i)%legacy.length]);
+ const start=hash(system.id)%legacy.length,chosen=[0,1].map(i=>legacy[(start+i)%legacy.length]),original=chosen.slice();
  const ids=[0,1].map(i=>(s.campaign?.atHome?0:s.galaxyIndex)+':'+system.id+':'+i);
- for(let i=0;i<2;i++)if(!(s.charters||[]).includes(ids[i])&&!s.galaxy.planets.some(p=>available(chosen[i][0],p))){const options=pool.filter(([id])=>id!==chosen[1-i][0]);chosen[i]=options[hash(ids[i])%options.length];}
- return chosen.map(([resource,m],i)=>{const quantity=m.rarity==='Rara'?1:3,id=ids[i],paid=(s.charters||[]).includes(id),reward=Math.round(m.base*quantity*.9)+24;
+ for(let i=0;i<2;i++)if(!s.galaxy.planets.some(p=>available(chosen[i][0],p))){const options=pool.filter(([id])=>id!==chosen[1-i][0]);chosen[i]=options[hash(ids[i])%options.length];}
+ return chosen.map(([resource,m],i)=>{const id=ids[i],paid=(s.charters||[]).includes(id),receipt=s.charterReceipts?.[id];
+ if(paid){resource=receipt?.resource||original[i][0];m=E.materials[resource];}
+ const quantity=receipt?.quantity||(m.rarity==='Rara'?1:3),reward=receipt?.reward||Math.round(m.base*quantity*.9)+24;
  const sources=s.galaxy.planets.filter(p=>available(resource,p));
  return {id,resource,name:m.name,quantity,reward,paid,owned:s.resources[resource]||0,source:[...new Set(sources.map(p=>p.biome))].join(', ')||m.biomes.join(', '),progress:Math.min(quantity,s.resources[resource]||0),title:i?'Amostras para pesquisa':'Abastecimento regional'};});
 }
@@ -33,7 +35,7 @@ E.preview=(s,a,p={})=>{
 };
 E.dispatch=(s,a,p={})=>{
  const q=E.preview(s,a,p);if(!q.allowed)return {ok:false,message:q.reason};
- if(a==='contractDeliver'){const c=q.contract;s.resources[c.resource]-=c.quantity;s.resources.credits+=c.reward;s.charters=[...(s.charters||[]),c.id];s.turn++;return {ok:true,message:c.name+' entregue · +'+c.reward+' Lumes. Este contrato foi concluído.',reward:{credits:c.reward}};}
+ if(a==='contractDeliver'){const c=q.contract;s.resources[c.resource]-=c.quantity;s.resources.credits+=c.reward;s.charters=[...(s.charters||[]),c.id];s.charterReceipts||={};s.charterReceipts[c.id]={resource:c.resource,quantity:c.quantity,reward:c.reward};s.turn++;return {ok:true,message:c.name+' entregue · +'+c.reward+' Lumes. Este contrato foi concluído.',reward:{credits:c.reward}};}
  if(a==='expeditionTask'){const t=s.expedition.fieldTask;if(t.kind==='relay'){const other=(p.index+1)%3;if(t.values[p.index]>0&&t.values[other]<4){t.values[p.index]--;t.values[other]++;}}else if(q.wrong)t.step=0;else t.step++;if(taskView(s).done)s.expedition.puzzle.dials=[...s.expedition.puzzle.target];s.expedition.turns++;s.turn++;E.checkpointSite(s);return {ok:true,message:taskView(s).done?'Operação concluída. Recupere o núcleo e extraia a carga.':q.wrong?'O sinal se dispersou. Observe a sequência e tente novamente.':'Resposta registrada.',reward:{}};}
  const honorsBefore=E.cosmeticHonors(s).filter(h=>h.earned).map(h=>h.name);const result=base.dispatch(s,a,p);if(result.ok&&a==='campaignCraft'){result.reward=result.reward||{};result.reward.cosmeticHonors=E.cosmeticHonors(s).filter(h=>h.earned&&!honorsBefore.includes(h.name)).map(h=>h.name);}
  if(result.ok&&a==='explore'&&!s.expedition.fieldTask&&!s.expedition.coreSecured&&!s.guide?.active&&!s.expedition.firstExpedition&&!E.encounterView(s)){
@@ -43,6 +45,12 @@ E.dispatch=(s,a,p={})=>{
  if(result.ok)E.checkpointSite(s);
  return result;
 };
-E.validate=s=>base.validate(s)&&(!s.charters||(Array.isArray(s.charters)&&s.charters.length<=4096&&new Set(s.charters).size===s.charters.length&&s.charters.every(x=>typeof x==='string'&&x.length<100)))&&(!s.expedition?.fieldTask||(()=>{const t=s.expedition.fieldTask;return ['relay','observe','sample'].includes(t.kind)&&Number.isInteger(t.step)&&t.step>=0&&t.step<=3&&['target','values'].every(k=>Array.isArray(t[k])&&t[k].length===3&&t[k].every(n=>Number.isInteger(n)&&n>=0&&n<=4))&&(t.kind==='relay'?t.target.every(n=>n===2)&&t.values.reduce((a,b)=>a+b,0)===6:t.target.every(n=>n<=2));})());
+function validReceipts(s){
+ const receipts=s.charterReceipts;
+ if(receipts===undefined)return true;
+ if(!receipts||typeof receipts!=='object'||Array.isArray(receipts)||Object.keys(receipts).length>4096)return false;
+ return Object.entries(receipts).every(([id,r])=>(s.charters||[]).includes(id)&&r&&typeof r==='object'&&!Array.isArray(r)&&Object.hasOwn(E.materials,r.resource)&&!['fuel','oxygen'].includes(r.resource)&&Number.isInteger(r.quantity)&&r.quantity>=1&&r.quantity<=3&&Number.isInteger(r.reward)&&r.reward>0&&r.reward<=99999);
+}
+E.validate=s=>base.validate(s)&&validReceipts(s)&&(!s.charters||(Array.isArray(s.charters)&&s.charters.length<=4096&&new Set(s.charters).size===s.charters.length&&s.charters.every(x=>typeof x==='string'&&x.length<100)))&&(!s.expedition?.fieldTask||(()=>{const t=s.expedition.fieldTask;return ['relay','observe','sample'].includes(t.kind)&&Number.isInteger(t.step)&&t.step>=0&&t.step<=3&&['target','values'].every(k=>Array.isArray(t[k])&&t[k].length===3&&t[k].every(n=>Number.isInteger(n)&&n>=0&&n<=4))&&(t.kind==='relay'?t.target.every(n=>n===2)&&t.values.reduce((a,b)=>a+b,0)===6:t.target.every(n=>n<=2));})());
 E.restore=saved=>{const s=base.restore(saved);return s&&E.validate(s)?s:null;};
 })(typeof window==='object'?window:globalThis);

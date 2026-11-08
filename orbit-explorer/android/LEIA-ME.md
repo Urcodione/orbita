@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.6
+# Órbita para Android — versão 0.3.7
 
-Pacotes da versão 0.3.6 gerados e assinados em `dist/orbita-0.3.6.apk` e `dist/orbita-0.3.6.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.7 gerados e assinados em `dist/orbita-0.3.7.apk` e `dist/orbita-0.3.7.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -144,3 +144,10 @@ Resumo da extração informa avanço das alianças. Veyra não cobra por leitura
 ## Alterações 0.3.6
 
 Tutorial com mensagens unificadas e introdução atualizada para as civilizações. Materiais de bioma exigem coleta explícita; extração não concede flora/fauna automaticamente. Kit inicial de Prisma fornece a samambaia didática. Saves existentes preservados.
+
+## Alterações 0.3.7
+
+- Encomendas com fontes reais de recursos e identidade estável após entrega, retorno ao entreposto e recarregamento. Novas entregas guardam item, quantidade e pagamento; contratos antigos continuam concluídos, sem pagamento duplicado.
+- Leituras Veyra indicam recursos realmente presentes e o ponto correspondente. Recuperação Thar explica custos e a origem da liga.
+- Navegação do mercado conserva a categoria e a opção de compra/venda.
+- Regressão: 408 entregas em ambas as ordens, 3.408 encomendas com fonte e 5.460 indicações de depósito; testes de economia, civilizações e serviços.

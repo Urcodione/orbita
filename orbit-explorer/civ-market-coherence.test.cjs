@@ -87,3 +87,43 @@ console.log(
   readings,
   "valid deposit locations; paid legacy order and Thar comparisons",
 );
+
+// Delivery must not regenerate either offer, including replaced impossible orders.
+const identity = state => E.contracts(state).map(({id,resource,quantity,reward}) => ({id,resource,quantity,reward}));
+let stableDeliveries = 0;
+for (let seed = 0; seed < 30; seed++) {
+  const initial = E.create(seed);
+  E.dispatch(initial, 'guideSkip');
+  for (const system of initial.galaxy.systems) for (const sequence of [[0,1],[1,0]]) {
+    let state = E.restore(E.snapshot(initial));
+    state.location = {mode:'orbit', planetId:system.planetIds[0], stationId:system.id};
+    const before = identity(state);
+    for (const slot of sequence) {
+      const order = before[slot];
+      state.resources[order.resource] = order.quantity;
+      const credits = state.resources.credits;
+      assert(E.dispatch(state,'contractDeliver',{contractId:order.id}).ok);
+      assert.equal(state.resources.credits,credits+order.reward);
+      assert.equal(state.resources[order.resource],0);
+      assert.deepEqual(identity(state),before);
+      assert(E.contracts(state)[slot].paid);
+      H.rejectUnchanged(state,'contractDeliver',{contractId:order.id});
+      state = E.restore(E.snapshot(state));
+      assert(state, 'receipts must survive save/load');
+      assert.deepEqual(identity(state),before);
+      const location = {...state.location};
+      const other = state.galaxy.systems.find(x=>x.id!==system.id);
+      state.location = {mode:'orbit',planetId:other.planetIds[0],stationId:other.id};
+      E.contracts(state);
+      state.location = location;
+      assert.deepEqual(identity(state),before);
+      stableDeliveries++;
+    }
+    const receiptId = before[0].id;
+    for (const bad of [null,[],{[receiptId]:{resource:'unknown',quantity:3,reward:50}}, {[receiptId]:{resource:'ore',quantity:-1,reward:50}}, {'unknown':{resource:'ore',quantity:3,reward:50}}]) {
+      const save=E.snapshot(state);save.charterReceipts=bad;
+      assert.equal(E.restore(save),null,'invalid receipts must be rejected');
+    }
+  }
+}
+console.log('PASS',stableDeliveries,'stable deliveries in both orders, revisits, reloads, one-time payment and invalid receipts');

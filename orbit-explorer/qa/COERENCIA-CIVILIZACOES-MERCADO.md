@@ -14,3 +14,9 @@
 - qa/civ-market-coherence-browser-test.cjs: navegação real até a estação, categoria preservada, venda mantida e compra mantida em ambas as telas.
 
 Build offline atualizado; APK/AAB não regenerados nesta entrega. Partidas antigas e valores comerciais preservados.
+
+## Revisão 0.3.7 — estabilidade das encomendas
+
+A geração das ofertas não depende mais de quais slots foram entregues. Um recibo persistido guarda recurso, quantidade e recompensa de cada nova entrega. Entregar uma encomenda não altera a outra nem muda o histórico.
+
+408 entregas testadas nos dois sentidos, com retorno ao entreposto, save/load, tentativa de pagamento repetido e rejeição de recibos inválidos. Os contratos anteriores sem recibo mantêm a identificação legada e o estado pago. A versão intermediária de navegador não registrava o recurso entregue: não é possível reconstruir com certeza esses históricos; nenhum contrato concluído é reaberto ou pago novamente.
