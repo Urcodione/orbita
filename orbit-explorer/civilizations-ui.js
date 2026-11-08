@@ -139,6 +139,17 @@
     const p = planets[servicePlanet],
       report = E.civilizationReport(s, p.id);
     const reasons = new Set();
+    const priceText = (cost) =>
+      Object.entries(cost)
+        .map(
+          ([id, n]) =>
+            n +
+            " " +
+            ({ ore: "min.", crystals: "cristal", data: "dados", credits: "L" }[
+              id
+            ] || id),
+        )
+        .join(" + ");
     const offer = (action, label, payload, art) => {
       const q = E.preview(s, action, payload);
       const showReason = !q.allowed && !reasons.has(q.reason);
@@ -163,6 +174,11 @@
         '">' +
         (survey ? "Ler" : "Recuperar") +
         "</button></div>" +
+        (!survey
+          ? '<small class="og-service-comparison">Oficina: ' +
+            esc(priceText(E.reclaimComparison(payload.componentId).craft)) +
+            "</small>"
+          : "") +
         (showReason
           ? '<small class="og-service-reason">' + esc(q.reason) + "</small>"
           : "")
@@ -179,7 +195,7 @@
         (survey ? "Sala de leitura de sinais" : "Bancada de recuperação") +
         '"><small>' +
         (survey
-          ? "O farol compara sinais antes da sua viagem."
+          ? "Clima é gratuito. A leitura localiza um recurso e seu ponto de coleta."
           : "O posto recupera componentes de ligas. Restam " +
             view.remaining +
             "/3 nesta galáxia.") +
@@ -211,14 +227,16 @@
                   esc(report.signal) +
                   "</small>" +
                   (report.resource
-                    ? "<small>Possível ocorrência: " +
+                    ? "<small>Depósito confirmado: " +
                       esc(report.resource) +
-                      ". Confirme em campo.</small>"
+                      " · " +
+                      esc(report.siteName) +
+                      ".</small>"
                     : "") +
-                  "<small>Leitura remota permanente. Não substitui análise e equipamentos.</small></div>"
+                  "<small>Consulte também em Ambiente. A coleta exige viagem e equipamentos.</small></div>"
                 : offer(
                     "civSurvey",
-                    "Ler este mundo",
+                    "Localizar depósito",
                     { planetId: p.id },
                     root.OrbitArt.icon("scanner"),
                   )) +
@@ -231,7 +249,9 @@
               (s.components.alloy || 0) +
               " ligas · " +
               s.resources.credits +
-              " Lumes</small>" +
+              " Lumes</small><small>Poupa pesquisa/cristais. Do zero: " +
+              esc(priceText(E.reclaimComparison("prism").fromRaw)) +
+              " por recuperação.</small>" +
               ["prism", "circuit", "seal"]
                 .map((id) =>
                   offer(

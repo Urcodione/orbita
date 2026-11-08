@@ -240,3 +240,6 @@
 #orbit-game .og-alliance-panel .og-civ-offer{padding:6px;gap:4px}
 #orbit-game .og-alliance-panel .og-button{min-height:40px;font-size:12px}
 @media(max-height:620px){#orbit-game .og-alliance-panel{gap:5px}#orbit-game .og-alliance-panel p{font-size:11px}#orbit-game .og-alliance-story{padding:5px}}
+
+#orbit-game .og-service-comparison{color:#b6d7df;padding:0 5px;font-size:10px!important}
+@media(max-height:620px){#orbit-game .og-service-card{gap:4px}#orbit-game .og-service-card:has(.og-service-comparison) .og-service-scene{min-height:24px;max-height:60px}#orbit-game .og-service-card:has(.og-service-comparison) .og-service-offer{padding:3px 5px}}

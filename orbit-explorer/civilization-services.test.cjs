@@ -43,12 +43,12 @@ function fixture(f) {
   return s;
 }
 const v = fixture(1),
-  id = v.galaxy.planets[1].id;
+  id = v.galaxy.planets.find(p=>!p.scanned&&E.deposits(p).length).id;
 H.rejectUnchanged(v, "civSurvey", { planetId: "g99-p1" });
 H.checkedAct(v, "civSurvey", { planetId: id });
 assert.equal(v.resources.credits, 88);
 assert.equal(v.resources.data, 44);
-assert(!v.galaxy.planets[1].scanned);
+assert(!v.galaxy.planets.find(p=>p.id===id).scanned);
 assert(E.civilizationReport(v, id));
 H.rejectUnchanged(v, "civSurvey", { planetId: id });
 assert(E.restore(E.snapshot(v)));

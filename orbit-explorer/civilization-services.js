@@ -42,6 +42,40 @@
       )
     );
   };
+  function prospect(s, id) {
+    const p = s.galaxy.planets.find((x) => x.id === id);
+    if (!p) return null;
+    const local = E.deposits(p),
+      resource = local
+        .slice()
+        .sort((a, b) => E.materials[b].base - E.materials[a].base)[0];
+    if (!resource) return null;
+    const site = p.sites.find((site) => {
+      const i = Number(site.id.split("-s")[1]);
+      return [local[i % local.length], local[(i + 1) % local.length]].includes(
+        resource,
+      );
+    });
+    return site
+      ? {
+          resourceId: resource,
+          resource: E.materials[resource].name,
+          siteId: site.id,
+          siteName: site.name,
+        }
+      : null;
+  }
+  E.reclaimComparison = (id) => {
+    const recipe = E.componentRecipes.find((x) => x.id === id),
+      alloy = E.componentRecipes.find((x) => x.id === "alloy");
+    if (!["prism", "circuit", "seal"].includes(id)) return null;
+    const cost = { ...alloy.cost, credits: (alloy.cost.credits || 0) + 12 };
+    return {
+      craft: { ...recipe.cost },
+      recover: { alloy: 1, credits: 12 },
+      fromRaw: cost,
+    };
+  };
   function quote(s, a, p = {}) {
     if (!["civSurvey", "civReclaim"].includes(a)) return null;
     const survey = a === "civSurvey",
@@ -71,6 +105,10 @@
         );
       if (v.reports.includes(p.planetId))
         return deny("Leitura já registrada. Consulte o relatório abaixo.");
+      if (!prospect(s, p.planetId))
+        return deny(
+          "Nenhum depósito especial a localizar. Não há cobrança neste mundo.",
+        );
       if (v.reports.length >= 1000)
         return deny("Arquivo de leituras completo.");
     } else {
@@ -101,7 +139,7 @@
         );
     if (!survey && (s.components.alloy || 0) < 1)
       return deny(
-        "Precisa de 1 liga estrutural. Desmonte módulos comuns na oficina ou fabrique uma liga.",
+        "Sem liga. Oficina: 3 minérios + 4 Lumes. Desmontar dá minério e Lumes.",
       );
     return q;
   }
@@ -152,10 +190,7 @@
       radiation: p.radiation,
       weather: p.weather,
       signal: p.anomaly,
-      resource:
-        Object.values(E.materials)
-          .filter((m) => m.biomes?.includes(p.biome))
-          .sort((a, b) => (b.base || 0) - (a.base || 0))[0]?.name || null,
+      ...prospect(s, id),
     };
   };
   E.validate = (s) => base.validate(s) && valid(s);

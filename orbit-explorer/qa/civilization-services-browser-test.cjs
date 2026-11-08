@@ -46,13 +46,11 @@ const { chromium } = require("./node_modules/playwright"),
       await p.locator("[data-action=alien-post]").click();
       await p.locator("[data-civ-tab=Service]").click();
       async function fit() {
-        const box = await p
-          .locator(".og-sheet-content")
-          .evaluate((e) => ({
-            height: e.clientHeight,
-            scroll: e.scrollHeight,
-            text: e.innerText,
-          }));
+        const box = await p.locator(".og-sheet-content").evaluate((e) => ({
+          height: e.clientHeight,
+          scroll: e.scrollHeight,
+          text: e.innerText,
+        }));
         assert(
           box.scroll <= box.height + 2,
           JSON.stringify({ width, faction, ...box }),
@@ -61,18 +59,34 @@ const { chromium } = require("./node_modules/playwright"),
       await fit();
       if (faction === 1) {
         assert(await p.locator("[data-action=civSurvey]").isDisabled());
-        await p.locator('[data-service-step="1"]').click();
+        while (await p.locator("[data-action=civSurvey]").isDisabled())
+          await p.locator('[data-service-step="1"]').click();
         await p.locator("[data-action=civSurvey]").click();
         assert(await p.locator(".og-service-report").isVisible());
         await fit();
         await p.locator('[data-service-step="1"]').click();
-        assert(await p.locator("[data-action=civSurvey]").isEnabled());
+        assert(await p.locator("[data-action=civSurvey]").isVisible());
       } else {
         for (let i = 0; i < 3; i++)
           await p.locator("[data-action=civReclaim]").first().click();
         await fit();
         assert(
           await p.locator("[data-action=civReclaim]").first().isDisabled(),
+        );
+      }
+      if (faction === 2) {
+        await p.evaluate(() => {
+          const s = orbitApp.getState();
+          s.components.alloy = 0;
+          s.civilizations.services.jobs = {};
+        });
+        await p.locator("[data-civ-tab=Restore]").click();
+        await p.locator("[data-civ-tab=Service]").click();
+        await fit();
+        assert(
+          (await p.locator(".og-sheet-content").innerText()).includes(
+            "Desmontar dá minério e Lumes",
+          ),
         );
       }
       await p.screenshot({

@@ -2,9 +2,21 @@
 'use strict';
 const E=root.OrbitEngine,base={preview:E.preview,dispatch:E.dispatch,validate:E.validate,restore:E.restore,safety:E.expeditionSafety};
 const fail=reason=>({allowed:false,reason,cost:{}}),hash=s=>[...s].reduce((n,c)=>(Math.imul(n,31)+c.charCodeAt(0))>>>0,7);
-function contracts(s){const system=E.currentSystem(s),local=s.galaxy.planets.filter(p=>p.systemId===system.id),biomes=new Set(s.galaxy.planets.map(p=>p.biome));const reserve=id=>['fuel','oxygen'].includes(id);let goods=Object.entries(E.materials).filter(([id,m])=>!reserve(id)&&m.biomes?.some(b=>biomes.has(b))&&!m.biomes.some(b=>local.some(p=>p.biome===b)));
- if(goods.length<2)goods=Object.entries(E.materials).filter(([id,m])=>!['fuel','oxygen'].includes(id)&&m.biomes?.some(b=>biomes.has(b)));
- const start=hash(system.id)%goods.length;return [0,1].map(i=>{const [resource,m]=goods[(start+i)%goods.length],quantity=m.rarity==='Rara'?1:3,id=(s.campaign?.atHome?0:s.galaxyIndex)+':'+system.id+':'+i,paid=(s.charters||[]).includes(id),reward=Math.round(m.base*quantity*.9)+24;return {id,resource,name:m.name,quantity,reward,paid,owned:s.resources[resource]||0,source:m.biomes.join(', '),progress:Math.min(quantity,s.resources[resource]||0),title:i?'Amostras para pesquisa':'Abastecimento regional'};});}
+function contracts(s){
+ const system=E.currentSystem(s),local=s.galaxy.planets.filter(p=>p.systemId===system.id),biomes=new Set(s.galaxy.planets.map(p=>p.biome));
+ const available=(id,p)=>E.materials[id].category?E.deposits(p).includes(id):['ore','crystals'].includes(id);
+ const all=Object.entries(E.materials).filter(([id])=>!['fuel','oxygen'].includes(id));
+ // Preserve completed slots and valid existing orders; replace only impossible unpaid requests.
+ let legacy=all.filter(([id,m])=>m.biomes?.some(b=>biomes.has(b))&&!m.biomes.some(b=>local.some(p=>p.biome===b)));
+ if(legacy.length<2)legacy=all.filter(([id,m])=>m.biomes?.some(b=>biomes.has(b)));
+ const viable=all.filter(([id])=>s.galaxy.planets.some(p=>available(id,p))),imports=viable.filter(([id])=>!local.some(p=>available(id,p))),pool=imports.length>=2?imports:viable;
+ const start=hash(system.id)%legacy.length,chosen=[0,1].map(i=>legacy[(start+i)%legacy.length]);
+ const ids=[0,1].map(i=>(s.campaign?.atHome?0:s.galaxyIndex)+':'+system.id+':'+i);
+ for(let i=0;i<2;i++)if(!(s.charters||[]).includes(ids[i])&&!s.galaxy.planets.some(p=>available(chosen[i][0],p))){const options=pool.filter(([id])=>id!==chosen[1-i][0]);chosen[i]=options[hash(ids[i])%options.length];}
+ return chosen.map(([resource,m],i)=>{const quantity=m.rarity==='Rara'?1:3,id=ids[i],paid=(s.charters||[]).includes(id),reward=Math.round(m.base*quantity*.9)+24;
+ const sources=s.galaxy.planets.filter(p=>available(resource,p));
+ return {id,resource,name:m.name,quantity,reward,paid,owned:s.resources[resource]||0,source:[...new Set(sources.map(p=>p.biome))].join(', ')||m.biomes.join(', '),progress:Math.min(quantity,s.resources[resource]||0),title:i?'Amostras para pesquisa':'Abastecimento regional'};});
+}
 function taskView(s){const e=s.expedition,t=e?.fieldTask;if(!t)return null;return {...t,done:t.kind==='relay'?t.values.every((v,i)=>v===t.target[i]):t.step===3,title:t.kind==='relay'?'Estabilizar a instalação':t.kind==='observe'?'Observar sem capturar':'Preservar a amostra'};}
 function taskPlan(s,a,p={}){const e=s.expedition,t=taskView(s),atCore=E.expeditionCellKind(s)==='core';if(!t||!e.puzzle||!atCore||e.coreRecovered||t.done)return fail('Alcance o sinal e abra a operação.');if(!Number.isInteger(p.index)||p.index<0||p.index>2)return fail('Escolha uma operação válida.');if(e.turns>=9999)return fail('Extraia ou retorne à nave para encerrar esta saída.');if(t.kind==='relay'&&(t.values[p.index]===0||t.values[(p.index+1)%3]===4))return fail('Não há volume disponível para esta transferência.');return {allowed:true,cost:{},wrong:t.kind!=='relay'&&p.index!==t.target[t.step]};}
 E.contracts=contracts;E.fieldTaskView=taskView;
