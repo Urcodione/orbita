@@ -26,7 +26,6 @@ function quote(s,p={},now){
  const v=view(s);return p.quantity>v.free?deny('Depósito sem espaço: '+v.free+' livres; compra ocupa '+p.quantity+'.'):q;
 }
 function check(s,a,p={}){
- const v=view(s);
  if(a==='discardCargo'){
   const valid=p.kind==='component'?E.componentRecipes.some(r=>r.id===p.id):p.kind==='resource'&&physical(p.id);
   const owned=(p.kind==='component'?s.components?.[p.id]:s.resources[p.id])||0;
@@ -36,6 +35,8 @@ function check(s,a,p={}){
  }
  if(a==='trade')return quote(s,p);
  const result=basePreview(s,a,p);if(!result.allowed)return result;
+ if(!['craftComponent','fabricate','campaignCraft','explore','travel','warp','campaignCross','campaignReturnHome','equip'].includes(a))return result;
+ const v=view(s);
  if(['craftComponent','fabricate','campaignCraft'].includes(a)){
   const r=(a==='craftComponent'?E.componentRecipes:E.recipes).find(r=>r.id===(p.componentId||p.recipeId));
   if(r){
@@ -50,9 +51,9 @@ function check(s,a,p={}){
  if(['explore','travel','warp','campaignCross','campaignReturnHome'].includes(a)&&v.excess)return deny('Depósito sobrecarregado em '+v.excess+' unidades. Venda, use ou descarte carga, ou instale um depósito maior.');
  if(a==='equip'){
   const m=s.inventory.find(m=>m.id===p.moduleId);
-  if(m?.type==='cargo'){
-   const next={...s,equipped:{...s.equipped,cargo:m},inventory:[...s.inventory.filter(x=>x.id!==m.id),s.equipped.cargo]},after=view(next);
-   if(after.excess>v.excess)return deny('Este depósito deixaria '+after.excess+' unidades excedentes. Libere carga antes da troca.');
+  if(m){
+   const next={...s,equipped:{...s.equipped,[m.type]:m},inventory:[...s.inventory.filter(x=>x.id!==m.id),s.equipped[m.type]]},after=view(next);
+   if(after.excess>v.excess)return deny('A troca deixaria '+after.excess+' unidades excedentes no depósito. Libere carga para guardar o módulo retirado.');
   }
  }
  return result;
@@ -63,8 +64,8 @@ E.compareModule=(s,id,planet)=>{
  const c=compare(s,id,planet),m=s.inventory.find(m=>m.id===id);
  if(m?.type==='cargo'){
   c.rows.push({key:'storageVolume',label:'Volume do depósito',unit:'',before:view(s).capacity,after:view({...s,equipped:{...s.equipped,cargo:m}}).capacity,better:E.stats({...s,equipped:{...s.equipped,cargo:m}}).cargoCapacity>E.stats(s).cargoCapacity?'up':E.stats({...s,equipped:{...s.equipped,cargo:m}}).cargoCapacity<E.stats(s).cargoCapacity?'down':'neutral'});
-  const p=check(s,'equip',{moduleId:id});c.allowed=p.allowed;c.reason=p.reason;
  }
+ if(m){const p=check(s,'equip',{moduleId:id});c.allowed=p.allowed;c.reason=p.reason;}
  return c;
 };
 E.tradeQuote=quote;E.preview=check;
@@ -75,7 +76,7 @@ E.dispatch=(s,a,p={})=>{
   return {ok:true,message:'Carga descartada: '+p.amount+' unidade(s).',reward:{}};
  }
  const result=baseDispatch(s,a,p);
- if(result.ok&&view(s).excess)result.message+=' Depósito sobrecarregado: '+view(s).excess+' unidades. Libere espaço antes de viajar.';
+ if(result.ok){const excess=view(s).excess;if(excess)result.message+=' Depósito sobrecarregado: '+excess+' unidades. Libere espaço antes de viajar.';}
  return result;
 };
 })(typeof window==='object'?window:globalThis);

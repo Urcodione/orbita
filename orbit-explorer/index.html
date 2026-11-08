@@ -3688,7 +3688,7 @@ E.market=market;E.tradeQuote=quote;
 E.preview=(state,action,payload)=>action==='trade'?quote(state,payload):basePreview(state,action,payload);
 E.dispatch=(state,action,payload)=>{
  if(action!=='trade'){
-  const registered=specialty.filter(id=>known(state,id)),planet=E.currentPlanet(state);
+  const registered=action==='warp'?specialty.filter(id=>known(state,id)):[],planet=action==='scan'?E.currentPlanet(state):null;
   const result=baseDispatch(state,action,payload);
   if(result.ok){
    if(action==='scan')state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...deposits(planet)])];
@@ -3699,6 +3699,8 @@ E.dispatch=(state,action,payload)=>{
  }
  const q=quote(state,payload);if(!q.allowed)return {ok:false,message:q.reason};
  const next=JSON.parse(JSON.stringify(state));
+ // Trading proves discovery even after selling the last unit of an older unregistered resource.
+ if(specialty.includes(q.resource))next.materialDiscoveries=[...new Set([...(next.materialDiscoveries||[]),q.resource])];
  if(next.commerce?.galaxy!==next.galaxyIndex)next.commerce={galaxy:next.galaxyIndex,stocks:{}};
  const old=next.commerce.stocks[q.market.systemId],entry=old?.cycle===q.market.cycle?old:{cycle:q.market.cycle,delta:{}};
  if(q.side==='sell'){entry.sold=entry.sold||{};entry.sold[q.resource]=(entry.sold[q.resource]||0)+q.quantity;entry.spent=(entry.spent||0)+q.total;}
@@ -6224,7 +6226,6 @@ function quote(s,p={},now){
  const v=view(s);return p.quantity>v.free?deny('Depósito sem espaço: '+v.free+' livres; compra ocupa '+p.quantity+'.'):q;
 }
 function check(s,a,p={}){
- const v=view(s);
  if(a==='discardCargo'){
   const valid=p.kind==='component'?E.componentRecipes.some(r=>r.id===p.id):p.kind==='resource'&&physical(p.id);
   const owned=(p.kind==='component'?s.components?.[p.id]:s.resources[p.id])||0;
@@ -6234,6 +6235,8 @@ function check(s,a,p={}){
  }
  if(a==='trade')return quote(s,p);
  const result=basePreview(s,a,p);if(!result.allowed)return result;
+ if(!['craftComponent','fabricate','campaignCraft','explore','travel','warp','campaignCross','campaignReturnHome','equip'].includes(a))return result;
+ const v=view(s);
  if(['craftComponent','fabricate','campaignCraft'].includes(a)){
   const r=(a==='craftComponent'?E.componentRecipes:E.recipes).find(r=>r.id===(p.componentId||p.recipeId));
   if(r){
@@ -6248,9 +6251,9 @@ function check(s,a,p={}){
  if(['explore','travel','warp','campaignCross','campaignReturnHome'].includes(a)&&v.excess)return deny('Depósito sobrecarregado em '+v.excess+' unidades. Venda, use ou descarte carga, ou instale um depósito maior.');
  if(a==='equip'){
   const m=s.inventory.find(m=>m.id===p.moduleId);
-  if(m?.type==='cargo'){
-   const next={...s,equipped:{...s.equipped,cargo:m},inventory:[...s.inventory.filter(x=>x.id!==m.id),s.equipped.cargo]},after=view(next);
-   if(after.excess>v.excess)return deny('Este depósito deixaria '+after.excess+' unidades excedentes. Libere carga antes da troca.');
+  if(m){
+   const next={...s,equipped:{...s.equipped,[m.type]:m},inventory:[...s.inventory.filter(x=>x.id!==m.id),s.equipped[m.type]]},after=view(next);
+   if(after.excess>v.excess)return deny('A troca deixaria '+after.excess+' unidades excedentes no depósito. Libere carga para guardar o módulo retirado.');
   }
  }
  return result;
@@ -6261,8 +6264,8 @@ E.compareModule=(s,id,planet)=>{
  const c=compare(s,id,planet),m=s.inventory.find(m=>m.id===id);
  if(m?.type==='cargo'){
   c.rows.push({key:'storageVolume',label:'Volume do depósito',unit:'',before:view(s).capacity,after:view({...s,equipped:{...s.equipped,cargo:m}}).capacity,better:E.stats({...s,equipped:{...s.equipped,cargo:m}}).cargoCapacity>E.stats(s).cargoCapacity?'up':E.stats({...s,equipped:{...s.equipped,cargo:m}}).cargoCapacity<E.stats(s).cargoCapacity?'down':'neutral'});
-  const p=check(s,'equip',{moduleId:id});c.allowed=p.allowed;c.reason=p.reason;
  }
+ if(m){const p=check(s,'equip',{moduleId:id});c.allowed=p.allowed;c.reason=p.reason;}
  return c;
 };
 E.tradeQuote=quote;E.preview=check;
@@ -6273,7 +6276,7 @@ E.dispatch=(s,a,p={})=>{
   return {ok:true,message:'Carga descartada: '+p.amount+' unidade(s).',reward:{}};
  }
  const result=baseDispatch(s,a,p);
- if(result.ok&&view(s).excess)result.message+=' Depósito sobrecarregado: '+view(s).excess+' unidades. Libere espaço antes de viajar.';
+ if(result.ok){const excess=view(s).excess;if(excess)result.message+=' Depósito sobrecarregado: '+excess+' unidades. Libere espaço antes de viajar.';}
  return result;
 };
 })(typeof window==='object'?window:globalThis);
@@ -6328,8 +6331,9 @@ E.dispatch=(s,a,p={})=>{
 function validReceipts(s){
  const receipts=s.charterReceipts;
  if(receipts===undefined)return true;
- if(!receipts||typeof receipts!=='object'||Array.isArray(receipts)||Object.keys(receipts).length>4096)return false;
- return Object.entries(receipts).every(([id,r])=>(s.charters||[]).includes(id)&&r&&typeof r==='object'&&!Array.isArray(r)&&Object.hasOwn(E.materials,r.resource)&&!['fuel','oxygen'].includes(r.resource)&&Number.isInteger(r.quantity)&&r.quantity>=1&&r.quantity<=3&&Number.isInteger(r.reward)&&r.reward>0&&r.reward<=99999);
+ if(!receipts||typeof receipts!=='object'||Array.isArray(receipts)||Object.keys(receipts).length>4096||!Array.isArray(s.charters))return false;
+ const paid=new Set(s.charters);
+ return Object.entries(receipts).every(([id,r])=>paid.has(id)&&r&&typeof r==='object'&&!Array.isArray(r)&&Object.hasOwn(E.materials,r.resource)&&!['fuel','oxygen'].includes(r.resource)&&Number.isInteger(r.quantity)&&r.quantity>=1&&r.quantity<=3&&Number.isInteger(r.reward)&&r.reward>0&&r.reward<=99999);
 }
 E.validate=s=>base.validate(s)&&validReceipts(s)&&(!s.charters||(Array.isArray(s.charters)&&s.charters.length<=4096&&new Set(s.charters).size===s.charters.length&&s.charters.every(x=>typeof x==='string'&&x.length<100)))&&(!s.expedition?.fieldTask||(()=>{const t=s.expedition.fieldTask;return ['relay','observe','sample'].includes(t.kind)&&Number.isInteger(t.step)&&t.step>=0&&t.step<=3&&['target','values'].every(k=>Array.isArray(t[k])&&t[k].length===3&&t[k].every(n=>Number.isInteger(n)&&n>=0&&n<=4))&&(t.kind==='relay'?t.target.every(n=>n===2)&&t.values.reduce((a,b)=>a+b,0)===6:t.target.every(n=>n<=2));})());
 E.restore=saved=>{const s=base.restore(saved);return s&&E.validate(s)?s:null;};

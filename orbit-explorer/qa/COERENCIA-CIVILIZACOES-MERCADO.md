@@ -20,3 +20,12 @@ Build offline atualizado; APK/AAB não regenerados nesta entrega. Partidas antig
 A geração das ofertas não depende mais de quais slots foram entregues. Um recibo persistido guarda recurso, quantidade e recompensa de cada nova entrega. Entregar uma encomenda não altera a outra nem muda o histórico.
 
 408 entregas testadas nos dois sentidos, com retorno ao entreposto, save/load, tentativa de pagamento repetido e rejeição de recibos inválidos. Os contratos anteriores sem recibo mantêm a identificação legada e o estado pago. A versão intermediária de navegador não registrava o recurso entregue: não é possível reconstruir com certeza esses históricos; nenhum contrato concluído é reaberto ou pago novamente.
+
+## Revisão complementar após 0.3.7
+
+- Troca de qualquer módulo verifica o volume do módulo retirado, não apenas trocas do depósito. Reproduzido com Casco Bastião: a troca permitia passar de 250/250 para 253/250. Comparação e instalação agora rejeitam a mesma operação, sem gastar nem alterar inventário; com 3 unidades livres a troca funciona.
+- Negociar um recurso registra sua descoberta permanentemente. Em partidas antigas com material em estoque mas sem registro de descoberta, vender a última unidade não volta a ocultá-lo.
+- Histórico inválido de recibos é rejeitado sem lançar exceção. A consulta usa um conjunto de identificadores pagos, evitando procurar toda a lista novamente para cada recibo.
+- A prévia de ações sem impacto no depósito não recalcula seu volume. O registro global de descobertas é consultado para dobra, em vez de repetir a busca a cada ação; o aviso de sobrecarga calcula o volume uma só vez.
+- Testes: `followup-coherence.test.cjs`, depósito, módulos, economia, encomendas, carga explícita, salvamento de campanha, viveiro Aural, civilizações, atividades, serviços e rotas de estação. Interface de mercado e serviços verificada em 320 e 390 px.
+- Jogo de navegador atualizado. Os pacotes Android 0.3.7 anteriores não contêm esta revisão complementar.

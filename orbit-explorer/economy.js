@@ -85,7 +85,7 @@ E.market=market;E.tradeQuote=quote;
 E.preview=(state,action,payload)=>action==='trade'?quote(state,payload):basePreview(state,action,payload);
 E.dispatch=(state,action,payload)=>{
  if(action!=='trade'){
-  const registered=specialty.filter(id=>known(state,id)),planet=E.currentPlanet(state);
+  const registered=action==='warp'?specialty.filter(id=>known(state,id)):[],planet=action==='scan'?E.currentPlanet(state):null;
   const result=baseDispatch(state,action,payload);
   if(result.ok){
    if(action==='scan')state.materialDiscoveries=[...new Set([...(state.materialDiscoveries||[]),...deposits(planet)])];
@@ -96,6 +96,8 @@ E.dispatch=(state,action,payload)=>{
  }
  const q=quote(state,payload);if(!q.allowed)return {ok:false,message:q.reason};
  const next=JSON.parse(JSON.stringify(state));
+ // Trading proves discovery even after selling the last unit of an older unregistered resource.
+ if(specialty.includes(q.resource))next.materialDiscoveries=[...new Set([...(next.materialDiscoveries||[]),q.resource])];
  if(next.commerce?.galaxy!==next.galaxyIndex)next.commerce={galaxy:next.galaxyIndex,stocks:{}};
  const old=next.commerce.stocks[q.market.systemId],entry=old?.cycle===q.market.cycle?old:{cycle:q.market.cycle,delta:{}};
  if(q.side==='sell'){entry.sold=entry.sold||{};entry.sold[q.resource]=(entry.sold[q.resource]||0)+q.quantity;entry.spent=(entry.spent||0)+q.total;}

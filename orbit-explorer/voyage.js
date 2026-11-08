@@ -48,8 +48,9 @@ E.dispatch=(s,a,p={})=>{
 function validReceipts(s){
  const receipts=s.charterReceipts;
  if(receipts===undefined)return true;
- if(!receipts||typeof receipts!=='object'||Array.isArray(receipts)||Object.keys(receipts).length>4096)return false;
- return Object.entries(receipts).every(([id,r])=>(s.charters||[]).includes(id)&&r&&typeof r==='object'&&!Array.isArray(r)&&Object.hasOwn(E.materials,r.resource)&&!['fuel','oxygen'].includes(r.resource)&&Number.isInteger(r.quantity)&&r.quantity>=1&&r.quantity<=3&&Number.isInteger(r.reward)&&r.reward>0&&r.reward<=99999);
+ if(!receipts||typeof receipts!=='object'||Array.isArray(receipts)||Object.keys(receipts).length>4096||!Array.isArray(s.charters))return false;
+ const paid=new Set(s.charters);
+ return Object.entries(receipts).every(([id,r])=>paid.has(id)&&r&&typeof r==='object'&&!Array.isArray(r)&&Object.hasOwn(E.materials,r.resource)&&!['fuel','oxygen'].includes(r.resource)&&Number.isInteger(r.quantity)&&r.quantity>=1&&r.quantity<=3&&Number.isInteger(r.reward)&&r.reward>0&&r.reward<=99999);
 }
 E.validate=s=>base.validate(s)&&validReceipts(s)&&(!s.charters||(Array.isArray(s.charters)&&s.charters.length<=4096&&new Set(s.charters).size===s.charters.length&&s.charters.every(x=>typeof x==='string'&&x.length<100)))&&(!s.expedition?.fieldTask||(()=>{const t=s.expedition.fieldTask;return ['relay','observe','sample'].includes(t.kind)&&Number.isInteger(t.step)&&t.step>=0&&t.step<=3&&['target','values'].every(k=>Array.isArray(t[k])&&t[k].length===3&&t[k].every(n=>Number.isInteger(n)&&n>=0&&n<=4))&&(t.kind==='relay'?t.target.every(n=>n===2)&&t.values.reduce((a,b)=>a+b,0)===6:t.target.every(n=>n<=2));})());
 E.restore=saved=>{const s=base.restore(saved);return s&&E.validate(s)?s:null;};
