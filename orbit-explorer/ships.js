@@ -79,7 +79,8 @@ function plan(s,a,p={}){
  }
  if(!f.owned.includes(ship.id))return fail('Esta nave não está no seu hangar.');
  if(f.active===ship.id)return fail('Você já pilota a '+ship.name+'.');
- const capacity=E.stats(withActive(s,ship.id)).cargoCapacity;
+ const next=withActive(s,ship.id),capacity=E.stats(next).cargoCapacity;
+ if(E.storageView){const before=E.storageView(s),after=E.storageView(next);if(after.excess>before.excess)return fail('O depósito da '+ship.name+' ficaria com '+after.excess+' unidades excedentes. Libere carga antes de trocar.');}
  if(s.inventory.length>capacity)return fail('O armazém da '+ship.name+' tem '+capacity+' espaços. Libere '+(s.inventory.length-capacity)+' antes de trocar.');
  return {allowed:true,reason:'',cost:{}};
 }

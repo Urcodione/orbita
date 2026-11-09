@@ -6307,7 +6307,7 @@ function taskPlan(s,a,p={}){const e=s.expedition,t=taskView(s),atCore=E.expediti
 E.contracts=contracts;E.fieldTaskView=taskView;
 E.campaignBenefit=s=>['Scanner com maior alcance e mais pesquisa por sinal.','Mais autonomia de oxigênio e filtragem para ambientes tóxicos.','Coleta mais eficiente e suporte à operação atmosférica.','Mais capacidade de carga e equipamento para submersão.','Proteção para calor e radiação extremos.','Mais alcance com o mesmo combustível.','Reserva extra de energia e integridade nas expedições.','Dobra mais eficiente e a oitava assinatura dimensional.'][Math.min(s.campaign?.chapter||0,7)];
 E.cosmeticHonors=s=>[{name:'Ultravioleta / Coro cósmico',earned:!!(s.campaign?.crafted&1),why:'Construir Olho do Antes'},{name:'Boreal / Véu boreal',earned:!!(s.campaign?.crafted&2),why:'Construir Jardim da Véspera'},{name:'Nova rosa / Nova',earned:!!(s.campaign?.crafted&16),why:'Construir Manto do Sopro Violeta'}];
-E.voyagePlan=(s,id)=>{const p=s.galaxy.planets.find(p=>p.id===id);if(!p)return null;const trip=E.preview(s,'travel',{planetId:id}),surface=E.assess(s,id),space=E.storageView(s),travelFuel=E.travelCost(s,id),travelOxygen=p.systemId===E.currentSystem(s).id?3:6,
+E.voyagePlan=(s,id)=>{const p=s.galaxy.planets.find(p=>p.id===id);if(!p)return null;const trip=E.preview(s,'travel',{planetId:id}),surface=E.assess(s,id),space=E.storageView(s),travelFuel=E.travelCost(s,id),travelOxygen=E.shipTrait?.(s)==='solar'?0:p.systemId===E.currentSystem(s).id?3:6,
   // Docked at a station the trip starts by undocking, which is charged too.
   leave=s.location.stationId?(E.preview(s,'stationLeave').cost||{}):{},fuel=travelFuel+(leave.fuel||0),oxygen=travelOxygen+(leave.oxygen||0);return {trip,surface,space,fuel,oxygen,afterFuel:s.resources.fuel-fuel,afterOxygen:s.resources.oxygen-oxygen,returnFuelEstimate:travelFuel,returnOxygenEstimate:travelOxygen};};
 E.preview=(s,a,p={})=>{
@@ -6607,7 +6607,8 @@ function plan(s,a,p={}){
  }
  if(!f.owned.includes(ship.id))return fail('Esta nave não está no seu hangar.');
  if(f.active===ship.id)return fail('Você já pilota a '+ship.name+'.');
- const capacity=E.stats(withActive(s,ship.id)).cargoCapacity;
+ const next=withActive(s,ship.id),capacity=E.stats(next).cargoCapacity;
+ if(E.storageView){const before=E.storageView(s),after=E.storageView(next);if(after.excess>before.excess)return fail('O depósito da '+ship.name+' ficaria com '+after.excess+' unidades excedentes. Libere carga antes de trocar.');}
  if(s.inventory.length>capacity)return fail('O armazém da '+ship.name+' tem '+capacity+' espaços. Libere '+(s.inventory.length-capacity)+' antes de trocar.');
  return {allowed:true,reason:'',cost:{}};
 }

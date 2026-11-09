@@ -89,3 +89,22 @@ assert.equal(forged(x=>{x.fleet.active='fenix';}),null,'active ship not owned');
 assert.equal(forged(x=>{x.fleet.owned=['pelicano'];x.fleet.active='pelicano';}),null,'the Andorinha is never lost');
 assert.equal(forged(x=>{x.fleet.offer={ship:'fenix',stay:'9:99'};}),null,'an offer belongs to the current roll');
 console.log('PASS fleet: one merchant roll per galaxy stay (no reroll by docking), trunfos (protection unlocks, short hop, solar sails, Phoenix warp, drill, salvage hold, lenses), buy and switch at stations, stats and protection follow the ship, hold check, clamp, saves validated.');
+
+// Physical cargo also prevents switching to a smaller ship, independently of module slots.
+const volume=E.create('fleet-volume');H.checkedAct(volume,'guideSkip');H.checkedAct(volume,'stationDock');
+volume.fleet.owned.push('pelicano','albatroz');volume.fleet.offer=null;H.checkedAct(volume,'fleetSwitch',{shipId:'pelicano'});
+volume.resources.ore+=E.storageView(volume).free;
+assert(volume.inventory.length<E.stats(volume).cargoCapacity);
+H.rejectUnchanged(volume,'fleetSwitch',{shipId:'andorinha'});
+assert(!E.fleetView(volume).ships.find(x=>x.id==='andorinha').preview.allowed);
+volume.resources.ore-=75;H.checkedAct(volume,'fleetSwitch',{shipId:'andorinha'});
+assert.equal(E.storageView(volume).excess,0);assert(E.restore(E.snapshot(volume)));
+H.checkedAct(volume,'fleetSwitch',{shipId:'albatroz'});
+volume.resources.fuel=E.stats(volume).maxFuel;volume.resources.oxygen=E.stats(volume).maxOxygen;
+const target=volume.galaxy.planets.find(p=>p.systemId===E.currentSystem(volume).id&&p.id!==E.currentPlanet(volume).id);
+assert(target);
+assert.equal(E.voyagePlan(volume,target.id).oxygen,E.preview(volume,'stationLeave').cost.oxygen);
+H.checkedAct(volume,'stationLeave');
+assert.equal(E.voyagePlan(volume,target.id).oxygen,0);
+assert.equal(E.voyagePlan(volume,target.id).afterOxygen,volume.resources.oxygen);
+console.log('PASS fleet material volume and Albatroz voyage oxygen estimate, docked and in orbit');
