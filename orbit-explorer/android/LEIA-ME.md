@@ -1,6 +1,6 @@
-# Órbita para Android — versão 0.3.8
+# Órbita para Android — versão 0.3.9
 
-Pacotes da versão 0.3.8 gerados e assinados em `dist/orbita-0.3.8.apk` e `dist/orbita-0.3.8.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
+Pacotes da versão 0.3.9 gerados e assinados em `dist/orbita-0.3.9.apk` e `dist/orbita-0.3.9.aab`. O APK usa a chave local de teste, e o AAB usa a chave de upload da Play. Os relatórios de build registram os hashes e o conteúdo empacotado. A publicação está descrita em `play/PUBLICAR.md`.
 
 ## Instalar
 
@@ -159,3 +159,10 @@ Tutorial com mensagens unificadas e introdução atualizada para as civilizaçõ
 - Descobertas de recursos negociados permanecem no catálogo após vender a última unidade.
 - Validação de recibos inválidos e redução de cálculos repetidos de carga e descobertas.
 - Inclui todas as correções da revisão complementar posterior à 0.3.7.
+
+## Alterações 0.3.9
+
+- Custos de viagem e avaliação de resgate respeitam as habilidades da frota.
+- Pelicano recupera recursos especiais e registra os depósitos que forneceram a carga salva.
+- Viajante permanece na galáxia de origem durante o retorno da campanha.
+- 41 arquivos de testes de lógica aprovados; rotas, intro, alianças e serviços móveis validados. Primeira abertura dos assets do APK testada em dois tamanhos móveis.
