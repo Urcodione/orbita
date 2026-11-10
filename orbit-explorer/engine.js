@@ -497,6 +497,12 @@
     const crossSystem = current.systemId !== target.systemId;
     return Math.ceil(((crossSystem ? 24 : 10) + Math.abs(target.distance - current.distance) * 0.07) / stats(state).fuelEfficiency);
   }
+  function travelResources(state, planetId) {
+    const target = state.galaxy.planets.find(p => p.id === planetId);
+    if (!target) return null;
+    const cost = { fuel: travelCost(state, planetId), oxygen: target.systemId === currentPlanet(state).systemId ? 3 : 6 };
+    return typeof api.shipCost === 'function' ? api.shipCost(state, 'travel', cost, { target }) || cost : cost;
+  }
   function destinations(state) {
     const index = state.galaxyIndex + 1;
     return Object.entries(GALAXY_ROUTES).map(([kind, value]) => ({ id: 'route-' + index + '-' + kind, index, name: celestialName(state.seed, index, kind, 0), kind, description: value.description, warpCost: Math.max(1, Math.round(value.cost / stats(state).warpEfficiency)) }));
@@ -909,7 +915,7 @@
         if (target.id === planet.id) return reject('Sua nave já está neste planeta.');
         const route = assessSystem(state, target.systemId);
         if (!route.allowed) return reject(missingMessage(route));
-        cost = { fuel: travelCost(state, target.id), oxygen: target.systemId === planet.systemId ? 3 : 6 };
+        cost = travelResources(state, target.id);
         info.assessment = route;
         info.target = target;
         break;
@@ -1033,7 +1039,7 @@
       case 'rescue': {
         // Stranded: no destination the ship may enter (environment gates) is affordable in fuel and oxygen.
         // Counting planets of the current system that the ship can no longer enter refused rescue in blue-giant/pulsar systems.
-        const reachable = state.galaxy.planets.some(item => item.id !== planet.id && assessSystem(state, item.systemId).allowed && res.fuel >= travelCost(state, item.id) && res.oxygen >= (item.systemId === planet.systemId ? 3 : 6));
+        const reachable = state.galaxy.planets.some(item => item.id !== planet.id && assessSystem(state, item.systemId).allowed && Object.entries(travelResources(state, item.id)).every(([key, amount]) => (res[key] || 0) >= amount));
         // Grounded: even converting everything on board (Samambaia-lume → oxygen, ore → fuel, Lumes at ~2 per unit)
         // cannot pay the cheapest expedition the ship may launch, so no productive action is left.
         let cheapest = null;
@@ -1063,7 +1069,7 @@
       default: return reject('Ação desconhecida.');
     }
     // The active ship can change what a trip costs (ships.js: short hops, solar sails, the Phoenix warp).
-    if (typeof api.shipCost === 'function') cost = api.shipCost(state, action, { ...cost }, info) || cost;
+    if (action !== 'travel' && typeof api.shipCost === 'function') cost = api.shipCost(state, action, { ...cost }, info) || cost;
     for (const [id, amount] of Object.entries(info.componentCosts || {})) {
       const available = (state.components || {})[id] || 0;
       if (available < amount) return { ...reject('Faltam ' + (amount - available) + ' × ' + componentRecipes.find(item => item.id === id).name + '. Fabrique os componentes primeiro.', cost), components: info.componentCosts };
@@ -1302,7 +1308,20 @@
         if (op && !op.stabilized) op.reactionAt = null;
         // A ship with a salvage hold (ships.js trait 'salvage') brings back half of the resources already loaded.
         const kept = {};
-        if (shipTrait(next, 'salvage')) for (const key of ['ore', 'crystals', 'data', 'credits']) { const half = Math.floor((next.expedition.pending[key] || 0) / 2); if (half) { kept[key] = half; res[key] = (res[key] || 0) + half; reward[key] = half; } }
+        if (shipTrait(next, 'salvage')) {
+          for (const [key, amount] of Object.entries(next.expedition.pending)) {
+            if (!['ore', 'crystals', 'data', 'credits'].includes(key) && !api.materials?.[key]?.category) continue;
+            const half = Math.floor(amount / 2);
+            if (half) { kept[key] = half; res[key] = (res[key] || 0) + half; reward[key] = half; }
+          }
+          // Deposits that contributed rescued cargo cannot produce that cargo again.
+          const board = expeditionBoard(next.expedition);
+          const rescued = next.expedition.harvested.filter(index => {
+            const tile = board[index], resource = api.collectionResource?.(next, tile) || (tile.kind === 'crystal' ? 'crystals' : tile.kind);
+            return (kept[resource] || 0) > 0;
+          });
+          if (rescued.length) next.siteCaches[next.expedition.siteId] = [...new Set([...(next.siteCaches[next.expedition.siteId] || []), ...rescued])];
+        }
         next.expedition = null;
         message = (Object.keys(kept).length ? 'Evacuação concluída. O porão de resgate salvou metade da carga.' : 'Evacuação concluída. A carga desta saída foi perdida;') + (Object.keys(kept).length ? '' : ' sua nave e seus equipamentos foram preservados.') + (op && !op.stabilized ? ' Sem a tecnologia, o local voltou a se acalmar.' : '');
         kind = 'warning';
@@ -1660,7 +1679,7 @@
     } catch (_) { return null; }
   }
 
-  const api = { commit, shipMetrics, expeditionBoard, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
+  const api = { commit, shipMetrics, expeditionBoard, expeditionCellKind, siteOperation, checkpointSite, fieldWeather, siteStatus, generateGalaxy, expeditionView, expeditionReturnRoute, expeditionSafety, beaconView, discoveryCatalog, VERSION, create, dispatch, preview, stats, travelCost, travelResources, warpCost, explorationCost, currentPlanet, currentSystem, assess, assessSystem, destinations, moduleCapabilities, moduleEffects, moduleDetails, compareModule, suggestions, salvageInfo, componentRecipes, recipes, snapshot, catalog, rarities, missions, biomes: BIOMES, validate, restore, serialize: state => JSON.stringify(state) };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root) root.OrbitEngine = api;
 })(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this);

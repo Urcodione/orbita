@@ -49,9 +49,10 @@ const START='andorinha',OFFER_CHANCE=75;
 function fresh(){return {v:1,owned:[START],active:START,rolled:null,offer:null};}
 function ensure(s){if(!s.fleet)s.fleet=fresh();return s.fleet;}
 const docked=s=>!!s.location?.stationId&&!s.expedition;
-const peopleOf=s=>PEOPLES[s.galaxyIndex%3];
+const galaxyOf=s=>s.campaign?.atHome?0:s.galaxyIndex;
+const peopleOf=s=>PEOPLES[galaxyOf(s)%3];
 // One roll per galaxy stay: the galaxy and the count of galaxies visited so far (a return trip is a new stay).
-const stayKey=s=>s.galaxyIndex+':'+s.visitedGalaxies;
+const stayKey=s=>galaxyOf(s)+':'+s.visitedGalaxies;
 function rollOffer(s){
  const f=ensure(s),key=stayKey(s);
  if(s.guide?.active||f.rolled===key)return;

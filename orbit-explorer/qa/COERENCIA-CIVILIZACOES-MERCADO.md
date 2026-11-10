@@ -29,3 +29,14 @@ A geração das ofertas não depende mais de quais slots foram entregues. Um rec
 - A prévia de ações sem impacto no depósito não recalcula seu volume. O registro global de descobertas é consultado para dobra, em vez de repetir a busca a cada ação; o aviso de sobrecarga calcula o volume uma só vez.
 - Testes: `followup-coherence.test.cjs`, depósito, módulos, economia, encomendas, carga explícita, salvamento de campanha, viveiro Aural, civilizações, atividades, serviços e rotas de estação. Interface de mercado e serviços verificada em 320 e 390 px.
 - Jogo de navegador atualizado. Os pacotes Android 0.3.7 anteriores não contêm esta revisão complementar.
+
+## Revisão de habilidades da frota após 0.3.8
+
+Antes das correções foram reproduzidos cinco problemas: previsão de combustível da Beija-flor divergente da cobrança, resgate oferecido apesar de viagem gratuita disponível, Pelicano descartando recursos especiais ao evacuar, depósitos que forneciam carga resgatada voltando a disponibilizá-la, e viajante mantendo a estadia da fronteira no retorno ao Véu de Íris.
+
+- Custos de viagem, previsão e verificação de alcance do resgate usam o mesmo cálculo, incluindo habilidades da nave.
+- Pelicano salva a metade inteira de cada recurso comum ou especial; módulos e relíquias não entram nessa recuperação. Depósitos que contribuíram recursos salvos são registrados como coletados. Evacuação comum continua perdendo a carga e permitindo tentar novamente.
+- A estadia e o povo do viajante consideram a galáxia real durante o retorno da campanha, sem renovar ofertas em repetidas atracagens.
+- `fleet-consistency.test.cjs`: dez naves, custos reais versus previsão, resgate da Beija-flor, recuperação comum/nativa, revisita e reload, retorno via ação da campanha e oferta estável.
+- Passaram também testes de frota, viagem, atividades das três civilizações, viveiro, carga explícita, revisitas e locais persistentes; mais 43 testes de motor, universo, estações, energia e expedições.
+- Jogo de navegador atualizado; APK/AAB 0.3.8 permanecem os anteriores a esta revisão.
