@@ -3,7 +3,7 @@
   "modules": 8,
   "worlds": 10,
   "galaxies": true,
-  "cargoPicking": true,
+  "cargoCards": true,
   "resourcesPreserved": true,
   "errors": []
 }

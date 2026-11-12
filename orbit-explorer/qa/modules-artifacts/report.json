@@ -13,7 +13,7 @@
       "pass": true
     },
     {
-      "name": "Favorite protection blocks recycling and persists with a host save smaller than 16KiB",
+      "name": "Favorite protection blocks recycling and persists with a save smaller than 16 KiB",
       "pass": true
     },
     {
@@ -37,11 +37,11 @@
       "pass": true
     },
     {
-      "name": "Closing contextual details preserves physical module dragging and direct cargo interactions",
+      "name": "Module and cargo cards open over the open ship and the Depósito card runs its services",
       "pass": true
     },
     {
-      "name": "Crafting only missing pieces returns to the parent ingredient and supports a shortcut to the module recipe",
+      "name": "Crafting only missing pieces keeps the parent ingredient and module recipe one step back",
       "pass": true
     },
     {

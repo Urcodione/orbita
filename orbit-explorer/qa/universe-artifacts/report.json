@@ -25,10 +25,6 @@
       "pass": true
     },
     {
-      "name": "The existing physical rocket inspection and drag-to-socket loop remain available",
-      "pass": true
-    },
-    {
       "name": "All three maps and environmental panels fit 320, 390 and 736px widths",
       "pass": true
     },
@@ -38,6 +34,10 @@
     },
     {
       "name": "A real version-1 save migrates while retaining ship, modules, resources and explored progress",
+      "pass": true
+    },
+    {
+      "name": "Planet nodes own their tap targets on every map width",
       "pass": true
     },
     {

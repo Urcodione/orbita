@@ -1,15 +1,19 @@
 {
   "results": [
     {
-      "name": "Module → laboratory → recipe → component supports exact back and forward navigation",
+      "name": "Workshop → laboratory → recipe → component supports exact back navigation",
       "pass": true
     },
     {
-      "name": "Forward navigation after crafting never repeats the transaction",
+      "name": "Navigating after crafting never repeats the transaction",
       "pass": true
     },
     {
       "name": "Selected comparison returns intact and cancel never replaces installed hardware",
+      "pass": true
+    },
+    {
+      "name": "Module details return directly to the open ship for another selection, including cancel and Escape",
       "pass": true
     },
     {
@@ -21,7 +25,11 @@
       "pass": true
     },
     {
-      "name": "Back returns to the exact inventory page and forward restores the candidate without equipping it",
+      "name": "Physical module controls remain separate and reachable in the fixed ship interior",
+      "pass": true
+    },
+    {
+      "name": "Back returns to the exact inventory page and reopening the card never equips the candidate",
       "pass": true
     },
     {

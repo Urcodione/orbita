@@ -1,0 +1,30 @@
+{
+  "results": [
+    {
+      "name": "A module tapped in the open ship opens its card over the open ship, and closing returns there",
+      "pass": true
+    },
+    {
+      "name": "A finger opens a module card from the open ship in mobile emulation",
+      "pass": true
+    },
+    {
+      "name": "A save left on the retired module close-up resumes on the open ship",
+      "pass": true
+    },
+    {
+      "name": "Cargo shortcuts show actual contents and apply exactly the advertised resource transactions",
+      "pass": true
+    },
+    {
+      "name": "Cargo actions and controls remain usable at a 320px phone width",
+      "pass": true
+    },
+    {
+      "name": "Cargo changes survive reload without browser errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

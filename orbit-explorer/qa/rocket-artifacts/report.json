@@ -5,7 +5,7 @@
       "pass": true
     },
     {
-      "name": "Engine can be selected, expanded to show its socket, and returned",
+      "name": "Tapping the engine opens its card over the open ship, with no close-up",
       "pass": true
     },
     {
@@ -17,7 +17,7 @@
       "pass": true
     },
     {
-      "name": "Back and Escape step through module, interior, exterior, and main exploration",
+      "name": "Back and Escape step through the module card, interior, exterior, and main exploration",
       "pass": true
     },
     {
@@ -29,7 +29,7 @@
       "pass": true
     },
     {
-      "name": "Interior and module controls fit widths 320, 390, 736, and 1024",
+      "name": "Interior controls and the module card fit widths 320, 390, 736, and 1024",
       "pass": true
     },
     {

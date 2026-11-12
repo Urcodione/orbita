@@ -1,15 +1,19 @@
 {
   "results": [
     {
+      "name": "New game: story intro and guided tutorial can be skipped",
+      "pass": true
+    },
+    {
       "name": "Portrait phone preview and single primary action",
       "pass": true
     },
     {
-      "name": "Analyze then dock contextual action",
+      "name": "Analyze opens the exploration sites with one descent action",
       "pass": true
     },
     {
-      "name": "Explore terrain, recover and extract before reward equip",
+      "name": "Explore terrain, recover and extract: the module arrives in storage",
       "pass": true
     },
     {

@@ -1,14 +1,14 @@
 {
-  "url": "file:///mnt/c/Users/vanze/.codex/.chatgpt-projects/g-p-6ac92244bd0c81919ab60a20aff51f4c/orbit-explorer/index.html",
+  "url": "file:///home/felipe/ORBITA/orbit-explorer/index.html",
   "results": [
     {
       "name": "Standalone local file loads and canvas renders",
       "passed": true,
       "details": {
-        "url": "file:///mnt/c/Users/vanze/.codex/.chatgpt-projects/g-p-6ac92244bd0c81919ab60a20aff51f4c/orbit-explorer/index.html",
+        "url": "file:///home/felipe/ORBITA/orbit-explorer/index.html",
         "canvas": {
-          "w": 1092,
-          "h": 546
+          "w": 376,
+          "h": 622
         }
       }
     },
@@ -21,14 +21,14 @@
       "passed": true
     },
     {
-      "name": "Dock exposes explorable sites",
+      "name": "Site panel exposes explorable sites",
       "passed": true
     },
     {
       "name": "Explore awards resources and recovered module",
       "passed": true,
       "details": {
-        "recovered": "Turbina de Íons",
+        "recovered": "Motor Vela Iônica",
         "rarity": "rare"
       }
     },
@@ -59,7 +59,7 @@
       "name": "Warp generates a distinct galaxy",
       "passed": true,
       "details": {
-        "galaxy": "Jardim de Nyx 2"
+        "galaxy": "Jelirra"
       }
     },
     {
@@ -97,7 +97,7 @@
           "game": 360
         },
         {
-          "tab": "log",
+          "tab": "expedition",
           "viewport": 360,
           "document": 360,
           "game": 360

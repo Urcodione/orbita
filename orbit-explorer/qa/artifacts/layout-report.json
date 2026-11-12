@@ -5,7 +5,7 @@
       "tab": "explore",
       "viewport": 320,
       "doc": 320,
-      "game": 326,
+      "game": 320,
       "outside": []
     },
     {
@@ -13,7 +13,7 @@
       "tab": "ship",
       "viewport": 320,
       "doc": 320,
-      "game": 326,
+      "game": 320,
       "outside": []
     },
     {
@@ -21,15 +21,15 @@
       "tab": "galaxy",
       "viewport": 320,
       "doc": 320,
-      "game": 326,
+      "game": 320,
       "outside": []
     },
     {
       "width": 320,
-      "tab": "log",
+      "tab": "expedition",
       "viewport": 320,
       "doc": 320,
-      "game": 326,
+      "game": 320,
       "outside": []
     },
     {
@@ -58,7 +58,7 @@
     },
     {
       "width": 360,
-      "tab": "log",
+      "tab": "expedition",
       "viewport": 360,
       "doc": 360,
       "game": 360,
@@ -69,7 +69,7 @@
       "tab": "explore",
       "viewport": 736,
       "doc": 736,
-      "game": 688,
+      "game": 376,
       "outside": []
     },
     {
@@ -77,7 +77,7 @@
       "tab": "ship",
       "viewport": 736,
       "doc": 736,
-      "game": 688,
+      "game": 376,
       "outside": []
     },
     {
@@ -85,15 +85,15 @@
       "tab": "galaxy",
       "viewport": 736,
       "doc": 736,
-      "game": 688,
+      "game": 376,
       "outside": []
     },
     {
       "width": 736,
-      "tab": "log",
+      "tab": "expedition",
       "viewport": 736,
       "doc": 736,
-      "game": 688,
+      "game": 376,
       "outside": []
     },
     {
@@ -101,7 +101,7 @@
       "tab": "explore",
       "viewport": 1024,
       "doc": 1024,
-      "game": 976,
+      "game": 376,
       "outside": []
     },
     {
@@ -109,7 +109,7 @@
       "tab": "ship",
       "viewport": 1024,
       "doc": 1024,
-      "game": 976,
+      "game": 376,
       "outside": []
     },
     {
@@ -117,15 +117,15 @@
       "tab": "galaxy",
       "viewport": 1024,
       "doc": 1024,
-      "game": 976,
+      "game": 376,
       "outside": []
     },
     {
       "width": 1024,
-      "tab": "log",
+      "tab": "expedition",
       "viewport": 1024,
       "doc": 1024,
-      "game": 976,
+      "game": 376,
       "outside": []
     },
     {
@@ -133,7 +133,7 @@
       "tab": "explore",
       "viewport": 1440,
       "doc": 1440,
-      "game": 1392,
+      "game": 376,
       "outside": []
     },
     {
@@ -141,7 +141,7 @@
       "tab": "ship",
       "viewport": 1440,
       "doc": 1440,
-      "game": 1392,
+      "game": 376,
       "outside": []
     },
     {
@@ -149,33 +149,34 @@
       "tab": "galaxy",
       "viewport": 1440,
       "doc": 1440,
-      "game": 1392,
+      "game": 376,
       "outside": []
     },
     {
       "width": 1440,
-      "tab": "log",
+      "tab": "expedition",
       "viewport": 1440,
       "doc": 1440,
-      "game": 1392,
+      "game": 376,
       "outside": []
     }
   ],
   "dialog": {
     "rect": {
-      "x": 12,
-      "y": 25,
-      "width": 336,
-      "height": 751.734375,
-      "top": 25,
-      "right": 348,
-      "bottom": 776.734375,
-      "left": 12
+      "x": 0,
+      "y": 0,
+      "width": 360,
+      "height": 900,
+      "top": 0,
+      "right": 360,
+      "bottom": 900,
+      "left": 0
     },
-    "focus": "Fechar",
+    "focus": "Voltar: Menu",
     "inert": true,
-    "shiftTab": "Começar uma nova expedição",
-    "normalTab": "Fechar",
+    "shiftTab": "Primeiro pousoCaça aos únicosPilotar e coletarNúcleo e extraçãoEquipamentosOficina e reservasRumo a AuroraMapa e comércioNaves e hangar",
+    "normalTab": "Voltar: Menu",
+    "escapeTo": "menu",
     "returnFocus": true
   },
   "errors": []

@@ -33,7 +33,7 @@
       "pass": true
     },
     {
-      "name": "Expedition position, puzzle, temporary cargo and fog persist across reload below the host limit",
+      "name": "Expedition position, puzzle, temporary cargo and fog persist across reload within 16 KiB",
       "pass": true
     },
     {

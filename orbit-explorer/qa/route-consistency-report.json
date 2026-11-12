@@ -5,11 +5,19 @@
   },
   {
     "width": 390,
-    "route": "stock → resource"
+    "route": "stock → category"
   },
   {
     "width": 390,
-    "route": "resource → stock"
+    "route": "category → resource"
+  },
+  {
+    "width": 390,
+    "route": "resource → category"
+  },
+  {
+    "width": 390,
+    "route": "category → stock"
   },
   {
     "width": 390,
@@ -17,7 +25,19 @@
   },
   {
     "width": 390,
-    "route": "station → workshop → station"
+    "route": "map → station route"
+  },
+  {
+    "width": 390,
+    "route": "dock → station"
+  },
+  {
+    "width": 390,
+    "route": "station → stock"
+  },
+  {
+    "width": 390,
+    "route": "station → stock → station"
   },
   {
     "width": 390,
@@ -61,7 +81,7 @@
   },
   {
     "width": 390,
-    "route": "fabricate → new module"
+    "route": "fabricate → new module card"
   },
   {
     "width": 390,
@@ -81,7 +101,11 @@
   },
   {
     "width": 390,
-    "route": "site requirements → sites"
+    "route": "scan → sites"
+  },
+  {
+    "width": 390,
+    "route": "pick site → same sites sheet"
   },
   {
     "width": 390,
@@ -102,6 +126,10 @@
   {
     "width": 390,
     "route": "help → menu"
+  },
+  {
+    "width": 390,
+    "route": "scan → sites"
   },
   {
     "width": 390,
@@ -133,11 +161,19 @@
   },
   {
     "width": 320,
-    "route": "stock → resource"
+    "route": "stock → category"
   },
   {
     "width": 320,
-    "route": "resource → stock"
+    "route": "category → resource"
+  },
+  {
+    "width": 320,
+    "route": "resource → category"
+  },
+  {
+    "width": 320,
+    "route": "category → stock"
   },
   {
     "width": 320,
@@ -145,7 +181,19 @@
   },
   {
     "width": 320,
-    "route": "station → workshop → station"
+    "route": "map → station route"
+  },
+  {
+    "width": 320,
+    "route": "dock → station"
+  },
+  {
+    "width": 320,
+    "route": "station → stock"
+  },
+  {
+    "width": 320,
+    "route": "station → stock → station"
   },
   {
     "width": 320,
@@ -189,7 +237,7 @@
   },
   {
     "width": 320,
-    "route": "fabricate → new module"
+    "route": "fabricate → new module card"
   },
   {
     "width": 320,
@@ -209,7 +257,11 @@
   },
   {
     "width": 320,
-    "route": "site requirements → sites"
+    "route": "scan → sites"
+  },
+  {
+    "width": 320,
+    "route": "pick site → same sites sheet"
   },
   {
     "width": 320,
@@ -230,6 +282,10 @@
   {
     "width": 320,
     "route": "help → menu"
+  },
+  {
+    "width": 320,
+    "route": "scan → sites"
   },
   {
     "width": 320,

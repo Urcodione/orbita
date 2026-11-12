@@ -9,7 +9,7 @@
       "pass": true
     },
     {
-      "name": "Catalog routes preserve resources and restore the exact system page with back and forward",
+      "name": "Catalog routes preserve resources and open the selected world on the system map",
       "pass": true
     },
     {
@@ -25,7 +25,7 @@
       "pass": true
     },
     {
-      "name": "Host save and reload retain names, catalog counts and archived discoveries within 16 KiB",
+      "name": "Save and reload retain names, catalog counts and archived discoveries within 16 KiB",
       "pass": true
     },
     {
